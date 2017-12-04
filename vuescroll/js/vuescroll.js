@@ -1,7 +1,7 @@
 /*
- * vuescroll 1.0 
+ * vuescroll 1.4 
  * @author:wangyi qq:724003548
- * @date 2017年7月19日12:16:41
+ * @date 2017年12月4日15:02:06
  * 参照着基于jQuery的simscroll所做的基于vue的滚动条插件
  * referred to simscroll
  */
@@ -18,12 +18,14 @@
                 data: {
                     id: "",
                     id1: "",
-                    id2: ""
+                    id2: "_ScrollBar" + new Date().valueOf()
                 }
             });
-            Vue.component(vueScroll.name, vueScroll);
+            Vue.component(scrollBar.name, scrollBar);
             Vue.component(vuePanel.name, vuePanel);
             Vue.component(vueScrollCon.name, vueScrollCon);
+            //vueScroll
+            Vue.component(vueScroll.name, vueScroll);            
         }
     };
 
@@ -36,7 +38,7 @@
             bus.id1 = self.id1;
             console.log(this)
             return createElement('div', {
-                style: self.customStyle
+                style: self.contentWrap
                 ,
                 attrs: {
                     id: this.id1
@@ -49,7 +51,7 @@
                 }
             }, this.$slots.default);
         },
-        props:['customStyle'],
+        props:['contentWrap'],
         data: function() {
             return {
                 id1: "_ScrollCon" + new Date().valueOf()
@@ -76,18 +78,16 @@
         },
         data: function() {
             return {
-                id: "_Scroll" + new Date().valueOf()
+                id: "_ScrollPannel" + new Date().valueOf()
             };
         }
     }
     //滚动条的样式。 可自行配置。
-    var vueScroll = {
-        name: 'vueScroll',
+    var scrollBar = {
+        name: 'scrollBar',
         render: function(createElement) {
             var self = this;
-
             return createElement('div', {
-                class: 'vuescroll',
                 style: {
                     height: self.sHeight,
                     width: self.options.width,
@@ -103,7 +103,7 @@
                     opacity:0
                 },
                 attrs: {
-                    id: self.id2
+                    id: bus.id2
                 },
                 on: {
                     mouseenter: function(e) {
@@ -117,7 +117,6 @@
         },
         data: function() {
             return {
-                id2: "_ScrollBar" + new Date().valueOf(),
                 top: 0,
                 height: 0,
                 options: {
@@ -128,8 +127,8 @@
                 },
                 ids: {
                     id: bus.id,
-                    id1: bus.id1
-
+                    id1: bus.id1,
+                    id2:bus.id2
                 },
                 innerdeltaY: 0,
                 scrollElement: "",
@@ -164,13 +163,13 @@
             },
             showBar: function() {
                 if(this.scrollHeight < this.scrollInnerHeight){
-                    var bar = document.getElementById(this.id2);
+                    var bar = document.getElementById(this.ids.id2);
                     bar.style.opacity = 1;
                 }
             },
             hideBar: function() {
                 if (!this.mousedown) {
-                    var bar = document.getElementById(this.id2);
+                    var bar = document.getElementById(this.ids.id2);
                     bar.style.opacity = 0;
                 }
             },
@@ -278,5 +277,47 @@
             self.listenmouseout();
         }
     }
+    var vueScroll = {
+        name:"vueScroll",
+        class: 'vueScroll',        
+        render: function(createElement) {
+            var self = this;
+            return createElement('div', {
+                style: {
+                    position:'relative',
+                    height:'100%'
+                }
+                ,
+            }, [
+                createElement('vueScrollpanel',{
+
+                },[createElement('vueScrollCon',{
+                    props:{
+                        contentWrap:self.contentWrap
+                    }
+                },self.$slots.default)]),  
+                createElement('scrollBar',{
+                    props:{
+                        ops:self.ops
+                    },
+                    on:{
+                       scroll:self.scroll||noop 
+                    }
+                }),  
+            ]);
+        },
+        props:{
+            ops:{
+                require:false
+            } ,
+            scroll:{
+                require:false
+            } ,
+            contentWrap:{
+                require:false
+            }  
+        }  
+    }
+    function noop(){}
     return scroll;
 });
