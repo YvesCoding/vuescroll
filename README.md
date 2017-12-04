@@ -1,4 +1,4 @@
-# vuescroll V1.3
+# vuescroll V1.4
 ## 1.Controduction
 
 
@@ -18,18 +18,13 @@ If you want to substitute vuescroll for raw browser scroll, so just use it !
 
 ```
 <div id="scroll1">
-            <div class="scroll" style="position: relative;">
-				<vue-scrollPanel>
-					<vue-scroll-con>
-						<div class="content2">
+    <div id="scroll1">
+     <vueScroll :contentWrap="{height:'100%'}" :ops="ops" :scroll="detectscroll">
+	 <div class="content2">
 
-						</div>
-					</vue-scroll-con>
-				</vue-scrollPanel>
-				<vue-scroll :ops="ops" @scroll="lookscroll">
-
-				</vue-scroll>
-			</div>
+	</div>
+    </vueScroll>
+ </div>
  </div>
 ```
 
@@ -46,7 +41,7 @@ var aa = new Vue({
 				}
 			},
 			methods: {
-				lookscroll: function(bar, content) {
+				detectscroll: function(bar, content) {
 					console.log(bar);
 					console.log(content);
 				}
@@ -54,6 +49,7 @@ var aa = new Vue({
 		});
 
 ```
-4.ok.that'all,you can run and look the result.
+4.ok,that's all ! enjoy yourself with scrolling!
+The Effect pic
 
-The complete content you can see the demo.
+
