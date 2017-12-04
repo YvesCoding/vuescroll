@@ -1,7 +1,7 @@
 /*
- * vuescroll 1.4 
+ * vuescroll 1.0 
  * @author:wangyi qq:724003548
- * @date 2017年12月4日15:02:06
+ * @date 2017年7月19日12:16:41
  * 参照着基于jQuery的simscroll所做的基于vue的滚动条插件
  * referred to simscroll
  */
@@ -18,7 +18,7 @@
                 data: {
                     id: "",
                     id1: "",
-                    id2: "_ScrollBar" + new Date().valueOf()
+                    id2: ""
                 }
             });
             Vue.component(scrollBar.name, scrollBar);
@@ -103,7 +103,7 @@
                     opacity:0
                 },
                 attrs: {
-                    id: bus.id2
+                    id: self.ids.id2
                 },
                 on: {
                     mouseenter: function(e) {
@@ -128,11 +128,12 @@
                 ids: {
                     id: bus.id,
                     id1: bus.id1,
-                    id2:bus.id2
+                    id2:"_ScrollBar" + new Date().valueOf()
                 },
                 innerdeltaY: 0,
                 scrollElement: "",
                 scrollInner: "",
+                scrollSelf:"",
                 scrollHeight: "",
                 scrollInnerHeight: "",
                 minBarHeight: 35,
@@ -163,13 +164,13 @@
             },
             showBar: function() {
                 if(this.scrollHeight < this.scrollInnerHeight){
-                    var bar = document.getElementById(this.ids.id2);
+                    var bar = this.scrollSelf;
                     bar.style.opacity = 1;
                 }
             },
             hideBar: function() {
                 if (!this.mousedown) {
-                    var bar = document.getElementById(this.ids.id2);
+                    var bar = this.scrollSelf
                     bar.style.opacity = 0;
                 }
             },
@@ -268,6 +269,7 @@
             var self = this;
             self.scrollElement = document.getElementById(self.ids.id);
             self.scrollInner = document.getElementById(self.ids.id1);
+            self.scrollSelf = document.getElementById(self.ids.id2);
             bus.$on('getbarHeight' + self.ids.id1, self.getBarHeight);
             bus.$on('hidebar', self.hideBar);
             self.merge(self.options, self.ops);
