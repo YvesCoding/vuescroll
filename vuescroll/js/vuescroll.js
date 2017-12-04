@@ -34,10 +34,10 @@
             var self = this;
 
             bus.id1 = self.id1;
-
+            console.log(this)
             return createElement('div', {
-                style: {
-                },
+                style: self.customStyle
+                ,
                 attrs: {
                     id: this.id1
                 },
@@ -49,6 +49,7 @@
                 }
             }, this.$slots.default);
         },
+        props:['customStyle'],
         data: function() {
             return {
                 id1: "_ScrollCon" + new Date().valueOf()
