@@ -120,7 +120,7 @@
                 top: 0,
                 height: 0,
                 options: {
-                    deltaY: 500,
+                    deltaY: 50,
                     background: '#2c3a2c',
                     width: '5px',
                     float: 'left'
