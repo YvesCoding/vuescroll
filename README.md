@@ -51,5 +51,5 @@ var aa = new Vue({
 ```
 4.ok,that's all ! enjoy yourself with scrolling!
 The Effect pic
-![effectPic](https://github.com/wangyi7099/vuescroll/blob/master/vuescroll/img/pic.png?raw=true)
+![effectPic](https://github.com/wangyi7099/vuescroll/blob/master/vuescroll/img/pic.png)
 
