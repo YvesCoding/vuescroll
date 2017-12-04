@@ -31,25 +31,25 @@ If you want to substitute vuescroll for raw browser scroll, so just use it !
 3.bind options of vuescroll
 ```
 var aa = new Vue({
-			el: '#scroll1',
-			data: {
-				ops: {
-					background: "#cecece",
-					width: '5px',
-					deltaY: '100',
-					float: 'right'
-				}
-			},
-			methods: {
-				detectscroll: function(bar, content) {
-					console.log(bar);
-					console.log(content);
-				}
-			}
-		});
+	el: '#scroll1',
+	data: {
+		ops: {
+			background: "#cecece",
+			width: '5px',
+			deltaY: '100',
+			float: 'right'
+		}
+	},
+	methods: {
+		detectscroll: function(bar, content) {
+			console.log(bar);
+			console.log(content);
+		}
+	}
+});
 
 ```
 4.ok,that's all ! enjoy yourself with scrolling!
 The Effect pic
-
+![effectPic](https://github.com/wangyi7099/vuescroll/blob/master/vuescroll/img/pic.png?raw=true)
 
