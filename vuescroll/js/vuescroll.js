@@ -151,9 +151,11 @@
                 this.height = Math.max(this.scrollHeight / (this.scrollInnerHeight / this.scrollHeight), this.minBarHeight);
                 //计算滚动条每次滚动的距离innerdeltaY
                 this.innerdeltaY = (this.scrollHeight - this.height) / scrollTime;
+                if(this.scrollHeight < this.scrollInnerHeight){
                 //调整top的值
                 this.resizeTop();
                 this.showBar();
+                }  
             },
             resizeTop: function() {
                 //先求出con剩余的值
