@@ -99,7 +99,8 @@
                     marginTop: self.sTop,
                     right: (self.options.float == 'right' ? '0px' : ''),
                     transition: 'opacity .5s',
-                    cursor: 'default'
+                    cursor: 'default',
+                    opacity:0
                 },
                 attrs: {
                     id: self.id2
@@ -151,11 +152,9 @@
                 this.height = Math.max(this.scrollHeight / (this.scrollInnerHeight / this.scrollHeight), this.minBarHeight);
                 //计算滚动条每次滚动的距离innerdeltaY
                 this.innerdeltaY = (this.scrollHeight - this.height) / scrollTime;
-                if(this.scrollHeight < this.scrollInnerHeight){
                 //调整top的值
                 this.resizeTop();
                 this.showBar();
-                }  
             },
             resizeTop: function() {
                 //先求出con剩余的值
@@ -164,8 +163,10 @@
                 this.top = this.scrollHeight - (this.height + (time * this.innerdeltaY));
             },
             showBar: function() {
-                var bar = document.getElementById(this.id2);
-                bar.style.opacity = 1;
+                if(this.scrollHeight < this.scrollInnerHeight){
+                    var bar = document.getElementById(this.id2);
+                    bar.style.opacity = 1;
+                }
             },
             hideBar: function() {
                 if (!this.mousedown) {
