@@ -8,11 +8,18 @@ If you want to substitute vuescroll for raw browser scroll, so just use it !
 
 ## 2.UseAge
 
-1.Include vuescroll.js and vue.js
+1.
+If you are in browser envoriment. Include vuescroll.js and vue.js
 ```
  <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
  <script src="js/vuescroll.js" type="text/javascript" charset="utf-8"></script>
 
+```
+Else if you are in nodejs envoriment.
+```
+import Vue from 'vue
+import vuesrcoll  from 'vuesroll';
+Vue.use(vuesrcoll);
 ```
 2.warp the div you want to scroll whit vuescroll components
 
@@ -27,7 +34,6 @@ If you want to substitute vuescroll for raw browser scroll, so just use it !
  </div>
  </div>
 ```
-
 3.bind options of vuescroll
 ```
 var aa = new Vue({
@@ -49,6 +55,24 @@ var aa = new Vue({
 });
 
 ```
+The sample html style 
+```
+#scroll1{
+display: flex;
+flex-direction: column;
+width: 100%;
+}
+.scroll{
+width: 100%;
+height: 200px;
+overflow: hidden;	
+background: linear-gradient(to bottom,#ffffff,#000000);
+}
+.content2{
+width: 100%;
+} 
+```
+
 4.ok,that's all ! enjoy yourself with scrolling!
 The Effect pic
 ![effectPic](https://github.com/wangyi7099/vuescroll/blob/master/vuescroll/img/pic.png)
