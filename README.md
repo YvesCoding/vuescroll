@@ -25,14 +25,14 @@ Vue.use(vuesrcoll);
 
 ```
 <div id="scroll1">
-    <div id="scroll1">
-     <vueScroll :contentWrap="{height:'100%'}" :ops="ops" :scroll="detectscroll">
-	 <div class="content2">
+	<div id="scroll1">
+		<vueScroll :contentWrap="{height:'100%'}" :ops="ops" :scroll="detectscroll">
+			<div class="content2">
 
+			</div>
+		</vueScroll>
 	</div>
-    </vueScroll>
- </div>
- </div>
+</div>
 ```
 3.bind options of vuescroll
 ```
@@ -47,7 +47,7 @@ var aa = new Vue({
 		}
 	},
 	methods: {
-		detectscroll: function(bar, content) {
+		detectscroll: function (bar, content) {
 			console.log(bar);
 			console.log(content);
 		}
@@ -57,20 +57,22 @@ var aa = new Vue({
 ```
 The sample html style 
 ```
-#scroll1{
-display: flex;
-flex-direction: column;
-width: 100%;
+#scroll1 {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
 }
-.scroll{
-width: 100%;
-height: 200px;
-overflow: hidden;	
-background: linear-gradient(to bottom,#ffffff,#000000);
+
+.scroll {
+	width: 100%;
+	height: 200px;
+	overflow: hidden;
+	background: linear-gradient(to bottom, #ffffff, #000000);
 }
-.content2{
-width: 100%;
-} 
+
+.content2 {
+	width: 100%;
+}
 ```
 
 4.ok,that's all ! enjoy yourself with scrolling!
