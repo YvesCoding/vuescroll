@@ -8,7 +8,7 @@
 (function(global, factory) {
     typeof define === 'function' && define.amd ? define(factory) :
     typeof module !=='undefined'?module.exports=factory():(global.Vue.use(factory()));
-})(window, function() {
+})(this, function() {
     var bus;
     //组件间通信的事件总线
 
