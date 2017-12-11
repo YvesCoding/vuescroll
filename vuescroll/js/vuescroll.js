@@ -1,5 +1,5 @@
 /*
- * vuescroll 1.0 
+ * vuescroll 1.4.5
  * @author:wangyi qq:724003548
  * @date 2017年7月19日12:16:41
  * 参照着基于jQuery的simscroll所做的基于vue的滚动条插件
