@@ -17,6 +17,8 @@ If you are in browser envoriment. Include vuescroll.js and vue.js
 ```
 Else if you are in nodejs envoriment.
 ```
+npm i vuescroll
+
 import Vue from 'vue
 import vuesrcoll  from 'vuesroll';
 Vue.use(vuesrcoll);
