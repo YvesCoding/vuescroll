@@ -28,7 +28,7 @@ Vue.use(vuesrcoll);
 ```
 <div id="scroll1">
 	<div id="scroll1">
-		<vueScroll :contentWrap="{height:'100%'}" :ops="ops" :scroll="detectscroll">
+		<vueScroll :scrollPanelHeight="{height:'100%'}" :ops="ops" :scroll="detectscroll">
 			<div class="content2">
 
 			</div>
