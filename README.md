@@ -79,5 +79,5 @@ The sample html style
 
 4.ok,that's all ! enjoy yourself with scrolling!
 The Effect pic
-![effectPic](https://github.com/wangyi7099/vuescroll/blob/master/vuescroll/img/pic.png)
+![effectPic](https://raw.githubusercontent.com/wangyi7099/vuescroll/master/vuescroll/img/pic.png)
 
