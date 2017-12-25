@@ -36,7 +36,6 @@
             var self = this;
 
             bus.id1 = self.id1;
-            console.log(this)
             return createElement('div', {
                 style: self.contentWrap
                 ,
@@ -45,7 +44,6 @@
                 },
                 on: {
                     mouseenter: function() {
-
                         bus.$emit('getbarHeight' + self.id1);
                     }
                 }
@@ -176,7 +174,7 @@
             },
             listenmouseout: function() {
                 var self = this;
-                self.$el.parentNode.addEventListener('mouseout', function(e) {
+                self.$el.parentNode.addEventListener('mouseleave', function(e) {
                     bus.$emit('hidebar');
                 });
             },
