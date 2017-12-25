@@ -1,5 +1,5 @@
 /*
- * vuescroll 1.4.5
+ * vuescroll 1.0 
  * @author:wangyi qq:724003548
  * @date 2017年7月19日12:16:41
  * 参照着基于jQuery的simscroll所做的基于vue的滚动条插件
@@ -36,20 +36,22 @@
             var self = this;
 
             bus.id1 = self.id1;
+          //  console.log(this)
             return createElement('div', {
-                style: self.contentWrap
+                style: self.scrollPanelHeight
                 ,
                 attrs: {
                     id: this.id1
                 },
                 on: {
                     mouseenter: function() {
+
                         bus.$emit('getbarHeight' + self.id1);
                     }
                 }
             }, this.$slots.default);
         },
-        props:['contentWrap'],
+        props:['scrollPanelHeight'],
         data: function() {
             return {
                 id1: "_ScrollCon" + new Date().valueOf()
@@ -202,7 +204,7 @@
 
                 }
                 self.$el.addEventListener('mousedown', function(e) {
-                    console.log(e);
+                    //console.log(e);
                     self.mousedown = true;
                     y = e.pageY;
                     document.addEventListener('mousemove', move);
@@ -293,7 +295,7 @@
 
                 },[createElement('vueScrollCon',{
                     props:{
-                        contentWrap:self.contentWrap
+                        scrollPanelHeight:self.scrollPanelHeight
                     }
                 },self.$slots.default)]),  
                 createElement('scrollBar',{
@@ -313,7 +315,7 @@
             scroll:{
                 require:false
             } ,
-            contentWrap:{
+            scrollPanelHeight:{
                 require:false
             }  
         }  
