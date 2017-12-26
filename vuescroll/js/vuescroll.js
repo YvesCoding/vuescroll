@@ -106,7 +106,7 @@
                     id: self.ids.id2
                 },
                 on: {
-                    mouseenter: function(e) {
+                    mouseover: function(e) {
                         self.showBar();
                     },
                     mouseleave: function(e) {
@@ -207,6 +207,7 @@
                     //console.log(e);
                     self.mousedown = true;
                     y = e.pageY;
+                    self.showBar();
                     document.addEventListener('mousemove', move);
                     document.addEventListener('mouseup', function(e) {
                         self.mousedown = false;
