@@ -99,7 +99,7 @@
                     marginTop: self.sTop,
                     right: (self.options.float == 'right' ? '0px' : ''),
                     transition: 'opacity .5s',
-                    cursor: 'default',
+                    cursor: 'pointer',
                     opacity:0
                 },
                 attrs: {
@@ -109,7 +109,7 @@
                     mouseenter: function(e) {
                         self.showBar();
                     },
-                    mouseout: function(e) {
+                    mouseleave: function(e) {
                         self.hideBar();
                     }
                 }
