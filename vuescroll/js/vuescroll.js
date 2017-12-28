@@ -99,7 +99,8 @@
                     right: (self.options.float == 'right' ? '0px' : ''),
                     transition: 'opacity .5s',
                     cursor: 'pointer',
-                    opacity:0
+                    opacity:0,
+                    userSelect: 'none'
                 },
                 attrs: {
                     id: self.ids.id2
@@ -120,7 +121,7 @@
                 height: 0,
                 options: {
                     deltaY: 50,
-                    background: '#2c3a2c',
+                    background: 'hsla(220,4%,58%,.3)',
                     width: '5px',
                     float: 'left'
                 },
