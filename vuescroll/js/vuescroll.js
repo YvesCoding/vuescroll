@@ -1,357 +1,356 @@
 /*
- * vuescroll 1.4.5 
+ * vuescroll 2.0 
  * @author:wangyi qq:724003548
- * @date 2017年7月19日12:16:41
- * 参照着基于jQuery的simscroll所做的基于vue的滚动条插件
- * referred to simscroll
+ * @date 2018 1.4
+ * inspired by simscroll
  */
 (function(global, factory) {
     typeof define === 'function' && define.amd ? define(factory) :
     typeof module !=='undefined'?module.exports=factory():(global.Vue.use(factory()));
 })(this, function() {
-    var bus;
-    //组件间通信的事件总线
-
+  
     var scroll = {
         install: function(Vue) {
-            bus = new Vue({
-                data: {
-                    id: "",
-                    id1: "",
-                    id2: ""
-                }
-            });
-            Vue.component(scrollBar.name, scrollBar);
-            Vue.component(vuePanel.name, vuePanel);
+            Vue.component(vScrollBar.name, vScrollBar);
+            Vue.component(vueScrollPanel.name, vueScrollPanel);
             Vue.component(vueScrollCon.name, vueScrollCon);
             //vueScroll
             Vue.component(vueScroll.name, vueScroll);            
         }
     };
      //scrollpanne
-     var vuePanel = {
-        name: 'vueScrollpanel',
+     var vueScrollPanel = {
+        name: 'vueScrollPanel',
         render: function(createElement) {
-            var self = this;
-            bus.id = self.id;
+            var vm = this;
             return createElement('div', {
                 style: {
                     width: '100%',
                     height: '100%',
                     overflow: 'hidden'
-
                 },
-                attrs: {
-                    id: self.id
-                },
+                class:"vueScrollPanel",
                 on: {
                     mouseenter: function() {
-                        bus.$emit('getbarHeight' + self.id);
+                        vm.$emit('showBar');
+                    },
+                    mouseleave:  function() {
+                        vm.$emit('hideBar');
                     }
                 }
             }, this.$slots.default);
         },
-        data: function() {
-            return {
-                id: "_ScrollPannel" + new Date().valueOf()
-            };
+        props: {
+            id:{
+                require:true
+            }
         }
     }
-    //scrollCon 高度和内容高度保持一致
     var vueScrollCon = {
         name: 'vueScrollCon',
         render: function(createElement) {
-            var self = this;
-
-            bus.id1 = self.id1;
+            var vm = this;
           //  console.log(this)
             return createElement('div', {
-                style: self.scrollContentStyle
-                ,
-                attrs: {
-                    id: this.id1
-                }
+                style:vm.scrollContentStyle,
+                class:"vueScrollContent",
             }, this.$slots.default);
         },
-        props:['scrollContentStyle'],
-        data: function() {
-            return {
-                id1: "_ScrollCon" + new Date().valueOf()
-            };
+        props:{
+            scrollContentStyle:{
+                require:false,
+                default:{
+                    height: '100%'
+                }
+            }
         }
     }
    
-    //滚动条 样式等参数可自行配置。
-    var scrollBar = {
-        name: 'scrollBar',
+    var vScrollBar = {
+        name: 'vScrollBar',
         render: function(createElement) {
-            var self = this;
+            var vm = this;
             return createElement('div', {
                 style: {
-                    height: self.sHeight,
-                    width: self.options.width,
-                    // '5px',
+                    height: vm.state.height + 'px',
+                    width: vm.ops.width,
                     position: 'absolute',
-                    background: self.options.background,
-                    //'#2c3a2c', 
-                    top: '0px',
-                    marginTop: self.sTop,
-                    right: (self.options.float == 'right' ? '0px' : ''),
+                    background: vm.ops.background,
+                    marginTop: vm.state.top + 'px',
+                    right: (vm.ops.float == 'right' ? '0px' : ''),
                     transition: 'opacity .5s',
                     cursor: 'pointer',
-                    opacity:0,
-                    userSelect: 'none'
+                    opacity:vm.state.opacity,
+                    userSelect: 'none',
+                    top: '0px'
                 },
-                attrs: {
-                    id: self.ids.id2
-                },
+                class:"vScrollBar",
                 on: {
-                    mouseover: function(e) {
-                        self.showBar();
+                    mouseenter: function(e) {
+                        vm.$emit('showVBar');
                     },
                     mouseleave: function(e) {
-                        self.hideBar();
+                        vm.$emit('hideVBar');
                     }
                 }
             }, this.$slots.default);
         },
-        data: function() {
-            return {
-                top: 0,
-                height: 0,
-                options: {
-                    deltaY: 50,
+        props: {
+            ops: {
+                require:false,
+                default:{
                     background: 'hsla(220,4%,58%,.3)',
                     width: '5px',
-                    float: 'left'
+                    float: 'left',
+                    opacity: 0
+                }    
+            },
+            state: {
+                top: {
+                    default: 0
                 },
-                ids: {
-                    id: bus.id,
-                    id1: bus.id1,
-                    id2:"_ScrollBar" + new Date().valueOf()
+                height: {
+                    default: 0
                 },
-                innerdeltaY: 0,
-                scrollPanel: "",
-                scrollContent: "",
-                scrollBar:"",
-                scrollPanelHeight: "",
-                scrollPanelScrollHeight: "",
-                minBarHeight: 35,
-                mousedown: false,
-                listeners:[]
+                opacity: {
+                    default: 0
+                }
             }
-            //deltal 每次滑动的距离
+        }
+    }
+    var vueScroll = {
+        name:"vueScroll",
+        class: 'vueScroll',
+        data(){
+            return {
+                scrollPanel: {
+                    el:"",
+                    ops: {
+
+                    }  
+                },
+                scrollContent: {
+                    el: "",
+                    ops: {
+                        height:""
+                    } 
+                },
+                vScrollBar: {
+                    el: "",
+                    ops: {
+                        background: 'hsla(220,4%,58%,.3)',
+                        width: '5px',
+                        float: 'left',
+                        deltaY:35
+                    },
+                    state: {
+                        top: 0,
+                        height: 0,
+                        opacity: 0
+                    },
+                    minBarHeight: 35,
+                    innerDeltaY: 0
+                },
+                listeners: [],
+                mousedown:false
+            }
         },
-        props: ['ops'],
-        methods: {
-            getBarHeight: function() {
-                this.scrollPanelHeight = window.getComputedStyle(this.scrollPanel).getPropertyValue("height").replace('px', "");
-                this.scrollPanelScrollHeight = this.scrollPanel.scrollHeight;
-                //在每次滚动this.deltaY的情况下滚动完剩余部分所需要的次数
-                var scrollTime = Math.ceil((this.scrollPanelScrollHeight - this.scrollPanelHeight) / Math.abs(this.options.deltaY));
-                //选择合适的滚动条大小
-                this.height = Math.max(this.scrollPanelHeight / (this.scrollPanelScrollHeight / this.scrollPanelHeight), this.minBarHeight);
-                if(this.scrollPanelScrollHeight <= this.scrollPanelHeight){
-                    this.height = 0;
+        render: function(createElement) {
+            var vm = this;
+            return createElement('div', {
+                style: {
+                    position:'relative',
+                    height:'100%'
+                },
+                on: {
+                    wheel: vm.wheel
                 }
-                //计算滚动条每次滚动的距离innerdeltaY
-                this.innerdeltaY = (this.scrollPanelHeight - this.height) / scrollTime;
-                //调整top的值
-                this.resizeTop();
-                this.showBar();
+                ,
+            }, [
+                createElement('vueScrollPanel',{
+                    ref:'vueScrollPanel',
+                    on: {
+                        showBar: vm.showBar,
+                        hideBar: vm.hideBar
+                    }
+                },[createElement('vueScrollCon',{
+                    props:{
+                        scrollContentStyle:vm.scrollContent.ops
+                    },
+                    ref:'vueScrollCon'
+                },vm.$slots.default)]),  
+                createElement('vScrollBar',{
+                    props:{
+                        ops: vm.vScrollBar.ops,
+                        state: vm.vScrollBar.state
+                    },
+                    ref:'vScrollBar',
+                    on: {
+                        showVbar: vm.showVBar,
+                        hideVbar: vm.hideVBar
+                    }
+                }),  
+            ]);
+        },
+        mounted(){
+            var vm = this;
+            vm.initEl();
+            vm.mergeAll();
+            vm.listenDrag();
+        },
+        methods:{
+            initEl() {
+                var vm = this;
+                vm.scrollPanel.el = vm.$refs['vueScrollPanel'] && vm.$refs['vueScrollPanel'].$el;
+                vm.scrollContent.el = vm.$refs['vueScrollCon'] && vm.$refs['vueScrollCon'].$el;
+                vm.vScrollBar.el = vm.$refs['vScrollBar'] && vm.$refs['vScrollBar'].$el;
             },
-            resizeTop: function() {
-                //先求出con剩余的值
-                var lastHeight = this.scrollPanelScrollHeight - this.scrollPanelHeight - this.scrollPanel.scrollTop;
-                var time = Math.abs(Math.ceil(lastHeight / this.options.deltaY));
-                this.top = this.scrollPanelHeight - (this.height + (time * this.innerdeltaY));
+            mergeAll() {
+                this.merge(this.ops , this.vScrollBar.ops);
+                this.merge(this.scrollContentStyle , this.scrollContent.ops);
             },
-            showBar: function() {
-                if(this.scrollPanelHeight < this.scrollPanelScrollHeight){
-                    var bar = this.scrollBar;
-                    bar.style.opacity = 1;
+            merge(from , to) {
+                for(key in from) {
+                    if(Object.hasOwnProperty.call(to, key)) {
+                        to[key] = from[key];
+                    }
                 }
             },
-            hideBar: function() {
-                if (!this.mousedown) {
-                    var bar = this.scrollBar
-                    bar.style.opacity = 0;
+            // get the bar height
+            getVBarHeight({deltaY}) {
+                var scrollPanelHeight = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("height").replace('px', "");
+                var scrollPanelScrollHeight = this.scrollPanel.el.scrollHeight;
+                // the last times that vertical scrollvar will scroll...
+                var scrollTime = Math.ceil((scrollPanelScrollHeight - scrollPanelHeight) / Math.abs(deltaY));
+                // choose the proper height for scrollbar
+                var height = Math.max(scrollPanelHeight / (scrollPanelScrollHeight / scrollPanelHeight), this.vScrollBar.minBarHeight);
+                if(scrollPanelScrollHeight <= scrollPanelHeight){
+                    height = 0;
+                    return height;
+                }
+                // the distance that scrollbar scrolls each time
+                this.vScrollBar.innerDeltaY = (scrollPanelHeight - height) / scrollTime;
+                return {
+                    height,
+                    scrollPanelHeight,
+                    scrollPanelScrollHeight,
+                    deltaY
                 }
             },
-            listenmouseout: function() {
-                var self = this;
-                function t() {
-                    bus.$emit('hidebar');
+            resizeVBarTop(
+                {
+                    height,
+                    scrollPanelHeight,
+                    scrollPanelScrollHeight,
+                    deltaY
                 }
-                this.listeners.push({
-                    dom:self.$el.parentNode,
-                    event:t,
-                    type:"mouseleave"
-                });
-                self.$el.parentNode.addEventListener('mouseleave', t);
+            ) {
+                 // cacl the last height first
+                 var lastHeight = scrollPanelScrollHeight - scrollPanelHeight - this.scrollPanel.el.scrollTop;
+                 var time = Math.abs(Math.ceil(lastHeight / deltaY));
+                 var top = scrollPanelHeight - (height + (time * this.vScrollBar.innerDeltaY)); 
+                 return top;
             },
-            //监听滚轮事件
-            listenwheel: function() {
-                var self = this;
-                function t(e) {
-                    //console.log(e.deltaY);
-                    self.getBarHeight();
-                    //
-                    self.scrollCon(e.deltaY > 0 ? 1 : -1, 1);
+            // show All bar
+            showBar() {
+                this.showVBar();
+            },
+            // hide all bar
+            hideBar() {
+                
+                    this.hideVBar();
+               
+            },
+            // showVbar
+            showVBar() {
+                var temp;
+                var deltaY = {deltaY:this.vScrollBar.ops.deltaY};
+                if((temp = this.getVBarHeight(deltaY))) {
+                    this.vScrollBar.state.top = this.resizeVBarTop(temp);
+                    this.vScrollBar.state.height = temp.height;
+                    this.vScrollBar.state.opacity = 1;
+                } 
+            },
+            // hideVbar
+            hideVBar() {
+                if(!this.mousedown) {
+                this.vScrollBar.state.opacity = 0;
                 }
-                this.listeners.push({
-                    dom:self.$el.parentNode,
-                    event:t,
-                    type:"wheel"
-                });
-                self.$el.parentNode.addEventListener('wheel',t);
             },
-            //监听拖拽滚动条的事件
+            // listen wheel scrolling
+            wheel(e) {
+                var vm = this;
+                vm.showVBar();
+                vm.scrollVBar(e.deltaY > 0 ? 1 : -1, 1);
+                e.stopPropagation();
+            },
+            scrollVBar: function(pos, time) {
+                // 1：scroll to down  0：scroll to up
+                var top = this.vScrollBar.state.top;
+                var scrollPanelHeight = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("height").replace('px', "");
+                var scrollPanelScrollHeight = this.scrollPanel.el.scrollHeight;
+                var scrollPanelScrollTop = this.scrollPanel.el.scrollTop;
+                var height =  this.vScrollBar.state.height;
+                var innerdeltaY = this.vScrollBar.innerDeltaY;
+                var deltaY = this.vScrollBar.ops.deltaY;
+                if (!((pos < 0 && top <= 0) || (scrollPanelHeight <= top + height && pos > 0))) {
+                    var Top = top + pos * innerdeltaY * time;
+                    var ScrollTop = scrollPanelScrollTop + pos * deltaY * time;
+                    if (pos < 0) {
+                        // scroll ip
+                        this.vScrollBar.state.top = Math.max(0, Top);
+                        this.scrollPanel.el.scrollTop = Math.max(0, ScrollTop);
+                    } else if (pos > 0) {
+                        // scroll down
+                        this.vScrollBar.state.top = Math.min(scrollPanelHeight - height, Top);
+                        this.scrollPanel.el.scrollTop = Math.min(scrollPanelScrollHeight - scrollPanelHeight, ScrollTop);
+                    }
+                }
+                var content = {};
+                var bar = {};
+                content.lastScrolled = (scrollPanelScrollHeight - scrollPanelScrollTop) + 'px';
+                content.hasScrolled = scrollPanelScrollTop + 'px';
+                bar.hasScrolled = this.vScrollBar.state.top + 'px';
+                bar.height = this.vScrollBar.state.height + 'px';
+                bar.name = "bar";
+                content.name = "content";
+                this.$emit('scroll', bar, content);
+            },
             listenDrag: function() {
-                var self = this;
+                var vm = this;
                 var y;
                 var _y;
                 function move(e) {
-
                     _y = e.pageY;
                     var _delta = _y - y;
-                    self.scrollCon(_delta > 0 ? 1 : -1, Math.abs(_delta / self.innerdeltaY));
+                    vm.scrollVBar(_delta > 0 ? 1 : -1, Math.abs(_delta / vm.vScrollBar.innerDeltaY));
                     y = _y;
-
                 }
                 function t(e) {
                     //console.log(e);
-                    self.mousedown = true;
+                    vm.mousedown = true;
                     y = e.pageY;
-                    self.showBar();
+                    vm.showVBar();
                     document.addEventListener('mousemove', move);
                     document.addEventListener('mouseup', function(e) {
-                        self.mousedown = false;
-                        self.hideBar();
+                        vm.mousedown = false;
+                        vm.hideVBar();
                         document.removeEventListener('mousemove', move);
 
                     });
                 }
                 this.listeners.push({
-                    dom:self.$el,
+                    dom:vm.vScrollBar.el,
                     event:t,
                     type:"mousedown"
                 });
-                self.$el.addEventListener('mousedown',t);
-            },
-            scrollCon: function(pos, time) {
-                //pos：方向   1：向下滚动  0：向上滚动
-
-                if (!((pos < 0 && this.top <= 0) || (this.scrollPanelHeight <= this.top + this.height && pos > 0))) {
-                    var Top = this.top + pos * this.innerdeltaY * time;
-                    var ScrollTop = this.scrollPanel.scrollTop + pos * this.options.deltaY * time;
-                    if (pos < 0) {
-                        //向上滚的
-                        this.top = Math.max(0, Top);
-                        this.scrollPanel.scrollTop = Math.max(0, ScrollTop);
-                    } else if (pos > 0) {
-                        //向下滚得
-                        this.top = Math.min(this.scrollPanelHeight - this.height, Top);
-                        this.scrollPanel.scrollTop = Math.min(this.scrollPanelScrollHeight - this.scrollPanelHeight, ScrollTop);
-                    }
-                }
-                var content = {};
-                var bar = {};
-                content.lastScrolled = (this.scrollPanel.scrollHeight - this.scrollPanel.scrollTop) + 'px';
-                content.hasScrolled = this.scrollPanel.scrollTop + 'px';
-                bar.hasScrolled = this.sTop;
-                bar.height = this.sHeight;
-                bar.lastScrolled = this.barlastScrolled;
-                bar.name = "bar";
-                content.name = "content";
-                this.$emit('scroll', bar, content);
-            },
-            merge: function(target, source) {
-                for (key in source) {
-                    if (source[key]) {
-                        target[key] = source[key];
-                    }
-                }
-                return source;
+                vm.vScrollBar.el.addEventListener('mousedown',t);
             }
         },
-        computed: {
-            sTop: function() {
-                return this.top + 'px';
-            },
-            sHeight: function() {
-                return this.height + 'px';
-            },
-            barlastScrolled: function() {
-                return (this.scrollPanelHeight - this.top - this.height) + 'px';
-            }
-
-        },
-        beforeCreate(){
-            var self = this;
-              
-        },
-        mounted: function() {
-            var self = this;
-            self.scrollPanel = document.getElementById(self.ids.id);
-            self.scrollContent = document.getElementById(self.ids.id1);
-            self.scrollBar = document.getElementById(self.ids.id2);
-            bus.$on('getbarHeight' + self.ids.id, self.getBarHeight);
-            bus.$on('hidebar', self.hideBar);
-            self.merge(self.options, self.ops);
-            self.listenwheel();
-            self.listenDrag();
-            self.listenmouseout();
-            self.getBarHeight();
-        },
-        beforeDestroy(){
-            //
-            this.listeners.map((element) => {
-                element.dom.removeEventListener(element.type,element.event);
-            })
-        }
+        props:['ops', 'scrollContentStyle']
     }
-    var vueScroll = {
-        name:"vueScroll",
-        class: 'vueScroll',        
-        render: function(createElement) {
-            var self = this;
-            return createElement('div', {
-                style: {
-                    position:'relative',
-                    height:'100%'
-                }
-                ,
-            }, [
-                createElement('vueScrollpanel',{
 
-                },[createElement('vueScrollCon',{
-                    props:{
-                        scrollContentStyle:self.scrollContentStyle
-                    }
-                },self.$slots.default)]),  
-                createElement('scrollBar',{
-                    props:{
-                        ops:self.ops
-                    },
-                    on:{
-                       scroll:self.scroll||noop 
-                    }
-                }),  
-            ]);
-        },
-        props:{
-            ops:{
-                require:false
-            } ,
-            scroll:{
-                require:false
-            } ,
-            scrollContentStyle:{
-                require:false
-            }  
-        }  
-    }
     function noop(){}
+
     return scroll;
 });
