@@ -130,7 +130,8 @@
                     el: "",
                     ops: {
                         height:"",
-                        background: '#fff'
+                        background: '#fff',
+                        'min-height':""
                     } 
                 },
                 vScrollBar: {
@@ -206,11 +207,14 @@
             },
             mergeAll() {
                 this.merge(this.ops , this.vScrollBar.ops);
-                this.merge(this.scrollContentStyle , this.scrollContent.ops);
+                this.merge(this.scrollContentStyle , this.scrollContent.ops , false);
             },
-            merge(from , to) {
+            merge(from , to, check) {
                 for(key in from) {
-                    if(Object.hasOwnProperty.call(to, key)) {
+                    if(check === false) {
+                        to[key] = from[key];
+                    }
+                    else if(Object.hasOwnProperty.call(to, key)) {
                         to[key] = from[key];
                     }
                 }
