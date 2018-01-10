@@ -63,6 +63,9 @@
                     height: '100%'
                 }
             }
+        },
+        mounted() {
+            console.log(this);
         }
     }
    
@@ -129,9 +132,7 @@
                 scrollContent: {
                     el: "",
                     ops: {
-                        height:"",
-                        background: '#fff',
-                        'min-height':""
+                        
                     } 
                 },
                 vScrollBar: {
@@ -212,10 +213,10 @@
             merge(from , to, check) {
                 for(key in from) {
                     if(check === false) {
-                        to[key] = from[key];
+                        this.$set(to, key, from[key]);
                     }
                     else if(Object.hasOwnProperty.call(to, key)) {
-                        to[key] = from[key];
+                        this.$set(to, key, from[key]);
                     }
                 }
             },
