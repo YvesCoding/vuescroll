@@ -5,7 +5,6 @@ vuescroll is a very easy virtuall scrollBar based on [vue.js](https://github.com
 
 > UseAge
 
-1.
 If you are in a browser envoriment. You shoule include vuescroll.js and vue.js by script:
 ```html
  <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
