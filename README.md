@@ -91,9 +91,11 @@ var vm = new Vue({
 ```
 That's all! It is so easy , isn't it?
 > The picture
+
 ![pic](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/vuescroll.gif?raw=true)
 
 > End
+
 If you like this, please give me a star, or if you have and suggestion, please give me a pr or an issue. <br/>
 
 **vuescroll under MIT by wangyi7099**
