@@ -1,7 +1,7 @@
 # vuescroll V2.5.0
 > 1.Controduction
 
-vuescroll is a very easy virtuall scrollBar based on [vue.js](https://github.com/vuejs/vue),whichi is supporting **vertical** scroll and horizontal **scroll** ,  and now, let me introduce how to use it.
+vuescroll is a very easy virtuall scrollBar based on [vue.js](https://github.com/vuejs/vue),whichi is supporting **vertical** scroll and **horizontal** scroll ,  and now, let me introduce how to use it.
 
 > UseAge
 
