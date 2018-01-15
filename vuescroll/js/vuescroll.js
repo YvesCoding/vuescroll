@@ -5,21 +5,22 @@
  * inspired by simscroll
  */
 (function(global, factory) {
-    typeof define === 'function' && define.amd ? define(factory) :
-    typeof module !=='undefined'?module.exports=factory():(global.Vue.use(factory()));
-})(this, function() {
-  
+    typeof define === 'function' && define.amd ? define(factory) : typeof module !== 'undefined' ? module.exports = factory() : (global.Vue.use(factory()));
+}
+)(this, function() {
+
     var scroll = {
         install: function(Vue) {
             Vue.component(vScrollBar.name, vScrollBar);
+            Vue.component(hScrollBar.name, hScrollBar);
             Vue.component(vueScrollPanel.name, vueScrollPanel);
             Vue.component(vueScrollCon.name, vueScrollCon);
             //vueScroll
-            Vue.component(vueScroll.name, vueScroll);            
+            Vue.component(vueScroll.name, vueScroll);
         }
     };
-     //scrollpanne
-     var vueScrollPanel = {
+    //scrollpanne
+    var vueScrollPanel = {
         name: 'vueScrollPanel',
         render: function(createElement) {
             var vm = this;
@@ -29,20 +30,20 @@
                     height: '100%',
                     overflow: 'hidden'
                 },
-                class:"vueScrollPanel",
+                class: "vueScrollPanel",
                 on: {
                     mouseenter: function() {
                         vm.$emit('showBar');
                     },
-                    mouseleave:  function() {
+                    mouseleave: function() {
                         vm.$emit('hideBar');
                     }
                 }
             }, this.$slots.default);
         },
         props: {
-            id:{
-                require:true
+            id: {
+                require: true
             }
         }
     }
@@ -50,25 +51,23 @@
         name: 'vueScrollCon',
         render: function(createElement) {
             var vm = this;
-          //  console.log(this)
+            //  console.log(this)
             return createElement('div', {
-                style:vm.scrollContentStyle,
-                class:"vueScrollContent",
+                style: vm.scrollContentStyle,
+                class: "vueScrollContent",
             }, this.$slots.default);
         },
-        props:{
-            scrollContentStyle:{
-                require:false,
-                default:{
+        props: {
+            scrollContentStyle: {
+                require: false,
+                default: {
                     height: '100%'
                 }
             }
-        },
-        mounted() {
-            console.log(this);
         }
     }
-   
+
+    // vertical scrollBar
     var vScrollBar = {
         name: 'vScrollBar',
         render: function(createElement) {
@@ -83,27 +82,27 @@
                     right: (vm.ops.float == 'right' ? '0px' : ''),
                     transition: 'opacity .5s',
                     cursor: 'pointer',
-                    opacity:vm.state.opacity,
+                    opacity: vm.state.opacity,
                     userSelect: 'none',
                     top: '0px'
                 },
-                class:"vScrollBar",
+                class: "vScrollBar",
                 on: {
                     mouseenter: function(e) {
                         vm.$emit('showVBar');
-                    } 
+                    }
                 }
             }, this.$slots.default);
         },
         props: {
             ops: {
-                require:false,
-                default:{
+                require: false,
+                default: {
                     background: 'hsla(220,4%,58%,.3)',
                     width: '5px',
                     float: 'left',
                     opacity: 0
-                }    
+                }
             },
             state: {
                 top: {
@@ -118,22 +117,69 @@
             }
         }
     }
+
+    // horizontal scrollBar
+    var hScrollBar = {
+        name: 'hScrollBar',
+        render: function(createElement) {
+            var vm = this;
+            return createElement('div', {
+                style: {
+                    bottom: 0,
+                    height: vm.ops.height ,
+                    width: vm.state.width + 'px',
+                    position: 'absolute',
+                    background: vm.ops.background,
+                    left: vm.state.left + 'px',
+                    transition: 'opacity .5s',
+                    cursor: 'pointer',
+                    opacity: vm.state.opacity,
+                    userSelect: 'none'
+                },
+                class: "hScrollBar",
+                on: {
+                    mouseenter: function(e) {
+                        vm.$emit('showHBar');
+                    }
+                }
+            }, this.$slots.default);
+        },
+        props: {
+            ops: {
+                require: false,
+                default: {
+                    background: 'hsla(220,4%,58%,.3)',
+                    height: '5px',
+                    opacity: 0
+                }
+            },
+            state: {
+                left: {
+                    default: 0
+                },
+                width: {
+                    default: 0
+                },
+                opacity: {
+                    default: 0
+                }
+            }
+        }
+    }
     var vueScroll = {
-        name:"vueScroll",
+        name: "vueScroll",
         class: 'vueScroll',
-        data(){
+        data() {
             return {
                 scrollPanel: {
-                    el:"",
+                    el: "",
                     ops: {
-
-                    }  
+                    }
                 },
                 scrollContent: {
                     el: "",
                     ops: {
-                        
-                    } 
+                    }
                 },
                 vScrollBar: {
                     el: "",
@@ -141,7 +187,7 @@
                         background: 'hsla(220,4%,58%,.3)',
                         width: '5px',
                         float: 'left',
-                        deltaY:35
+                        deltaY: 35
                     },
                     state: {
                         top: 0,
@@ -151,71 +197,92 @@
                     minBarHeight: 35,
                     innerDeltaY: 0
                 },
+                hScrollBar: {
+                    el: "",
+                    ops: {
+                        background: 'hsla(220,4%,58%,.3)',
+                        height: '5px',
+                        deltaX: 35
+                    },
+                    state: {
+                        left: 0,
+                        width: 0,
+                        opacity: 0
+                    },
+                    minBarWidth: 35,
+                    innerDeltaX: 0
+                },
                 listeners: [],
-                mousedown:false,
-                isMouseLeavePanel:false
+                mousedown: false,
+                isMouseLeavePanel: false
             }
         },
         render: function(createElement) {
             var vm = this;
             return createElement('div', {
                 style: {
-                    position:'relative',
-                    height:'100%'
+                    position: 'relative',
+                    height: '100%'
                 },
                 on: {
                     wheel: vm.wheel
+                },
+            }, [createElement('vueScrollPanel', {
+                ref: 'vueScrollPanel',
+                on: {
+                    showBar: vm.showBar,
+                    hideBar: vm.hideBar
                 }
-                ,
-            }, [
-                createElement('vueScrollPanel',{
-                    ref:'vueScrollPanel',
-                    on: {
-                        showBar: vm.showBar,
-                        hideBar: vm.hideBar
-                    }
-                },[createElement('vueScrollCon',{
-                    props:{
-                        scrollContentStyle:vm.scrollContent.ops
-                    },
-                    ref:'vueScrollCon'
-                },vm.$slots.default)]),  
-                createElement('vScrollBar',{
-                    props:{
-                        ops: vm.vScrollBar.ops,
-                        state: vm.vScrollBar.state
-                    },
-                    ref:'vScrollBar',
-                    on: {
-                        showVBar: vm.showVBar,
-                        hideVBar: vm.hideVBar
-                    }
-                }),  
-            ]);
+            }, [createElement('vueScrollCon', {
+                props: {
+                    scrollContentStyle: vm.scrollContent.ops
+                },
+                ref: 'vueScrollCon'
+            }, vm.$slots.default)]), createElement('vScrollBar', {
+                props: {
+                    ops: vm.vScrollBar.ops,
+                    state: vm.vScrollBar.state
+                },
+                ref: 'vScrollBar',
+                on: {
+                    showVBar: vm.showVBar,
+                    hideVBar: vm.hideVBar
+                }
+            }), createElement('hScrollBar', {
+                props: {
+                    ops: vm.hScrollBar.ops,
+                    state: vm.hScrollBar.state
+                },
+                ref: 'hScrollBar',
+                on: {
+                    showHBar: vm.showHBar,
+                    hideHBar: vm.hideHBar
+                }
+            })]);
         },
-        mounted(){
-            var vm = this;
-            vm.initEl();
-            vm.mergeAll();
-            vm.listenDrag();
+        mounted() {
+            this.initEl();
+            this.mergeAll();
+            this.listenVBarDrag();
+            this.listenHBarDrag();
         },
-        methods:{
+        methods: {
             initEl() {
-                var vm = this;
-                vm.scrollPanel.el = vm.$refs['vueScrollPanel'] && vm.$refs['vueScrollPanel'].$el;
-                vm.scrollContent.el = vm.$refs['vueScrollCon'] && vm.$refs['vueScrollCon'].$el;
-                vm.vScrollBar.el = vm.$refs['vScrollBar'] && vm.$refs['vScrollBar'].$el;
+                this.scrollPanel.el = this.$refs['vueScrollPanel'] && this.$refs['vueScrollPanel'].$el;
+                this.scrollContent.el = this.$refs['vueScrollCon'] && this.$refs['vueScrollCon'].$el;
+                this.vScrollBar.el = this.$refs['vScrollBar'] && this.$refs['vScrollBar'].$el;
+                this.hScrollBar.el = this.$refs['hScrollBar'] && this.$refs['hScrollBar'].$el;
             },
             mergeAll() {
-                this.merge(this.ops , this.vScrollBar.ops);
-                this.merge(this.scrollContentStyle , this.scrollContent.ops , false);
+                this.merge(this.ops.vBar, this.vScrollBar.ops);
+                this.merge(this.ops.hBar, this.hScrollBar.ops);
+                this.merge(this.scrollContentStyle, this.scrollContent.ops, false);
             },
-            merge(from , to, check) {
-                for(key in from) {
-                    if(check === false) {
+            merge(from, to, check) {
+                for (key in from) {
+                    if (check === false) {
                         this.$set(to, key, from[key]);
-                    }
-                    else if(Object.hasOwnProperty.call(to, key)) {
+                    } else if (Object.hasOwnProperty.call(to, key)) {
                         this.$set(to, key, from[key]);
                     }
                 }
@@ -228,7 +295,7 @@
                 var scrollTime = Math.ceil((scrollPanelScrollHeight - scrollPanelHeight) / Math.abs(deltaY));
                 // choose the proper height for scrollbar
                 var height = Math.max(scrollPanelHeight / (scrollPanelScrollHeight / scrollPanelHeight), this.vScrollBar.minBarHeight);
-                if(scrollPanelScrollHeight <= scrollPanelHeight){
+                if (scrollPanelScrollHeight <= scrollPanelHeight) {
                     height = 0;
                     return height;
                 }
@@ -241,45 +308,86 @@
                     deltaY
                 }
             },
-            resizeVBarTop(
-                {
-                    height,
-                    scrollPanelHeight,
-                    scrollPanelScrollHeight,
-                    deltaY
+            getHBarWidth({deltaX}) {
+                var scrollPanelWidth = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("width").replace('px', "");
+                var scrollPanelScrollWidth = this.scrollPanel.el.scrollWidth;
+                // the last times that horizontal scrollbar will scroll...
+                var scrollTime = Math.ceil((scrollPanelScrollWidth - scrollPanelWidth) / Math.abs(deltaX));
+                // choose the proper width for scrollbar
+                var width = Math.max(scrollPanelWidth / (scrollPanelScrollWidth / scrollPanelWidth), this.hScrollBar.minBarWidth);
+                if (scrollPanelScrollWidth <= scrollPanelWidth) {
+                    width = 0;
+                    return width;
                 }
-            ) {
-                 // cacl the last height first
-                 var lastHeight = scrollPanelScrollHeight - scrollPanelHeight - this.scrollPanel.el.scrollTop;
-                 var time = Math.abs(Math.ceil(lastHeight / deltaY));
-                 var top = scrollPanelHeight - (height + (time * this.vScrollBar.innerDeltaY)); 
-                 return top;
+                // the distance that scrollbar scrolls each time
+                this.hScrollBar.innerDeltaX = (scrollPanelWidth - width) / scrollTime;
+                return {
+                    width,
+                    scrollPanelWidth,
+                    scrollPanelScrollWidth,
+                    deltaX
+                }
+            },
+            resizeVBarTop({height, scrollPanelHeight, scrollPanelScrollHeight, deltaY}) {
+                // cacl the last height first
+                var lastHeight = scrollPanelScrollHeight - scrollPanelHeight - this.scrollPanel.el.scrollTop;
+                var time = Math.abs(Math.ceil(lastHeight / deltaY));
+                var top = scrollPanelHeight - (height + (time * this.vScrollBar.innerDeltaY));
+                return top;
+            },
+            resizeHBarLeft({width, scrollPanelWidth, scrollPanelScrollWidth, deltaX}) {
+                // cacl the last width first
+                var lastWidth = scrollPanelScrollWidth - scrollPanelWidth - this.scrollPanel.el.scrollLeft;
+                var time = Math.abs(Math.ceil(lastWidth / deltaX));
+                var left = scrollPanelWidth - (width + (time * this.hScrollBar.innerDeltaX));
+                return left;
             },
             // show All bar
             showBar() {
                 this.isMouseLeavePanel = false;
                 this.showVBar();
+                this.showHBar();
             },
             // hide all bar
             hideBar() {
-                this.isMouseLeavePanel = true;    
+                this.isMouseLeavePanel = true;
                 this.hideVBar();
-               
+                this.hideHBar();
             },
             // showVbar
             showVBar() {
                 var temp;
-                var deltaY = {deltaY:this.vScrollBar.ops.deltaY};
-                if((temp = this.getVBarHeight(deltaY))) {
+                var deltaY = {
+                    deltaY: this.vScrollBar.ops.deltaY
+                };
+                if ((temp = this.getVBarHeight(deltaY))) {
                     this.vScrollBar.state.top = this.resizeVBarTop(temp);
                     this.vScrollBar.state.height = temp.height;
                     this.vScrollBar.state.opacity = 1;
-                } 
+                }
+            },
+            // showHbar
+            showHBar() {
+                var temp;
+                var deltaX = {
+                    deltaX: this.hScrollBar.ops.deltaX
+                };
+                if ((temp = this.getHBarWidth(deltaX))) {
+                    this.hScrollBar.state.left = this.resizeHBarLeft(temp);
+                    this.hScrollBar.state.width = temp.width;
+                    this.hScrollBar.state.opacity = 1;
+                }
             },
             // hideVbar
             hideVBar() {
-                if(!this.mousedown && this.isMouseLeavePanel) {
-                this.vScrollBar.state.opacity = 0;
+                if (!this.mousedown && this.isMouseLeavePanel) {
+                    this.vScrollBar.state.opacity = 0;
+                }
+            },
+            // hideHbar
+            hideHBar() {
+                if (!this.mousedown && this.isMouseLeavePanel) {
+                    this.hScrollBar.state.opacity = 0;
                 }
             },
             // listen wheel scrolling
@@ -290,12 +398,12 @@
                 e.stopPropagation();
             },
             scrollVBar: function(pos, time) {
-                // 1ï¼šscroll to down  0ï¼šscroll to up
+                // >0 scroll to down  <0 scroll to up
                 var top = this.vScrollBar.state.top;
                 var scrollPanelHeight = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("height").replace('px', "");
                 var scrollPanelScrollHeight = this.scrollPanel.el.scrollHeight;
                 var scrollPanelScrollTop = this.scrollPanel.el.scrollTop;
-                var height =  this.vScrollBar.state.height;
+                var height = this.vScrollBar.state.height;
                 var innerdeltaY = this.vScrollBar.innerDeltaY;
                 var deltaY = this.vScrollBar.ops.deltaY;
                 if (!((pos < 0 && top <= 0) || (scrollPanelHeight <= top + height && pos > 0))) {
@@ -316,12 +424,46 @@
                 content.lastScrolled = (scrollPanelScrollHeight - scrollPanelScrollTop) + 'px';
                 content.hasScrolled = scrollPanelScrollTop + 'px';
                 bar.hasScrolled = this.vScrollBar.state.top + 'px';
+                bar.hasScrolled = (scrollPanelHeight - this.vScrollBar.state.top - this.vScrollBar.state.height) + 'px';
                 bar.height = this.vScrollBar.state.height + 'px';
-                bar.name = "bar";
-                content.name = "content";
-                this.$emit('scroll', bar, content);
+                bar.name = "verticalBar";
+                content.name = "verticalContent";
+                this.$emit('vscroll', bar, content);
             },
-            listenDrag: function() {
+            scrollHBar: function(pos, time) {
+                //  >0 scroll to right  <0 scroll to left
+                var left = this.hScrollBar.state.left;
+                var scrollPanelWidth = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("width").replace('px', "");
+                var scrollPanelScrollWidth = this.scrollPanel.el.scrollWidth;
+                var scrollPanelScrollLeft = this.scrollPanel.el.scrollLeft;
+                var width = this.hScrollBar.state.width;
+                var innerdeltaX = this.hScrollBar.innerDeltaX;
+                var deltaX = this.hScrollBar.ops.deltaX;
+                if (!((pos < 0 && left <= 0) || (scrollPanelWidth <= left + width && pos > 0))) {
+                    var Left = left + pos * innerdeltaX * time;
+                    var ScrollLeft = scrollPanelScrollLeft + pos * deltaX * time;
+                    if (pos < 0) {
+                        // scroll left
+                        this.hScrollBar.state.left = Math.max(0, Left);
+                        this.scrollPanel.el.scrollLeft = Math.max(0, ScrollLeft);
+                    } else if (pos > 0) {
+                        // scroll right
+                        this.hScrollBar.state.left = Math.min(scrollPanelWidth - width, Left);
+                        this.scrollPanel.el.scrollLeft = Math.min(scrollPanelScrollWidth - scrollPanelWidth, ScrollLeft);
+                    }
+                }
+                var content = {};
+                var bar = {};
+                content.lastScrolled = (scrollPanelScrollWidth - scrollPanelScrollLeft) + 'px';
+                content.hasScrolled = scrollPanelScrollLeft + 'px';
+                bar.hasScrolled = this.vScrollBar.state.left + 'px';
+                bar.hasScrolled = (scrollPanelWidth - this.hScrollBar.state.left - this.hScrollBar.state.width) + 'px';
+                bar.height = this.hScrollBar.state.height + 'px';
+                bar.name = "horizontalBar";
+                content.name = "horizontalContent";
+                this.$emit('hscroll', bar, content);
+            },
+            listenVBarDrag: function() {
                 var vm = this;
                 var y;
                 var _y;
@@ -344,17 +486,46 @@
                     });
                 }
                 this.listeners.push({
-                    dom:vm.vScrollBar.el,
-                    event:t,
-                    type:"mousedown"
+                    dom: vm.vScrollBar.el,
+                    event: t,
+                    type: "mousedown"
                 });
-                vm.vScrollBar.el.addEventListener('mousedown',t);
+                vm.vScrollBar.el.addEventListener('mousedown', t);
+            },
+            listenHBarDrag: function() {
+                var vm = this;
+                var x;
+                var _x;
+                function move(e) {
+                    _x = e.pageX;
+                    var _delta = _x - x;
+                    vm.scrollHBar(_delta > 0 ? 1 : -1, Math.abs(_delta / vm.hScrollBar.innerDeltaX));
+                    x = _x;
+                }
+                function t(e) {
+                    //console.log(e);
+                    vm.mousedown = true;
+                    x = e.pageX;
+                    vm.showHBar();
+                    document.addEventListener('mousemove', move);
+                    document.addEventListener('mouseup', function(e) {
+                        vm.mousedown = false;
+                        vm.hideHBar();
+                        document.removeEventListener('mousemove', move);
+                    });
+                }
+                this.listeners.push({
+                    dom: vm.hScrollBar.el,
+                    event: t,
+                    type: "mousedown"
+                });
+                vm.hScrollBar.el.addEventListener('mousedown', t);
             }
         },
-        props:['ops', 'scrollContentStyle']
+        props: ['ops', 'scrollContentStyle']
     }
 
-    function noop(){}
+    function noop() {}
 
     return scroll;
 });

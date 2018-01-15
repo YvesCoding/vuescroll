@@ -1,83 +1,99 @@
-# vuescroll V2.0
-## 1.Controduction
+# vuescroll V2.5.0
+> 1.Controduction
 
+vuescroll is a very easy virtuall scrollBar based on [vue.js](https://github.com/vuejs/vue),whichi is supporting **vertical** scroll and horizontal **scroll** ,  and now, let me introduce how to use it.
 
-This plugin is based on  [`vue.js`](https://github.com/vuejs/vue) <br> 
-
-If you want to substitute vuescroll for raw browser scroll, so just use it !
-
-## 2.UseAge
+> UseAge
 
 1.
-If you are in browser envoriment. Include vuescroll.js and vue.js
-```
+If you are in a browser envoriment. You shoule include vuescroll.js and vue.js by script:
+```html
  <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
  <script src="js/vuescroll.js" type="text/javascript" charset="utf-8"></script>
 
 ```
-Else if you are in nodejs envoriment.
+And if you are in the nodejs envoriment:
+**try to install it by npm**
+```bash
+npm i vuescroll -S
 ```
-npm i vuescroll
-
-import Vue from 'vue
+And then, `import` it in js. 
+```javascript
+import Vue from 'vue'
 import vuesrcoll  from 'vuesroll';
-Vue.use(vuesrcoll);
+Vue.use(vuesrcoll); // install the plugin
 ```
-2.warp the div you want to scroll whit vuescroll components
+What you all need to do is warpping the **content** you want to be scrolled inside its parent dom, and needn't write any other configrations, vuescroll has its default config. And the below is the detailed config(**You definitely can omit all the conifigs.**)
 
-```
-<div id="scroll1">
-	<div id="scroll1">
-		<vueScroll :scrollPanelHeight="{height:'100%'}" :ops="ops" :scroll="detectscroll">
-			<div class="content2">
-
-			</div>
-		</vueScroll>
-	</div>
+> HTML
+```html
+<div id="scroll" >
+	<div class="scroll">
+	<vue-scroll  
+	:scroll-content-style="{height:'100%'}" 
+	:ops="ops"
+	@hscroll="detectHBar"
+	@vscroll="detectVBar"
+	>
+		<div class="content">
+		</div>
+	</vue-scroll>
 </div>
+</div> 
 ```
-3.bind options of vuescroll
-```
-var aa = new Vue({
-	el: '#scroll1',
-	data: {
-		ops: {
-			background: "#cecece",
-			width: '5px',
-			deltaY: '100',
-			float: 'right'
+>JavaScript
+```javascript
+var vm = new Vue({
+	el:'#scroll',
+	data:{
+		ops:{
+			vBar:{
+				background:"#cecece",
+				width:'5px',
+				deltaY:'100'
+			},
+			hBar:{
+				background:"#000",
+				width:'5px',
+				deltaY:'100'
+			}	
 		}
 	},
 	methods: {
-		detectscroll: function (bar, content) {
-			console.log(bar);
-			console.log(content);
+		detectVBar(bar, content) {
+			console.log(bar ,content);
+		},
+		detectHBar(bar, content) {
+			console.log(bar ,content);
 		}
 	}
 });
-
 ```
-The sample html style 
+> CSS
+```css
+<style>
+		#scroll{
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+		}
+		.scroll{
+			width: 200px;
+			height: 200px;
+			overflow: hidden;
+		}
+		.content{
+			width: 3155px;
+			height: 3155px;
+			background: linear-gradient(to top right, #000, #f00 50%, #090);
+		}
+	</style>
 ```
-#scroll1 {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-}
+That's all! It is so easy , isn't it?
+> The picture
+![pic](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/vuescroll.gif?raw=true)
 
-.scroll {
-	width: 100%;
-	height: 200px;
-	overflow: hidden;
-	background: linear-gradient(to bottom, #ffffff, #000000);
-}
+> End
+If you like this, please give me a star, or if you have and suggestion, please give me a pr or an issue. <br/>
 
-.content2 {
-	width: 100%;
-}
-```
-
-4.ok,that's all ! enjoy yourself with scrolling!
-The Effect pic
-![effectPic](https://raw.githubusercontent.com/wangyi7099/vuescroll/master/vuescroll/img/pic.png)
-
+**vuescroll under MIT by wangyi7099**
