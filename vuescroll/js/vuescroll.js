@@ -1,7 +1,7 @@
 /*
- * vuescroll 2.0 
+ * vuescroll 2.5 
  * @author:wangyi qq:724003548
- * @date 2018 1.4
+ * @date 2018 1.15
  * inspired by simscroll
  */
 (function(global, factory) {
