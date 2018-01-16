@@ -418,7 +418,7 @@
                 var height = this.vScrollBar.state.height;
                 var innerdeltaY = this.vScrollBar.innerDeltaY;
                 var deltaY = this.vScrollBar.ops.deltaY;
-                if (!((pos < 0 && top <= 0) || (scrollPanelHeight <= top + height && pos > 0))) {
+                if (!((pos < 0 && top <= 0) || (scrollPanelHeight <= top + height && pos > 0) || (Math.abs(scrollPanelScrollHeight - scrollPanelHeight) < this.accuracy))) {
                     var Top = top + pos * innerdeltaY * time;
                     var ScrollTop = scrollPanelScrollTop + pos * deltaY * time;
                     if (pos < 0) {
@@ -451,7 +451,7 @@
                 var width = this.hScrollBar.state.width;
                 var innerdeltaX = this.hScrollBar.innerDeltaX;
                 var deltaX = this.hScrollBar.ops.deltaX;
-                if (!((pos < 0 && left <= 0) || (scrollPanelWidth <= left + width && pos > 0))) {
+                if (!((pos < 0 && left <= 0) || (scrollPanelWidth <= left + width && pos > 0)  || (Math.abs(scrollPanelScrollWidth - scrollPanelWidth) < this.accuracy))) {
                     var Left = left + pos * innerdeltaX * time;
                     var ScrollLeft = scrollPanelScrollLeft + pos * deltaX * time;
                     if (pos < 0) {
