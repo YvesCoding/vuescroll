@@ -301,13 +301,13 @@
             },
             // get the bar height
             getVBarHeight({deltaY}) {
-                var scrollPanelHeight = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("height").replace('px', "");
-                var scrollPanelScrollHeight = this.scrollPanel.el.scrollHeight;
+                var scrollPanelHeight = Math.floor(window.getComputedStyle(this.scrollPanel.el).getPropertyValue("height").replace('px', ""));
+                var scrollPanelScrollHeight = Math.floor(this.scrollPanel.el.scrollHeight);
                 // the last times that vertical scrollvar will scroll...
                 var scrollTime = Math.ceil((scrollPanelScrollHeight - scrollPanelHeight) / Math.abs(deltaY));
                 // choose the proper height for scrollbar
                 var height = Math.max(scrollPanelHeight / (scrollPanelScrollHeight / scrollPanelHeight), this.vScrollBar.minBarHeight);
-                if (scrollPanelScrollHeight <= scrollPanelHeight) {
+                if ((scrollPanelScrollHeight <= scrollPanelHeight)  || Math.abs(scrollPanelHeight - scrollPanelScrollHeight) <= this.accuracy) {
                     height = 0;
                     return height;
                 }
@@ -321,13 +321,13 @@
                 }
             },
             getHBarWidth({deltaX}) {
-                var scrollPanelWidth = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("width").replace('px', "");
-                var scrollPanelScrollWidth = this.scrollPanel.el.scrollWidth;
+                var scrollPanelWidth = Math.floor(window.getComputedStyle(this.scrollPanel.el).getPropertyValue("width").replace('px', ""));
+                var scrollPanelScrollWidth = Math.floor(this.scrollPanel.el.scrollWidth);
                 // the last times that horizontal scrollbar will scroll...
                 var scrollTime = Math.ceil((scrollPanelScrollWidth - scrollPanelWidth) / Math.abs(deltaX));
                 // choose the proper width for scrollbar
                 var width = Math.max(scrollPanelWidth / (scrollPanelScrollWidth / scrollPanelWidth), this.hScrollBar.minBarWidth);
-                if (scrollPanelScrollWidth <= scrollPanelWidth) {
+                if ((scrollPanelScrollWidth <= scrollPanelWidth) || Math.abs(scrollPanelWidth - scrollPanelScrollWidth) <= this.accuracy) {
                     width = 0;
                     return width;
                 }
@@ -536,7 +536,7 @@
         },
         props: {
             ops:{
-                default: () => {
+                default: function () {
                     return {
                         vBar: {
 
@@ -548,9 +548,14 @@
                 }
             },
             scrollContentStyle: {
-                default:{
+                default:function () {
+                    return {
 
+                    }
                 }
+            },
+            accuracy: {
+                default: 5
             }
         }
     }
