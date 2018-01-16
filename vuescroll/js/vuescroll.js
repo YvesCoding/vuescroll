@@ -72,20 +72,24 @@
         name: 'vScrollBar',
         render: function(createElement) {
             var vm = this;
+            var style = {
+                height: vm.state.height + 'px',
+                width: vm.ops.width,
+                position: 'absolute',
+                background: vm.ops.background,
+                top: vm.state.top + 'px',
+                transition: 'opacity .5s',
+                cursor: 'pointer',
+                opacity: vm.state.opacity,
+                userSelect: 'none'
+            }
+            if(vm.ops.pos == 'right') {
+                style['right'] = 0;
+            } else {
+                style['left'] = 0;
+            }
             return createElement('div', {
-                style: {
-                    height: vm.state.height + 'px',
-                    width: vm.ops.width,
-                    position: 'absolute',
-                    background: vm.ops.background,
-                    marginTop: vm.state.top + 'px',
-                    right: (vm.ops.float == 'right' ? '0px' : ''),
-                    transition: 'opacity .5s',
-                    cursor: 'pointer',
-                    opacity: vm.state.opacity,
-                    userSelect: 'none',
-                    top: '0px'
-                },
+                style: style,
                 class: "vScrollBar",
                 on: {
                     mouseenter: function(e) {
@@ -101,7 +105,8 @@
                     background: 'hsla(220,4%,58%,.3)',
                     width: '5px',
                     float: 'left',
-                    opacity: 0
+                    opacity: 0,
+                    pos:'left'
                 }
             },
             state: {
@@ -123,19 +128,24 @@
         name: 'hScrollBar',
         render: function(createElement) {
             var vm = this;
+            var style = {
+                height: vm.ops.height ,
+                width: vm.state.width + 'px',
+                position: 'absolute',
+                background: vm.ops.background,
+                left: vm.state.left + 'px',
+                transition: 'opacity .5s',
+                cursor: 'pointer',
+                opacity: vm.state.opacity,
+                userSelect: 'none'
+            }
+            if(vm.ops.pos == 'bottom') {
+                style['bottom'] = 0;
+            } else {
+                style['top'] = 0;
+            }
             return createElement('div', {
-                style: {
-                    bottom: 0,
-                    height: vm.ops.height ,
-                    width: vm.state.width + 'px',
-                    position: 'absolute',
-                    background: vm.ops.background,
-                    left: vm.state.left + 'px',
-                    transition: 'opacity .5s',
-                    cursor: 'pointer',
-                    opacity: vm.state.opacity,
-                    userSelect: 'none'
-                },
+                style: style,
                 class: "hScrollBar",
                 on: {
                     mouseenter: function(e) {
@@ -150,7 +160,8 @@
                 default: {
                     background: 'hsla(220,4%,58%,.3)',
                     height: '5px',
-                    opacity: 0
+                    opacity: 0,
+                    pos:'bottom'
                 }
             },
             state: {
@@ -186,7 +197,7 @@
                     ops: {
                         background: 'hsla(220,4%,58%,.3)',
                         width: '5px',
-                        float: 'left',
+                        pos:'',
                         deltaY: 35
                     },
                     state: {
@@ -202,7 +213,8 @@
                     ops: {
                         background: 'hsla(220,4%,58%,.3)',
                         height: '5px',
-                        deltaX: 35
+                        deltaX: 35,
+                        pos:''
                     },
                     state: {
                         left: 0,

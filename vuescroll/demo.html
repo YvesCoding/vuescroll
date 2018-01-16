@@ -28,7 +28,7 @@
 			<div class="scroll">
 			<vue-scroll  
 			:scroll-content-style="{height:'100%'}" 
-			 
+			:ops="ops"
 			@hscroll="detectHBar"
 			@vscroll="detectVBar"
 			>
@@ -43,7 +43,20 @@
 		var vm = new Vue({
 			el:'#scroll',
 			data:{
-			   
+			   ops:{
+					vBar:{
+						background:"#cecece",
+						width:'5px',
+						deltaY:'100',
+						pos:'right'
+					},
+					hBar:{
+						background:"#000",
+						width:'5px',
+						deltaY:'100',
+						pos:'top'
+					}	
+			   }
 			},
 			methods: {
 				detectVBar(bar, content) {
