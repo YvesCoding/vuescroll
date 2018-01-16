@@ -372,7 +372,7 @@
                 var deltaY = {
                     deltaY: this.vScrollBar.ops.deltaY
                 };
-                if ((temp = this.getVBarHeight(deltaY))) {
+                if ((this.vScrollBar.state.height = temp = this.getVBarHeight(deltaY))) {
                     this.vScrollBar.state.top = this.resizeVBarTop(temp);
                     this.vScrollBar.state.height = temp.height;
                     this.vScrollBar.state.opacity = 1;
@@ -384,7 +384,7 @@
                 var deltaX = {
                     deltaX: this.hScrollBar.ops.deltaX
                 };
-                if ((temp = this.getHBarWidth(deltaX))) {
+                if ((this.hScrollBar.state.width = temp = this.getHBarWidth(deltaX))) {
                     this.hScrollBar.state.left = this.resizeHBarLeft(temp);
                     this.hScrollBar.state.width = temp.width;
                     this.hScrollBar.state.opacity = 1;
