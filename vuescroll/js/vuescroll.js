@@ -522,7 +522,25 @@
                 vm.hScrollBar.el.addEventListener('mousedown', t);
             }
         },
-        props: ['ops', 'scrollContentStyle']
+        props: {
+            ops:{
+                default: () => {
+                    return {
+                        vBar: {
+
+                        },
+                        hBar: {
+
+                        }
+                    }
+                }
+            },
+            scrollContentStyle: {
+                default:{
+
+                }
+            }
+        }
     }
 
     function noop() {}

@@ -17,7 +17,7 @@
 			overflow: hidden;
 		}
 		.content{
-			width: 3155px;
+			width: 155px;
 			height: 3155px;
 			background: linear-gradient(to top right, #000, #f00 50%, #090);
 		}
@@ -28,7 +28,7 @@
 			<div class="scroll">
 			<vue-scroll  
 			:scroll-content-style="{height:'100%'}" 
-			:ops="ops"
+			 
 			@hscroll="detectHBar"
 			@vscroll="detectVBar"
 			>
@@ -43,18 +43,7 @@
 		var vm = new Vue({
 			el:'#scroll',
 			data:{
-			   ops:{
-					vBar:{
-						background:"#cecece",
-						width:'5px',
-						deltaY:'100'
-					},
-					hBar:{
-						background:"#000",
-						width:'5px',
-						deltaY:'100'
-					}	
-			   }
+			   
 			},
 			methods: {
 				detectVBar(bar, content) {
