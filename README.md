@@ -113,6 +113,11 @@ width|`5px`|**The scrollbar width**
 pos|`left(vBar)/bottom/(hBar)`|**The position of vBar or hBar**
 deltaY/deltaX|`35`|**The distance you scroll the scrollbar each time**
 
+The event of **vuescroll**
+
+event|params|description
+-----|------------|----
+vscroll/hscroll|`bar,content`|bar is the information about scrollbar, and content the the information about the scrollcontent.
 > End
 
 If you like this, please give me a star, or if you have and suggestion, please give me a pr or an issue. <br/>
