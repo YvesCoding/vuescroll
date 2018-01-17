@@ -17,8 +17,8 @@
 			overflow: hidden;
 		}
 		.content{
-			width: 200px;
-			height: 3155px;
+			width: 2000px;
+			height: 2000px;
 			background: linear-gradient(to top right, #000, #f00 50%, #090);
 		}
 	</style>
@@ -31,7 +31,9 @@
 			:ops="ops"
 			@hscroll="detectHBar"
 			@vscroll="detectVBar"
-			:accuracy="11"
+			:accuracy="10"
+			:keep-vbar-show='false'
+			:keep-hbar-show='true'
 			>
 				<div class="content">
 

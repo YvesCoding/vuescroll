@@ -89,9 +89,29 @@ var vm = new Vue({
 	</style>
 ```
 That's all! It is so easy , isn't it?
-> The picture
+> The Final Effect
 
 ![pic](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/vuescroll.gif?raw=true)
+
+> Options
+
+These are the detailed options you may use in **vuescroll**
+
+option|defaultValue|description
+-----|------------|----
+ops|`{vBar:{},hBar:{}}`| **The configs of vBar and hBar**
+scrollContentStyle|`{}`| **The style config object of scrollContent e.g. **{height:'100%'}**
+accuracy|`5`| **The accuracy determins that the scrollbar will show or not. e.g. If the scrollPanel and scrollContent has a difference of less than 5 px,the scrollbar will not show.**
+keepVbarShow/keepHbarShow|`false/false`|**If the scrollbar will show all the time.**
+
+The `vBar/hBar` configurations
+
+vBar/hBar|defaultValue|description
+-----|------------|----
+background|`hsla(220,4%,58%,.3)`|**The scrollbar background**
+width|`5px`|**The scrollbar width**
+pos|`left(vBar)/bottom/(hBar)`|**The position of vBar or hBar**
+deltaY/deltaX|`35`|**The distance you scroll the scrollbar each time**
 
 > End
 

@@ -226,7 +226,7 @@
                 },
                 listeners: [],
                 mousedown: false,
-                isMouseLeavePanel: false
+                isMouseLeavePanel: true
             }
         },
         render: function(createElement) {
@@ -237,7 +237,15 @@
                     height: '100%'
                 },
                 on: {
-                    wheel: vm.wheel
+                    wheel: vm.wheel,
+                    mouseenter: function() {
+                        vm.isMouseLeavePanel = false;
+                        vm.showBar();
+                    },
+                    mouseleave: function() {
+                        vm.isMouseLeavePanel = true;
+                        vm.hideBar();
+                    }
                 },
             }, [createElement('vueScrollPanel', {
                 ref: 'vueScrollPanel',
@@ -277,6 +285,8 @@
             this.mergeAll();
             this.listenVBarDrag();
             this.listenHBarDrag();
+            // showbar at init time
+            this.showBar();
         },
         methods: {
             initEl() {
@@ -356,13 +366,11 @@
             },
             // show All bar
             showBar() {
-                this.isMouseLeavePanel = false;
                 this.showVBar();
                 this.showHBar();
             },
             // hide all bar
             hideBar() {
-                this.isMouseLeavePanel = true;
                 this.hideVBar();
                 this.hideHBar();
             },
@@ -372,10 +380,12 @@
                 var deltaY = {
                     deltaY: this.vScrollBar.ops.deltaY
                 };
-                if ((this.vScrollBar.state.height = temp = this.getVBarHeight(deltaY))) {
-                    this.vScrollBar.state.top = this.resizeVBarTop(temp);
-                    this.vScrollBar.state.height = temp.height;
-                    this.vScrollBar.state.opacity = 1;
+                if(!this.isMouseLeavePanel || this.keepVbarShow){
+                    if ((this.vScrollBar.state.height = temp = this.getVBarHeight(deltaY))) {
+                        this.vScrollBar.state.top = this.resizeVBarTop(temp);
+                        this.vScrollBar.state.height = temp.height;
+                        this.vScrollBar.state.opacity = 1;
+                    }
                 }
             },
             // showHbar
@@ -384,22 +394,28 @@
                 var deltaX = {
                     deltaX: this.hScrollBar.ops.deltaX
                 };
-                if ((this.hScrollBar.state.width = temp = this.getHBarWidth(deltaX))) {
-                    this.hScrollBar.state.left = this.resizeHBarLeft(temp);
-                    this.hScrollBar.state.width = temp.width;
-                    this.hScrollBar.state.opacity = 1;
+                if(!this.isMouseLeavePanel || this.keepHbarShow){
+                    if ((this.hScrollBar.state.width = temp = this.getHBarWidth(deltaX))) {
+                        this.hScrollBar.state.left = this.resizeHBarLeft(temp);
+                        this.hScrollBar.state.width = temp.width;
+                        this.hScrollBar.state.opacity = 1;
+                    }
                 }
             },
             // hideVbar
             hideVBar() {
-                if (!this.mousedown && this.isMouseLeavePanel) {
-                    this.vScrollBar.state.opacity = 0;
+                if(!this.keepVbarShow) {
+                    if (!this.mousedown && this.isMouseLeavePanel) {
+                        this.vScrollBar.state.opacity = 0;
+                    }
                 }
             },
             // hideHbar
             hideHBar() {
-                if (!this.mousedown && this.isMouseLeavePanel) {
-                    this.hScrollBar.state.opacity = 0;
+                if(!this.keepHbarShow) {
+                    if (!this.mousedown && this.isMouseLeavePanel) {
+                        this.hScrollBar.state.opacity = 0;
+                    }
                 }
             },
             // listen wheel scrolling
@@ -556,6 +572,12 @@
             },
             accuracy: {
                 default: 5
+            },
+            keepVbarShow: {
+                default: false
+            },
+            keepHbarShow: {
+                default: false
             }
         }
     }
