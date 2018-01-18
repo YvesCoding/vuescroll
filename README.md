@@ -88,7 +88,7 @@ var vm = new Vue({
 		}
 	</style>
 ```
-That's all! It is so easy , isn't it?
+
 > The Final Effect
 
 ![pic](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/vuescroll.gif?raw=true)
