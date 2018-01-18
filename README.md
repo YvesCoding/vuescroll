@@ -103,7 +103,7 @@ option|defaultValue|description
 ops|`{vBar:{},hBar:{}}`| **The configs of vBar and hBar**
 scrollContentStyle|`{}`| **The style config object of scrollContent e.g. {height:'100%'}**
 accuracy|`5`| **The accuracy determins that the scrollbar will show or not. e.g. If the scrollPanel and scrollContent has a difference of less than 5 px,the scrollbar will not show.**
-keepVbarShow/keepHbarShow|`false/false`|**If the scrollbar will show all the time.**
+keepVbarShow/keepHbarShow|`false/false`|**Whether the scrollbar will show all the time or not.**
 
 The `vBar/hBar` configurations
 
