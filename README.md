@@ -3,6 +3,10 @@
 
 vuescroll is a very easy but powerful virtuall scrollBar based on [vue.js](https://github.com/vuejs/vue),which supports **vertical** scroll and **horizontal** scroll .
 
+> Demo
+
+[Demo](https://wangyi7099.github.io/vuescroll/)
+
 > UseAge
 
 If you are in a browser envoriment. You shoule include vuescroll.js and vue.js by script:
@@ -60,11 +64,11 @@ var vm = new Vue({
 	},
 	methods: {
 		// detect the scrollbar scrolling
-		detectVBar(bar, content) { 
-			console.log(bar ,content);
+		detectVBar(bar, content, process) { 
+			console.log(bar ,content,  process);
 		},
-		detectHBar(bar, content) {
-			console.log(bar ,content);
+		detectHBar(bar, content,  process) {
+			console.log(bar ,content,  process);
 		}
 	}
 });
@@ -103,7 +107,6 @@ option|defaultValue|description
 ops|`{vBar:{},hBar:{}}`| **The configs of vBar and hBar**
 scrollContentStyle|`{}`| **The style config object of scrollContent e.g. {height:'100%'}**
 accuracy|`5`| **The accuracy determins that the scrollbar will show or not. e.g. If the scrollPanel and scrollContent has a difference of less than 5 px,the scrollbar will not show.**
-keepVbarShow/keepHbarShow|`false/false`|**Whether the scrollbar will show all the time or not.**
 
 The `vBar/hBar` configurations
 
@@ -113,12 +116,14 @@ background|`hsla(220,4%,58%,.3)`|**The scrollbar background**
 width|`5px`|**The scrollbar width**
 pos|`left(vBar)/bottom/(hBar)`|**The position of vBar or hBar**
 deltaY/deltaX|`35`|**The distance you scroll the scrollbar each time**
+keepShow|false|**Whether the scrollbar is keep show or not**
 
 The event of **vuescroll**
 
 event|params|description
 -----|------------|----
-vscroll/hscroll|`bar,content`|bar is the information about scrollbar, and content the the information about the scrollcontent.
+vscroll/hscroll|`bar,content,process`|bar is the information about scrollbar, and content the the information about the scrollcontent, and the process show the progress of the scrolling.
+
 > End
 
 **vuescroll under MIT by wangyi7099**

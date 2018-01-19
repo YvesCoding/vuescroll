@@ -1,12 +1,560 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+  <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>vuescroll demo</title>
+  <style>
+      html, body, #vuescroll {
+          max-height: 100%;
+          max-width: 100%;
+          overflow: hidden;
+      }
+      #vuescroll {
+          
+      }
+      .card__media__content {
+          max-width: 100%;
+      }
+      .base-demo {
+        background: linear-gradient(to top right, #fff, #556f92);
+      }
+      /* y-overflow */
+      .demo1 { 
+        height: 1000px;
+        width: 100%;
+      }
+      /* x-overflow */
+      .demo2 {   
+        height: 200px;
+        width: 1000px;
+      }
+      /* both x,y overflow */
+      .demo3 {
+        width: 1000px;
+        height: 1000px;
+      }
+      /* keep showing hBar */
+      .demo4 {
+        height: 1000px;
+        width: 1000px;
+      }
+      /* keep showing vBar */
+      .demo5 {
+        height: 1000px;
+        width: 1000px;
+      }
+      /* keep showing all bars */
+      .demo6 {
+        height: 1000px;
+        width: 1000px;
+      }
+      /* customize deltaX*/
+      .demo7 {
+        height: 1000px;
+        width: 1000px;
+      }
+      /* customize deltaY*/
+      .demo8 {
+        height: 1000px;
+        width: 1000px;
+      }
+       /* customize deltaX and deltaY*/
+       .demo9 {
+        height: 1000px;
+        width: 1000px;
+      }
+      /* detect hBar scroll */
+      .demo10 {
+        height: 1000px;
+        width: 1000px;
+      }
+      /* detect vBar scroll */
+      .demo11 {
+        height: 1000px;
+        width: 1000px;
+      }
+      /* hBar is on the right */
+      .demo12 {
+        height: 1000px;
+        width: 1000px;
+      }
+      /* vBar is on the top */
+      .demo13 {
+        height: 1000px;
+        width: 1000px;
+      }
+      /* hBar is on the right and  vBar is on the top */
+      .demo14 {
+        height: 1000px;
+        width: 1000px;
+      }
+       /* set the scrollbar's color and width  */
+       .demo15 {
+        height: 1000px;
+        width: 1000px;
+      }
+  </style>
 </head>
 <body>
-    vuescroll
+  <div id="vuescroll" :style="{height:windowInnerheight}">
+    <vue-scroll 
+    :style="{height:windowInnerheight}"
+    :ops="{vBar:{pos:'right'}}"
+    >
+    <v-app>
+       
+      <v-content>
+        <v-container grid-list-md text-xs-center   fill-height>
+            <v-layout row wrap>
+                    <v-flex xs12>
+                            <h2>Vuescroll Demo</h2> 
+                    </v-flex>
+                <v-flex xs4 >
+                    <v-card dark color="purple">
+                        <v-card-media  height="200px">
+                            <vue-scroll
+                            :ops="demo1"
+                            >
+                                <div class="base-demo demo1">
+
+                                </div>
+                            </vue-scroll>
+                        </v-card-media>
+                        <v-card-title primary-title>
+                            <div>
+                            <div>
+                                Demo1.only y-axis is overflow...
+                            </div>
+                            </div>
+                        </v-card-title>
+                    </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                        <v-card-media  height="200px">
+                            <vue-scroll
+                            :ops="demo2"
+                            >
+                                <div class="base-demo demo2">
+
+                                </div>
+                            </vue-scroll>
+                        </v-card-media>
+                        <v-card-title primary-title>
+                            <div>
+                            <div>
+                                    Demo2.only x-axis is overflow...
+                            </div>
+                            </div>
+                        </v-card-title>
+                    </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo3"
+                                    >
+                                        <div class="base-demo demo3">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo3.both x,y overflow...
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo4"
+                                    >
+                                        <div class="base-demo demo4">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo4.keep showing hBar
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo5"
+                                    >
+                                        <div class="base-demo demo5">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo5.keep showing vBar
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo6"
+                                    >
+                                        <div class="base-demo demo6">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo6.keep showing all bars
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo7"
+                                    >
+                                        <div class="base-demo demo7">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo7.customize deltaX to 100
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo8"
+                                    >
+                                        <div class="base-demo demo8">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo8.customize deltaY to 100
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo9"
+                                    >
+                                        <div class="base-demo demo9">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo9.customize both deltaX and deltaY to 100
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo10"
+                                    @hscroll="hscroll"
+                                    >
+                                        <div class="base-demo demo10">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div style="width:100%">
+                                    <div style="width:100%">
+                                            <v-progress-linear v-model="hBarProcess" height="5" color="success"></v-progress-linear>
+
+                                            Demo10. detect hBar scroll (open the dev-tool and see details)
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo11"
+                                    @vscroll="vscroll"
+                                    >
+                                        <div class="base-demo demo11">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div style="width:100%">
+                                    <div style="width:100%">
+                                            <v-progress-linear v-model="vBarProcess" height="5" color="success"></v-progress-linear>
+
+                                            Demo11. detect vBar scroll (open the dev-tool and see details)
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo12"
+                                    >
+                                        <div class="base-demo demo12">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo12. vBar is on the right
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo13"
+                                    >
+                                        <div class="base-demo demo13">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo13.hBar is on the bottom
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo14"
+                                    >
+                                        <div class="base-demo demo14">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo14. vBar is on the right and  hBar is on the bottom
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs4 >
+                        <v-card dark color="purple">
+                                <v-card-media  height="200px">
+                                    <vue-scroll
+                                    :ops="demo15"
+                                    >
+                                        <div class="base-demo demo15">
+        
+                                        </div>
+                                    </vue-scroll>
+                                </v-card-media>
+                                <v-card-title primary-title>
+                                    <div>
+                                    <div>
+                                            Demo15.set the scrollbar's color and width
+                                    </div>
+                                    </div>
+                                </v-card-title>
+                            </v-card>
+                </v-flex>
+                <v-flex xs12>
+                        <h2>by wangyi7099 under MIT <a href="https://github.com/wangyi7099/vuescroll">GitHub</a></h2> 
+                </v-flex>
+            </v-layout>
+            
+    </vue-scroll>
+        </v-container>
+      </v-content>
+    </v-app>
+</vue-scroll>
+  </div>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
+  <script src="./vuescroll.js"></script>
+  <script>
+var demo1 = {
+
+};
+var demo2 = {
+
+};
+var demo3 = {
+
+};
+var demo4 = {
+    hBar: {
+        keepShow: true
+    }
+};
+var demo5 = {
+    vBar: {
+        keepShow: true
+    }
+};
+var demo6 = {
+    vBar: {
+        keepShow: true
+    },
+    hBar: {
+        keepShow: true
+    }
+};
+var demo7 = {
+    hBar: {
+        deltaX: 100
+    }
+};
+var demo8 = {
+    vBar: {
+        deltaY: 100
+    }
+};
+var demo9 = {
+    hBar: {
+        deltaX: 100
+    },
+    vBar: {
+        deltaY: 100
+    }
+};
+var demo10 = {
+
+};
+var demo11 = {
+
+};
+var demo12 = { 
+        vBar: {
+            pos: 'right',
+            keepShow: true
+        }
+};
+var demo13 = {
+        hBar: {
+            pos:'bottom',
+            keepShow: true
+        }
+};
+var demo14 = {
+        hBar: {
+            pos: 'bottom',
+            keepShow: true
+        },
+        vBar: {
+            pos: 'right',
+            keepShow: true
+        }
+};
+var demo15 = {
+        hBar: {
+            pos: 'bottom',
+            keepShow: true,
+            width: '10px',
+            background: '#7b1fa2'
+        },
+        vBar: {
+            pos: 'right',
+            keepShow: true,
+            width: '10px',
+            background: '#b388ff'
+        }
+};
+new Vue({ 
+    el: '#vuescroll',
+    data:{
+        demo1,
+        demo2,
+        demo3,
+        demo4,
+        demo5,
+        demo6,
+        demo7,
+        demo8,
+        demo9,
+        demo10,
+        demo11,
+        demo12,
+        demo13,
+        demo14,
+        demo15,
+        windowInnerheight: "",
+        vBarProcess: 0,
+        hBarProcess: 0
+    },
+    methods: {
+        vscroll(bar, content, process) {
+            console.log(bar, content, process);
+            this.vBarProcess = process * 100;
+        },
+        hscroll(bar, content, process) {
+            console.log(bar, content, process);
+            this.hBarProcess = process * 100;
+        }
+    },
+    mounted() {
+        this.windowInnerheight = window.innerHeight + 'px';
+    }
+});
+  </script>
 </body>
 </html>

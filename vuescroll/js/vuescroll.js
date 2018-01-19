@@ -1,8 +1,8 @@
 /*
  * vuescroll 2.5 
- * @author:wangyi qq:724003548
+ * @author:wangyi
  * @date 2018 1.15
- * inspired by simscroll
+ * inspired by slimscroll
  */
 (function(global, factory) {
     typeof define === 'function' && define.amd ? define(factory) : typeof module !== 'undefined' ? module.exports = factory() : (global.Vue.use(factory()));
@@ -198,7 +198,8 @@
                         background: 'hsla(220,4%,58%,.3)',
                         width: '5px',
                         pos:'',
-                        deltaY: 35
+                        deltaY: 30,
+                        keepShow: false
                     },
                     state: {
                         top: 0,
@@ -213,8 +214,9 @@
                     ops: {
                         background: 'hsla(220,4%,58%,.3)',
                         height: '5px',
-                        deltaX: 35,
-                        pos:''
+                        deltaX: 30,
+                        pos:'',
+                        keepShow: false
                     },
                     state: {
                         left: 0,
@@ -234,7 +236,8 @@
             return createElement('div', {
                 style: {
                     position: 'relative',
-                    height: '100%'
+                    height: '100%',
+                    width: '100%'
                 },
                 on: {
                     wheel: vm.wheel,
@@ -353,6 +356,9 @@
             resizeVBarTop({height, scrollPanelHeight, scrollPanelScrollHeight, deltaY}) {
                 // cacl the last height first
                 var lastHeight = scrollPanelScrollHeight - scrollPanelHeight - this.scrollPanel.el.scrollTop;
+                if(lastHeight < this.accuracy) {
+                    lastHeight = 0;
+                }
                 var time = Math.abs(Math.ceil(lastHeight / deltaY));
                 var top = scrollPanelHeight - (height + (time * this.vScrollBar.innerDeltaY));
                 return top;
@@ -360,6 +366,9 @@
             resizeHBarLeft({width, scrollPanelWidth, scrollPanelScrollWidth, deltaX}) {
                 // cacl the last width first
                 var lastWidth = scrollPanelScrollWidth - scrollPanelWidth - this.scrollPanel.el.scrollLeft;
+                if(lastWidth < this.accuracy) {
+                    lastWidth = 0;
+                }
                 var time = Math.abs(Math.ceil(lastWidth / deltaX));
                 var left = scrollPanelWidth - (width + (time * this.hScrollBar.innerDeltaX));
                 return left;
@@ -380,7 +389,7 @@
                 var deltaY = {
                     deltaY: this.vScrollBar.ops.deltaY
                 };
-                if(!this.isMouseLeavePanel || this.keepVbarShow){
+                if(!this.isMouseLeavePanel || this.vScrollBar.ops.keepShow){
                     if ((this.vScrollBar.state.height = temp = this.getVBarHeight(deltaY))) {
                         this.vScrollBar.state.top = this.resizeVBarTop(temp);
                         this.vScrollBar.state.height = temp.height;
@@ -394,7 +403,7 @@
                 var deltaX = {
                     deltaX: this.hScrollBar.ops.deltaX
                 };
-                if(!this.isMouseLeavePanel || this.keepHbarShow){
+                if(!this.isMouseLeavePanel || this.hScrollBar.ops.keepShow){
                     if ((this.hScrollBar.state.width = temp = this.getHBarWidth(deltaX))) {
                         this.hScrollBar.state.left = this.resizeHBarLeft(temp);
                         this.hScrollBar.state.width = temp.width;
@@ -404,7 +413,7 @@
             },
             // hideVbar
             hideVBar() {
-                if(!this.keepVbarShow) {
+                if(!this.vScrollBar.ops.keepShow) {
                     if (!this.mousedown && this.isMouseLeavePanel) {
                         this.vScrollBar.state.opacity = 0;
                     }
@@ -412,7 +421,7 @@
             },
             // hideHbar
             hideHBar() {
-                if(!this.keepHbarShow) {
+                if(!this.hScrollBar.ops.keepShow) {
                     if (!this.mousedown && this.isMouseLeavePanel) {
                         this.hScrollBar.state.opacity = 0;
                     }
@@ -427,6 +436,7 @@
             },
             scrollVBar: function(pos, time) {
                 // >0 scroll to down  <0 scroll to up
+                 
                 var top = this.vScrollBar.state.top;
                 var scrollPanelHeight = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("height").replace('px', "");
                 var scrollPanelScrollHeight = this.scrollPanel.el.scrollHeight;
@@ -449,17 +459,20 @@
                 }
                 var content = {};
                 var bar = {};
-                content.lastScrolled = (scrollPanelScrollHeight - scrollPanelScrollTop) + 'px';
-                content.hasScrolled = scrollPanelScrollTop + 'px';
-                bar.hasScrolled = this.vScrollBar.state.top + 'px';
-                bar.hasScrolled = (scrollPanelHeight - this.vScrollBar.state.top - this.vScrollBar.state.height) + 'px';
-                bar.height = this.vScrollBar.state.height + 'px';
-                bar.name = "verticalBar";
-                content.name = "verticalContent";
-                this.$emit('vscroll', bar, content);
+                var process = "";
+                content.residual = (scrollPanelScrollHeight - scrollPanelScrollTop - scrollPanelHeight);
+                content.scrolled = scrollPanelScrollTop;
+                bar.scrolled = this.vScrollBar.state.top;
+                bar.residual = (scrollPanelHeight - this.vScrollBar.state.top - this.vScrollBar.state.height);
+                bar.height = this.vScrollBar.state.height;
+                process = bar.scrolled/(scrollPanelHeight - bar.height);
+                bar.name = "vBar";
+                content.name = "content";
+                this.$emit('vscroll', bar, content, process);
             },
             scrollHBar: function(pos, time) {
                 //  >0 scroll to right  <0 scroll to left
+                
                 var left = this.hScrollBar.state.left;
                 var scrollPanelWidth = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("width").replace('px', "");
                 var scrollPanelScrollWidth = this.scrollPanel.el.scrollWidth;
@@ -482,14 +495,16 @@
                 }
                 var content = {};
                 var bar = {};
-                content.lastScrolled = (scrollPanelScrollWidth - scrollPanelScrollLeft) + 'px';
-                content.hasScrolled = scrollPanelScrollLeft + 'px';
-                bar.hasScrolled = this.vScrollBar.state.left + 'px';
-                bar.hasScrolled = (scrollPanelWidth - this.hScrollBar.state.left - this.hScrollBar.state.width) + 'px';
-                bar.height = this.hScrollBar.state.height + 'px';
-                bar.name = "horizontalBar";
-                content.name = "horizontalContent";
-                this.$emit('hscroll', bar, content);
+                var process = "";
+                content.residual = (scrollPanelScrollWidth - scrollPanelScrollLeft - scrollPanelWidth);
+                content.scrolled = scrollPanelScrollLeft;
+                bar.scrolled = this.hScrollBar.state.left;
+                bar.residual = (scrollPanelWidth - this.hScrollBar.state.left - this.hScrollBar.state.width);
+                bar.width = this.hScrollBar.state.width;
+                process = bar.scrolled/(scrollPanelWidth - bar.width);
+                bar.name = "hBar";
+                content.name = "content";
+                this.$emit('hscroll', bar, content, process);
             },
             listenVBarDrag: function() {
                 var vm = this;
@@ -555,7 +570,7 @@
                 default: function () {
                     return {
                         vBar: {
-
+                            
                         },
                         hBar: {
 
@@ -572,13 +587,7 @@
             },
             accuracy: {
                 default: 5
-            },
-            keepVbarShow: {
-                default: false
-            },
-            keepHbarShow: {
-                default: false
-            }
+            } 
         }
     }
 
