@@ -10,7 +10,7 @@ It's inpired by jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)
 
 ## Demo
 
-There are 15 demos on the website that can absolutely meet your daily need on developing website: [demo](https://wangyi7099.github.io/vuescroll/)
+There are 15 demos on the website that can absolutely meet your daily need on developing website: [demo](http://www.wangyi7099.com/vuescroll/)
 
 ## UseAge
 
