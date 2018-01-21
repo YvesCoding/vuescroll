@@ -132,4 +132,4 @@ vscroll/hscroll|`bar,content,process`|bar is the information about scrollbar, an
 
 ## Install
 
-**vuescroll under Welecome pr or issue**
+**vuescroll under pr or issue is welcome**
