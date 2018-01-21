@@ -123,7 +123,7 @@ width|`5px`|**The scrollbar width**
 pos|`left(vBar)/bottom/(hBar)`|**The position of vBar or hBar**
 deltaY/deltaX|`35`|**The distance you scroll the scrollbar each time**
 keepShow|false|**Whether the scrollbar is keep show or not**
-
+opacity|1|**The scrollbar's opacity when it is showing**
 ### The event of **vuescroll**
 
 event|params|description

@@ -11,88 +11,88 @@
           max-width: 100%;
           overflow: hidden;
       }
-      #vuescroll {
-          
-      }
       .card__media__content {
           max-width: 100%;
+          background: #fff;
       }
       .base-demo {
-        background: linear-gradient(to top right, #fff, #556f92);
-      }
+         background: #fff;
+         color: #000;
+       }
+    
       /* y-overflow */
       .demo1 { 
-        height: 1000px;
+        height: 100%;
         width: 100%;
       }
       /* x-overflow */
       .demo2 {   
-        height: 200px;
-        width: 1000px;
+        height: 100%;
+        width: 1200px;
       }
       /* both x,y overflow */
       .demo3 {
+        height: 200px;
         width: 1000px;
-        height: 1000px;
       }
       /* keep showing hBar */
       .demo4 {
-        height: 1000px;
+        height: 200px;
         width: 1000px;
       }
       /* keep showing vBar */
       .demo5 {
-        height: 1000px;
+        height: 200px;
         width: 1000px;
       }
       /* keep showing all bars */
       .demo6 {
-        height: 1000px;
+        height: 200px;
         width: 1000px;
       }
       /* customize deltaX*/
       .demo7 {
-        height: 1000px;
+        height: 200px;
         width: 1000px;
       }
       /* customize deltaY*/
       .demo8 {
-        height: 1000px;
+        height: 200px;
         width: 1000px;
       }
        /* customize deltaX and deltaY*/
        .demo9 {
-        height: 1000px;
+        height: 200px;
         width: 1000px;
       }
       /* detect hBar scroll */
       .demo10 {
-        height: 1000px;
-        width: 1000px;
+        height: 200px;
+        width: 1200px;
       }
       /* detect vBar scroll */
       .demo11 {
-        height: 1000px;
-        width: 1000px;
+        height: 100%;
+        width: 100%;
       }
-      /* hBar is on the right */
+      /* vBar is on the right */
       .demo12 {
-        height: 1000px;
-        width: 1000px;
+        height: 100%;
+        width: 100%;
       }
-      /* vBar is on the top */
+      /* hBar is on the top */
       .demo13 {
-        height: 1000px;
-        width: 1000px;
+        height: 200px;
+        width: 1200px;
       }
       /* hBar is on the right and  vBar is on the top */
       .demo14 {
-        height: 1000px;
+        height: 200px;
         width: 1000px;
       }
        /* set the scrollbar's color and width  */
        .demo15 {
-        height: 1000px;
+        height: 200px;
         width: 1000px;
       }
   </style>
@@ -111,7 +111,7 @@
                     <v-flex xs12>
                             <h2>Vuescroll Demo</h2> 
                     </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                     <v-card dark color="purple">
                         <v-card-media  height="200px">
                             <vue-scroll
@@ -131,7 +131,7 @@
                         </v-card-title>
                     </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                         <v-card-media  height="200px">
                             <vue-scroll
@@ -151,7 +151,7 @@
                         </v-card-title>
                     </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -171,7 +171,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -191,7 +191,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -211,7 +211,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -231,7 +231,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -251,7 +251,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -271,7 +271,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -291,7 +291,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -314,7 +314,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -337,7 +337,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -357,7 +357,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -377,7 +377,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -397,7 +397,7 @@
                                 </v-card-title>
                             </v-card>
                 </v-flex>
-                <v-flex xs4 >
+                <v-flex md4 xs12 >
                         <v-card dark color="purple">
                                 <v-card-media  height="200px">
                                     <vue-scroll
@@ -432,93 +432,159 @@
   <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
   <script src="./vuescroll.js"></script>
   <script>
-var demo1 = {
 
-};
-var demo2 = {
+var globarScollbarConfig = {
+    opacity: '0.4',
+    background: 'RGB(0, 0, 0)'
+}
 
-};
-var demo3 = {
+var demo1 = { 
+    vBar: globarScollbarConfig,
+    hBar: globarScollbarConfig
+ };
 
+var demo2 = { 
+    vBar: globarScollbarConfig,
+    hBar: globarScollbarConfig
+ };
+
+var demo3 = { 
+    vBar: globarScollbarConfig,
+    hBar: globarScollbarConfig 
 };
+
 var demo4 = {
     hBar: {
-        keepShow: true
-    }
+        keepShow: true,
+        opacity: '0.4',
+        background: 'RGB(0, 0, 0)'
+    },
+    vBar: globarScollbarConfig
 };
+
 var demo5 = {
     vBar: {
+        opacity: '0.4',
+        background: 'RGB(0, 0, 0)',
         keepShow: true
-    }
+    },
+    hBar: globarScollbarConfig
 };
 var demo6 = {
     vBar: {
+        opacity: '0.4',
+        background: 'RGB(0, 0, 0)',
         keepShow: true
     },
     hBar: {
+        opacity: '0.4',
+        background: 'RGB(0, 0, 0)',
         keepShow: true
     }
 };
 var demo7 = {
     hBar: {
+        opacity: '0.4',
+        background: 'RGB(0, 0, 0)',
         deltaX: 100
-    }
+    },
+    vBar: globarScollbarConfig
 };
 var demo8 = {
     vBar: {
+        opacity: '0.4',
+        background: 'RGB(0, 0, 0)',
         deltaY: 100
-    }
+    },
+    hBar: globarScollbarConfig
 };
 var demo9 = {
     hBar: {
+        opacity: '0.4',
+        background: 'RGB(0, 0, 0)',
         deltaX: 100
     },
     vBar: {
+        opacity: '0.4',
+        background: 'RGB(0, 0, 0)',
         deltaY: 100
     }
 };
 var demo10 = {
-
+    vBar: globarScollbarConfig,
+    hBar: globarScollbarConfig
 };
 var demo11 = {
-
+    vBar: globarScollbarConfig,
+    hBar: globarScollbarConfig
 };
 var demo12 = { 
         vBar: {
-            pos: 'right',
-            keepShow: true
+            keepShow: true,
+            opacity: '0.4',
+            background: 'RGB(0, 0, 0)',
+            deltaX: 100,
+            pos: 'right'
+        },
+        hBar: {
+            opacity: '0.4',
+            background: 'RGB(0, 0, 0)',
+            deltaX: 100
         }
 };
 var demo13 = {
         hBar: {
+            opacity: '0.4',
+            background: 'RGB(0, 0, 0)',
             pos:'bottom',
             keepShow: true
-        }
+        },
+        vBar: globarScollbarConfig
 };
 var demo14 = {
         hBar: {
+            opacity: '0.4',
+            background: 'RGB(0, 0, 0)',
             pos: 'bottom',
             keepShow: true
         },
         vBar: {
+            opacity: '0.4',
+            background: 'RGB(0, 0, 0)',
             pos: 'right',
             keepShow: true
         }
 };
 var demo15 = {
         hBar: {
+            opacity: '0.4',
             pos: 'bottom',
             keepShow: true,
             width: '10px',
-            background: '#7b1fa2'
+            background: 'RGB(0, 0, 255)'
         },
         vBar: {
+            opacity: '0.4',
             pos: 'right',
             keepShow: true,
             width: '10px',
             background: '#b388ff'
         }
 };
+
+var baseDemoContent = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed diam sem, imperdiet at mollis vestibulum, bibendum id purus. Aliquam molestie, leo sed molestie condimentum, massa enim lobortis massa, in vulputate diam lorem quis justo. Nullam nec dignissim mi. In non varius nibh. Proin et eros nisi, eu vulputate libero. Suspendisse potenti. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis ultricies augue id risus dapibus blandit.
+Integer malesuada molestie dolor sit amet viverra. Mauris nec urna lorem. Integer commodo feugiat ligula eget fermentum. In in tellus a risus convallis pellentesque. Cras non faucibus est. Morbi sagittis risus mollis nisl mollis ac mattis mi volutpat. Vivamus ac rutrum elit. Suspendisse semper orci vitae sapien sollicitudin mattis.
+Integer malesuada molestie dolor sit amet viverra. Mauris nec urna lorem. Integer commodo feugiat ligula eget fermentum. In in tellus a risus convallis pellentesque. Cras non faucibus est. Morbi sagittis risus mollis nisl mollis ac mattis mi volutpat. Vivamus ac rutrum elit. Suspendisse semper orci vitae sapien sollicitudin mattis.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed diam sem, imperdiet at mollis vestibulum, bibendum id purus. Aliquam molestie, leo sed molestie condimentum, massa enim lobortis massa, in vulputate diam lorem quis justo. Nullam nec dignissim mi. In non varius nibh. Proin et eros nisi, eu vulputate libero. Suspendisse potenti. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis ultricies augue id risus dapibus blandit.`
+
+
+// set context text
+var baseDemo = document.getElementsByClassName('base-demo')
+
+for(var i = 0; i < baseDemo.length; i++) {
+    baseDemo[i].textContent = baseDemoContent;
+}
+
 new Vue({ 
     el: '#vuescroll',
     data:{

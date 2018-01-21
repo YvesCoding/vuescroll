@@ -199,7 +199,8 @@
                         width: '5px',
                         pos:'',
                         deltaY: 30,
-                        keepShow: false
+                        keepShow: false,
+                        opacity: 1
                     },
                     state: {
                         top: 0,
@@ -216,7 +217,8 @@
                         height: '5px',
                         deltaX: 30,
                         pos:'',
-                        keepShow: false
+                        keepShow: false,
+                        opacity: 1
                     },
                     state: {
                         left: 0,
@@ -393,7 +395,7 @@
                     if ((this.vScrollBar.state.height = temp = this.getVBarHeight(deltaY))) {
                         this.vScrollBar.state.top = this.resizeVBarTop(temp);
                         this.vScrollBar.state.height = temp.height;
-                        this.vScrollBar.state.opacity = 1;
+                        this.vScrollBar.state.opacity = this.vScrollBar.ops.opacity;
                     }
                 }
             },
@@ -407,7 +409,7 @@
                     if ((this.hScrollBar.state.width = temp = this.getHBarWidth(deltaX))) {
                         this.hScrollBar.state.left = this.resizeHBarLeft(temp);
                         this.hScrollBar.state.width = temp.width;
-                        this.hScrollBar.state.opacity = 1;
+                        this.hScrollBar.state.opacity = this.hScrollBar.ops.opacity;
                     }
                 }
             },
