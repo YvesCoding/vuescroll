@@ -132,4 +132,4 @@ vscroll/hscroll|`bar,content,process`|bar is the information about scrollbar, an
 
 ## Liscence
 
-**vuescroll under MIT liscence , pr or issue is welcome**
+**vuescroll is under MIT liscence , pr or issue is welcome**
