@@ -1,21 +1,27 @@
-# vuescroll V2.5.0
-> Introduction
+# vuescroll - A virtual scrollbar based on [vue.js](https://github.com/vuejs/vue) 2.X
 
-vuescroll is a very easy but powerful virtuall scrollBar based on [vue.js](https://github.com/vuejs/vue),which supports **vertical** scroll and **horizontal** scroll .
+## What Is Vuescroll ?
 
-> Demo
+vuescroll is a virtul scrollbar , that you can substitute vuescroll for native scrollbar, a virtual is beautiful that makes you website is unique compare with others that use the native scrollbar :). 
 
-[Demo](https://wangyi7099.github.io/vuescroll/)
+## Inspire
 
-> UseAge
+It's inpired by jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll).
 
-If you are in a browser envoriment. You shoule include vuescroll.js and vue.js by script:
+## Demo
+
+There are 15 demos on the website that can meet your daily need on developing website: [demo](https://wangyi7099.github.io/vuescroll/)
+
+## UseAge
+
+If you are in a browser envoriment. Include vuescroll.js and vue.js by script tag:
+### Install
 ```html
  <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
  <script src="js/vuescroll.js" type="text/javascript" charset="utf-8"></script>
 
 ```
-Or if you are in the nodejs envoriment:
+Or if you are in a nodejs envoriment:
 **try to install it by npm**
 ```bash
 npm i vuescroll -S
@@ -28,7 +34,7 @@ Vue.use(vuesrcoll); // install the plugin
 ```
 What you all need to do is warpping the **content** you want to be scrolled inside its parent dom, and needn't write any other configrations, vuescroll has its default config. And the below is the detailed config(**You definitely can omit all the conifigs.**)
 
-> HTML
+### HTML
 ```html
 <div id="scroll" >
 	<div class="scroll">
@@ -44,7 +50,7 @@ What you all need to do is warpping the **content** you want to be scrolled insi
 </div>
 </div> 
 ```
->JavaScript
+### JavaScript
 ```javascript
 var vm = new Vue({
 	el:'#scroll',
@@ -73,7 +79,7 @@ var vm = new Vue({
 	}
 });
 ```
-> CSS
+### Css
 ```css
 <style>
 		#scroll{
@@ -94,11 +100,11 @@ var vm = new Vue({
 	</style>
 ```
 
-> The Final Effect
+### Running Result
 
 ![pic](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/vuescroll.gif?raw=true)
 
-> Options
+## Options
 
 These are the detailed options you may use in **vuescroll**
 
@@ -124,6 +130,6 @@ event|params|description
 -----|------------|----
 vscroll/hscroll|`bar,content,process`|bar is the information about scrollbar, and content the the information about the scrollcontent, and the process show the progress of the scrolling.
 
-> End
+## Install
 
-**vuescroll under MIT by wangyi7099**
+**vuescroll under Welecome pr or issue**
