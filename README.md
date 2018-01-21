@@ -2,7 +2,7 @@
 
 ## What Is Vuescroll ?
 
-vuescroll is a virtul scrollbar , that you can substitute vuescroll for native scrollbar, a virtual is beautiful that makes you website is unique compare with others that use the native scrollbar :). 
+vuescroll is a virtul scrollbar , that you can substitute vuescroll for native scrollbar, a virtual scrollbar is beautiful and easily controll and can make you website is unique , which compares with others that use the native scrollbar :). 
 
 ## Inspire
 
@@ -10,7 +10,7 @@ It's inpired by jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)
 
 ## Demo
 
-There are 15 demos on the website that can meet your daily need on developing website: [demo](https://wangyi7099.github.io/vuescroll/)
+There are 15 demos on the website that can absolutely meet your daily need on developing website: [demo](https://wangyi7099.github.io/vuescroll/)
 
 ## UseAge
 
@@ -106,7 +106,7 @@ var vm = new Vue({
 
 ## Options
 
-These are the detailed options you may use in **vuescroll**
+### These are the detailed options you may use in **vuescroll**
 
 option|defaultValue|description
 -----|------------|----
@@ -114,7 +114,7 @@ ops|`{vBar:{},hBar:{}}`| **The configs of vBar and hBar**
 scrollContentStyle|`{}`| **The style config object of scrollContent e.g. {height:'100%'}**
 accuracy|`5`| **The accuracy determins that the scrollbar will show or not. e.g. If the scrollPanel and scrollContent has a difference of less than 5 px,the scrollbar will not show.**
 
-The `vBar/hBar` configurations
+### The `vBar/hBar` configurations
 
 vBar/hBar|defaultValue|description
 -----|------------|----
@@ -124,7 +124,7 @@ pos|`left(vBar)/bottom/(hBar)`|**The position of vBar or hBar**
 deltaY/deltaX|`35`|**The distance you scroll the scrollbar each time**
 keepShow|false|**Whether the scrollbar is keep show or not**
 
-The event of **vuescroll**
+### The event of **vuescroll**
 
 event|params|description
 -----|------------|----
