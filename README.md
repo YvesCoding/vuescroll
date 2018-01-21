@@ -2,7 +2,7 @@
 
 ## What Is Vuescroll ?
 
-vuescroll is a virtul scrollbar , that you can substitute vuescroll for native scrollbar, a virtual scrollbar is beautiful and easily controll and can make you website is unique , which compares with others that use the native scrollbar :). 
+vuescroll is a virtual scrollbar , that you can substitute vuescroll for native scrollbar, a virtual scrollbar is beautiful and easily control and can make you website is unique , which compares with others that use the native scrollbar :).
 
 ## Inspire
 
