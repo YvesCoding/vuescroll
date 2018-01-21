@@ -130,6 +130,6 @@ event|params|description
 -----|------------|----
 vscroll/hscroll|`bar,content,process`|bar is the information about scrollbar, and content the the information about the scrollcontent, and the process show the progress of the scrolling.
 
-## End
+## Liscence
 
-**vuescroll under MIT , pr or issue is welcome**
+**vuescroll under MIT liscence , pr or issue is welcome**
