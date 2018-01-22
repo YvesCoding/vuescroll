@@ -1,8 +1,9 @@
 /*
- * vuescroll 2.6 
- * @author:wangyi
- * @date 2018 1.15
- * inspired by slimscroll
+ * name: vuescroll 2.7.0 
+ * author: wangyi
+ * update date: 22 Jan. 2018
+ * description: A virtual scrollbar bar based on vue.js 2.0 inspired by slimscroll
+ * license: MIT
  */
 (function(global, factory) {
     typeof define === 'function' && define.amd ? define(factory) : typeof module !== 'undefined' ? module.exports = factory() : (global.Vue.use(factory()));
@@ -521,7 +522,12 @@
                     y = _y;
                 }
                 function t(e) {
-                    //console.log(e);
+                    var deltaY = {
+                        deltaY: vm.vScrollBar.ops.deltaY
+                    };
+                    if(!vm.getVBarHeight(deltaY)) {
+                        return;
+                    }
                     vm.mousedown = true;
                     y = e.pageY;
                     vm.showVBar();
@@ -550,7 +556,12 @@
                     x = _x;
                 }
                 function t(e) {
-                    //console.log(e);
+                    var deltaX = {
+                        deltaX: vm.hScrollBar.ops.deltaX
+                    };
+                    if(!vm.getHBarWidth(deltaX)) {
+                        return;
+                    }
                     vm.mousedown = true;
                     x = e.pageX;
                     vm.showHBar();
@@ -593,6 +604,15 @@
                     }
                 }
                 function t(e) {
+                    var deltaY = {
+                        deltaY: vm.vScrollBar.ops.deltaY
+                    };
+                    var deltaX = {
+                        deltaX: vm.hScrollBar.ops.deltaX
+                    };
+                    if(!vm.getHBarWidth(deltaX) && !vm.getVBarHeight(deltaY)) {
+                        return;
+                    }
                     if(e.touches.length) {
                         e.stopPropagation();
                         var touch = e.touches[0];

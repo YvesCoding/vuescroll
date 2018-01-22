@@ -1,8 +1,9 @@
 /*
- * vuescroll 2.6
- * @author:wangyi
- * @date 2018 1.15
- * inspired by slimscroll
+ * name: vuescroll 2.7.0 
+ * author: wangyi
+ * update date: 22 Jan. 2018
+ * description: A virtual scrollbar bar based on vue.js 2.0 inspired by slimscroll
+ * license: MIT
  */
 (function(global, factory) {
     typeof define === 'function' && define.amd ? define(factory) : typeof module !== 'undefined' ? module.exports = factory() : (global.Vue.use(factory()));
@@ -230,6 +231,7 @@
                 },
                 listeners: [],
                 mousedown: false,
+                beginTouch: false,
                 isMouseLeavePanel: true
             }
         },
@@ -290,6 +292,7 @@
             this.mergeAll();
             this.listenVBarDrag();
             this.listenHBarDrag();
+            this.listenContentTouch();
             // showbar at init time
             this.showBar();
         },
@@ -519,7 +522,12 @@
                     y = _y;
                 }
                 function t(e) {
-                    //console.log(e);
+                    var deltaY = {
+                        deltaY: vm.vScrollBar.ops.deltaY
+                    };
+                    if(!vm.getVBarHeight(deltaY)) {
+                        return;
+                    }
                     vm.mousedown = true;
                     y = e.pageY;
                     vm.showVBar();
@@ -548,7 +556,12 @@
                     x = _x;
                 }
                 function t(e) {
-                    //console.log(e);
+                    var deltaX = {
+                        deltaX: vm.hScrollBar.ops.deltaX
+                    };
+                    if(!vm.getHBarWidth(deltaX)) {
+                        return;
+                    }
                     vm.mousedown = true;
                     x = e.pageX;
                     vm.showHBar();
@@ -565,7 +578,69 @@
                     type: "mousedown"
                 });
                 vm.hScrollBar.el.addEventListener('mousedown', t);
+            },
+            listenContentTouch: function() {
+                var vm = this;
+                var content = this.scrollContent.el;
+                var x, y;
+                var _x, _y;
+                function move(e) {
+                    if(e.touches.length) {
+                        var touch = e.touches[0];
+                        _x = touch.pageX;
+                        _y = touch.pageY;
+                        var _delta = void 0;
+                        var _deltaX = _x - x;
+                        var _deltaY = _y - y;
+                        if(Math.abs(_deltaX) > Math.abs(_deltaY)) {
+                            _delta = _deltaX;
+                            vm.scrollHBar(_delta > 0 ? -1 : 1, Math.abs(_delta / vm.hScrollBar.innerDeltaX));
+                        } else if(Math.abs(_deltaX) < Math.abs(_deltaY)){
+                            _delta = _deltaY;
+                            vm.scrollVBar(_delta > 0 ? -1 : 1, Math.abs(_delta / vm.vScrollBar.innerDeltaY));
+                        }
+                        x = _x;
+                        y = _y;
+                    }
+                }
+                function t(e) {
+                    var deltaY = {
+                        deltaY: vm.vScrollBar.ops.deltaY
+                    };
+                    var deltaX = {
+                        deltaX: vm.hScrollBar.ops.deltaX
+                    };
+                    if(!vm.getHBarWidth(deltaX) && !vm.getVBarHeight(deltaY)) {
+                        return;
+                    }
+                    if(e.touches.length) {
+                        e.stopPropagation();
+                        var touch = e.touches[0];
+                        vm.mousedown = true;
+                        x = touch.pageX;
+                        y = touch.pageY;
+                        vm.showBar();
+                        content.addEventListener('touchmove', move);
+                        content.addEventListener('touchend', function(e) {
+                            vm.mousedown = false;
+                            vm.hideBar();
+                            content.removeEventListener('touchmove', move);
+                        });
+                    }
+                }
+                content.addEventListener('touchstart', t);
+                this.listeners.push({
+                    dom: content,
+                    event: t,
+                    type: "touchstart"
+                });
             }
+        },
+        beforeDestroy() {
+            // remove the registryed event.
+            this.listeners.forEach(function(item) {
+                item.dom.removeEventListener(item.event, item.type);
+            });
         },
         props: {
             ops:{
