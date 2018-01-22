@@ -1,8 +1,22 @@
 # vuescroll - A virtual scrollbar based on [vue.js](https://github.com/vuejs/vue) 2.X
 
-## What Is Vuescroll ?
+- [What Is Vuescroll](#what-is-vuescroll)
+- [Inspire](#inspire)
+- [Demo](#demo)
+- [UseAge](#useage)
+    - [Install](#install)
+	- [HTML](#html)
+	- [JavaScript](#javascript)
+	- [Css](#css)
+	- [Running Result](#running-result)
+- [Options](#options)
+    - [Vuescroll Options](#vuescroll-options)
+    - [Scrollbar Options](#scrollbar-options)
+    - [Event](#event)
+- [Liscence](#liscence)
+## What Is Vuescroll
 
-vuescroll is a virtual scrollbar , that you can substitute vuescroll for native scrollbar, a virtual scrollbar is beautiful and easily control and can make you website is unique , which compares with others that use the native scrollbar :).
+vuescroll is a virtual scrollbar , that you can substitute vuescroll for native scrollbar, a virtual scrollbar is beautiful and easily controlled , it can make you website is unique , which compares with others that use the native scrollbar :).
 
 ## Inspire
 
@@ -12,14 +26,13 @@ It's inpired by jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)
 
 There are 15 demos on the website that can absolutely meet your daily need on developing website: [demo](https://wangyi7099.github.io/vuescroll/)
 
-## UseAge
+## Useage
 
 If you are in a browser envoriment. Include vuescroll.js and vue.js by script tag:
 ### Install
 ```html
  <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
  <script src="js/vuescroll.js" type="text/javascript" charset="utf-8"></script>
-
 ```
 Or if you are in a nodejs envoriment:
 **try to install it by npm**
@@ -106,7 +119,7 @@ var vm = new Vue({
 
 ## Options
 
-### These are the detailed options you may use in **vuescroll**
+### Vuescroll Options
 
 option|defaultValue|description
 -----|------------|----
@@ -114,7 +127,7 @@ ops|`{vBar:{},hBar:{}}`| **The configs of vBar and hBar**
 scrollContentStyle|`{}`| **The style config object of scrollContent e.g. {height:'100%'}**
 accuracy|`5`| **The accuracy determins that the scrollbar will show or not. e.g. If the scrollPanel and scrollContent has a difference of less than 5 px,the scrollbar will not show.**
 
-### The `vBar/hBar` configurations
+### Scrollbar Options
 
 vBar/hBar|defaultValue|description
 -----|------------|----
@@ -124,7 +137,8 @@ pos|`left(vBar)/bottom/(hBar)`|**The position of vBar or hBar**
 deltaY/deltaX|`35`|**The distance you scroll the scrollbar each time**
 keepShow|false|**Whether the scrollbar is keep show or not**
 opacity|1|**The scrollbar's opacity when it is showing**
-### The event of **vuescroll**
+
+### Event
 
 event|params|description
 -----|------------|----
