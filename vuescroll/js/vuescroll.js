@@ -1,5 +1,5 @@
 /*
- * vuescroll 2.5 
+ * vuescroll 2.6
  * @author:wangyi
  * @date 2018 1.15
  * inspired by slimscroll
