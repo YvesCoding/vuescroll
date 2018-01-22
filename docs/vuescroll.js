@@ -594,6 +594,7 @@
                 }
                 function t(e) {
                     if(e.touches.length) {
+                        e.stopPropagation();
                         var touch = e.touches[0];
                         vm.mousedown = true;
                         x = touch.pageX;
