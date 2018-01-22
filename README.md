@@ -5,9 +5,7 @@
 - [Demo](#demo)
 - [UseAge](#useage)
     - [Install](#install)
-	- [HTML](#html)
-	- [JavaScript](#javascript)
-	- [Css](#css)
+	- [DemoCode](#democode)
 	- [Running Result](#running-result)
 - [Options](#options)
     - [Vuescroll Options](#vuescroll-options)
@@ -31,8 +29,8 @@ There are 15 demos on the website that can absolutely meet your daily need on de
 If you are in a browser envoriment. Include vuescroll.js and vue.js by script tag:
 ### Install
 ```html
- <script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
- <script src="js/vuescroll.js" type="text/javascript" charset="utf-8"></script>
+ <script src="https://unpkg.com/vue" type="text/javascript" charset="utf-8"></script>
+ <script src="https://unpkg.com/vuescroll" type="text/javascript" charset="utf-8"></script>
 ```
 Or if you are in a nodejs envoriment:
 **try to install it by npm**
@@ -43,79 +41,89 @@ And then, `import` it in js.
 ```javascript
 import Vue from 'vue'
 import vuesrcoll  from 'vuesroll';
+
 Vue.use(vuesrcoll); // install the plugin
 ```
 What you all need to do is warpping the **content** you want to be scrolled inside its parent dom, and needn't write any other configrations, vuescroll has its default config. And the below is the detailed config(**You definitely can omit all the conifigs.**)
 
-### HTML
+### DemoCode
 ```html
-<div id="scroll" >
-	<div class="scroll">
-	<vue-scroll  
-	:scroll-content-style="{height:'100%'}" 
-	:ops="ops"
-	@hscroll="detectHBar"
-	@vscroll="detectVBar"
-	>
-		<div class="content">
+	<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>Document</title>
+		<script src="https://unpkg.com/vue"></script>
+		<script src="https://unpkg.com/vuescroll"></script>
+		<style>
+			#app{
+				display: flex;
+				flex-direction: column;
+				width: 100%;
+			}
+			.scroll{
+				width: 200px;
+				height: 200px;
+				overflow: hidden;
+			}
+			.content{
+				width: 3155px;
+				height: 3155px;
+				background: linear-gradient(to top right, #000, #f00 50%, #090);
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app" >
+			<div class="scroll">
+				<vue-scroll  
+				:scroll-content-style="{height:'100%'}" 
+				:ops="ops"
+				@hscroll="detectHBar"
+				@vscroll="detectVBar"
+				>
+					<div class="content">
+					</div>
+				</vue-scroll>
+			</div>
 		</div>
-	</vue-scroll>
-</div>
-</div> 
-```
-### JavaScript
-```javascript
-var vm = new Vue({
-	el:'#scroll',
-	data:{
-		ops:{
-			vBar:{
-				background:"#cecece",
-				width:'5px',
-				deltaY:'100'
-			},
-			hBar:{
-				background:"#000",
-				width:'5px',
-				deltaY:'100'
-			}	
-		}
-	},
-	methods: {
-		// detect the scrollbar scrolling
-		detectVBar(bar, content, process) { 
-			console.log(bar ,content,  process);
-		},
-		detectHBar(bar, content,  process) {
-			console.log(bar ,content,  process);
-		}
-	}
-});
-```
-### Css
-```css
-<style>
-		#scroll{
-			display: flex;
-			flex-direction: column;
-			width: 100%;
-		}
-		.scroll{
-			width: 200px;
-			height: 200px;
-			overflow: hidden;
-		}
-		.content{
-			width: 3155px;
-			height: 3155px;
-			background: linear-gradient(to top right, #000, #f00 50%, #090);
-		}
-	</style>
-```
+		<script>
+			var vm = new Vue({
+				el:'#app',
+				data:{
+					ops:{
+						vBar:{
+							background:"#cecece",
+							width:'5px',
+							deltaY:'100'
+						},
+						hBar:{
+							background:"#000",
+							width:'5px',
+							deltaY:'100'
+						}	
+					}
+				},
+				methods: {
+					// detect the scrollbar scrolling
+					detectVBar(bar, content, process) { 
+						console.log(bar ,content,  process);
+					},
+					detectHBar(bar, content,  process) {
+						console.log(bar ,content,  process);
+					}
+				}
+			});
+		</script>
+	</body>
+</html>
+``` 
 
 ### Running Result
 
-![pic](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/vuescroll.gif?raw=true)
+![pic](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/vuescroll1.gif?raw=true)
 
 ## Options
 

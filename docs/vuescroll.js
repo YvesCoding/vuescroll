@@ -230,6 +230,7 @@
                 },
                 listeners: [],
                 mousedown: false,
+                beginTouch: false,
                 isMouseLeavePanel: true
             }
         },
@@ -290,6 +291,7 @@
             this.mergeAll();
             this.listenVBarDrag();
             this.listenHBarDrag();
+            this.listenContentTouch();
             // showbar at init time
             this.showBar();
         },
@@ -565,7 +567,59 @@
                     type: "mousedown"
                 });
                 vm.hScrollBar.el.addEventListener('mousedown', t);
+            },
+            listenContentTouch: function() {
+                var vm = this;
+                var content = this.scrollContent.el;
+                var x, y;
+                var _x, _y;
+                function move(e) {
+                    if(e.touches.length) {
+                        var touch = e.touches[0];
+                        _x = touch.pageX;
+                        _y = touch.pageY;
+                        var _delta = void 0;
+                        var _deltaX = _x - x;
+                        var _deltaY = _y - y;
+                        if(Math.abs(_deltaX) > Math.abs(_deltaY)) {
+                            _delta = _deltaX;
+                            vm.scrollHBar(_delta > 0 ? -1 : 1, Math.abs(_delta / vm.hScrollBar.innerDeltaX));
+                        } else if(Math.abs(_deltaX) < Math.abs(_deltaY)){
+                            _delta = _deltaY;
+                            vm.scrollVBar(_delta > 0 ? -1 : 1, Math.abs(_delta / vm.vScrollBar.innerDeltaY));
+                        }
+                        x = _x;
+                        y = _y;
+                    }
+                }
+                function t(e) {
+                    if(e.touches.length) {
+                        var touch = e.touches[0];
+                        vm.mousedown = true;
+                        x = touch.pageX;
+                        y = touch.pageY;
+                        vm.showBar();
+                        content.addEventListener('touchmove', move);
+                        content.addEventListener('touchend', function(e) {
+                            vm.mousedown = false;
+                            vm.hideBar();
+                            content.removeEventListener('touchmove', move);
+                        });
+                    }
+                }
+                content.addEventListener('touchstart', t);
+                this.listeners.push({
+                    dom: content,
+                    event: t,
+                    type: "touchstart"
+                });
             }
+        },
+        beforeDestroy() {
+            // remove the registryed event.
+            this.listeners.forEach(function(item) {
+                item.dom.removeEventListener(item.event, item.type);
+            });
         },
         props: {
             ops:{
