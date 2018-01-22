@@ -620,7 +620,9 @@ new Vue({
     },
     mounted() {
         this.windowInnerheight = window.innerHeight + 'px';
-        this.windowInnerwidh = window.innerWidth + 'px';
+        if(window.innerWidth < 500) {
+            this.windowInnerwidh = window.innerWidth + 'px';
+        }
     }
 });
   </script>
