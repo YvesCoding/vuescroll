@@ -113,7 +113,7 @@
                     </v-flex>
                 <v-flex md4 xs12 >
                     <v-card dark color="purple">
-                        <v-card-media  height="200px">
+                        <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                             <vue-scroll
                             :ops="demo1"
                             >
@@ -133,7 +133,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                        <v-card-media  height="200px">
+                        <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                             <vue-scroll
                             :ops="demo2"
                             >
@@ -153,7 +153,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo3"
                                     >
@@ -173,7 +173,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo4"
                                     >
@@ -193,7 +193,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo5"
                                     >
@@ -213,7 +213,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo6"
                                     >
@@ -233,7 +233,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo7"
                                     >
@@ -253,7 +253,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo8"
                                     >
@@ -273,7 +273,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo9"
                                     >
@@ -293,7 +293,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo10"
                                     @hscroll="hscroll"
@@ -316,7 +316,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo11"
                                     @vscroll="vscroll"
@@ -339,7 +339,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo12"
                                     >
@@ -359,7 +359,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo13"
                                     >
@@ -379,7 +379,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo14"
                                     >
@@ -399,7 +399,7 @@
                 </v-flex>
                 <v-flex md4 xs12 >
                         <v-card dark color="purple">
-                                <v-card-media  height="200px">
+                                <v-card-media  height="200px" :style="{width: windowInnerwidh}">
                                     <vue-scroll
                                     :ops="demo15"
                                     >
@@ -604,6 +604,7 @@ new Vue({
         demo14,
         demo15,
         windowInnerheight: "",
+        windowInnerwidh: "",
         vBarProcess: 0,
         hBarProcess: 0
     },
@@ -619,6 +620,7 @@ new Vue({
     },
     mounted() {
         this.windowInnerheight = window.innerHeight + 'px';
+        this.windowInnerwidh = window.innerWidth + 'px';
     }
 });
   </script>
