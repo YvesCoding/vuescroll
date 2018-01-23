@@ -1,8 +1,9 @@
 /*
- * name: vuescroll 2.7.1
- * author: wangyi
- * description: A virtual scrollbar bar based on vue.js 2.0 inspired by slimscroll
- * license: MIT
+ * @name: vuescroll 2.7.1
+ * @author: wangyi
+ * @description: A virtual scrollbar bar based on vue.js 2.0 inspired by slimscroll
+ * @license: MIT
+ * @GitHub: https://github.com/wangyi7099/vuescroll
  */
 (function(global, factory) {
     typeof define === 'function' && define.amd ? define(factory) : typeof module !== 'undefined' ? module.exports = factory() : (global.Vue.use(factory()));

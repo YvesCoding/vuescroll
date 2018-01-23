@@ -1,1 +1,5 @@
 node_modules/
+.vscode
+server.js
+package.json
+package-lock.json
