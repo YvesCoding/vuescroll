@@ -45,6 +45,9 @@
                     },
                     mouseleave: function() {
                         vm.$emit('hideBar');
+                    },
+                    mousemove: function () {
+                        vm.$emit('showBar');
                     }
                 }
             }, this.$slots.default);
@@ -621,7 +624,7 @@
         beforeDestroy() {
             // remove the registryed event.
             this.listeners.forEach(function(item) {
-                item.dom.removeEventListener(item.type, item.event);
+                item.dom.removeEventListener(item.event, item.type);
             });
         },
         props: {

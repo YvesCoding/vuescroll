@@ -45,6 +45,9 @@
                     },
                     mouseleave: function() {
                         vm.$emit('hideBar');
+                    },
+                    mousemove: function () {
+                        vm.$emit('showBar');
                     }
                 }
             }, this.$slots.default);
