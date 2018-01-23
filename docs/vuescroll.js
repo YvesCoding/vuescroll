@@ -1,7 +1,6 @@
 /*
- * name: vuescroll 2.7.0 
+ * name: vuescroll 2.7.1
  * author: wangyi
- * update date: 22 Jan. 2018
  * description: A virtual scrollbar bar based on vue.js 2.0 inspired by slimscroll
  * license: MIT
  */
@@ -9,13 +8,23 @@
     typeof define === 'function' && define.amd ? define(factory) : typeof module !== 'undefined' ? module.exports = factory() : (global.Vue.use(factory()));
 }
 )(this, function() {
+    /**
+     * @description return the computed value of a dom
+     * @author wangyi7099
+     * @param {any} dom 
+     * @param {any} property 
+     */
+    function getComputed(dom, property) {
+        return window.getComputedStyle(dom).getPropertyValue(property);
+    }
+
+
 
     var scroll = {
         install: function(Vue) {
             Vue.component(vScrollBar.name, vScrollBar);
             Vue.component(hScrollBar.name, hScrollBar);
             Vue.component(vueScrollPanel.name, vueScrollPanel);
-            Vue.component(vueScrollCon.name, vueScrollCon);
             //vueScroll
             Vue.component(vueScroll.name, vueScroll);
         }
@@ -25,12 +34,10 @@
         name: 'vueScrollPanel',
         render: function(createElement) {
             var vm = this;
+            var style = vm.scrollContentStyle;
+            style.overflow = 'hidden';
             return createElement('div', {
-                style: {
-                    width: '100%',
-                    height: '100%',
-                    overflow: 'hidden'
-                },
+                style: style,
                 class: "vueScrollPanel",
                 on: {
                     mouseenter: function() {
@@ -45,28 +52,13 @@
         props: {
             id: {
                 require: true
-            }
-        }
-    }
-    var vueScrollCon = {
-        name: 'vueScrollCon',
-        render: function(createElement) {
-            var vm = this;
-            //  console.log(this)
-            return createElement('div', {
-                style: vm.scrollContentStyle,
-                class: "vueScrollContent",
-            }, this.$slots.default);
-        },
-        props: {
+            },
             scrollContentStyle: {
-                require: false,
-                default: {
-                    height: '100%'
-                }
+
             }
         }
     }
+    
 
     // vertical scrollBar
     var vScrollBar = {
@@ -188,11 +180,6 @@
                     ops: {
                     }
                 },
-                scrollContent: {
-                    el: "",
-                    ops: {
-                    }
-                },
                 vScrollBar: {
                     el: "",
                     ops: {
@@ -231,7 +218,6 @@
                 },
                 listeners: [],
                 mousedown: false,
-                beginTouch: false,
                 isMouseLeavePanel: true
             }
         },
@@ -259,13 +245,11 @@
                 on: {
                     showBar: vm.showBar,
                     hideBar: vm.hideBar
-                }
-            }, [createElement('vueScrollCon', {
-                props: {
-                    scrollContentStyle: vm.scrollContent.ops
                 },
-                ref: 'vueScrollCon'
-            }, vm.$slots.default)]), createElement('vScrollBar', {
+                props: {
+                    scrollContentStyle: vm.scrollContentStyle
+                }
+            }, vm.$slots.default), createElement('vScrollBar', {
                 props: {
                     ops: vm.vScrollBar.ops,
                     state: vm.vScrollBar.state
@@ -292,21 +276,19 @@
             this.mergeAll();
             this.listenVBarDrag();
             this.listenHBarDrag();
-            this.listenContentTouch();
+            this.listenPanelTouch();
             // showbar at init time
             this.showBar();
         },
         methods: {
             initEl() {
                 this.scrollPanel.el = this.$refs['vueScrollPanel'] && this.$refs['vueScrollPanel'].$el;
-                this.scrollContent.el = this.$refs['vueScrollCon'] && this.$refs['vueScrollCon'].$el;
                 this.vScrollBar.el = this.$refs['vScrollBar'] && this.$refs['vScrollBar'].$el;
                 this.hScrollBar.el = this.$refs['hScrollBar'] && this.$refs['hScrollBar'].$el;
             },
             mergeAll() {
                 this.merge(this.ops.vBar, this.vScrollBar.ops);
                 this.merge(this.ops.hBar, this.hScrollBar.ops);
-                this.merge(this.scrollContentStyle, this.scrollContent.ops, false);
             },
             merge(from, to, check) {
                 for (key in from) {
@@ -319,7 +301,7 @@
             },
             // get the bar height
             getVBarHeight({deltaY}) {
-                var scrollPanelHeight = Math.floor(window.getComputedStyle(this.scrollPanel.el).getPropertyValue("height").replace('px', ""));
+                var scrollPanelHeight = Math.floor(getComputed(this.scrollPanel.el, "height").replace('px', ""));
                 var scrollPanelScrollHeight = Math.floor(this.scrollPanel.el.scrollHeight);
                 // the last times that vertical scrollvar will scroll...
                 var scrollTime = Math.ceil((scrollPanelScrollHeight - scrollPanelHeight) / Math.abs(deltaY));
@@ -339,7 +321,7 @@
                 }
             },
             getHBarWidth({deltaX}) {
-                var scrollPanelWidth = Math.floor(window.getComputedStyle(this.scrollPanel.el).getPropertyValue("width").replace('px', ""));
+                var scrollPanelWidth = Math.floor(getComputed(this.scrollPanel.el, 'width').replace('px', ""));
                 var scrollPanelScrollWidth = Math.floor(this.scrollPanel.el.scrollWidth);
                 // the last times that horizontal scrollbar will scroll...
                 var scrollTime = Math.ceil((scrollPanelScrollWidth - scrollPanelWidth) / Math.abs(deltaX));
@@ -443,7 +425,7 @@
                 // >0 scroll to down  <0 scroll to up
                  
                 var top = this.vScrollBar.state.top;
-                var scrollPanelHeight = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("height").replace('px', "");
+                var scrollPanelHeight = getComputed(this.scrollPanel.el, 'height').replace('px', "");
                 var scrollPanelScrollHeight = this.scrollPanel.el.scrollHeight;
                 var scrollPanelScrollTop = this.scrollPanel.el.scrollTop;
                 var height = this.vScrollBar.state.height;
@@ -479,7 +461,7 @@
                 //  >0 scroll to right  <0 scroll to left
                 
                 var left = this.hScrollBar.state.left;
-                var scrollPanelWidth = window.getComputedStyle(this.scrollPanel.el).getPropertyValue("width").replace('px', "");
+                var scrollPanelWidth = getComputed(this.scrollPanel.el, 'width').replace('px', "");
                 var scrollPanelScrollWidth = this.scrollPanel.el.scrollWidth;
                 var scrollPanelScrollLeft = this.scrollPanel.el.scrollLeft;
                 var width = this.hScrollBar.state.width;
@@ -579,9 +561,9 @@
                 });
                 vm.hScrollBar.el.addEventListener('mousedown', t);
             },
-            listenContentTouch: function() {
+            listenPanelTouch: function() {
                 var vm = this;
-                var content = this.scrollContent.el;
+                var pannel = this.scrollPanel.el;
                 var x, y;
                 var _x, _y;
                 function move(e) {
@@ -620,17 +602,17 @@
                         x = touch.pageX;
                         y = touch.pageY;
                         vm.showBar();
-                        content.addEventListener('touchmove', move);
-                        content.addEventListener('touchend', function(e) {
+                        pannel.addEventListener('touchmove', move);
+                        pannel.addEventListener('touchend', function(e) {
                             vm.mousedown = false;
                             vm.hideBar();
-                            content.removeEventListener('touchmove', move);
+                            pannel.removeEventListener('touchmove', move);
                         });
                     }
                 }
-                content.addEventListener('touchstart', t);
+                pannel.addEventListener('touchstart', t);
                 this.listeners.push({
-                    dom: content,
+                    dom: pannel,
                     event: t,
                     type: "touchstart"
                 });
@@ -658,7 +640,8 @@
             scrollContentStyle: {
                 default:function () {
                     return {
-
+                        width: '100%',
+                        height: '100%'
                     }
                 }
             },
