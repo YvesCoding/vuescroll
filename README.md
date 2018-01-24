@@ -1,7 +1,6 @@
 # vuescroll - A virtual scrollbar based on [vue.js](https://github.com/vuejs/vue) 2.X
 
 - [What Is Vuescroll](#what-is-vuescroll)
-- [Inspire](#inspire)
 - [Demo](#demo)
 - [UseAge](#useage)
     - [Install](#install)
@@ -11,14 +10,11 @@
     - [Vuescroll Options](#vuescroll-options)
     - [Scrollbar Options](#scrollbar-options)
     - [Event](#event)
+- [Inspire](#inspire)
 - [Liscence](#liscence)
 ## What Is Vuescroll
 
 vuescroll is a virtual scrollbar , that you can substitute vuescroll for native scrollbar, a virtual scrollbar is beautiful and easily controlled , it can make you website is unique , which compares with others that use the native scrollbar :).
-
-## Inspire
-
-It's inpired by jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll).
 
 ## Demo
 
@@ -151,7 +147,10 @@ opacity|1|**The scrollbar's opacity when it is showing**
 event|params|description
 -----|------------|----
 vscroll/hscroll|`bar,content,process`|bar is the information about scrollbar, and content the the information about the scrollcontent, and the process show the progress of the scrolling.
+## Inspire
+
+It's inpired by jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll).
 
 ## Liscence
 
-**vuescroll is under MIT liscence , pr or issue is welcome**
+**MIT**
