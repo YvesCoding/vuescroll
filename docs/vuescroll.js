@@ -62,7 +62,7 @@
                 height: '100%',
                 width: vm.ops.width,
                 background: vm.ops.railBackground,
-                opacity: '0.5',
+                opacity: '0.2',
                 borderRadius: '4px'
             };
             // determine the position
@@ -90,7 +90,7 @@
                     default: 'left'
                 },
                 railBackground: {
-                    default: '#a5d6a7'
+                    default: '#fff'
                 }
             }
         }
@@ -170,7 +170,7 @@
                 width: '100%',
                 height: vm.ops.height,
                 background: vm.ops.railBackground,
-                opacity: '0.5',
+                opacity: '0.2',
                 borderRadius: '4px'
             };
             // determine the position
@@ -198,7 +198,7 @@
                     default: 'bottom'
                 },
                 railBackground: {
-                    default: '#a5d6a7'
+                    default: '#fff'
                 }
             }
         }
@@ -280,14 +280,14 @@
                     ops: {
                         width: '5px',
                         pos: 'left',
-                        railBackground: "#a5d6a7"
+                        railBackground: "#fff"
                     }
                 },
                 vScrollbar: {
                     el: "",
                     ops: {
                         width: '5px',
-                        background: '#4caf50',
+                        background: 'hsla(220,4%,58%,.3)',
                         deltaY: 30,
                         keepShow: false,
                         opacity: 1,
@@ -303,14 +303,14 @@
                     ops: {
                         height: '5px',
                         pos: 'bottom',
-                        railBackground: "#a5d6a7"
+                        railBackground: "#fff"
                     }
                 },
                 hScrollbar: {
                     el: "",
                     ops: {
                         height: '5px',
-                        background: '#4caf50',
+                        background: 'hsla(220,4%,58%,.3)',
                         keepShow: false,
                         opacity: 1
                     },

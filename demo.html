@@ -1,33 +1,4 @@
-# vuescroll - A virtual scrollbar based on [vue.js](https://github.com/vuejs/vue) 2.X
-
-- [What Is Vuescroll](#what-is-vuescroll)
-- [Demo](#demo)
-- [UseAge](#useage)ddd
-    - [Install](#install)
-	- [DemoCode](#democode)
-	- [Running Result](#running-result)
-- [Options](#options)
-    - [Vuescroll Options](#vuescroll-options)
-    - [Scrollbar Options](#scrollbar-options)
-    - [Event](#event)
-- [Inspire](#inspire)
-- [Liscence](#liscence)
-## What Is Vuescroll
-
-vuescroll is a virtual scrollbar , that you can substitute vuescroll for native scrollbar, a virtual scrollbar is beautiful and easily controlled , it can make you website is unique , which compares with others that use the native scrollbar :).
-
-> note: V3.0 add the rail component that the component can reach where you click on the rail !
-
-## Demo
-
-There are 15 demos on the website that can absolutely meet your daily need on developing website: [demo](https://wangyi7099.github.io/vuescroll/)
-
-## Useage
-
-If you are in a browser envoriment. Include vuescroll.js and vue.js by script tag:
-### Install
-```html
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -92,49 +63,3 @@ If you are in a browser envoriment. Include vuescroll.js and vue.js by script ta
         </script>
     </body>
 </html>
-``` 
-
-### Running Result
-
-> PC
-
-![Pc](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/PC-DEMO-V3.0.gif?raw=true)
-
-> Moblie
-
-![Mobile](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/MOBILE-DEMO-V3.0.gif?raw=true)
-## Options
-
-### Vuescroll Options
-
-option|defaultValue|description
------|------------|----
-ops|`{vBar:{},hBar:{}}`| **The configs of vBar and hBar**
-scrollContentStyle|`{}`| **The style config object of scrollContent e.g. {height:'100%'}**
-accuracy|`5`| **The accuracy determins that the scrollbar will show or not. e.g. If the scrollPanel and scrollContent has a difference of less than 5 px,the scrollbar will not show.**
-
-### Scrollbar Options
-
-vBar/hBar|defaultValue|description
------|------------|----
-background|`#4caf50`|**Set the scrollbar's background**
-railBackground|`#a5d6a7`|**Set the rail's background**
-width|`5px`|**Set the scrollbar and the rail's width**
-pos|`left(vBar,vRail)/bottom/(hBar, hRail)`|**Set the position of vBar and vRail or hBar and hRail**
-deltaY|`35`|**Set the distance you scroll the vertical scrollbar each time**
-keepShow|false|**Set whether the scrollbars  keep showing or not**
-opacity|1|**Set the scrollbar's opacity when it shows**
-
-### Event
-
-event|params|description
------|------------|----
-vscroll/hscroll|`bar,content,process`|Bar is the information about scrollbar, and content the the information about the scrollcontent, and the process show the progress of the scrolling.
-
-## Inspire
-
-It's inpired by jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll).
-
-## Liscence
-
-**MIT**
