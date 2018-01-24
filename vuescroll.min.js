@@ -1,7 +1,7 @@
 /*
- * @name: vuescroll 2.7.3
+ * @name: vuescroll 2.7.5
  * @author: wangyi
- * @description: A virtual scrollbar bar based on vue.js 2.0 inspired by slimscroll
+ * @description: A virtual scrollbar based on vue.js 2.x inspired by slimscroll
  * @license: MIT
  * @GitHub: https://github.com/wangyi7099/vuescroll
  */
