@@ -119,8 +119,13 @@ What you all need to do is warpping the **content** you want to be scrolled insi
 
 ### Running Result
 
-![pic](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/vuescroll1.gif?raw=true)
+> PC
 
+![Pc](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/vuescroll1.gif?raw=true)
+
+> Moblie
+
+![Mobile](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/mobile.gif?raw=true)
 ## Options
 
 ### Vuescroll Options
