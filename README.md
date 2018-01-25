@@ -2,7 +2,7 @@
 
 - [What Is Vuescroll](#what-is-vuescroll)
 - [Demo](#demo)
-- [UseAge](#useage)ddd
+- [UseAge](#useage)
     - [Install](#install)
 	- [DemoCode](#democode)
 	- [Running Result](#running-result)
@@ -24,8 +24,10 @@ There are 15 demos on the website that can absolutely meet your daily need on de
 
 ## Useage
 
-If you are in a browser envoriment. Include vuescroll.js and vue.js by script tag:
+
 ### Install
+
+If you are in a browser envoriment. Include vuescroll.js and vue.js by script tag:
 ```html
  <!DOCTYPE html>
 <html lang="en">
@@ -93,7 +95,16 @@ If you are in a browser envoriment. Include vuescroll.js and vue.js by script ta
     </body>
 </html>
 ``` 
+Or if you are in the nodejs environment, install it by npm, and use it:
+```bash
+   npm install vuescroll -S
+```
+```javascript
+	import Vue from 'vue'
+	import vuescroll from 'vuescroll'
 
+	Vue.use(vuescroll)
+```
 ### Running Result
 
 > PC
