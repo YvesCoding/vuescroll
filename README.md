@@ -2,10 +2,10 @@
 
 - [What Is Vuescroll](#what-is-vuescroll)
 - [Demo](#demo)
+- [Running Result](#running-result)
 - [UseAge](#useage)
     - [Install](#install)
 	- [DemoCode](#democode)
-	- [Running Result](#running-result)
 - [Options](#options)
     - [Vuescroll Options](#vuescroll-options)
     - [Scrollbar Options](#scrollbar-options)
@@ -14,7 +14,7 @@
 - [Liscence](#liscence)
 ## What Is Vuescroll
 
-vuescroll is a virtual scrollbar , that you can substitute vuescroll for native scrollbar, a virtual scrollbar is beautiful and easily controlled , it can make you website is unique , which compares with others that use the native scrollbar :).
+vuescroll is a virtual scrollbar , that you can substitute vuescroll for native scrollbar, a virtual scrollbar is beautiful and easily controlled , it can make you website is unique , which compares with others that use the native scrollbar :).Vuescroll behaves just like native !
 
 > note: V3.0 add the rail component that the component can reach where you click on the rail !
 
@@ -22,22 +22,46 @@ vuescroll is a virtual scrollbar , that you can substitute vuescroll for native 
 
 There are 15 demos on the website that can absolutely meet your daily need on developing website: [demo](https://wangyi7099.github.io/vuescroll/)
 
-## Useage
+### Running Result
 
+> PC
+
+![Pc](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/PC-V3.1.gif?raw=true)
+
+> Moblie
+
+![Mobile](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/MOBILE-V3.1.gif?raw=true)
+
+## Useage
 
 ### Install
 
 If you are in a browser envoriment. Include vuescroll.js and vue.js by script tag:
 ```html
- <!DOCTYPE html>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vuescroll"></script>
+```
+Or if you are in the nodejs environment, install it by npm, and use it:
+```bash
+   npm install vuescroll -S
+```
+```javascript
+	import Vue from 'vue'
+	import vuescroll from 'vuescroll'
+
+	Vue.use(vuescroll)
+```
+### DemoCode
+```html
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Document</title>
-        <script src="./vue.js"></script>
-        <script src="./vuescroll.js"></script>
+        <script src="https://unpkg.com/vue"></script>
+        <script src="https://unpkg.com/vuescroll"></script>
         <style>
             #app {
                 display: flex;
@@ -72,6 +96,8 @@ If you are in a browser envoriment. Include vuescroll.js and vue.js by script ta
             </div>
         </div>
         <script>
+            Vue.prototype.$vuescrollConfig.hBar.background = "#000";
+            Vue.prototype.$vuescrollConfig.scrollContent.padding = true;
             var vm = new Vue({
                 el: '#app',
                 data: {
@@ -84,10 +110,10 @@ If you are in a browser envoriment. Include vuescroll.js and vue.js by script ta
                 methods: {
                     // detect the scrollbar scrolling
                     detectVBar(bar, content, process) {
-                        console.log(bar, content, process);
+                        // console.log(bar, content, process);
                     },
                     detectHBar(bar, content, process) {
-                        console.log(bar, content, process);
+                        // console.log(bar, content, process);
                     }
                 }
             });
@@ -95,25 +121,6 @@ If you are in a browser envoriment. Include vuescroll.js and vue.js by script ta
     </body>
 </html>
 ``` 
-Or if you are in the nodejs environment, install it by npm, and use it:
-```bash
-   npm install vuescroll -S
-```
-```javascript
-	import Vue from 'vue'
-	import vuescroll from 'vuescroll'
-
-	Vue.use(vuescroll)
-```
-### Running Result
-
-> PC
-
-![Pc](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/PC-DEMO-V3.0.gif?raw=true)
-
-> Moblie
-
-![Mobile](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/MOBILE-DEMO-V3.0.gif?raw=true)
 ## Options
 
 ### Vuescroll Options
@@ -121,7 +128,7 @@ Or if you are in the nodejs environment, install it by npm, and use it:
 option|defaultValue|description
 -----|------------|----
 ops|`{vBar:{},hBar:{}}`| **The configs of vBar and hBar**
-scrollContentStyle|`{}`| **The style config object of scrollContent e.g. {height:'100%'}**
+scrollContentStyle|`{}`| **The style config object of scrollContent e.g. {height:'100%'} or {padding: false},get rid of the padding of the scrollContent**
 accuracy|`5`| **The accuracy determins that the scrollbar will show or not. e.g. If the scrollPanel and scrollContent has a difference of less than 5 px,the scrollbar will not show.**
 
 ### Scrollbar Options
@@ -134,8 +141,8 @@ width|`5px`|**Set the scrollbar and the rail's width**
 pos|`left(vBar,vRail)/bottom/(hBar, hRail)`|**Set the position of vBar and vRail or hBar and hRail**
 deltaY|`35`|**Set the distance you scroll the vertical scrollbar each time**
 keepShow|false|**Set whether the scrollbars  keep showing or not**
-opacity|1|**Set the scrollbar's opacity when it shows**
-
+opacity|1|**Set the scrollbar's  opacity when it shows**
+railOpacity|0.5|**Set the rail's  opacity**
 ### Event
 
 event|params|description
@@ -148,4 +155,4 @@ It's inpired by jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)
 
 ## Liscence
 
-**MIT**
+**MIT** Hope you can enjoy of it.

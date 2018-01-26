@@ -1,5 +1,5 @@
 /*
- * @name: vuescroll 3.0.0
+ * @name: vuescroll 3.1.0
  * @author: wangyi
  * @description: A virtual scrollbar based on vue.js 2.x inspired by slimscroll
  * @license: MIT
@@ -17,9 +17,50 @@
             Vue.component(vScrollbar.name, vScrollbar);
             Vue.component(hRail.name, hRail);
             Vue.component(hScrollbar.name, hScrollbar);
+            Vue.component(vuesSrollContent.name, vuesSrollContent);
             Vue.component(vueScrollPanel.name, vueScrollPanel);
             //vueScroll
             Vue.component(vueScroll.name, vueScroll);
+
+            // registry the globe setting
+            Vue.prototype.$vuescrollConfig = {
+                // 
+                scrollContent: {
+                   height: '100%',
+                   padding: true,
+                   boxSizing: 'border-box'  
+                },
+                // 
+                vRail: {
+                    width: '5px',
+                    pos: 'left',
+                    railBackground: "#a5d6a7",
+                    railOpacity: '0.5'
+                },
+                // 
+                vBar: {
+                    width: '5px',
+                    background: '#4caf50',
+                    deltaY: 30,
+                    keepShow: false,
+                    opacity: 1,
+                    pos: 'left'
+                },
+                // 
+                hRail: {
+                    height: '5px',
+                    pos: 'bottom',
+                    railBackground: "#a5d6a7",
+                    railOpacity: '0.5'
+                },
+                // 
+                hBar: {
+                    height: '5px',
+                    background: '#4caf50',
+                    keepShow: false,
+                    opacity: 1  
+                }
+            }
         }
     };
 
@@ -38,15 +79,36 @@
         name: 'vueScrollPanel',
         render: function(_c) {
             var vm = this;
-            var style = vm.scrollContentStyle;
-            style.overflow = 'hidden';
+            return _c('div', {
+                style: {
+                    overflow: 'scroll',
+                    marginRight: '-17px',
+                    marginBottom: '-17px',
+                    height: 'calc(100% + 17px)'
+                },
+                class: "vueScrollPanel",
+                on: {
+                    scroll: function(e) {
+                        vm.$emit('scrolling', e);
+                    }
+                }
+            }, this.$slots.default);
+        } 
+    }
+
+    // scrollContent
+    var vuesSrollContent = {
+        name: 'vuesSrollContent',
+        render: function(_c) {
+            var vm = this;
+            var style = vm.ops;
             return _c('div', {
                 style: style,
-                class: "vueScrollPanel"
+                class: "vuesSrollContent"
             }, this.$slots.default);
         },
         props: {
-            scrollContentStyle: {
+            ops: {
             }
         }
     }
@@ -62,7 +124,7 @@
                 height: '100%',
                 width: vm.ops.width,
                 background: vm.ops.railBackground,
-                opacity: '0.5',
+                opacity: vm.ops.railOpacity,
                 borderRadius: '4px'
             };
             // determine the position
@@ -91,6 +153,9 @@
                 },
                 railBackground: {
                     default: '#a5d6a7'
+                },
+                opacity: {
+                    default: '0.5'
                 }
             }
         }
@@ -170,7 +235,7 @@
                 width: '100%',
                 height: vm.ops.height,
                 background: vm.ops.railBackground,
-                opacity: '0.5',
+                opacity: vm.ops.railOpacity,
                 borderRadius: '4px'
             };
             // determine the position
@@ -199,6 +264,9 @@
                 },
                 railBackground: {
                     default: '#a5d6a7'
+                },
+                opacity: {
+                    default: '0.5'
                 }
             }
         }
@@ -271,27 +339,23 @@
                 scrollPanel: {
                     el: "",
                     ops: {
-                        paddingLeft: '5px',
-                        paddingBottom: '5px',
-                        boxSizing: 'border-box'
+                        
+                    }
+                },
+                scrollContent: {
+                    ops: {
+                         
                     }
                 },
                 vRail: {
                     ops: {
-                        width: '5px',
-                        pos: 'left',
-                        railBackground: "#a5d6a7"
+                        
                     }
                 },
                 vScrollbar: {
                     el: "",
                     ops: {
-                        width: '5px',
-                        background: '#4caf50',
-                        deltaY: 30,
-                        keepShow: false,
-                        opacity: 1,
-                        pos: 'left'
+                        
                     },
                     state: {
                         top: 0,
@@ -301,18 +365,13 @@
                 },
                 hRail: {
                     ops: {
-                        height: '5px',
-                        pos: 'bottom',
-                        railBackground: "#a5d6a7"
+                        
                     }
                 },
                 hScrollbar: {
                     el: "",
                     ops: {
-                        height: '5px',
-                        background: '#4caf50',
-                        keepShow: false,
-                        opacity: 1
+                         
                     },
                     state: {
                         left: 0,
@@ -333,10 +392,10 @@
                 style: {
                     position: 'relative',
                     height: '100%',
-                    width: '100%'
+                    width: '100%',
+                    overflow: 'hidden'
                 },
                 on: {
-                    wheel: vm.wheel,
                     mouseenter: function() {
                         vm.isMouseLeavePanel = false;
                         vm.showBar();
@@ -352,10 +411,21 @@
                 },
             }, [_c('vueScrollPanel', {
                 ref: 'vueScrollPanel',
-                props: {
-                    scrollContentStyle: vm.scrollContentStyle
+                porps: {
+                    
+                },
+                on: {
+                    scrolling: vm.scroll
                 }
-            }, vm.$slots.default), _c('vRail', {
+            }, 
+            [_c('vuesSrollContent',{
+                props: {
+                    ops: vm.scrollContent.ops
+                }
+            },
+            vm.$slots.default
+            )]
+            ), _c('vRail', {
                 props: {
                     ops: vm.vRail.ops
                 },
@@ -383,6 +453,16 @@
                 ref: "hScrollbar"
             })]);
         },
+        created() {
+            // merge the global config
+            var config = this.$vuescrollConfig;
+
+            this.scrollContent.ops = config.scrollContent
+            this.vRail.ops = config.vRail;
+            this.vScrollbar.ops = config.vBar;
+            this.hRail.ops = config.hRail;
+            this.hScrollbar.ops = config.hBar;
+        },
         mounted() {
             this.initEl();
             this.mergeAll();
@@ -402,19 +482,20 @@
                 this.merge(this.ops.hBar, this.hScrollbar.ops);
                 this.merge(this.ops.vBar, this.vRail.ops);
                 this.merge(this.ops.hBar, this.hRail.ops);
-                this.merge(this.scrollContentStyle, this.scrollPanel.ops);
+                this.merge(this.scrollContentStyle, this.scrollContent.ops, false);
 
-                // extra set the padding px
-                var properties = [] ;
-                var values = [] ;
-                if(this.vRail.ops.pos == 'left') {
-                    properties.push('paddingLeft');
-                } else {
-                    properties.push('paddingRight');
+                // extra set the padding px if true
+                if(this.scrollContent.ops.padding) {
+                    var properties = [] ;
+                    var values = [] ;
+                    if(this.vRail.ops.pos == 'left') {
+                        properties.push('paddingLeft');
+                    } else {
+                        properties.push('paddingRight');
+                    }
+                    values.push(this.vRail.ops.width);
+                    this.scrollContent.ops[properties[0]] = values[0];
                 }
-               
-                values.push(this.vRail.ops.width);
-                this.scrollContentStyle[properties[0]] = values[0];
             },
             merge(from, to, check) {
                 for (key in from) {
@@ -508,14 +589,9 @@
                 }
             },
             // listen wheel scrolling
-            wheel(e) {
-                var vm = this;
-                var pos = e.deltaY > 0 ? 1 : -1;
-                if(Math.abs(e.deltaY) === 0) {
-                    return;
-                }
-                vm.scrollBar(pos * this.vScrollbar.ops.deltaY, 'vScrollbar');
-                e.stopPropagation();
+            scroll(e) {
+                // console.log(e);
+                this.showBar();
             },
             // scroll content and resize bar.
             scrollBar: function(distance, type) {
@@ -554,7 +630,7 @@
                 this.$emit(event, bar, content, process);
             },
             // convert scrollbar's distance to content distance.
-            scrollContent(distance, type) {
+            _scrollContent(distance, type) {
                 var property = type == 'vScrollbar' ? 'height' : 'width';
                 var upperCaseProperty = type == 'vScrollbar' ? 'Height' : 'Width';
                 var scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "");
@@ -567,7 +643,7 @@
                 var coco = type === 'vScrollbar'?'y':'x';
                 var elementInfo = this[type].el.getBoundingClientRect();
                 var delta = e[coco] - elementInfo[coco] - elementInfo.height / 2;
-                this.scrollContent(delta, type);
+                this._scrollContent(delta, type);
             },
             listenBarDrag: function(type) {
                 var vm = this;
@@ -582,7 +658,7 @@
                         now = e[coordinate];
                         var delta = now - pre;
                         vm['show' + bar]();
-                        vm.scrollContent(delta, type);
+                        vm._scrollContent(delta, type);
                         pre = now;
                     }
                     function t(e) {
@@ -608,41 +684,14 @@
             listenPanelTouch: function() {
                 var vm = this;
                 var pannel = this.scrollPanel.el;
-                var x, y;
-                var _x, _y;
-                function move(e) {
-                    if (e.touches.length) {
-                        var touch = e.touches[0];
-                        _x = touch.pageX;
-                        _y = touch.pageY;
-                        var _delta = void 0;
-                        var _deltaX = _x - x;
-                        var _deltaY = _y - y;
-                        if (Math.abs(_deltaX) > Math.abs(_deltaY)) {
-                            _delta = -_deltaX;
-                            vm.scrollBar(_delta, 'hScrollbar');
-                        } else if (Math.abs(_deltaX) < Math.abs(_deltaY)) {
-                            _delta = -_deltaY;
-                            vm.scrollBar(_delta, 'vScrollbar');
-                        }
-                        
-                        x = _x;
-                        y = _y;
-                    }
-                }
                 function t(e) {
                     if (e.touches.length) {
                         e.stopPropagation();
-                        var touch = e.touches[0];
                         vm.mousedown = true;
-                        x = touch.pageX;
-                        y = touch.pageY;
                         vm.showBar();
-                        pannel.addEventListener('touchmove', move);
                         pannel.addEventListener('touchend', function(e) {
                             vm.mousedown = false;
                             vm.hideBar();
-                            pannel.removeEventListener('touchmove', move);
                         });
                     }
                 }
@@ -674,7 +723,6 @@
             scrollContentStyle: {
                 default: function() {
                     return {
-                        width: '100%',
                         height: '100%'
                     }
                 }

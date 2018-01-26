@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Document</title>
-        <script src="./vue.js"></script>
-        <script src="./vuescroll.js"></script>
+        <script src="https://unpkg.com/vue"></script>
+        <script src="https://unpkg.com/vuescroll"></script>
         <style>
             #app {
                 display: flex;
@@ -41,6 +41,8 @@
             </div>
         </div>
         <script>
+            Vue.prototype.$vuescrollConfig.hBar.background = "#000";
+            Vue.prototype.$vuescrollConfig.scrollContent.padding = true;
             var vm = new Vue({
                 el: '#app',
                 data: {
@@ -53,10 +55,10 @@
                 methods: {
                     // detect the scrollbar scrolling
                     detectVBar(bar, content, process) {
-                        console.log(bar, content, process);
+                        // console.log(bar, content, process);
                     },
                     detectHBar(bar, content, process) {
-                        console.log(bar, content, process);
+                        // console.log(bar, content, process);
                     }
                 }
             });
