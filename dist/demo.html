@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>vuescroll demo</title>
+        <script src="./vue.js"></script>
+        <script src="./vuescroll.js"></script>
+        <style>
+            #app {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+            }
+
+            .scroll {
+                width: 300px;
+                height: 200px;
+                overflow: hidden;
+            }
+
+            .content {
+                width: 400px;
+                height: 300px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div class="scroll">
+                <vue-scroll :ops="ops"  ref="vs"   @hscroll="detectHBar" @vscroll="detectVBar">
+                    <div class="content">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed diam sem, imperdiet at mollis vestibulum, bibendum id purus. Aliquam molestie, leo sed molestie condimentum, massa enim lobortis massa, in vulputate diam lorem quis justo. Nullam nec dignissim mi. In non varius nibh. Proin et eros nisi, eu vulputate libero. Suspendisse potenti. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis ultricies augue id risus dapibus blandit.</p>
+                        <p>Integer malesuada molestie dolor sit amet viverra. Mauris nec urna lorem. Integer commodo feugiat ligula eget fermentum. In in tellus a risus convallis pellentesque. Cras non faucibus est. Morbi sagittis risus mollis nisl mollis ac mattis mi volutpat. Vivamus ac rutrum elit. Suspendisse semper orci vitae sapien sollicitudin mattis.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed diam sem, imperdiet at mollis vestibulum, bibendum id purus. Aliquam molestie, leo sed molestie condimentum, massa enim lobortis massa, in vulputate diam lorem quis justo. Nullam nec dignissim mi. In non varius nibh. Proin et eros nisi, eu vulputate libero. Suspendisse potenti. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Duis ultricies augue id risus dapibus blandit.</p>
+                    </div>
+                </vue-scroll>
+            </div>
+             
+            <input type="radio" id="one" value="right" v-model="ops.vRail.pos">
+            <label for="one">One</label>
+            <br>
+            <input type="radio" id="two" value="left" v-model="ops.vRail.pos">
+            <label for="two">Two</label>
+            <button @click="test">
+                test
+            </button>
+            <br>
+         </div>
+         
+        <script>
+          
+            var vm = new Vue({
+                el: '#app',
+                data: {
+                    ops: {
+                        vBar: {
+                            deltaY: 100
+                             
+                        },
+                        hBar: {
+                           
+                        },
+                        vRail: {
+                            pos:'right'
+                        },
+                        scrollContent: {
+                            padding: true
+                        }
+                    } 
+                },
+                methods: {
+                    test() {
+                        let el = vm.$refs['vs'].$el;
+                        trigger(el, 'mouseenter');
+                        this.$nextTick(() => {
+                            let op = vm.$refs['vs'].vScrollbar.state.opacity;
+                            console.log(op);
+                        })
+                    },
+                    // detect the scrollbar scrolling
+                    detectVBar(bar, content, process) {
+                         console.log(bar, content, process);
+                    },
+                    detectHBar(bar, content, process) {
+                         console.log(bar, content, process);
+                    },
+                    f() {
+                        this.$forceUpdate();
+                    }
+                }
+            });
+            function trigger(elm, name, ...opts) {
+    let eventName;
+  
+    if (/^mouse|click/.test(name)) {
+      eventName = 'MouseEvents';
+    } else if (/^key/.test(name)) {
+      eventName = 'KeyboardEvent';
+    } else {
+      eventName = 'HTMLEvents';
+    }
+    const evt = document.createEvent(eventName);
+  
+    evt.initEvent(name, ...opts);
+    elm.dispatchEvent
+      ? elm.dispatchEvent(evt)
+      : elm.fireEvent('on' + name, evt);
+  
+    return elm;
+  };
+  let dom = document.createElement('div');
+  dom.style.width = '100px';
+  dom.style.height = '100px';
+  console.log(window.getComputedStyle(dom).getPropertyValue('height'));
+  document.body.appendChild(dom);
+  console.log(window.getComputedStyle(dom).getPropertyValue('height'));
+
+        </script>
+    </body>
+</html>

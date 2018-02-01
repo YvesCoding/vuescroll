@@ -1,0 +1,76 @@
+{
+  "_from": "vuescroll",
+  "_id": "vuescroll@2.0.5",
+  "_inBundle": false,
+  "_integrity": "sha512-knL9HsRmosKuR5LwH1CxJ8Xz9QVorMWbJlgwRvoyOXqYZJ5pan82Vd2HuHDyZU29i9MteHvEyMuPAT9mdE6agQ==",
+  "_location": "/vuescroll",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "vuescroll",
+    "name": "vuescroll",
+    "escapedName": "vuescroll",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/vuescroll/-/vuescroll-2.0.5.tgz",
+  "_shasum": "ac8d0d0dcd6cf977b1cd7aabbcca21a32cb90201",
+  "_spec": "vuescroll",
+  "_where": "D:\\vs",
+  "author": {
+    "name": "wangyi7099"
+  },
+  "bugs": {
+    "url": "https://github.com/wangyi7099/vuescroll/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "vue": "^2.0"
+  },
+  "deprecated": false,
+  "description": "A virtuak scrollbar based on vuejs 2.X",
+  "homepage": "https://github.com/wangyi7099/vuescroll#readme",
+  "keywords": [
+    "vuescroll",
+    "scrollbar",
+    "vuescrollbar",
+    "vue"
+  ],
+  "license": "MIT",
+  "main": "./dist/vuescroll.common.js",
+  "name": "vuescroll",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wangyi7099/vuescroll.git"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "karma start test/karma.conf.js"
+  },
+  "version": "3.3.9",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-preset-env": "^1.6.1",
+    "istanbul": "^0.4.5",
+    "jasmine-core": "^2.9.1",
+    "karma": "^2.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.1",
+    "karma-jasmine": "^1.1.1",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^2.0.9",
+    "rollup": "^0.55.1",
+    "uglify-es": "^3.3.9",
+    "webpack": "^3.10.0",
+    "zlib": "^1.0.5"
+  }
+}
