@@ -51,14 +51,16 @@
   },
   "scripts": {
     "build": "node scripts/build.js",
-    "test": "karma start test/karma.conf.js"
+    "test:cover": "karma start test/karma.conf.js",
+    "report-coverage": "codecov"
   },
-  "version": "3.3.10",
+  "version": "3.3.11",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-env": "^1.6.1",
+    "codecov": "^3.0.0",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.1",
     "karma": "^2.0.0",

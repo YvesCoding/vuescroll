@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.3.10
+    * @name: vuescroll 3.3.11
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x inspired by slimscroll
     * @license: MIT

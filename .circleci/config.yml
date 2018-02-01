@@ -1,0 +1,50 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+defaults: &defaults
+  working_directory: ~/project/vuescroll
+  docker:
+    - image: circleci/node:6-browsers
+version: 2
+jobs:
+  install:
+    <<: *defaults
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run: sudo npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - vuescroll
+  test-cover:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      # run tests!
+      - run: npm run test:cover
+      - run:
+         name: report coverage stats for non-PRs
+         command: |
+           if [[ -z $CI_PULL_REQUEST ]]; then
+             cat ./test/coverage/lcov.info | ./node_modules/.bin/codecov
+           fi
+workflows:
+  version: 2
+  install-and-parallel-test:
+    jobs:
+      - install
+      - test-cover:
+          requires:
+            - install
