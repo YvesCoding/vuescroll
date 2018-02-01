@@ -1,10 +1,8 @@
-# vuescroll  
-*****
+# vuescroll - **A virtual scrollbar based on [vue.js](https://github.com/wangyi7099/vuescroll) 2.X**   
 <a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a>
   <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage Status"></a>
+   
   
-*****
-  **A virtual scrollbar based on [vue.js](https://github.com/wangyi7099/vuescroll) 2.X**
 
 > Catalog
 - [What Is Vuescroll](#what-is-vuescroll)
