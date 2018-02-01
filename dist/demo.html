@@ -45,12 +45,27 @@
             <br>
             <input type="radio" id="two" value="left" v-model="ops.vRail.pos">
             <label for="two">Two</label>
-            <button @click="test">
-                test
+            <button @click="testMouseenter">
+                testMouseenter
+            </button>
+            <button @click="testmouseLeave">
+                testmouseLeave
+            </button>
+            <button @click="testmouseMove">
+                testmouseMove
+            </button>
+            <button @click="scrollTo">
+                scrollTo
+            </button>
+            <button @click="wheel">
+                wheel
+            </button>
+            <button @click="clickHRail">
+                clickHRail
             </button>
             <br>
          </div>
-         
+          
         <script>
           
             var vm = new Vue({
@@ -73,13 +88,49 @@
                     } 
                 },
                 methods: {
-                    test() {
+                    testMouseenter() {
                         let el = vm.$refs['vs'].$el;
                         trigger(el, 'mouseenter');
                         this.$nextTick(() => {
                             let op = vm.$refs['vs'].vScrollbar.state.opacity;
                             console.log(op);
                         })
+                    },
+                    testmouseLeave() {
+                        let el = vm.$refs['vs'].$el;
+                        trigger(el, 'mouseleave');
+                        this.$nextTick(() => {
+                            let op = vm.$refs['vs'].vScrollbar.state.opacity;
+                            console.log(op);
+                        })
+                    },
+                    testmouseMove() {
+                        let el = vm.$refs['vs'].$el;
+                        trigger(el, 'mousemove');
+                        this.$nextTick(() => {
+                            let op = vm.$refs['vs'].vScrollbar.state.opacity;
+                            console.log(op);
+                        })
+                    },
+                    scrollTo() {
+                        this.$refs['vs'].scrollTo({y: 50});
+                        this.$nextTick(() => {
+                            let op = vm.$refs['vs'].vScrollbar.state.top;
+                            console.log(op);
+                        })
+                    },
+                    wheel() {
+                        let el = vm.$refs['vs'].scrollPanel.el;
+                        trigger(el, 'wheel');
+                        this.$nextTick(() => {
+                            let op = vm.$refs['vs'].vScrollbar.state.opacity;
+                            console.log(op);
+                        })
+                    },
+                    clickHRail() {
+                        let vm = this;
+                         
+                        trigger(vm.$refs['vs'].hRail.el, 'click' );
                     },
                     // detect the scrollbar scrolling
                     detectVBar(bar, content, process) {
@@ -94,31 +145,25 @@
                 }
             });
             function trigger(elm, name, ...opts) {
-    let eventName;
-  
-    if (/^mouse|click/.test(name)) {
-      eventName = 'MouseEvents';
-    } else if (/^key/.test(name)) {
-      eventName = 'KeyboardEvent';
-    } else {
-      eventName = 'HTMLEvents';
-    }
-    const evt = document.createEvent(eventName);
-  
-    evt.initEvent(name, ...opts);
-    elm.dispatchEvent
-      ? elm.dispatchEvent(evt)
-      : elm.fireEvent('on' + name, evt);
-  
-    return elm;
+    
+                let eventName;
+                let evt = null;
+            
+                if (/^mouse|click/.test(name)) {
+                    evt = new MouseEvent(name, ...opts);
+                } else if (/^key/.test(name)) {
+                    evt = new KeyboardEvent(name, ...opts);
+                } else {
+                    evt = new Event(name, ...opts);
+                }
+            
+                elm.dispatchEvent
+                  ? elm.dispatchEvent(evt)
+                  : elm.fireEvent('on' + name, evt);
+              
+                return elm;
   };
-  let dom = document.createElement('div');
-  dom.style.width = '100px';
-  dom.style.height = '100px';
-  console.log(window.getComputedStyle(dom).getPropertyValue('height'));
-  document.body.appendChild(dom);
-  console.log(window.getComputedStyle(dom).getPropertyValue('height'));
-
+   
         </script>
     </body>
 </html>

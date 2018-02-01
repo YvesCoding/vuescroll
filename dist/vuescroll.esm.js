@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.3.9
+    * @name: vuescroll 3.3.10
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x inspired by slimscroll
     * @license: MIT
@@ -485,6 +485,7 @@ var vueScroll = {
                 }
             },
             vRail: {
+                el: ""
             },
             vScrollbar: {
                 el: "",
@@ -495,6 +496,7 @@ var vueScroll = {
                 }
             },
             hRail: {
+                el: ""
             },
             hScrollbar: {
                 el: "",
@@ -571,7 +573,8 @@ var vueScroll = {
             },
             on: {
                 scrollContentByBar: vm.scrollContentByBar
-            }
+            },
+            ref: "vRail"
         }), _c("vBar", {
             props: {
                 ops: vm.fOps.vBar,
@@ -584,7 +587,8 @@ var vueScroll = {
             },
             on: {
                 scrollContentByBar: vm.scrollContentByBar
-            }
+            },
+            ref: "hRail"
         }), _c('hBar', {
             props: {
                 ops: vm.fOps.hBar,
@@ -605,6 +609,8 @@ var vueScroll = {
             this.scrollPanel.el = this.$refs['scrollPanel'] && this.$refs['scrollPanel'].$el;
             this.vScrollbar.el = this.$refs['vScrollbar'] && this.$refs['vScrollbar'].$el;
             this.hScrollbar.el = this.$refs['hScrollbar'] && this.$refs['hScrollbar'].$el;
+            this.hRail.el = this.$refs['hRail'] && this.$refs['hRail'].$el;
+            this.vRail.el = this.$refs['vRail'] && this.$refs['vRail'].$el;
         },
         initBarDrag: function() {
             var vScrollbar = this.listenBarDrag('vScrollbar');
@@ -719,7 +725,7 @@ var vueScroll = {
             if (distance < 0) {
                 // scroll up or left
                 this.scrollPanel.el['scroll' + upperCaseDirection] = Math.max(0, ScrollDirectionValue);
-            } else if (distance > 0) {
+            } /* istanbul ignore next */else if (distance > 0) {
                 // scroll down or right
                 this.scrollPanel.el['scroll' + upperCaseDirection] = Math.min(scrollPanelScrollValue - scrollPanelPropertyValue, ScrollDirectionValue);
             }
@@ -765,14 +771,16 @@ var vueScroll = {
             return function() {
                 var pre;
                 var now;
-                function move(e) {
+                 
+                function move(e) /* istanbul ignore next */{
                     now = e[coordinate];
                     var delta = now - pre;
                     vm['show' + bar]();
                     vm._scrollContent(delta, type);
                     pre = now;
                 }
-                function t(e) {
+                
+                function t(e) /* istanbul ignore next */{
                     e.stopPropagation();
                     vm.mousedown = true;
                     pre = e[coordinate];
@@ -795,7 +803,7 @@ var vueScroll = {
         listenPanelTouch: function() {
             var vm = this;
             var pannel = this.scrollPanel.el;
-            function t(e) {
+            function t(e) /* istanbul ignore next */{
                 if (e.touches.length) {
                     e.stopPropagation();
                     vm.mousedown = true;
