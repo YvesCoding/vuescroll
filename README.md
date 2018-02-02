@@ -17,6 +17,7 @@
     - [Scrollbar Options](#scrollbar-options)
     - [Rail Options](#rail-options)
     - [Event](#event)
+    - [Api](#api)
     - [Global Configuartion](#global-configuartion)
 - [Inspire](#inspire)
 - [Liscence](#liscence)
@@ -168,6 +169,12 @@ opacity|0|**Set the rail's  opacity**
 event|params|description
 -----|------------|----
 vscroll/hscroll|`bar,content,process`|Bar is the information about scrollbar, and content the the information about the scrollcontent, and the process show the progress of the scrolling.
+
+### Api
+
+Api|params|description
+-----|------------|----
+scrollTo|`{x:number, y:number}`|Let content scrollTo a concrete place, e.g. this.$refs['vuescroll'].scrollTo({x:100, y: 100});
 
 ### Global Configuartion
 
