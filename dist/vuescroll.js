@@ -88,7 +88,7 @@ var vScrollbar = {
             width: vm.ops.width,
             background: vm.ops.background,
             borderRadius: '4px',
-            transform: "translateY(" + vm.computedTop + "%)",
+            transform: 'translateY(' + vm.computedTop + '%)',
             transition: 'opacity .5s',
             cursor: 'pointer',
             opacity: vm.state.opacity,
@@ -198,7 +198,7 @@ var hScrollbar = {
             height: vm.ops.height,
             background: vm.ops.background,
             borderRadius: '4px',
-            transform: 'translateX(" + ' + vm.computedLeft + ' + "%)',
+            transform: 'translateX(' + vm.computedLeft + '%)',
             transition: 'opacity .5s',
             cursor: 'pointer',
             opacity: vm.state.opacity,
@@ -677,7 +677,7 @@ var vueScroll = {
                 var scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollWidth']);
                 var scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollLeft']);
                 if (this.hScrollbar.state.width = this.getBarPropertyValue('hScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue)) {
-                    this.hScrollbar.state.left = this.adjustBarPos(this.vScrollbar.state.width, scrollPanelPropertyValue - 0, scrollDirectionValue, scrollPanelScrollPropertyValue);
+                    this.hScrollbar.state.left = this.adjustBarPos(this.hScrollbar.state.width, scrollPanelPropertyValue - 0, scrollDirectionValue, scrollPanelScrollPropertyValue);
                     this.hScrollbar.state.opacity = this.fOps.hBar.opacity;
                 }
             }

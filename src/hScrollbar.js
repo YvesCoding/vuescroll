@@ -18,7 +18,7 @@ export default  {
             height: vm.ops.height,
             background: vm.ops.background,
             borderRadius: '4px',
-            transform: `translateX(" + ${vm.computedLeft} + "%)`,
+            transform: `translateX(${vm.computedLeft}%)`,
             transition: 'opacity .5s',
             cursor: 'pointer',
             opacity: vm.state.opacity,

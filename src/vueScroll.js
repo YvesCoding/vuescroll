@@ -210,7 +210,7 @@ export default  {
                 let scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollWidth']);
                 let scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollLeft']);
                 if ((this.hScrollbar.state.width = this.getBarPropertyValue('hScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue))) {
-                    this.hScrollbar.state.left = this.adjustBarPos(this.vScrollbar.state.width, scrollPanelPropertyValue - 0, scrollDirectionValue, scrollPanelScrollPropertyValue);
+                    this.hScrollbar.state.left = this.adjustBarPos(this.hScrollbar.state.width, scrollPanelPropertyValue - 0, scrollDirectionValue, scrollPanelScrollPropertyValue);
                     this.hScrollbar.state.opacity = this.fOps.hBar.opacity;
                 }
             }

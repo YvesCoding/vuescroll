@@ -55,7 +55,7 @@
     "test:cover": "karma start test/karma.conf.js",
     "report-coverage": "codecov"
   },
-  "version": "3.3.13",
+  "version": "3.3.14",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",

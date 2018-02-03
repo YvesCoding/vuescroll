@@ -20,7 +20,7 @@ export default  {
             width: vm.ops.width,
             background: vm.ops.background,
             borderRadius: '4px',
-            transform: "translateY(" + vm.computedTop + "%)",
+            transform: `translateY(${vm.computedTop}%)`,
             transition: 'opacity .5s',
             cursor: 'pointer',
             opacity: vm.state.opacity,
