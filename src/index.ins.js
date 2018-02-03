@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 // import component
 import vRail from './vRail';
 import vScrollbar from './vScrollbar';
@@ -11,8 +13,8 @@ import vueScroll from './vueScroll';
 import GCF from './GlobalConfig'
 
 
-var scroll = {
-    install: function(Vue) {
+let scroll = {
+    install(Vue) {
         if(scroll.isInstalled) {
             console.warn("You should not install the vuescroll again!")
             return;
@@ -30,7 +32,8 @@ var scroll = {
         Vue.prototype.$vuescrollConfig = GCF
 
         scroll.isInstalled = true;
-    }
+         
+     }
 };
 
 if(typeof Vue !== 'undefined') {

@@ -11,7 +11,7 @@ export default  {
             return this.state.height * 100
         }
     },
-    render: function(_c) {
+    render(_c) {
         var vm = this;
         var style = {
             position: 'absolute',
@@ -40,7 +40,7 @@ export default  {
     },
     props: {
         ops: {
-            default: function(){
+            default(){
                 /* istanbul ignore next */
                 return {
                     background: 'hsla(220,4%,58%,.3)',
@@ -51,7 +51,7 @@ export default  {
             }
         },
         state: {
-            default:function(){
+            default(){
                 /* istanbul ignore next */
                 return {
                     top: {

@@ -14,7 +14,7 @@ function hackPropsData() {
     if(vm.$options.name === 'vueScroll') {
         let ops = deepMerge(GCF, {});
         vm.$options.propsData.ops = vm.$options.propsData.ops || {};
-        Object.keys(vm.$options.propsData.ops).forEach(function(key) {
+        Object.keys(vm.$options.propsData.ops).forEach(key => {
             defineReactive(
                 vm.fOps,
                 key,
@@ -46,7 +46,7 @@ function hackPropsData() {
      
 }
 export default {
-    created: function() {
+    created() {
         hackPropsData.call(this);
     }
 }

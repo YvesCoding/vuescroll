@@ -2,7 +2,7 @@
 // vertical rail
 export default  {
     name: 'vRail',
-    render: function(_c) {
+    render(_c) {
         var vm = this;
         var style = {
             position: 'absolute',
@@ -23,7 +23,7 @@ export default  {
         return _c('div', {
             style: style,
             on: {
-                "click": function(e) {
+                "click"(e) {
                     vm.$emit('scrollContentByBar', e, 'vScrollbar');
                 }
             }
@@ -31,7 +31,7 @@ export default  {
     },
     props: {
         ops:{
-            default: function() {
+            default() {
                 /* istanbul ignore next */
                 return {
                     width: {

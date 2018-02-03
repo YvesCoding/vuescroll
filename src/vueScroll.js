@@ -14,7 +14,7 @@ import GCF from './GlobalConfig'
 export default  {
     name: "vueScroll",
     mixins: [LifeCycleMix],
-    data: function() {
+    data() {
         return {
             scrollPanel: {
                 el: ""
@@ -73,8 +73,8 @@ export default  {
             }
         }
     },
-    render: function(_c) {
-        var vm = this;
+    render(_c) {
+        let vm = this;
         return _c('div', {
             class: 'vueScroll',
             style: {
@@ -84,15 +84,15 @@ export default  {
                 overflow: 'hidden'
             },
             on: {
-                mouseenter: function() {
+                mouseenter() {
                     vm.isMouseLeavePanel = false;
                     vm.showBar();
                 },
-                mouseleave: function() {
+                mouseleave() {
                     vm.isMouseLeavePanel = true;
                     vm.hideBar();
                 },
-                mousemove: function() {
+                mousemove() {
                     vm.isMouseLeavePanel = false;
                     vm.showBar();
                 }
@@ -140,62 +140,63 @@ export default  {
             ref: "hScrollbar"
         })]);
     },
-    mounted: function() {
+    mounted() {
         this.initEl();
         this.initBarDrag();
         this.listenPanelTouch();
         // showbar at init time
         this.showBar();
+        
     },
     methods: {
-        initEl: function() {
+        initEl() {
             this.scrollPanel.el = this.$refs['scrollPanel'] && this.$refs['scrollPanel'].$el;
             this.vScrollbar.el = this.$refs['vScrollbar'] && this.$refs['vScrollbar'].$el;
             this.hScrollbar.el = this.$refs['hScrollbar'] && this.$refs['hScrollbar'].$el;
             this.hRail.el = this.$refs['hRail'] && this.$refs['hRail'].$el;
             this.vRail.el = this.$refs['vRail'] && this.$refs['vRail'].$el;
         },
-        initBarDrag: function() {
-            var vScrollbar = this.listenBarDrag('vScrollbar');
-            var hScrollbar = this.listenBarDrag('hScrollbar');
+        initBarDrag() {
+            let vScrollbar = this.listenBarDrag('vScrollbar');
+            let hScrollbar = this.listenBarDrag('hScrollbar');
             vScrollbar();
             hScrollbar();
         },
-        scrollTo: function(pos) {
-            var x = pos.x || this.scrollPanel.el.scrollLeft;
-            var y = pos.y || this.scrollPanel.el.scrollTop;
+        scrollTo(pos) {
+            let x = pos.x || this.scrollPanel.el.scrollLeft;
+            let y = pos.y || this.scrollPanel.el.scrollTop;
             this.scrollPanel.el.scrollTo(x, y);
         },
         // get the bar height or width
-        getBarPropertyValue: function(type, scrollPanelPropertyValue, scrollPanelScrollPropertyValue) {
-            var property = type === 'vScrollbar' ? 'Height' : 'Width';
+        getBarPropertyValue(type, scrollPanelPropertyValue, scrollPanelScrollPropertyValue) {
+            let property = type === 'vScrollbar' ? 'Height' : 'Width';
             // choose the proper height for scrollbar
-            var scrollPropertyValue = scrollPanelPropertyValue / scrollPanelScrollPropertyValue;
+            let scrollPropertyValue = scrollPanelPropertyValue / scrollPanelScrollPropertyValue;
             if ((scrollPanelScrollPropertyValue <= scrollPanelPropertyValue) || Math.abs(scrollPanelPropertyValue - scrollPanelScrollPropertyValue) <= this.accuracy) {
                 scrollPropertyValue = 0;
             }
             return scrollPropertyValue;
         },
         // adjust a bar's position
-        adjustBarPos: function(scrollPropertyValue, scrollPanelPropertyValue, scrollDirectionValue, scrollPanelScrollValue) {
+        adjustBarPos(scrollPropertyValue, scrollPanelPropertyValue, scrollDirectionValue, scrollPanelScrollValue) {
             return parseFloat(scrollDirectionValue / scrollPanelPropertyValue);
         },
         // show All bar
-        showBar: function() {
+        showBar() {
             this.showVBar();
             this.showHBar();
         },
         // hide all bar
-        hideBar: function() {
+        hideBar() {
             this.hideVBar();
             this.hideHBar();
         },
         // showVbar
-        showVBar: function() {
+        showVBar() {
             if (!this.isMouseLeavePanel || this.fOps.vBar.keepShow || this.mousedown) {
-                var scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'height').replace('px', ""));
-                var scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollHeight']);
-                var scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollTop']);
+                let scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'height').replace('px', ""));
+                let scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollHeight']);
+                let scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollTop']);
                 if ((this.vScrollbar.state.height = this.getBarPropertyValue('vScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue))) {
                     this.vScrollbar.state.top = this.adjustBarPos(this.vScrollbar.state.height, scrollPanelPropertyValue - 0, scrollDirectionValue, scrollPanelScrollPropertyValue);
                     this.vScrollbar.state.opacity = this.fOps.vBar.opacity;
@@ -203,11 +204,11 @@ export default  {
             }
         },
         // showHbar
-        showHBar: function() {
+        showHBar() {
             if (!this.isMouseLeavePanel || this.fOps.hBar.keepShow || this.mousedown) {
-                var scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'width').replace('px', ""));
-                var scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollWidth']);
-                var scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollLeft']);
+                let scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'width').replace('px', ""));
+                let scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollWidth']);
+                let scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollLeft']);
                 if ((this.hScrollbar.state.width = this.getBarPropertyValue('hScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue))) {
                     this.hScrollbar.state.left = this.adjustBarPos(this.vScrollbar.state.width, scrollPanelPropertyValue - 0, scrollDirectionValue, scrollPanelScrollPropertyValue);
                     this.hScrollbar.state.opacity = this.fOps.hBar.opacity;
@@ -215,7 +216,7 @@ export default  {
             }
         },
         // hideVbar
-        hideVBar: function() {
+        hideVBar() {
             if (!this.fOps.vBar.keepShow) {
                 if (!this.mousedown && this.isMouseLeavePanel) {
                     this.vScrollbar.state.opacity = 0;
@@ -223,16 +224,16 @@ export default  {
             }
         },
         // hideHbar
-        hideHBar: function() {
+        hideHBar() {
             if (!this.fOps.hBar.keepShow) {
                 if (!this.mousedown && this.isMouseLeavePanel) {
                     this.hScrollbar.state.opacity = 0;
                 }
             }
         },
-        wheel: function(e) {
-            var vm = this;
-            var delta = vm.fOps.vBar.deltaY;
+        wheel(e) {
+            let vm = this;
+            let delta = vm.fOps.vBar.deltaY;
             vm.isWheeling = true;
             vm.showVBar();
             vm.scrollBar(e.deltaY > 0 ? delta : -delta, 'vScrollbar');
@@ -240,7 +241,7 @@ export default  {
             e.stopPropagation();
         },
         // listen wheel scrolling
-        scroll: function(e) {
+        scroll(e) {
             // console.log(e);
             if(this.isWheeling) {
                 e.preventDefault();
@@ -250,23 +251,23 @@ export default  {
             this.showBar();
         },
         // scroll content and resize bar.
-        scrollBar: function(distance, type) {
+        scrollBar(distance, type) {
             // >0 scroll to down or right  <0 scroll to up or left
-            var direction = type == 'vScrollbar' ? 'top' : 'left';
-            var upperCaseDirection = type == 'vScrollbar' ? 'Top' : 'Left';
-            var property = type == 'vScrollbar' ? 'height' : 'width';
-            var upperCaseProperty = type == 'vScrollbar' ? 'Height' : 'Width';
-            var event = type == 'vScrollbar' ? 'vscroll' : 'hscroll';
-            var showEvent = type == 'vScrollbar' ? 'showVBar' : 'showHBar';
-            var directionValue = this[type].state[direction];
-            var scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "");
+            let direction = type == 'vScrollbar' ? 'top' : 'left';
+            let upperCaseDirection = type == 'vScrollbar' ? 'Top' : 'Left';
+            let property = type == 'vScrollbar' ? 'height' : 'width';
+            let upperCaseProperty = type == 'vScrollbar' ? 'Height' : 'Width';
+            let event = type == 'vScrollbar' ? 'vscroll' : 'hscroll';
+            let showEvent = type == 'vScrollbar' ? 'showVBar' : 'showHBar';
+            let directionValue = this[type].state[direction];
+            let scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "");
             if (type == 'vScrollbar') {
                 scrollPanelPropertyValue = scrollPanelPropertyValue ;
             }
-            var scrollPanelScrollValue = this.scrollPanel.el['scroll' + upperCaseProperty];
-            var scrollDirectionValue = this.scrollPanel.el['scroll' + upperCaseDirection];
-            var scrollPropertyValue = this[type].state[property];
-            var ScrollDirectionValue = Math.round(scrollDirectionValue + distance);
+            let scrollPanelScrollValue = this.scrollPanel.el['scroll' + upperCaseProperty];
+            let scrollDirectionValue = this.scrollPanel.el['scroll' + upperCaseDirection];
+            let scrollPropertyValue = this[type].state[property];
+            let ScrollDirectionValue = Math.round(scrollDirectionValue + distance);
             if (distance < 0) {
                 // scroll up or left
                 this.scrollPanel.el['scroll' + upperCaseDirection] = Math.max(0, ScrollDirectionValue);
@@ -275,9 +276,9 @@ export default  {
                 this.scrollPanel.el['scroll' + upperCaseDirection] = Math.min(scrollPanelScrollValue - scrollPanelPropertyValue, ScrollDirectionValue);
             }
             this[showEvent]();
-            var content = {};
-            var bar = {};
-            var process = "";
+            let content = {};
+            let bar = {};
+            let process = "";
             
             ScrollDirectionValue = this.scrollPanel.el['scroll' + upperCaseDirection];
             content.residual = (scrollPanelScrollValue - ScrollDirectionValue - scrollPanelPropertyValue);
@@ -291,37 +292,37 @@ export default  {
             this.$emit(event, bar, content, process);
         },
         // convert scrollbar's distance to content distance.
-        _scrollContent: function(distance, type) {
-            var property = type == 'vScrollbar' ? 'height' : 'width';
-            var upperCaseProperty = type == 'vScrollbar' ? 'Height' : 'Width';
-            var scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "")  ;
+        _scrollContent(distance, type) {
+            let property = type == 'vScrollbar' ? 'height' : 'width';
+            let upperCaseProperty = type == 'vScrollbar' ? 'Height' : 'Width';
+            let scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "")  ;
             if (type == 'vScrollbar') {
                 scrollPanelPropertyValue = scrollPanelPropertyValue  ;
             }
-            var scrollPanelScrollValue = this.scrollPanel.el['scroll' + upperCaseProperty];
-            var scrollContentDistance = scrollPanelScrollValue * (distance / scrollPanelPropertyValue);
+            let scrollPanelScrollValue = this.scrollPanel.el['scroll' + upperCaseProperty];
+            let scrollContentDistance = scrollPanelScrollValue * (distance / scrollPanelPropertyValue);
             this.scrollBar(scrollContentDistance, type);
         },
         // click the rail and trigger the scrollbar moving
-        scrollContentByBar: function(e, type) {
-            var coco = type === 'vScrollbar' ? 'y' : 'x';
-            var elementInfo = this[type].el.getBoundingClientRect();
-            var delta = e[coco] - elementInfo[coco] - elementInfo.height / 2;
+        scrollContentByBar(e, type) {
+            let coco = type === 'vScrollbar' ? 'y' : 'x';
+            let elementInfo = this[type].el.getBoundingClientRect();
+            let delta = e[coco] - elementInfo[coco] - elementInfo.height / 2;
             this._scrollContent(delta, type);
         },
-        listenBarDrag: function(type) {
-            var vm = this;
-            var coordinate = type === 'vScrollbar' ? 'pageY' : 'pageX';
-            var bar = type === 'vScrollbar' ? 'VBar' : 'HBar';
-            var scrollProperty = type === 'vScrollbar' ? 'scrollHeight' : 'scrollWidth';
-            var property = type === 'vScrollbar' ? 'height' : 'width';
+        listenBarDrag(type) {
+            let vm = this;
+            let coordinate = type === 'vScrollbar' ? 'pageY' : 'pageX';
+            let bar = type === 'vScrollbar' ? 'VBar' : 'HBar';
+            let scrollProperty = type === 'vScrollbar' ? 'scrollHeight' : 'scrollWidth';
+            let property = type === 'vScrollbar' ? 'height' : 'width';
             return function() {
-                var pre;
-                var now;
+                let pre;
+                let now;
                  
                 function move(e) /* istanbul ignore next */{
                     now = e[coordinate];
-                    var delta = now - pre;
+                    let delta = now - pre;
                     vm['show' + bar]();
                     vm._scrollContent(delta, type);
                     pre = now;
@@ -347,9 +348,9 @@ export default  {
                 vm[type].el.addEventListener('mousedown', t);
             }
         },
-        listenPanelTouch: function() {
-            var vm = this;
-            var pannel = this.scrollPanel.el;
+        listenPanelTouch() {
+            let vm = this;
+            let pannel = this.scrollPanel.el;
             function t(e) /* istanbul ignore next */{
                 if (e.touches.length) {
                     e.stopPropagation();
@@ -369,19 +370,19 @@ export default  {
             });
         }
     },
-    beforeDestroy: function() {
+    beforeDestroy() {
         // remove the registryed event.
         this.listeners.forEach(function(item) {
             item.dom.removeEventListener(item.type, item.event);
         });
     },
-    updated: function() {
+    updated() {
         this.showBar();
         this.hideBar();
     },
     props: {
         ops:{
-            default: function() {
+            default() {
                return {
                 scrollContent: {
 

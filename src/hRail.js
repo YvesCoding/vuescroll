@@ -3,9 +3,9 @@
 // horizontal rail
 export default   {
     name: 'hRail',
-    render: function(_c) {
-        var vm = this;
-        var style = {
+    render(_c) {
+        let vm = this;
+        let style = {
             position: 'absolute',
             left: 0,
             width: '100%',
@@ -24,7 +24,7 @@ export default   {
         return _c('div', {
             style: style,
             on: {
-                "click": function(e) {
+                "click"(e) {
                     vm.$emit('scrollContentByBar', e, 'hScrollbar');
                 }
             }
@@ -32,21 +32,10 @@ export default   {
     },
     props: {
         ops: {
-            default: function(){
+            default(){
                 /* istanbul ignore next */
                 return {
-                    height: {
-                        default: '5px'
-                    },
-                    pos: {
-                        default: 'bottom'
-                    },
-                    background: {
-                        default: '#a5d6a7'
-                    },
-                    opacity: {
-                        default: '0.5'
-                    }
+                    
                 }
             }
         }

@@ -54,7 +54,7 @@
     "test:cover": "karma start test/karma.conf.js",
     "report-coverage": "codecov"
   },
-  "version": "3.3.11",
+  "version": "3.3.12",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -71,6 +71,8 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.9",
     "rollup": "^0.55.1",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-node-resolve": "^3.0.2",
     "uglify-es": "^3.3.9",
     "webpack": "^3.10.0",
     "zlib": "^1.0.5"

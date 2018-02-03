@@ -1,3 +1,7 @@
+// rollup.config.js
+const resolveNode = require('rollup-plugin-node-resolve');
+const babel = require('rollup-plugin-babel');
+
 const path = require('path')
 const version = process.env.VERSION || require('../package.json').version
  
@@ -28,7 +32,7 @@ const builds = {
     dest: resolve('dist/vuescroll.js'),
     format: 'umd',
     env: 'development',
-    external: ['Vue'],
+    external: ['vue'],
     banner
   },
    'web-prod': {
@@ -36,31 +40,35 @@ const builds = {
     dest: resolve('dist/vuescroll.min.js'),
     format: 'umd',
     env: 'production',
-    external: ['Vue'],
+    external: ['vue'],
     banner
   },
    'esm-dev': {
     entry: resolve('src/index.unins.js'),
     dest: resolve('dist/vuescroll.esm.js'),
     format: 'es',
+    external: ['vue'],
     banner
   },
   'esm-pro': {
     entry: resolve('src/index.unins.js'),
     dest: resolve('dist/vuescroll.esm.min.js'),
     format: 'es',
+    external: ['vue'],
     banner
   },
    'cjs-dev': {
     entry: resolve('src/index.unins.js'),
     dest: resolve('dist/vuescroll.common.js'),
     format: 'cjs',
+    external: ['vue'],
     banner
   },
   'cjs-pro': {
     entry: resolve('src/index.unins.js'),
     dest: resolve('dist/vuescroll.common.min.js'),
     format: 'cjs',
+    external: ['vue'],
     banner
   }
 }
@@ -72,13 +80,19 @@ function genConfig (name) {
     external: opts.external,
     output: {
       globals: {
-        Vue: 'Vue'
+        vue: 'Vue'
       },
       file: opts.dest,
       format: opts.format,
       banner: opts.banner,
       name: opts.moduleName || 'vuescroll'
-    }
+    },
+    plugins: [
+      resolveNode(),
+      babel({
+        exclude: 'node_modules/**' // only transpile our source code
+      })
+    ]
   }
 
    

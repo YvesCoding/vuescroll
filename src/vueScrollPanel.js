@@ -1,20 +1,28 @@
+import {getGutter} from './util'
+
 // vueScrollPanel
 export default   {
     name: 'scrollPanel',
-    render: function(_c) {
-        var vm = this;
+    render(_c) {
+        let vm = this;
+        let getter = getGutter();
+        let style = {
+            overflow: 'scroll'
+        }
+        if(getter) {
+            style.marginRight = -getter + 'px';
+            style.height = `calc(100% + ${getter}px)`
+        } else {
+            style.height = '100%';
+        }
         return _c('div', {
-            style: {
-                overflow: 'scroll',
-                marginRight: '-17px',
-                height: 'calc(100% + 17px)'
-            },
+            style: style,
             class: "vueScrollPanel",
             on: {
-                scroll: function(e) {
+                scroll(e) {
                     vm.$emit('scrolling', e);
                 },
-                wheel: function(e) {
+                wheel(e) {
                     vm.$emit('wheeling', e);
                 }
             }
