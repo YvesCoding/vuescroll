@@ -14,6 +14,14 @@ export default   {
             style.height = `calc(100% + ${getter}px)`
         } else {
             style.height = '100%';
+            if(!getGutter.isUsed) {
+                getGutter.isUsed = true;
+                // add style
+                let styleDom = document.createElement('style');
+                styleDom.type = 'text/css';
+                styleDom.innerHTML=".vueScrollPanel::-webkit-scrollbar{width:0;height:0}";
+                document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
+            }
         }
         return _c('div', {
             style: style,

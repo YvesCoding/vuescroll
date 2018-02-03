@@ -90,5 +90,7 @@ export function getGutter() {
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
 
+  getGutter.isUsed = false;
+
   return scrollBarWidth;
 };

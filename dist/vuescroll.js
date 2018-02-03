@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.3.12
+    * @name: vuescroll 3.3.13
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x inspired by slimscroll
     * @license: MIT
@@ -321,6 +321,8 @@ function getGutter() {
     outer.parentNode.removeChild(outer);
     scrollBarWidth = widthNoScroll - widthWithScroll;
 
+    getGutter.isUsed = false;
+
     return scrollBarWidth;
 }
 
@@ -372,6 +374,14 @@ var vueScrollPanel = {
             style.height = 'calc(100% + ' + getter + 'px)';
         } else {
             style.height = '100%';
+            if (!getGutter.isUsed) {
+                getGutter.isUsed = true;
+                // add style
+                var styleDom = document.createElement('style');
+                styleDom.type = 'text/css';
+                styleDom.innerHTML = ".vueScrollPanel::-webkit-scrollbar{width:0;height:0}";
+                document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
+            }
         }
         return _c('div', {
             style: style,
