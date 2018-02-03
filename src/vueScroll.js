@@ -333,9 +333,11 @@ export default  {
                     vm.mousedown = true;
                     pre = e[coordinate];
                     vm['show' + bar]();
+                    document.onselectstart = () => false;
                     document.addEventListener('mousemove', move);
                     document.addEventListener('mouseup', function(e) {
                         vm.mousedown = false;
+                        document.onselectstart = null;
                         vm['hide' + bar]();
                         document.removeEventListener('mousemove', move);
                     });

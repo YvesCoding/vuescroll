@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.3.13
+    * @name: vuescroll 3.3.15
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x inspired by slimscroll
     * @license: MIT
@@ -798,9 +798,13 @@ var vueScroll = {
                     vm.mousedown = true;
                     pre = e[coordinate];
                     vm['show' + bar]();
+                    document.onselectstart = function () {
+                        return false;
+                    };
                     document.addEventListener('mousemove', move);
                     document.addEventListener('mouseup', function (e) {
                         vm.mousedown = false;
+                        document.onselectstart = null;
                         vm['hide' + bar]();
                         document.removeEventListener('mousemove', move);
                     });
