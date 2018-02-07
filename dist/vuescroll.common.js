@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.3.15
+    * @name: vuescroll 3.3.16
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x inspired by slimscroll
     * @license: MIT
@@ -526,6 +526,7 @@ var vueScroll = {
             mousedown: false,
             isMouseLeavePanel: true,
             isWheeling: false,
+            gutter: getGutter(),
             fOps: {
                 scrollContent: {},
                 vRail: {},
@@ -658,7 +659,7 @@ var vueScroll = {
         // showVbar
         showVBar: function showVBar() {
             if (!this.isMouseLeavePanel || this.fOps.vBar.keepShow || this.mousedown) {
-                var scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'height').replace('px', ""));
+                var scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'height').replace('px', "")) - this.gutter;
                 var scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollHeight']);
                 var scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollTop']);
                 if (this.vScrollbar.state.height = this.getBarPropertyValue('vScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue)) {
@@ -671,7 +672,7 @@ var vueScroll = {
         // showHbar
         showHBar: function showHBar() {
             if (!this.isMouseLeavePanel || this.fOps.hBar.keepShow || this.mousedown) {
-                var scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'width').replace('px', ""));
+                var scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'width').replace('px', "")) - this.gutter;
                 var scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollWidth']);
                 var scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollLeft']);
                 if (this.hScrollbar.state.width = this.getBarPropertyValue('hScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue)) {
@@ -729,7 +730,7 @@ var vueScroll = {
             var event = type == 'vScrollbar' ? 'vscroll' : 'hscroll';
             var showEvent = type == 'vScrollbar' ? 'showVBar' : 'showHBar';
             var directionValue = this[type].state[direction];
-            var scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "");
+            var scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "") - this.gutter;
             if (type == 'vScrollbar') {
                 scrollPanelPropertyValue = scrollPanelPropertyValue;
             }
@@ -765,10 +766,7 @@ var vueScroll = {
         _scrollContent: function _scrollContent(distance, type) {
             var property = type == 'vScrollbar' ? 'height' : 'width';
             var upperCaseProperty = type == 'vScrollbar' ? 'Height' : 'Width';
-            var scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "");
-            if (type == 'vScrollbar') {
-                scrollPanelPropertyValue = scrollPanelPropertyValue;
-            }
+            var scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "") - this.gutter;
             var scrollPanelScrollValue = this.scrollPanel.el['scroll' + upperCaseProperty];
             var scrollContentDistance = scrollPanelScrollValue * (distance / scrollPanelPropertyValue);
             this.scrollBar(scrollContentDistance, type);

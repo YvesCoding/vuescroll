@@ -11,6 +11,8 @@ import LifeCycleMix from './LifeCycleMix';
 // import config
 import GCF from './GlobalConfig' 
 
+import {getGutter} from './util'
+ 
 export default  {
     name: "vueScroll",
     mixins: [LifeCycleMix],
@@ -54,6 +56,7 @@ export default  {
             mousedown: false,
             isMouseLeavePanel: true,
             isWheeling: false,
+            gutter: getGutter(),
             fOps: {
                 scrollContent: {
 
@@ -194,7 +197,7 @@ export default  {
         // showVbar
         showVBar() {
             if (!this.isMouseLeavePanel || this.fOps.vBar.keepShow || this.mousedown) {
-                let scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'height').replace('px', ""));
+                let scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'height').replace('px', "")) - this.gutter;
                 let scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollHeight']);
                 let scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollTop']);
                 if ((this.vScrollbar.state.height = this.getBarPropertyValue('vScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue))) {
@@ -206,7 +209,7 @@ export default  {
         // showHbar
         showHBar() {
             if (!this.isMouseLeavePanel || this.fOps.hBar.keepShow || this.mousedown) {
-                let scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'width').replace('px', ""));
+                let scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'width').replace('px', ""))  - this.gutter;
                 let scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollWidth']);
                 let scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollLeft']);
                 if ((this.hScrollbar.state.width = this.getBarPropertyValue('hScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue))) {
@@ -260,7 +263,7 @@ export default  {
             let event = type == 'vScrollbar' ? 'vscroll' : 'hscroll';
             let showEvent = type == 'vScrollbar' ? 'showVBar' : 'showHBar';
             let directionValue = this[type].state[direction];
-            let scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "");
+            let scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "")  - this.gutter;
             if (type == 'vScrollbar') {
                 scrollPanelPropertyValue = scrollPanelPropertyValue ;
             }
@@ -295,10 +298,7 @@ export default  {
         _scrollContent(distance, type) {
             let property = type == 'vScrollbar' ? 'height' : 'width';
             let upperCaseProperty = type == 'vScrollbar' ? 'Height' : 'Width';
-            let scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "")  ;
-            if (type == 'vScrollbar') {
-                scrollPanelPropertyValue = scrollPanelPropertyValue  ;
-            }
+            let scrollPanelPropertyValue = getComputed(this.scrollPanel.el, property).replace('px', "")  - this.gutter ;
             let scrollPanelScrollValue = this.scrollPanel.el['scroll' + upperCaseProperty];
             let scrollContentDistance = scrollPanelScrollValue * (distance / scrollPanelPropertyValue);
             this.scrollBar(scrollContentDistance, type);
