@@ -16,28 +16,28 @@ function hackPropsData() {
         vm.$options.propsData.ops = vm.$options.propsData.ops || {};
         Object.keys(vm.$options.propsData.ops).forEach(key => {
             defineReactive(
-                vm.fOps,
+                vm.mergedOptions,
                 key,
                 vm.$options.propsData.ops
             )
         });
-        deepMerge(ops, vm.fOps);
+        deepMerge(ops, vm.mergedOptions);
         // to sync the rail and bar
-        defineReactive(vm.fOps.vBar, 'pos', vm.fOps.vRail);
-        defineReactive(vm.fOps.vBar, 'width', vm.fOps.vRail);
-        defineReactive(vm.fOps.hBar, 'pos', vm.fOps.hRail);
-        defineReactive(vm.fOps.hBar, 'height', vm.fOps.hRail);
+        defineReactive(vm.mergedOptions.vBar, 'pos', vm.mergedOptions.vRail);
+        defineReactive(vm.mergedOptions.vBar, 'width', vm.mergedOptions.vRail);
+        defineReactive(vm.mergedOptions.hBar, 'pos', vm.mergedOptions.hRail);
+        defineReactive(vm.mergedOptions.hBar, 'height', vm.mergedOptions.hRail);
         
         let prefix = "padding-";
-        if(vm.fOps.scrollContent.padding) {
-            Object.defineProperty(vm.fOps.scrollContent, 'paddPos',   {
+        if(vm.mergedOptions.scrollContent.padding) {
+            Object.defineProperty(vm.mergedOptions.scrollContent, 'paddPos',   {
                 get() {
-                    return prefix + vm.fOps.vRail.pos
+                    return prefix + vm.mergedOptions.vRail.pos
                 }
             })
-            Object.defineProperty(vm.fOps.scrollContent, 'paddValue',  {
+            Object.defineProperty(vm.mergedOptions.scrollContent, 'paddValue',  {
                 get() {
-                    return vm.fOps.vRail.width
+                    return vm.mergedOptions.vRail.width
                 }
             })
         } 

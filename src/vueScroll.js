@@ -7,12 +7,12 @@ import {
 } from './util'
 
 import LifeCycleMix from './LifeCycleMix';
-
 // import config
 import GCF from './GlobalConfig' 
-
 import {getGutter} from './util'
- 
+// import map
+import scrollMap from './scrollMap'
+
 export default  {
     name: "vueScroll",
     mixins: [LifeCycleMix],
@@ -57,7 +57,7 @@ export default  {
             isMouseLeavePanel: true,
             isWheeling: false,
             gutter: getGutter(),
-            fOps: {
+            mergedOptions: {
                 scrollContent: {
 
                 },
@@ -110,12 +110,12 @@ export default  {
             }
         }, [_c('scrollContent', {
             props: {
-                ops: vm.fOps.scrollContent,
+                ops: vm.mergedOptions.scrollContent,
                 state: vm.scrollContent.state
             }
-        }, vm.$slots.default)]), _c('vRail', {
+        }, vm.$slots.default)]), _c('ScrollRail', {
             props: {
-                ops: vm.fOps.vRail
+                ops: vm.mergedOptions.vRail
             },
             on: {
                 scrollContentByBar: vm.scrollContentByBar
@@ -123,13 +123,13 @@ export default  {
             ref: "vRail"
         }), _c("vBar", {
             props: {
-                ops: vm.fOps.vBar,
+                ops: vm.mergedOptions.vBar,
                 state: vm.vScrollbar.state
             },
             ref: "vScrollbar"
         }), _c('hRail', {
             props: {
-                ops: vm.fOps.hRail
+                ops: vm.mergedOptions.hRail
             },
             on: {
                 scrollContentByBar: vm.scrollContentByBar
@@ -137,7 +137,7 @@ export default  {
             ref: "hRail"
         }), _c('hBar', {
             props: {
-                ops: vm.fOps.hBar,
+                ops: vm.mergedOptions.hBar,
                 state: vm.hScrollbar.state
             },
             ref: "hScrollbar"
@@ -196,31 +196,31 @@ export default  {
         },
         // showVbar
         showVBar() {
-            if (!this.isMouseLeavePanel || this.fOps.vBar.keepShow || this.mousedown) {
+            if (!this.isMouseLeavePanel || this.mergedOptions.vBar.keepShow || this.mousedown) {
                 let scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'height').replace('px', "")) - this.gutter;
                 let scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollHeight']);
                 let scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollTop']);
                 if ((this.vScrollbar.state.height = this.getBarPropertyValue('vScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue))) {
                     this.vScrollbar.state.top = this.adjustBarPos(this.vScrollbar.state.height, scrollPanelPropertyValue - 0, scrollDirectionValue, scrollPanelScrollPropertyValue);
-                    this.vScrollbar.state.opacity = this.fOps.vBar.opacity;
+                    this.vScrollbar.state.opacity = this.mergedOptions.vBar.opacity;
                 }
             }
         },
         // showHbar
         showHBar() {
-            if (!this.isMouseLeavePanel || this.fOps.hBar.keepShow || this.mousedown) {
+            if (!this.isMouseLeavePanel || this.mergedOptions.hBar.keepShow || this.mousedown) {
                 let scrollPanelPropertyValue = Math.floor(getComputed(this.scrollPanel.el, 'width').replace('px', ""))  - this.gutter;
                 let scrollPanelScrollPropertyValue = Math.floor(this.scrollPanel.el['scrollWidth']);
                 let scrollDirectionValue = Math.floor(this.scrollPanel.el['scrollLeft']);
                 if ((this.hScrollbar.state.width = this.getBarPropertyValue('hScrollbar', scrollPanelPropertyValue, scrollPanelScrollPropertyValue))) {
                     this.hScrollbar.state.left = this.adjustBarPos(this.hScrollbar.state.width, scrollPanelPropertyValue - 0, scrollDirectionValue, scrollPanelScrollPropertyValue);
-                    this.hScrollbar.state.opacity = this.fOps.hBar.opacity;
+                    this.hScrollbar.state.opacity = this.mergedOptions.hBar.opacity;
                 }
             }
         },
         // hideVbar
         hideVBar() {
-            if (!this.fOps.vBar.keepShow) {
+            if (!this.mergedOptions.vBar.keepShow) {
                 if (!this.mousedown && this.isMouseLeavePanel) {
                     this.vScrollbar.state.opacity = 0;
                 }
@@ -228,7 +228,7 @@ export default  {
         },
         // hideHbar
         hideHBar() {
-            if (!this.fOps.hBar.keepShow) {
+            if (!this.mergedOptions.hBar.keepShow) {
                 if (!this.mousedown && this.isMouseLeavePanel) {
                     this.hScrollbar.state.opacity = 0;
                 }
@@ -236,7 +236,7 @@ export default  {
         },
         wheel(e) {
             let vm = this;
-            let delta = vm.fOps.vBar.deltaY;
+            let delta = vm.mergedOptions.vBar.deltaY;
             vm.isWheeling = true;
             vm.showVBar();
             vm.scrollBar(e.deltaY > 0 ? delta : -delta, 'vScrollbar');
