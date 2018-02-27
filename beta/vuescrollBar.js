@@ -40,7 +40,11 @@ export default {
     },
     methods: {
         handleMousedown(e) {
-            
+            this[scrollMap[this.type].axis] = e[`page${scrollMap[this.type].axis}`];
+            this.$emit("update:")
+        },
+        handleMouseMove(e) {
+
         }
     },
     props: {

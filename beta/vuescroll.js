@@ -106,6 +106,13 @@ export default  {
                 type: "vertical",
                 ops: this.mergedOptions.vBar,
                 state: this.vBar.state
+            },
+            directives: {
+                name: "model",
+                modifiers: {
+                    sync: true
+                },
+                value: this.mousedown
             }
         }
         // vRail data
@@ -122,6 +129,13 @@ export default  {
                 type: "horizontal",
                 ops: this.mergedOptions.hBar,
                 state: this.hBar.state
+            },
+            directives: {
+                name: "model",
+                modifiers: {
+                    sync: true
+                },
+                value: this.mousedown
             }
         }
         // hRail data
