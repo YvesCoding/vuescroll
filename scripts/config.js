@@ -26,9 +26,11 @@ const resolve = p => {
   }
 }
 
+const root = "beta";
+
 const builds = {
    'web-dev': {
-    entry: resolve('src/index.ins.js'),
+    entry: resolve(root + '/index.ins.js'),
     dest: resolve('dist/vuescroll.js'),
     format: 'umd',
     env: 'development',
@@ -36,7 +38,7 @@ const builds = {
     banner
   },
    'web-prod': {
-    entry: resolve('src/index.ins.js'),
+    entry: resolve(root + '/index.ins.js'),
     dest: resolve('dist/vuescroll.min.js'),
     format: 'umd',
     env: 'production',
@@ -44,28 +46,28 @@ const builds = {
     banner
   },
    'esm-dev': {
-    entry: resolve('src/index.unins.js'),
+    entry: resolve(root + '/index.unins.js'),
     dest: resolve('dist/vuescroll.esm.js'),
     format: 'es',
     external: ['vue'],
     banner
   },
   'esm-pro': {
-    entry: resolve('src/index.unins.js'),
+    entry: resolve(root + '/index.unins.js'),
     dest: resolve('dist/vuescroll.esm.min.js'),
     format: 'es',
     external: ['vue'],
     banner
   },
    'cjs-dev': {
-    entry: resolve('src/index.unins.js'),
+    entry: resolve(root + '/index.unins.js'),
     dest: resolve('dist/vuescroll.common.js'),
     format: 'cjs',
     external: ['vue'],
     banner
   },
   'cjs-pro': {
-    entry: resolve('src/index.unins.js'),
+    entry: resolve(root + '/index.unins.js'),
     dest: resolve('dist/vuescroll.common.min.js'),
     format: 'cjs',
     external: ['vue'],
@@ -90,7 +92,7 @@ function genConfig (name) {
     plugins: [
       resolveNode(),
       babel({
-        exclude: 'node_modules/**' // only transpile our source code
+        exclude: 'node_modules/**', // only transpile our source code
       })
     ]
   }
