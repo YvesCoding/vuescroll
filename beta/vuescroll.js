@@ -5,8 +5,7 @@
 // begin importing
 import {
     deepMerge,
-    defineReactive,
-    getComputed
+    defineReactive
 } from './util'
 // import lefrCycle
 import LifeCycleMix from './LifeCycleMix';
@@ -17,9 +16,9 @@ import {getGutter} from './util'
 import scrollMap from './scrollMap'
 // import necessary components
 import bar from "./vuescrollBar";
-import rail from "./vuescrollRail"
-import scrollContent from './vueScrollContent'
-import scrollPanel from './vueScrollPanel'
+// import rail from "./vuescrollRail"
+// import scrollContent from './vueScrollContent'
+// import scrollPanel from './vueScrollPanel'
 export default  {
     name: "vueScroll",
     mixins: [LifeCycleMix],
@@ -89,8 +88,7 @@ export default  {
         const scrollPanelData = {
             ref: "scrollPanel",
             on: {
-                scroll: this.handleScroll,
-                wheel: this.handleWheel
+                scroll: this.handleScroll
             }
         }
         // scrollContent data
@@ -108,10 +106,12 @@ export default  {
                 state: this.vBar.state
             },
             directives: {
-                name: "model",
+                name: "bind",
                 modifiers: {
                     sync: true
                 },
+                arg: 'mousedown'
+                ,
                 value: this.mousedown
             }
         }
@@ -131,10 +131,12 @@ export default  {
                 state: this.hBar.state
             },
             directives: {
-                name: "model",
+                name: "bind",
                 modifiers: {
                     sync: true
                 },
+                arg: 'mousedown'
+                ,
                 value: this.mousedown
             }
         }

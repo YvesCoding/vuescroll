@@ -3,7 +3,9 @@ export default {
         bar: {
             size: 'height',
             opsSize: 'width',
-            posName: 'top'
+            posName: 'top',
+            page: 'pageY',
+            scroll: 'scollTop'
         },
         axis: 'Y'
     },
@@ -11,7 +13,9 @@ export default {
         bar: {
             size: 'width',
             opsSize: 'height',
-            posName: 'left'
+            posName: 'left',
+            page: 'pageX',
+            scroll: 'scrollLeft'
         },
         axis: 'X'
     }

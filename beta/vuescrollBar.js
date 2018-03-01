@@ -40,11 +40,22 @@ export default {
     },
     methods: {
         handleMousedown(e) {
-            this[scrollMap[this.type].axis] = e[`page${scrollMap[this.type].axis}`];
-            this.$emit("update:")
+            this.axisStartPos = e[this.bar.page];
+            // tell parent that the mouse has been down.
+            this.$emit("update:mousedown", true);
+            on(document, 'mousemove', this.handleMouseMove);
+            on(document, 'mouseup', this.handleMouseUp);
         },
         handleMouseMove(e) {
-
+            const delta = e[this.bar.page] - this.axisStartPos;
+            this.axisStartPos = e[this.bar.page];
+            this.$parent.$refs['scrollPanel'][this.bar.scroll] =
+            this.$parent.$refs['scrollPanel'][this.bar.scroll] + delta; 
+        },
+        handleMouseUp() {
+            this.$emit("update:mousedown", false);
+            off(document, 'mousemove', this.handleMouseMove);
+            off(document, 'mouseup', this.handleMouseUp);
         }
     },
     props: {
@@ -58,6 +69,10 @@ export default {
         },
         type: {
             type: String,
+            required: true
+        },
+        mousedown: {
+            type: Boolean,
             required: true
         }
     }

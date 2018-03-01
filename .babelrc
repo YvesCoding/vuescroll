@@ -1,5 +1,6 @@
 {
     "presets": [
+      "es2015-rollup",
       ["env",  {"modules": false}]
     ],
     "plugins": ["transform-vue-jsx"]
