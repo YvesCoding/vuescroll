@@ -24,7 +24,7 @@
 
             .content {
                 width: 400px;
-                height: 300px;
+                height: 600px;
             }
         </style>
     </head>
@@ -41,10 +41,10 @@
             </div>
              
             <input type="radio" id="one" value="right" v-model="ops.vRail.pos">
-            <label for="one">One</label>
+            <label for="one">right</label>
             <br>
             <input type="radio" id="two" value="left" v-model="ops.vRail.pos">
-            <label for="two">Two</label>
+            <label for="two">left</label>
             <button @click="testMouseenter">
                 testMouseenter
             </button>
@@ -74,7 +74,6 @@
                     ops: {
                         vBar: {
                             deltaY: 100
-                             
                         },
                         hBar: {
                            
@@ -84,6 +83,9 @@
                         },
                         scrollContent: {
                             padding: true
+                        },
+                        scrollPanel: {
+                            initialScrollY: '10%'
                         }
                     } 
                 },

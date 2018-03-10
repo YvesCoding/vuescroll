@@ -9,7 +9,7 @@ const banner =
    `/*
     * @name: vuescroll ${version}
     * @author: (c) 2018-${new Date().getFullYear()} wangyi7099
-    * @description: A virtual scrollbar based on vue.js 2.x inspired by slimscroll
+    * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
     * @GitHub: https://github.com/wangyi7099/vuescroll
     */
@@ -26,7 +26,7 @@ const resolve = p => {
   }
 }
 
-const root = "beta";
+const root = aliases.root;
 
 const builds = {
    'web-dev': {

@@ -1,4 +1,18 @@
 export default {
+    // vuescroll
+    vuescroll: {
+        style: {
+            position: 'relative',
+            height: '100%',
+            width: '100%',
+            overflow: 'hidden'
+        },
+        class: ['vueScroll']
+    },
+    scrollPanel: {
+        initialScrollY: false,
+        initialScrollX: false
+    },
     // 
     scrollContent: {
         tag: 'div',
@@ -39,5 +53,5 @@ export default {
         background: '#4caf50',
         keepShow: false,
         opacity: 1
-    }
+    } 
 }

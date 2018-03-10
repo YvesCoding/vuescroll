@@ -8,6 +8,7 @@ describe('vuescroll-install-test', () => {
 
     it('vuescroll should be installed', () => {
         Vue.use(vuescroll);
+        vuescroll.install(Vue);
         expect(vuescroll.isInstalled).toBe(true);
-    })    
+    })
 })

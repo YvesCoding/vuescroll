@@ -2,14 +2,17 @@ const fs = require('fs')
 const path = require('path')
 const zlib = require('zlib')
 const rollup = require('rollup')
-var UglifyJS = require("uglify-es");
+const UglifyJS = require("uglify-es");
+let autoBuild = false;
 if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist')
 }
 
 let builds = require('./config').getAllBuilds()
- 
-build(builds)
+
+if(!autoBuild) {
+  build(builds)
+}
 
 function build (builds) {
   let built = 0
@@ -25,6 +28,7 @@ function build (builds) {
 
   next()
 }
+
 
 function buildEntry (config) {
   const output = config.output
@@ -77,4 +81,9 @@ function logError (e) {
 
 function blue (str) {
   return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m'
+}
+
+module.exports = function() {
+  autoBuild = true;
+  build(builds)
 }

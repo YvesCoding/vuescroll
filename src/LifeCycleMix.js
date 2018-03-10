@@ -10,7 +10,7 @@ import {
  * to merge the global data into user-define data
  */
 function hackPropsData() {
-    let vm = this;
+    const vm = this;
     if(vm.$options.name === 'vueScroll') {
         let ops = deepMerge(GCF, {});
         vm.$options.propsData.ops = vm.$options.propsData.ops || {};
@@ -21,6 +21,7 @@ function hackPropsData() {
                 vm.$options.propsData.ops
             )
         });
+        // from ops to mergedOptions
         deepMerge(ops, vm.mergedOptions);
         // to sync the rail and bar
         defineReactive(vm.mergedOptions.vBar, 'pos', vm.mergedOptions.vRail);
@@ -28,7 +29,7 @@ function hackPropsData() {
         defineReactive(vm.mergedOptions.hBar, 'pos', vm.mergedOptions.hRail);
         defineReactive(vm.mergedOptions.hBar, 'height', vm.mergedOptions.hRail);
         
-        let prefix = "padding-";
+        const prefix = "padding-";
         if(vm.mergedOptions.scrollContent.padding) {
             Object.defineProperty(vm.mergedOptions.scrollContent, 'paddPos',   {
                 get() {
@@ -41,7 +42,6 @@ function hackPropsData() {
                 }
             })
         } 
-        // defineReactive(vm.scrollContent.style, )
     } 
      
 }

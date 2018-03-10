@@ -6,22 +6,26 @@
 import {
     deepMerge,
     defineReactive
-} from './util'
+} from './util';
+
 // import lefrCycle
 import LifeCycleMix from './LifeCycleMix';
+
 // import global config
-import GCF from './GlobalConfig' 
-import {getGutter} from './util'
-// import vuescroll map
-import scrollMap from './scrollMap'
+import GCF from './GlobalConfig';
+
+// import api
+import vuescrollApi from './vueScrollApi';
+
 // import necessary components
 import bar from "./vuescrollBar";
-// import rail from "./vuescrollRail"
-// import scrollContent from './vueScrollContent'
-// import scrollPanel from './vueScrollPanel'
+import rail from "./vuescrollRail";
+import scrollContent from './vueScrollContent';
+import scrollPanel from './vueScrollPanel';
+
 export default  {
     name: "vueScroll",
-    mixins: [LifeCycleMix],
+    mixins: [LifeCycleMix, vuescrollApi],
     data() {
         return {
             scrollPanel: {
@@ -56,6 +60,8 @@ export default  {
             listeners: [],
             mousedown: false,
             mergedOptions: {
+                scrollPanel: {
+                },
                 scrollContent: {
                 },
                 vRail: {
@@ -73,28 +79,31 @@ export default  {
         let vm = this;
         // vuescroll data
         const vuescrollData = {
-            style: gfc.vuescroll.style,
-            class: gfc.vuescroll.class,
+            style: GCF.vuescroll.style,
+            class: GCF.vuescroll.class,
             on: {
                 mouseenter() {
-                    this.showBar();
+                    vm.showBar();
                 },
                 mouseleave() {
-                    this.hideBar();
+                    vm.hideBar();
                 }
             }
         }
         // scrollPanel data
         const scrollPanelData = {
             ref: "scrollPanel",
-            on: {
-                scroll: this.handleScroll
+            nativeOn: {
+                scroll: vm.handleScroll
+            },
+            props: {
+                ops: vm.mergedOptions.scrollPanel,
             }
         }
         // scrollContent data
         const scrollContentData = {
             props: {
-                ops: this.mergedOptions.scrollContent
+                ops: vm.mergedOptions.scrollContent,
             },
             ref: "scrollContent"
         }
@@ -102,51 +111,43 @@ export default  {
         const verticalBarData = {
             props: {
                 type: "vertical",
-                ops: this.mergedOptions.vBar,
-                state: this.vBar.state
+                ops: vm.mergedOptions.vBar,
+                state: vm.vBar.state
             },
-            directives: {
-                name: "bind",
-                modifiers: {
-                    sync: true
-                },
-                arg: 'mousedown'
-                ,
-                value: this.mousedown
-            }
+            on: {
+                setMousedown: this.setMousedown
+            },
+            ref: 'verticalBar'
         }
         // vRail data
         const verticalRailData = {
             props: {
                 type: "vertical",
-                ops: this.mergedOptions.vRail,
-                state: this.vRail.state
-            }
+                ops: vm.mergedOptions.vRail,
+                state: vm.vRail.state
+            },
+            ref: 'verticalRail'
         }
         // hBar data
         const horizontalBarData = {
             props: {
                 type: "horizontal",
-                ops: this.mergedOptions.hBar,
-                state: this.hBar.state
+                ops: vm.mergedOptions.hBar,
+                state: vm.hBar.state
             },
-            directives: {
-                name: "bind",
-                modifiers: {
-                    sync: true
-                },
-                arg: 'mousedown'
-                ,
-                value: this.mousedown
-            }
+            on: {
+                setMousedown: this.setMousedown
+            },
+            ref: 'horizontalBar'
         }
         // hRail data
         const horizontalRailData = {
             props: {
                 type: "horizontal",
-                ops: this.mergedOptions.hRail,
-                state: this.hRail.state
-            }
+                ops: vm.mergedOptions.hRail,
+                state: vm.hRail.state
+            },
+            ref: 'horizontalRail'
         }
         return (
             <div {...vuescrollData}>
@@ -156,20 +157,22 @@ export default  {
                     <scrollContent
                         {...scrollContentData}
                     >
-                        {[this.$slots.default]}
+                        {[vm.$slots.default]}
                     </scrollContent>
                 </scrollPanel>
-                <bar
-                    {...verticalBarData}
-                />
+               
                 <rail 
                     {...verticalRailData}
                 />
-                <bar 
-                    {...horizontalBarData}
+                 <bar
+                    {...verticalBarData}
                 />
+                
                 <rail
                    {...horizontalRailData}
+                />
+                <bar 
+                    {...horizontalBarData}
                 />
             </div>
         );
@@ -179,9 +182,9 @@ export default  {
             return this.$refs.scrollPanel.$el;
         }
     },
-    methods: { 
+    methods: {
         handleScroll() {
-            this.showBar();
+            this.update();
         },
         update() {
             let heightPercentage, widthPercentage;
@@ -198,7 +201,6 @@ export default  {
             this.hBar.state.posValue =  ((scrollPanel.scrollLeft * 100) / scrollPanel.clientWidth);
         },
         showBar() {
-            this.update();
             this.vBar.state.opacity =  this.mergedOptions.vBar.opacity;
             this.hBar.state.opacity =  this.mergedOptions.hBar.opacity;
         },
@@ -211,6 +213,9 @@ export default  {
             if(!this.mergedOptions.hBar.keepShow && !this.mousedown) {
                 this.hBar.state.opacity = 0;
             }
+        },
+        setMousedown(val) {
+            this.mousedown = val;
         }  
     },
     mounted() {
@@ -221,6 +226,7 @@ export default  {
     },
     updated() { 
         this.$nextTick(() => {
+            this.update();
             this.showBar();
             this.hideBar();
         }) 
@@ -235,6 +241,9 @@ export default  {
         ops:{
             default() {
                return {
+                scrollPanel: {
+
+                },
                 scrollContent: {
 
                 },

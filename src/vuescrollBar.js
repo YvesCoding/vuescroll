@@ -10,29 +10,37 @@ export default {
     computed: {
         bar() {
             return scrollMap[this.type].bar
+        },
+        parent() {
+            return this.$parent.$refs
         }
     },
     render(h) {
             let style = {
-            position: 'absolute',
-            [vm.ops.pos]: 0,
+            [this.bar.posName]: 0,
+            [this.ops.pos]: 0,
             [this.bar.size]: this.state.size,
-            [this.bar.opsSize]: this.ops.size,
+            [this.bar.opsSize]: this.ops[this.bar.opsSize],
             background: this.ops.background,
+            opacity: this.state.opacity,
+            cursor: 'pointer',
+            position: 'absolute',
             borderRadius: '4px',
             transition: 'opacity .5s',
             cursor: 'pointer',
-            opacity: this.state.opacity,
-            userSelect: 'none'
+            
+            userSelect: 'none',
+            ...renderTransform(this.type, this.state.posValue)
         }
         const data = {
             style: style,
-            class: `${this.type}Scrollbar`
+            class: `${this.type}Scrollbar`,
+            on: {
+                mousedown: this.handleMousedown 
+            }
         }
         return (
             <div
-                style={renderTransform(this.type, this.state.posValue)}
-                onMousedown={this.handleMousedown}
                 {...data}
             >
             </div>
@@ -40,20 +48,25 @@ export default {
     },
     methods: {
         handleMousedown(e) {
-            this.axisStartPos = e[this.bar.page];
+            e.stopPropagation();
+            this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
             // tell parent that the mouse has been down.
-            this.$emit("update:mousedown", true);
+            this.$emit("setMousedown", true);
             on(document, 'mousemove', this.handleMouseMove);
             on(document, 'mouseup', this.handleMouseUp);
         },
         handleMouseMove(e) {
-            const delta = e[this.bar.page] - this.axisStartPos;
-            this.axisStartPos = e[this.bar.page];
-            this.$parent.$refs['scrollPanel'][this.bar.scroll] =
-            this.$parent.$refs['scrollPanel'][this.bar.scroll] + delta; 
+            if(!this.axisStartPos ) {
+                return;
+            }
+            const delta = e[this.bar.client] - this.parent[`${this.type}Rail`].$el.getBoundingClientRect()[this.bar.posName];
+            const percent = (delta-this.axisStartPos) / this.parent[`${this.type}Rail`].$el[this.bar.offset];
+            this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent; 
         },
         handleMouseUp() {
-            this.$emit("update:mousedown", false);
+            this.$emit("setMousedown", false);
+            this.$parent.hideBar();
+            this.axisStartPos = 0;
             off(document, 'mousemove', this.handleMouseMove);
             off(document, 'mouseup', this.handleMouseUp);
         }
@@ -69,10 +82,6 @@ export default {
         },
         type: {
             type: String,
-            required: true
-        },
-        mousedown: {
-            type: Boolean,
             required: true
         }
     }

@@ -3,37 +3,84 @@ import {getGutter} from './util'
 // vueScrollPanel
 export default   {
     name: 'scrollPanel',
-    render(_c) {
-        let vm = this;
-        let getter = getGutter();
+    methods: {
+        extractScrollDistance(distance, scroll) {
+            let number;
+            if(!(number = /(\d+)%$/.exec(distance))) {
+                number = distance;
+            } else {
+                number = number[1];
+                number = this.$el[scroll] * number / 100;
+            }
+            return number;
+        }
+    },
+    mounted() {
+        if(this.ops.initialScrollX) {
+            const scroll = 'scrollWidth';
+            const number = this.extractScrollDistance(this.ops.initialScrollX, scroll);
+            this.$el['scrollLeft'] = number;
+        }
+        if(this.ops.initialScrollY) {
+            const scroll = 'scrollHeight';
+            const number = this.extractScrollDistance(this.ops.initialScrollY, scroll);
+            this.$el['scrollTop'] = number;
+        }
+    },
+    render(h) {
+        let gutter = getGutter();
         let style = {
             overflow: 'scroll'
         }
-        if(getter) {
-            style.marginRight = -getter + 'px';
-            style.height = `calc(100% + ${getter}px)`
+        if(gutter) {
+            style.marginRight = -gutter + 'px';
+            style.height = `calc(100% + ${gutter}px)`;
+            style.marginBottom = -gutter + 'px';
         } else {
             style.height = '100%';
             if(!getGutter.isUsed) {
                 getGutter.isUsed = true;
-                // add style
+                // for macOs user, the gutter will be 0,
+                // so, we hide the system scrollbar
                 let styleDom = document.createElement('style');
                 styleDom.type = 'text/css';
                 styleDom.innerHTML=".vueScrollPanel::-webkit-scrollbar{width:0;height:0}";
                 document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
             }
         }
-        return _c('div', {
-            style: style,
-            class: "vueScrollPanel",
-            on: {
-                scroll(e) {
-                    vm.$emit('scrolling', e);
-                },
-                wheel(e) {
-                    vm.$emit('wheeling', e);
+        let data = {
+            style: style
+        }
+        return (
+            <div
+                {...data}
+            >
+                {[this.$slots.default]}
+            </div>
+        );
+    },
+    props: {
+        ops: {
+            default() {
+                return {
+
                 }
+            },
+            validator: function (ops) {
+                ops = ops || {};
+                let rtn = true;
+                const initialScrollY = ops['initialScrollY'];
+                const initialScrollX = ops['initialScrollX'];
+                if(initialScrollY && !initialScrollY.match(/\d+%$|^\d+$/)) {
+                    console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number like 100.')
+                    rtn = false;
+                }
+                if(initialScrollX && !initialScrollX.match(/\d+%$|^\d+$/)) {
+                    console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number like 100.')
+                    rtn = false;
+                }
+                return rtn;
             }
-        }, this.$slots.default);
+        }
     }
 }

@@ -3,5 +3,5 @@
       "es2015-rollup",
       ["env",  {"modules": false}]
     ],
-    "plugins": ["transform-vue-jsx"]
+    "plugins": ["transform-vue-jsx", "transform-object-rest-spread"]
   }
