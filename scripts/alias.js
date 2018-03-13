@@ -7,5 +7,6 @@ const root = "src";
 module.exports = {
   vsIns: resolve(root + '/index.ins'),
   vsUnins: resolve(root + '/index.unins'),
-  root: root
+  root: resolve(root),
+  vue$: 'vue/dist/vue.js'
 }

@@ -1,8 +1,8 @@
-import GCF from './GlobalConfig' 
+import GCF from '../config/GlobalConfig' 
 import {
      deepMerge,
      defineReactive
-} from './util'
+} from '../util'
 
 /**
  * hack the lifeCycle 
@@ -15,11 +15,13 @@ function hackPropsData() {
         let ops = deepMerge(GCF, {});
         vm.$options.propsData.ops = vm.$options.propsData.ops || {};
         Object.keys(vm.$options.propsData.ops).forEach(key => {
-            defineReactive(
-                vm.mergedOptions,
-                key,
-                vm.$options.propsData.ops
-            )
+            {
+                defineReactive(
+                    vm.mergedOptions,
+                    key,
+                    vm.$options.propsData.ops
+                )
+            }
         });
         // from ops to mergedOptions
         deepMerge(ops, vm.mergedOptions);
@@ -31,16 +33,16 @@ function hackPropsData() {
         
         const prefix = "padding-";
         if(vm.mergedOptions.scrollContent.padding) {
-            Object.defineProperty(vm.mergedOptions.scrollContent, 'paddPos',   {
-                get() {
+            defineReactive(vm.mergedOptions.scrollContent, 'paddPos',   
+                () => {
                     return prefix + vm.mergedOptions.vRail.pos
                 }
-            })
-            Object.defineProperty(vm.mergedOptions.scrollContent, 'paddValue',  {
-                get() {
+            )
+            defineReactive(vm.mergedOptions.scrollContent, 'paddValue',  
+                () => {
                     return vm.mergedOptions.vRail.width
                 }
-            })
+            )
         } 
     } 
      

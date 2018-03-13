@@ -1,9 +1,9 @@
-import scrollMap from './scrollMap'
+import scrollMap from '../config/scrollMap'
 import {
     renderTransform,
     on,
     off
-} from './util'
+} from '../util'
 
 export default {
     name: "bar",
@@ -12,6 +12,7 @@ export default {
             return scrollMap[this.type].bar
         },
         parent() {
+            /* istanbul ignore next */
             return this.$parent.$refs
         }
     },
@@ -28,7 +29,6 @@ export default {
             borderRadius: '4px',
             transition: 'opacity .5s',
             cursor: 'pointer',
-            
             userSelect: 'none',
             ...renderTransform(this.type, this.state.posValue)
         }
@@ -56,12 +56,21 @@ export default {
             on(document, 'mouseup', this.handleMouseUp);
         },
         handleMouseMove(e) {
+            /**
+             * I really don't have an
+             * idea to test mousemove...
+             */
+            
+            /* istanbul ignore next */
             if(!this.axisStartPos ) {
                 return;
             }
-            const delta = e[this.bar.client] - this.parent[`${this.type}Rail`].$el.getBoundingClientRect()[this.bar.posName];
-            const percent = (delta-this.axisStartPos) / this.parent[`${this.type}Rail`].$el[this.bar.offset];
-            this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent; 
+            /* istanbul ignore next */
+            {
+                const delta = e[this.bar.client] - this.parent[`${this.type}Rail`].$el.getBoundingClientRect()[this.bar.posName];
+                const percent = (delta-this.axisStartPos) / this.parent[`${this.type}Rail`].$el[this.bar.offset];
+                this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent; 
+            } 
         },
         handleMouseUp() {
             this.$emit("setMousedown", false);

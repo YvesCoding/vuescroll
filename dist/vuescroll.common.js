@@ -41,58 +41,7 @@ var map = {
     }
 };
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var defineProperty = function (obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-};
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 /**
  * @description deepCopy a object.
@@ -139,17 +88,26 @@ function deepMerge(from, to) {
  * @param {any} source 
  */
 function defineReactive(target, key, source, souceKey) {
+    var getter = null;
+    if (!source[key] && typeof source !== 'function') {
+        return;
+    }
     souceKey = souceKey || key;
+    if (typeof source === 'function') {
+        getter = source;
+    }
     Object.defineProperty(target, key, {
-        get: function get$$1() {
+        get: getter || function () {
             return source[souceKey];
-        }
+        },
+        configurable: true
     });
 }
 
 var scrollBarWidth = void 0;
 
 function getGutter() {
+    /* istanbul ignore next */
     if (Vue.prototype.$isServer) return 0;
     if (scrollBarWidth !== undefined) return scrollBarWidth;
 
@@ -286,7 +244,9 @@ function hackPropsData() {
         var ops = deepMerge(GCF, {});
         vm.$options.propsData.ops = vm.$options.propsData.ops || {};
         Object.keys(vm.$options.propsData.ops).forEach(function (key) {
-            defineReactive(vm.mergedOptions, key, vm.$options.propsData.ops);
+            {
+                defineReactive(vm.mergedOptions, key, vm.$options.propsData.ops);
+            }
         });
         // from ops to mergedOptions
         deepMerge(ops, vm.mergedOptions);
@@ -298,15 +258,11 @@ function hackPropsData() {
 
         var prefix = "padding-";
         if (vm.mergedOptions.scrollContent.padding) {
-            Object.defineProperty(vm.mergedOptions.scrollContent, 'paddPos', {
-                get: function get() {
-                    return prefix + vm.mergedOptions.vRail.pos;
-                }
+            defineReactive(vm.mergedOptions.scrollContent, 'paddPos', function () {
+                return prefix + vm.mergedOptions.vRail.pos;
             });
-            Object.defineProperty(vm.mergedOptions.scrollContent, 'paddValue', {
-                get: function get() {
-                    return vm.mergedOptions.vRail.width;
-                }
+            defineReactive(vm.mergedOptions.scrollContent, 'paddValue', function () {
+                return vm.mergedOptions.vRail.width;
             });
         }
     }
@@ -323,9 +279,21 @@ var vuescrollApi = {
             var x = pos.x || this.$refs['scrollPanel'].$el.scrollLeft;
             var y = pos.y || this.$refs['scrollPanel'].$el.scrollTop;
             this.$refs['scrollPanel'].$el.scrollTo(x, y);
+        },
+        forceUpdate: function forceUpdate() {
+            var _this = this;
+
+            this.$forceUpdate();
+            Object.keys(this.$refs).forEach(function (ref) {
+                _this.$refs[ref].$forceUpdate();
+            });
         }
     }
 };
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var bar = {
     name: "bar",
@@ -334,13 +302,14 @@ var bar = {
             return map[this.type].bar;
         },
         parent: function parent() {
+            /* istanbul ignore next */
             return this.$parent.$refs;
         }
     },
     render: function render(h) {
-        var _babelHelpers$extends;
+        var _extends2;
 
-        var style = _extends((_babelHelpers$extends = {}, defineProperty(_babelHelpers$extends, this.bar.posName, 0), defineProperty(_babelHelpers$extends, this.ops.pos, 0), defineProperty(_babelHelpers$extends, this.bar.size, this.state.size), defineProperty(_babelHelpers$extends, this.bar.opsSize, this.ops[this.bar.opsSize]), defineProperty(_babelHelpers$extends, 'background', this.ops.background), defineProperty(_babelHelpers$extends, 'opacity', this.state.opacity), defineProperty(_babelHelpers$extends, 'cursor', 'pointer'), defineProperty(_babelHelpers$extends, 'position', 'absolute'), defineProperty(_babelHelpers$extends, 'borderRadius', '4px'), defineProperty(_babelHelpers$extends, 'transition', 'opacity .5s'), defineProperty(_babelHelpers$extends, 'cursor', 'pointer'), defineProperty(_babelHelpers$extends, 'userSelect', 'none'), _babelHelpers$extends), renderTransform(this.type, this.state.posValue));
+        var style = _extends((_extends2 = {}, _defineProperty(_extends2, this.bar.posName, 0), _defineProperty(_extends2, this.ops.pos, 0), _defineProperty(_extends2, this.bar.size, this.state.size), _defineProperty(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty(_extends2, 'background', this.ops.background), _defineProperty(_extends2, 'opacity', this.state.opacity), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'position', 'absolute'), _defineProperty(_extends2, 'borderRadius', '4px'), _defineProperty(_extends2, 'transition', 'opacity .5s'), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'userSelect', 'none'), _extends2), renderTransform(this.type, this.state.posValue));
         var data = {
             style: style,
             class: this.type + 'Scrollbar',
@@ -361,12 +330,21 @@ var bar = {
             on(document, 'mouseup', this.handleMouseUp);
         },
         handleMouseMove: function handleMouseMove(e) {
+            /**
+             * I really don't have an
+             * idea to test mousemove...
+             */
+
+            /* istanbul ignore next */
             if (!this.axisStartPos) {
                 return;
             }
-            var delta = e[this.bar.client] - this.parent[this.type + 'Rail'].$el.getBoundingClientRect()[this.bar.posName];
-            var percent = (delta - this.axisStartPos) / this.parent[this.type + 'Rail'].$el[this.bar.offset];
-            this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent;
+            /* istanbul ignore next */
+            {
+                var delta = e[this.bar.client] - this.parent[this.type + 'Rail'].$el.getBoundingClientRect()[this.bar.posName];
+                var percent = (delta - this.axisStartPos) / this.parent[this.type + 'Rail'].$el[this.bar.offset];
+                this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent;
+            }
         },
         handleMouseUp: function handleMouseUp() {
             this.$emit("setMousedown", false);
@@ -392,6 +370,8 @@ var bar = {
     }
 };
 
+function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var rail = {
     name: "rail",
     computed: {
@@ -414,7 +394,7 @@ var rail = {
         var _style;
 
         var vm = this;
-        var style = (_style = {}, defineProperty(_style, vm.bar.posName, 0), defineProperty(_style, vm.ops.pos, 0), defineProperty(_style, vm.bar.size, '100%'), defineProperty(_style, vm.bar.opsSize, vm.ops[vm.bar.opsSize]), defineProperty(_style, 'background', vm.ops.background), defineProperty(_style, 'opacity', vm.ops.opacity), defineProperty(_style, 'position', 'absolute'), defineProperty(_style, 'cursor', 'pointer'), defineProperty(_style, 'borderRadius', '4px'), _style);
+        var style = (_style = {}, _defineProperty$1(_style, vm.bar.posName, 0), _defineProperty$1(_style, vm.ops.pos, 0), _defineProperty$1(_style, vm.bar.size, '100%'), _defineProperty$1(_style, vm.bar.opsSize, vm.ops[vm.bar.opsSize]), _defineProperty$1(_style, 'background', vm.ops.background), _defineProperty$1(_style, 'opacity', vm.ops.opacity), _defineProperty$1(_style, 'position', 'absolute'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'borderRadius', '4px'), _style);
         var data = {
             style: style,
             class: this.type + 'Rail',
@@ -488,19 +468,25 @@ var scrollPanel = {
                 number = this.$el[scroll] * number / 100;
             }
             return number;
+        },
+        updateInitialScroll: function updateInitialScroll() {
+            if (this.ops.initialScrollX) {
+                var scroll = 'scrollWidth';
+                var number = this.extractScrollDistance(this.ops.initialScrollX, scroll);
+                this.$el['scrollLeft'] = number;
+            }
+            if (this.ops.initialScrollY) {
+                var _scroll = 'scrollHeight';
+                var _number = this.extractScrollDistance(this.ops.initialScrollY, _scroll);
+                this.$el['scrollTop'] = _number;
+            }
         }
     },
     mounted: function mounted() {
-        if (this.ops.initialScrollX) {
-            var scroll = 'scrollWidth';
-            var number = this.extractScrollDistance(this.ops.initialScrollX, scroll);
-            this.$el['scrollLeft'] = number;
-        }
-        if (this.ops.initialScrollY) {
-            var _scroll = 'scrollHeight';
-            var _number = this.extractScrollDistance(this.ops.initialScrollY, _scroll);
-            this.$el['scrollTop'] = _number;
-        }
+        this.updateInitialScroll();
+    },
+    updated: function updated() {
+        this.updateInitialScroll();
     },
     render: function render(h) {
         var gutter = getGutter();
@@ -511,18 +497,18 @@ var scrollPanel = {
             style.marginRight = -gutter + 'px';
             style.height = 'calc(100% + ' + gutter + 'px)';
             style.marginBottom = -gutter + 'px';
-        } else {
-            style.height = '100%';
-            if (!getGutter.isUsed) {
-                getGutter.isUsed = true;
-                // for macOs user, the gutter will be 0,
-                // so, we hide the system scrollbar
-                var styleDom = document.createElement('style');
-                styleDom.type = 'text/css';
-                styleDom.innerHTML = ".vueScrollPanel::-webkit-scrollbar{width:0;height:0}";
-                document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
+        } else /* istanbul ignore next */{
+                style.height = '100%';
+                if (!getGutter.isUsed) {
+                    getGutter.isUsed = true;
+                    // for macOs user, the gutter will be 0,
+                    // so, we hide the system scrollbar
+                    var styleDom = document.createElement('style');
+                    styleDom.type = 'text/css';
+                    styleDom.innerHTML = ".vueScrollPanel::-webkit-scrollbar{width:0;height:0}";
+                    document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
+                }
             }
-        }
         var data = {
             style: style
         };
@@ -536,6 +522,7 @@ var scrollPanel = {
     props: {
         ops: {
             default: function _default() {
+                /* istanbul ignore next */
                 return {};
             },
 
@@ -544,12 +531,12 @@ var scrollPanel = {
                 var rtn = true;
                 var initialScrollY = ops['initialScrollY'];
                 var initialScrollX = ops['initialScrollX'];
-                if (initialScrollY && !initialScrollY.match(/\d+%$|^\d+$/)) {
-                    console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number like 100.');
+                if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
+                    console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
                     rtn = false;
                 }
-                if (initialScrollX && !initialScrollX.match(/\d+%$|^\d+$/)) {
-                    console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number like 100.');
+                if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
+                    console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
                     rtn = false;
                 }
                 return rtn;
@@ -692,7 +679,7 @@ var vuescroll = {
     },
 
     computed: {
-        scrollPanelRef: function scrollPanelRef() {
+        scrollPanelElm: function scrollPanelElm() {
             return this.$refs.scrollPanel.$el;
         }
     },
@@ -703,7 +690,8 @@ var vuescroll = {
         update: function update() {
             var heightPercentage = void 0,
                 widthPercentage = void 0;
-            var scrollPanel$$1 = this.scrollPanelRef;
+            var scrollPanel$$1 = this.scrollPanelElm;
+            /* istanbul ignore if */
             if (!scrollPanel$$1) return;
 
             heightPercentage = scrollPanel$$1.clientHeight * 100 / (scrollPanel$$1.scrollHeight - this.accuracy);
@@ -737,6 +725,7 @@ var vuescroll = {
         var _this = this;
 
         this.$nextTick(function () {
+            _this.update();
             _this.showBar();
             _this.hideBar();
         });
@@ -760,6 +749,7 @@ var vuescroll = {
     props: {
         ops: {
             default: function _default() {
+                /* istanbul ignore next */
                 return {
                     scrollPanel: {},
                     scrollContent: {},

@@ -1,7 +1,6 @@
 {
     "presets": [
-      "es2015-rollup",
-      ["env",  {"modules": false}]
+      ["es2015",  {"modules": false}]
     ],
     "plugins": ["transform-vue-jsx", "transform-object-rest-spread"]
   }

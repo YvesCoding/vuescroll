@@ -1,4 +1,4 @@
-import map from './scrollMap'
+import map from '../config/scrollMap'
 export default {
     name: "rail",
     computed: {

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import scrollMap from './scrollMap'
+import scrollMap from '../config/scrollMap'
 /**
  * @description deepCopy a object.
  * 
@@ -46,17 +46,30 @@ export function deepMerge(from, to) {
  * @param {any} source 
  */
 export function defineReactive(target, key, source, souceKey) {
+    let getter = null;
+    if(
+        !source[key]
+        && typeof source !== 'function'
+
+    ) {
+        return;
+    }
     souceKey = souceKey || key;
+    if(typeof source === 'function') {
+        getter = source;
+    }
     Object.defineProperty(target, key, {
-        get: function() {
+        get: getter || function() {
             return source[souceKey];
-        }
+        },
+        configurable: true
     })
 }
 
 let scrollBarWidth;
 
 export function getGutter() {
+  /* istanbul ignore next */
   if (Vue.prototype.$isServer) return 0;
   if (scrollBarWidth !== undefined) return scrollBarWidth;
 

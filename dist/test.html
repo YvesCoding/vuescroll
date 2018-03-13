@@ -40,11 +40,7 @@
                 </vue-scroll>
             </div>
              
-            <input type="radio" id="one" value="right" v-model="ops.vRail.pos">
-            <label for="one">right</label>
-            <br>
-            <input type="radio" id="two" value="left" v-model="ops.vRail.pos">
-            <label for="two">left</label>
+             
             <button @click="testMouseenter">
                 testMouseenter
             </button>
@@ -63,6 +59,12 @@
             <button @click="clickHRail">
                 clickHRail
             </button>
+            <button @click="setPos">
+                setPos
+            </button>
+            <button @click="testScrollPanel">
+                testScrollPanel
+            </button>
             <br>
          </div>
           
@@ -79,17 +81,24 @@
                            
                         },
                         vRail: {
-                            pos:'right'
+                             
                         },
                         scrollContent: {
                             padding: true
                         },
                         scrollPanel: {
-                            initialScrollY: '10%'
                         }
                     } 
                 },
                 methods: {
+                    testScrollPanel() {
+                        this.ops.scrollPanel.initialScrollY = 'qwe';
+                        this.$refs['vs'].forceUpdate();
+                    },
+                    setPos() {
+                        this.ops.vRail.pos = 'right';
+                        this.$refs['vs'].forceUpdate();
+                    },
                     testMouseenter() {
                         let el = vm.$refs['vs'].$el;
                         trigger(el, 'mouseenter');
@@ -117,8 +126,7 @@
                     scrollTo() {
                         this.$refs['vs'].scrollTo({y: 50});
                         this.$nextTick(() => {
-                            let op = vm.$refs['vs'].vScrollbar.state.top;
-                            console.log(op);
+                             
                         })
                     },
                     wheel() {

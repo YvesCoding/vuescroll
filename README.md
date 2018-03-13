@@ -93,6 +93,7 @@ option|defaultValue|description
 -----|------------|----
 initialScrollY|`false`|The vertical distance  that will scroll while component has mounted.e.g.**100** or **10%**
 initialScrollX|`false`|The horizontal distance  that will scroll while component has mounted.e.g.**100** or **10%**
+
 ### ScrollContent Options
 option|defaultValue|description
 -----|------------|----
@@ -102,6 +103,7 @@ tag|`div`|Setting tag means you can treat scrollcontent as other third-party com
 props|`{}`|If you want to pass props to third party component, use the props, e.g. **props:{someProp: true}**
 attrs|`{}`|The attrs opation is the same as props optioin.
 
+
 ### Scrollbar Options
 
 vBar/hBar|defaultValue|description
@@ -110,14 +112,16 @@ background|`#4caf50`|**Set the scrollbar's background
 keepShow|false|Set whether the scrollbars will keep showing or not.
 opacity|1|Set the scrollbar's  opacity when it shows.
 
+
 ### Rail Options
 
 vRail/hRail|defaultValue|description
------|------------|----
-background|`#a5d6a7`|**Set the rail's background**
-width|`5px`|**Set the scrollbar and the rail's width**
-pos|`left(vBar,vRail)/bottom/(hBar, hRail)`|**Set the position of vBar and vRail or hBar and hRail**
-opacity|0|**Set the rail's  opacity**
+-----|------------|-
+background|`#a5d6a7`|Set the rail's background
+width|`5px`|Set the scrollbar and the rail's width
+pos|`left(vBar,vRail)/bottom/(hBar, hRail)`|Set the position of vBar and vRail or hBar and hRail
+opacity|0|Set the rail's  opacity
+
 
 ### Event
 
@@ -130,7 +134,8 @@ Param `Bar` is the information about scrollbar, and content is the information a
 
 Api|params|description
 -----|------------|----
-scrollTo|`{x:number, y:number}`|Let content scrollTo a concrete place, e.g. this.$refs['vuescroll'].scrollTo({x:100, y: 100});
+scrollTo|`{x:number, y:number}`|ScrollTo a concrete place
+forceUpdate||update the vuescroll's all components.
 
 ### Global Configuartion
 

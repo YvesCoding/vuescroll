@@ -6,16 +6,16 @@
 import {
     deepMerge,
     defineReactive
-} from './util';
+} from '../util';
 
 // import lefrCycle
-import LifeCycleMix from './LifeCycleMix';
+import LifeCycleMix from '../mixins/LifeCycleMix';
 
 // import global config
-import GCF from './GlobalConfig';
+import GCF from '../config/GlobalConfig';
 
 // import api
-import vuescrollApi from './vueScrollApi';
+import vuescrollApi from '../mixins/vueScrollApi';
 
 // import necessary components
 import bar from "./vuescrollBar";
@@ -178,7 +178,7 @@ export default  {
         );
     },
     computed: {
-        scrollPanelRef() {
+        scrollPanelElm() {
             return this.$refs.scrollPanel.$el;
         }
     },
@@ -188,7 +188,8 @@ export default  {
         },
         update() {
             let heightPercentage, widthPercentage;
-            const scrollPanel = this.scrollPanelRef;
+            const scrollPanel = this.scrollPanelElm;
+            /* istanbul ignore if */
             if (!scrollPanel) return;
       
             heightPercentage = (scrollPanel.clientHeight * 100 / (scrollPanel.scrollHeight - this.accuracy));
@@ -220,6 +221,7 @@ export default  {
     },
     mounted() {
         this.$nextTick(() => {
+            this.update();
             this.showBar();
             this.hideBar();
         }) 
@@ -240,6 +242,7 @@ export default  {
     props: {
         ops:{
             default() {
+               /* istanbul ignore next */
                return {
                 scrollPanel: {
 

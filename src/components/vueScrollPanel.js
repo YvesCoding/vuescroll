@@ -1,4 +1,4 @@
-import {getGutter} from './util'
+import {getGutter} from '../util'
 
 // vueScrollPanel
 export default   {
@@ -13,19 +13,25 @@ export default   {
                 number = this.$el[scroll] * number / 100;
             }
             return number;
+        },
+        updateInitialScroll() {
+            if(this.ops.initialScrollX) {
+                const scroll = 'scrollWidth';
+                const number = this.extractScrollDistance(this.ops.initialScrollX, scroll);
+                this.$el['scrollLeft'] = number;
+            }
+            if(this.ops.initialScrollY) {
+                const scroll = 'scrollHeight';
+                const number = this.extractScrollDistance(this.ops.initialScrollY, scroll);
+                this.$el['scrollTop'] = number;
+            }
         }
     },
     mounted() {
-        if(this.ops.initialScrollX) {
-            const scroll = 'scrollWidth';
-            const number = this.extractScrollDistance(this.ops.initialScrollX, scroll);
-            this.$el['scrollLeft'] = number;
-        }
-        if(this.ops.initialScrollY) {
-            const scroll = 'scrollHeight';
-            const number = this.extractScrollDistance(this.ops.initialScrollY, scroll);
-            this.$el['scrollTop'] = number;
-        }
+        this.updateInitialScroll();
+    },
+    updated() {
+        this.updateInitialScroll();
     },
     render(h) {
         let gutter = getGutter();
@@ -36,7 +42,7 @@ export default   {
             style.marginRight = -gutter + 'px';
             style.height = `calc(100% + ${gutter}px)`;
             style.marginBottom = -gutter + 'px';
-        } else {
+        } else /* istanbul ignore next */{
             style.height = '100%';
             if(!getGutter.isUsed) {
                 getGutter.isUsed = true;
@@ -62,6 +68,7 @@ export default   {
     props: {
         ops: {
             default() {
+                /* istanbul ignore next */
                 return {
 
                 }
@@ -71,12 +78,12 @@ export default   {
                 let rtn = true;
                 const initialScrollY = ops['initialScrollY'];
                 const initialScrollX = ops['initialScrollX'];
-                if(initialScrollY && !initialScrollY.match(/\d+%$|^\d+$/)) {
-                    console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number like 100.')
+                if(initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
+                    console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.')
                     rtn = false;
                 }
-                if(initialScrollX && !initialScrollX.match(/\d+%$|^\d+$/)) {
-                    console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number like 100.')
+                if(initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
+                    console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.')
                     rtn = false;
                 }
                 return rtn;

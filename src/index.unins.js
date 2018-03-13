@@ -1,8 +1,8 @@
 // import component
-import vuescroll from './vuescroll';
+import vuescroll from './components/vuescroll';
 
 // import config
-import GCF from './GlobalConfig'
+import GCF from './config/GlobalConfig'
 
 
 let scroll = {
