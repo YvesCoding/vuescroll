@@ -119,7 +119,7 @@ vRail/hRail|defaultValue|description
 -----|------------|-
 background|`#a5d6a7`|Set the rail's background
 width|`5px`|Set the scrollbar and the rail's width
-pos|`left(vBar,vRail)/bottom/(hBar, hRail)`|Set the position of vBar and vRail or hBar and hRail
+pos|`right(vBar,vRail)/bottom/(hBar, hRail)`|Set the position of vBar and vRail or hBar and hRail
 opacity|0|Set the rail's  opacity
 
 

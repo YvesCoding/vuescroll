@@ -199,14 +199,14 @@ var GCF = {
     // 
     vRail: {
         width: '5px',
-        pos: 'left',
+        pos: 'right',
         background: "#a5d6a7",
         opacity: 0 //'0.5'
     },
     // 
     vBar: {
         width: '5px',
-        pos: 'left',
+        pos: 'right',
         background: '#4caf50',
         deltaY: 100,
         keepShow: false,
