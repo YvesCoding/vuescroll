@@ -1,8 +1,10 @@
-# vuescroll - **A virtual scrollbar based on [vue.js](https://github.com/wangyi7099/vuescroll) 2.X**   
-<a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a>
+<p align="center"><a href="https://vuejs.org" target="_blank" rel="noopener noreferrer"><img width="100" src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/logo.png?raw=true" alt="vuescroll logo"></a></p>
+<p align="center">
+    <a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a>
   <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage Status"></a>
-
-> Catalog
+</p>
+  
+> User Guide
 - [Demo](#demo)
 - [Runnig Pictures](#pictures)
 - [UseAge](#useage)
@@ -21,7 +23,7 @@
 
 ## Demo
 
-vuescroll is a virtual scrollbar based on Vue.js 2.0, The experience of using it just like using native scrollbar. It both support PC and Mobile Phone. Here is a living [demo](https://wangyi7099.github.io/vuescrollDemo).
+ vuescroll is A virtual scrollbar based on [vue.js](https://github.com/wangyi7099/vuescroll) 2.X , The experience of using it just like using native scrollbar. It both support PC and Mobile Phone. Here is a living [demo](https://wangyi7099.github.io/vuescrollDemo).
 
 ## Pictures
 
@@ -171,14 +173,14 @@ export default {
     // 
     vRail: {
         width: '5px',
-        pos: 'left',
+        pos: 'right',
         background: "#a5d6a7",
         opacity: 0 //'0.5'
     },
     // 
     vBar: {
         width: '5px',
-        pos: 'left',
+        pos: 'right',
         background: '#4caf50',
         deltaY: 100,
         keepShow: false,
