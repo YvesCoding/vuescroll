@@ -131,7 +131,7 @@ opacity|0|Set the rail's  opacity
 
 event|params|description
 -----|------------|----
-handleScroll|`vertical, horizontal`|Pass two params to you, vertical includes information about vertical bar and process of vertical bar scrolls, the value is from 0 to 1.0 , and so does horizontal scroll bar.
+handle-scroll|`vertical, horizontal`|Pass two params to you, vertical includes information about vertical bar and process of vertical bar scrolls, the value is from 0 to 1.0 , and so does horizontal scroll bar.
 
 ### Api
 
