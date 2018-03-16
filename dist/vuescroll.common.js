@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.5.5
+    * @name: vuescroll 3.5.6
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -587,6 +587,7 @@ var vuescroll = {
             },
             listeners: [],
             mousedown: false,
+            pointerLeave: true,
             mergedOptions: {
                 scrollPanel: {},
                 scrollContent: {},
@@ -605,9 +606,11 @@ var vuescroll = {
             class: GCF.vuescroll.class,
             on: {
                 mouseenter: function mouseenter() {
+                    vm.pointerLeave = false;
                     vm.showBar();
                 },
                 mouseleave: function mouseleave() {
+                    vm.pointerLeave = true;
                     vm.hideBar();
                 }
             }
@@ -725,10 +728,10 @@ var vuescroll = {
         hideBar: function hideBar() {
             // add mousedown condition 
             // to prevent from hiding bar while dragging the bar 
-            if (!this.mergedOptions.vBar.keepShow && !this.mousedown) {
+            if (!this.mergedOptions.vBar.keepShow && !this.mousedown && this.pointerLeave) {
                 this.vBar.state.opacity = 0;
             }
-            if (!this.mergedOptions.hBar.keepShow && !this.mousedown) {
+            if (!this.mergedOptions.hBar.keepShow && !this.mousedown && this.pointerLeave) {
                 this.hBar.state.opacity = 0;
             }
         },

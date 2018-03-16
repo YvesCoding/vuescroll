@@ -59,6 +59,7 @@ export default  {
             },
             listeners: [],
             mousedown: false,
+            pointerLeave: true,
             mergedOptions: {
                 scrollPanel: {
                 },
@@ -83,9 +84,11 @@ export default  {
             class: GCF.vuescroll.class,
             on: {
                 mouseenter() {
+                    vm.pointerLeave = false;
                     vm.showBar();
                 },
                 mouseleave() {
+                    vm.pointerLeave = true;
                     vm.hideBar();
                 }
             }
@@ -224,10 +227,10 @@ export default  {
         hideBar() {
             // add mousedown condition 
             // to prevent from hiding bar while dragging the bar 
-            if(!this.mergedOptions.vBar.keepShow && !this.mousedown) {
+            if(!this.mergedOptions.vBar.keepShow && !this.mousedown && this.pointerLeave) {
                 this.vBar.state.opacity = 0;
             }
-            if(!this.mergedOptions.hBar.keepShow && !this.mousedown) {
+            if(!this.mergedOptions.hBar.keepShow && !this.mousedown && this.pointerLeave) {
                 this.hBar.state.opacity = 0;
             }
         },
