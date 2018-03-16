@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.5.6
+    * @name: vuescroll 3.5.7
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -608,10 +608,16 @@ var vuescroll = {
                 mouseenter: function mouseenter() {
                     vm.pointerLeave = false;
                     vm.showBar();
+                    vm.update();
                 },
                 mouseleave: function mouseleave() {
                     vm.pointerLeave = true;
                     vm.hideBar();
+                },
+                mousemove: function mousemove() /* istanbul ignore next */{
+                    vm.pointerLeave = false;
+                    vm.showBar();
+                    vm.update();
                 }
             }
             // scrollPanel data

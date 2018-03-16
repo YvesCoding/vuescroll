@@ -86,10 +86,16 @@ export default  {
                 mouseenter() {
                     vm.pointerLeave = false;
                     vm.showBar();
+                    vm.update();
                 },
                 mouseleave() {
                     vm.pointerLeave = true;
                     vm.hideBar();
+                },
+                mousemove()/* istanbul ignore next */{
+                    vm.pointerLeave = false;
+                    vm.showBar();
+                    vm.update();
                 }
             }
         }
