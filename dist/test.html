@@ -31,7 +31,7 @@
     <body>
         <div id="app">
             <div class="scroll">
-                <vue-scroll :ops="ops"  ref="vs"   @hscroll="detectHBar" @vscroll="detectVBar">
+                <vue-scroll :style="{width: '100px'}" :ops="ops"  ref="vs"   @handle-scroll="handleScroll">
                     <div class="content">
                     </div>
                 </vue-scroll>
@@ -43,7 +43,20 @@
          </div>
           
         <script>
-          
+            var camelizeRE = /-(\w)/g;
+            var hyphenateRE = /\b/g;
+    var camelize = function(str) {
+        return str.replace(camelizeRE, function(_, c) {
+            return c ? c.toUpperCase() : '';
+        })
+    }
+
+    var hyphenate = function(str) {
+        return str.replace(hyphenateRE, function(_, c) {
+            console.l
+        })
+    }
+
             var vm = new Vue({
                 el: '#app',
                 data: {
@@ -63,7 +76,8 @@
                            background: "red"   
                         },
                         scrollContent: {
-                            padding: true
+                            padding: true,
+                            width: '200px'
                         },
                         scrollPanel: {
                         }
@@ -125,8 +139,8 @@
                     detectVBar(bar, content, process) {
                          console.log(bar, content, process);
                     },
-                    detectHBar(bar, content, process) {
-                         console.log(bar, content, process);
+                    handleScroll(vertical, horizontal) {
+                         console.log(vertical, horizontal);
                     },
                     f() {
                         this.$forceUpdate();

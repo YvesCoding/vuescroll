@@ -186,6 +186,19 @@ export default  {
         handleScroll() {
             this.update();
         },
+        triggerScrollEvent() {
+            const scrollPanel = this.scrollPanelElm;
+            let vertical = {
+
+            }, horizontal = {
+
+            };
+            vertical['process'] = scrollPanel.scrollTop / (scrollPanel.scrollHeight - scrollPanel.clientHeight);
+            horizontal['process'] = scrollPanel.scrollLeft / (scrollPanel.scrollWidth - scrollPanel.clientWidth);
+            vertical['barSize'] = this.vBar.state.size;
+            horizontal['barSize'] = this.hBar.state.size;
+            this.$emit('handle-scroll', vertical, horizontal);
+        },
         update() {
             let heightPercentage, widthPercentage;
             const scrollPanel = this.scrollPanelElm;
@@ -200,6 +213,9 @@ export default  {
 
             this.vBar.state.posValue =  ((scrollPanel.scrollTop * 100) / scrollPanel.clientHeight);
             this.hBar.state.posValue =  ((scrollPanel.scrollLeft * 100) / scrollPanel.clientWidth);
+
+            // trigger scroll event
+            this.triggerScrollEvent();
         },
         showBar() {
             this.vBar.state.opacity =  this.mergedOptions.vBar.opacity;

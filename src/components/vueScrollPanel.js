@@ -55,7 +55,8 @@ export default   {
             }
         }
         let data = {
-            style: style
+            style: style,
+            class: ['scrollPanel']
         }
         return (
             <div

@@ -129,8 +129,7 @@ opacity|0|Set the rail's  opacity
 
 event|params|description
 -----|------------|----
-vscroll/hscroll|`bar,content,progress`|**vscroll** corresponds to **vertical scrollbar scrolls**,**hscroll** corresponds to **horizontal scrollbar scrolls**.
-Param `Bar` is the information about scrollbar, and content is the information about the scrollcontent, and the progress shows the progress of the scrolling.
+handleScroll|`vertical, horizontal`|Pass two params to you, vertical includes information about vertical bar and process of vertical bar scrolls, the value is from 0 to 1.0 , and so does horizontal scroll bar.
 
 ### Api
 

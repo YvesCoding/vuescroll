@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.3.16
+    * @name: vuescroll 3.5.4
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -184,6 +184,7 @@ var GCF = {
             position: 'relative',
             height: '100%',
             width: '100%',
+            padding: 0,
             overflow: 'hidden'
         },
         class: ['vueScroll']
@@ -510,7 +511,8 @@ var scrollPanel = {
                 }
             }
         var data = {
-            style: style
+            style: style,
+            class: ['scrollPanel']
         };
         return h(
             'div',
@@ -687,6 +689,16 @@ var vuescroll = {
         handleScroll: function handleScroll() {
             this.update();
         },
+        triggerScrollEvent: function triggerScrollEvent() {
+            var scrollPanel$$1 = this.scrollPanelElm;
+            var vertical = {},
+                horizontal = {};
+            vertical['process'] = scrollPanel$$1.scrollTop / (scrollPanel$$1.scrollHeight - scrollPanel$$1.clientHeight);
+            horizontal['process'] = scrollPanel$$1.scrollLeft / (scrollPanel$$1.scrollWidth - scrollPanel$$1.clientWidth);
+            vertical['barSize'] = this.vBar.state.size;
+            horizontal['barSize'] = this.hBar.state.size;
+            this.$emit('handle-scroll', vertical, horizontal);
+        },
         update: function update() {
             var heightPercentage = void 0,
                 widthPercentage = void 0;
@@ -702,6 +714,9 @@ var vuescroll = {
 
             this.vBar.state.posValue = scrollPanel$$1.scrollTop * 100 / scrollPanel$$1.clientHeight;
             this.hBar.state.posValue = scrollPanel$$1.scrollLeft * 100 / scrollPanel$$1.clientWidth;
+
+            // trigger scroll event
+            this.triggerScrollEvent();
         },
         showBar: function showBar() {
             this.vBar.state.opacity = this.mergedOptions.vBar.opacity;
