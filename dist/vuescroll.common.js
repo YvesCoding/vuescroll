@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.5.7
+    * @name: vuescroll 3.6.0
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -176,6 +176,71 @@ function off(dom, eventName, hander) {
 
     dom.removeEventListener(eventName, hander, capture);
 }
+/**
+ * Calculate the easing pattern
+ * @link https://github.com/cferdinandi/smooth-scroll/blob/master/src/js/smooth-scroll.js
+ * modified by wangyi7099
+ * @param {String} type Easing pattern
+ * @param {Number} time Time animation should take to complete
+ * @returns {Number}
+ */
+function easingPattern(easing, time) {
+    var pattern = null;
+
+    // Default Easing Patterns
+    if (easing === 'easeInQuad') pattern = time * time; // accelerating from zero velocity
+    if (easing === 'easeOutQuad') pattern = time * (2 - time); // decelerating to zero velocity
+    if (easing === 'easeInOutQuad') pattern = time < 0.5 ? 2 * time * time : -1 + (4 - 2 * time) * time; // acceleration until halfway, then deceleration
+    if (easing === 'easeInCubic') pattern = time * time * time; // accelerating from zero velocity
+    if (easing === 'easeOutCubic') pattern = --time * time * time + 1; // decelerating to zero velocity
+    if (easing === 'easeInOutCubic') pattern = time < 0.5 ? 4 * time * time * time : (time - 1) * (2 * time - 2) * (2 * time - 2) + 1; // acceleration until halfway, then deceleration
+    if (easing === 'easeInQuart') pattern = time * time * time * time; // accelerating from zero velocity
+    if (easing === 'easeOutQuart') pattern = 1 - --time * time * time * time; // decelerating to zero velocity
+    if (easing === 'easeInOutQuart') pattern = time < 0.5 ? 8 * time * time * time * time : 1 - 8 * --time * time * time * time; // acceleration until halfway, then deceleration
+    if (easing === 'easeInQuint') pattern = time * time * time * time * time; // accelerating from zero velocity
+    if (easing === 'easeOutQuint') pattern = 1 + --time * time * time * time * time; // decelerating to zero velocity
+    if (easing === 'easeInOutQuint') pattern = time < 0.5 ? 16 * time * time * time * time * time : 1 + 16 * --time * time * time * time * time; // acceleration until halfway, then deceleration
+
+    return pattern || time; // no easing, no acceleration
+}
+
+/**
+ * 
+ * 
+ * @export
+ * @param {any} elm 
+ * @param {any} deltaX 
+ * @param {any} deltaY 
+ * @param {any} speed 
+ * @param {any} easing 
+ */
+function goScrolling(elm, deltaX, deltaY, speed, easing) {
+    var start = null;
+    var positionX = null;
+    var positionY = null;
+    var startLocationY = elm['scrollTop'];
+    var startLocationX = elm['scrollLeft'];
+    var loopScroll = function loopScroll(timeStamp) {
+        if (!start) {
+            start = timeStamp;
+        }
+        var deltaTime = timeStamp - start;
+        var percentage = deltaTime / speed > 1 ? 1 : deltaTime / speed;
+        positionX = startLocationX + deltaX * easingPattern(easing, percentage);
+        positionY = startLocationY + deltaY * easingPattern(easing, percentage);
+        if (Math.abs(positionY - startLocationY) <= Math.abs(deltaY) || Math.abs(positionX - startLocationX) <= Math.abs(deltaX)) {
+            // set scrollTop or scrollLeft
+            elm['scrollTop'] = Math.floor(positionY);
+            elm['scrollLeft'] = Math.floor(positionX);
+            if (percentage < 1) {
+                requestAnimationFrame(loopScroll);
+            }
+        } else {
+            start = null;
+        }
+    };
+    requestAnimationFrame(loopScroll);
+}
 
 var GCF = {
     // vuescroll
@@ -191,7 +256,9 @@ var GCF = {
     },
     scrollPanel: {
         initialScrollY: false,
-        initialScrollX: false
+        initialScrollX: false,
+        speed: 300,
+        easing: undefined
     },
     // 
     scrollContent: {
@@ -279,7 +346,7 @@ var vuescrollApi = {
         scrollTo: function scrollTo(pos) {
             var x = pos.x || this.$refs['scrollPanel'].$el.scrollLeft;
             var y = pos.y || this.$refs['scrollPanel'].$el.scrollTop;
-            this.$refs['scrollPanel'].$el.scrollTo(x, y);
+            goScrolling(this.$refs['scrollPanel'].$el, x - this.$refs['scrollPanel'].$el.scrollLeft, y - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
         },
         forceUpdate: function forceUpdate() {
             var _this = this;
@@ -388,7 +455,8 @@ var rail = {
             var page = this.bar.page;
             var barOffset = this.parentRef[this.type + 'Bar'].$el[this.bar.offset];
             var percent = (e[page] - e.target.getBoundingClientRect()[this.bar.posName] - barOffset / 2) / e.target[this.bar.offset];
-            this.parentRef['scrollPanel'].$el[this.bar.scroll] = this.parentRef['scrollPanel'].$el[this.bar.scrollSize] * percent;
+            var pos = this.parentRef['scrollPanel'].$el[this.bar.scrollSize] * percent;
+            this.$parent.scrollTo(_defineProperty$1({}, map[this.type].axis.toLowerCase(), pos));
         }
     },
     render: function render(h) {
@@ -471,22 +539,23 @@ var scrollPanel = {
             return number;
         },
         updateInitialScroll: function updateInitialScroll() {
+            var x = 0;
+            var y = 0;
             if (this.ops.initialScrollX) {
                 var scroll = 'scrollWidth';
-                var number = this.extractScrollDistance(this.ops.initialScrollX, scroll);
-                this.$el['scrollLeft'] = number;
+                x = this.extractScrollDistance(this.ops.initialScrollX, scroll);
             }
             if (this.ops.initialScrollY) {
                 var _scroll = 'scrollHeight';
-                var _number = this.extractScrollDistance(this.ops.initialScrollY, _scroll);
-                this.$el['scrollTop'] = _number;
+                y = this.extractScrollDistance(this.ops.initialScrollY, _scroll);
             }
+            this.$parent.scrollTo({
+                x: x,
+                y: y
+            });
         }
     },
     mounted: function mounted() {
-        this.updateInitialScroll();
-    },
-    updated: function updated() {
         this.updateInitialScroll();
     },
     render: function render(h) {

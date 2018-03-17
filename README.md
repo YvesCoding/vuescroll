@@ -97,7 +97,8 @@ option|defaultValue|description
 -----|------------|----
 initialScrollY|`false`|The vertical distance  that will scroll while component has mounted.e.g.**100** or **10%**
 initialScrollX|`false`|The horizontal distance  that will scroll while component has mounted.e.g.**100** or **10%**
-
+speed|`300`|The time that scrollPanel scrolls completely.
+easing|`null`|The scrolling animate kind, see [detail](https://gist.github.com/gre/1650294).
 ### ScrollContent Options
 option|defaultValue|description
 -----|------------|----

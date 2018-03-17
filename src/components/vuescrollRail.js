@@ -14,8 +14,10 @@ export default {
             const page = this.bar.page;
             const barOffset = this.parentRef[`${this.type}Bar`].$el[this.bar.offset];
             const percent = (e[page] - e.target.getBoundingClientRect()[this.bar.posName] - barOffset/2) / e.target[this.bar.offset];
-            this.parentRef['scrollPanel'].$el[this.bar.scroll] =
-            this.parentRef['scrollPanel'].$el[this.bar.scrollSize] * percent; 
+            const pos = this.parentRef['scrollPanel'].$el[this.bar.scrollSize] * percent; 
+            this.$parent.scrollTo({
+                [map[this.type].axis.toLowerCase()]: pos
+            })
         }
     },
     render(h) {

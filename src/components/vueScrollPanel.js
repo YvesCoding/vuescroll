@@ -15,22 +15,23 @@ export default   {
             return number;
         },
         updateInitialScroll() {
+            let x = 0;
+            let y = 0;
             if(this.ops.initialScrollX) {
                 const scroll = 'scrollWidth';
-                const number = this.extractScrollDistance(this.ops.initialScrollX, scroll);
-                this.$el['scrollLeft'] = number;
+                x = this.extractScrollDistance(this.ops.initialScrollX, scroll);
             }
             if(this.ops.initialScrollY) {
                 const scroll = 'scrollHeight';
-                const number = this.extractScrollDistance(this.ops.initialScrollY, scroll);
-                this.$el['scrollTop'] = number;
+                y = this.extractScrollDistance(this.ops.initialScrollY, scroll);
             }
+            this.$parent.scrollTo({
+                x,
+                y
+            })
         }
     },
     mounted() {
-        this.updateInitialScroll();
-    },
-    updated() {
         this.updateInitialScroll();
     },
     render(h) {

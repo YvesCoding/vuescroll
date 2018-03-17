@@ -12,7 +12,9 @@ export default {
     },
     scrollPanel: {
         initialScrollY: false,
-        initialScrollX: false
+        initialScrollX: false,
+        speed: 300,
+        easing: undefined
     },
     // 
     scrollContent: {
