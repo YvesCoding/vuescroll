@@ -55,7 +55,7 @@ describe('vuescroll-test', () => {
             x: 100,
             y: 100
         });
-        ins.$nextTick(() => {
+        setTimeout(() => {
             // use scrollTo api will not trigger 
             // scroll automatically,
             // so, we trigger scroll manually,
@@ -64,7 +64,7 @@ describe('vuescroll-test', () => {
             expect(vs.scrollPanelElm.scrollTop).toBe(100);
             expect(vs.scrollPanelElm.scrollLeft).toBe(100);
             done();
-        })
+        }, 600);
     });
 
     it('give an accuracy that is smaller than 0', (done) => {

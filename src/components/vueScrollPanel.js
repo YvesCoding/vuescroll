@@ -32,7 +32,9 @@ export default   {
         }
     },
     mounted() {
-        this.updateInitialScroll();
+        this.$nextTick(() => {
+            this.updateInitialScroll();
+        })
     },
     render(h) {
         let gutter = getGutter();
