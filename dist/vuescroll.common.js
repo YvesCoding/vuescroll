@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.6.1
+    * @name: vuescroll 3.6.2
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -340,11 +340,39 @@ var LifeCycleMix = {
     }
 };
 
+/**
+ * extract an exact number from given params
+ * @param {any} distance 
+ * @param {any} scroll 
+ * @param {any} el 
+ * @returns 
+ */
+function extractScrollDistance(distance, scroll, el) {
+    var number = void 0;
+    if (!(number = /(\d+)%$/.exec(distance))) {
+        number = distance;
+    } else {
+        number = number[1];
+        number = el[scroll] * number / 100;
+    }
+    return number;
+}
+
 var vuescrollApi = {
     methods: {
         scrollTo: function scrollTo(pos) {
-            var x = pos.x || this.$refs['scrollPanel'].$el.scrollLeft;
-            var y = pos.y || this.$refs['scrollPanel'].$el.scrollTop;
+            if (typeof pos.x === 'undefined') {
+                pos.x = this.$refs['scrollPanel'].$el.scrollLeft;
+            } else {
+                pos.x = extractScrollDistance(pos.x, 'scrollWidth', this.scrollPanelElm);
+            }
+            if (typeof pos.y === 'undefined') {
+                pos.y = this.$refs['scrollPanel'].$el.scrollTop;
+            } else {
+                pos.y = extractScrollDistance(pos.y, 'scrollHeight', this.scrollPanelElm);
+            }
+            var x = pos.x;
+            var y = pos.y;
             goScrolling(this.$refs['scrollPanel'].$el, x - this.$refs['scrollPanel'].$el.scrollLeft, y - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
         },
         forceUpdate: function forceUpdate() {
@@ -527,26 +555,14 @@ var scrollContent = {
 var scrollPanel = {
     name: 'scrollPanel',
     methods: {
-        extractScrollDistance: function extractScrollDistance(distance, scroll) {
-            var number = void 0;
-            if (!(number = /(\d+)%$/.exec(distance))) {
-                number = distance;
-            } else {
-                number = number[1];
-                number = this.$el[scroll] * number / 100;
-            }
-            return number;
-        },
         updateInitialScroll: function updateInitialScroll() {
             var x = 0;
             var y = 0;
             if (this.ops.initialScrollX) {
-                var scroll = 'scrollWidth';
-                x = this.extractScrollDistance(this.ops.initialScrollX, scroll);
+                x = this.ops.initialScrollX;
             }
             if (this.ops.initialScrollY) {
-                var _scroll = 'scrollHeight';
-                y = this.extractScrollDistance(this.ops.initialScrollY, _scroll);
+                y = this.ops.initialScrollY;
             }
             this.$parent.scrollTo({
                 x: x,
@@ -558,7 +574,9 @@ var scrollPanel = {
         var _this = this;
 
         this.$nextTick(function () {
-            _this.updateInitialScroll();
+            if (!_this._isDestroyed) {
+                _this.updateInitialScroll();
+            }
         });
     },
     render: function render(h) {
@@ -821,18 +839,22 @@ var vuescroll = {
         var _this = this;
 
         this.$nextTick(function () {
-            _this.update();
-            _this.showBar();
-            _this.hideBar();
+            if (!_this._isDestroyed) {
+                _this.update();
+                _this.showBar();
+                _this.hideBar();
+            }
         });
     },
     updated: function updated() {
         var _this2 = this;
 
         this.$nextTick(function () {
-            _this2.update();
-            _this2.showBar();
-            _this2.hideBar();
+            if (!_this2._isDestroyed) {
+                _this2.update();
+                _this2.showBar();
+                _this2.hideBar();
+            }
         });
     },
 

@@ -8,5 +8,6 @@ module.exports = {
   vsIns: resolve(root + '/index.ins'),
   vsUnins: resolve(root + '/index.unins'),
   root: resolve(root),
+  test: resolve('./test'),
   vue$: 'vue/dist/vue.js'
 }

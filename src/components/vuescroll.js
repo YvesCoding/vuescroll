@@ -246,16 +246,20 @@ export default  {
     },
     mounted() {
         this.$nextTick(() => {
-            this.update();
-            this.showBar();
-            this.hideBar();
+            if(!this._isDestroyed) {
+                this.update();
+                this.showBar();
+                this.hideBar();
+            }
         }) 
     },
     updated() { 
         this.$nextTick(() => {
-            this.update();
-            this.showBar();
-            this.hideBar();
+            if(!this._isDestroyed) {
+                this.update();
+                this.showBar();
+                this.hideBar();
+            }
         }) 
     },
     components: {

@@ -4,26 +4,14 @@ import {getGutter} from '../util'
 export default   {
     name: 'scrollPanel',
     methods: {
-        extractScrollDistance(distance, scroll) {
-            let number;
-            if(!(number = /(\d+)%$/.exec(distance))) {
-                number = distance;
-            } else {
-                number = number[1];
-                number = this.$el[scroll] * number / 100;
-            }
-            return number;
-        },
         updateInitialScroll() {
             let x = 0;
             let y = 0;
             if(this.ops.initialScrollX) {
-                const scroll = 'scrollWidth';
-                x = this.extractScrollDistance(this.ops.initialScrollX, scroll);
+                x = this.ops.initialScrollX;
             }
             if(this.ops.initialScrollY) {
-                const scroll = 'scrollHeight';
-                y = this.extractScrollDistance(this.ops.initialScrollY, scroll);
+                y = this.ops.initialScrollY;
             }
             this.$parent.scrollTo({
                 x,
@@ -33,7 +21,9 @@ export default   {
     },
     mounted() {
         this.$nextTick(() => {
-            this.updateInitialScroll();
+            if(!this._isDestroyed) {
+                this.updateInitialScroll();
+            };
         })
     },
     render(h) {

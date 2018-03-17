@@ -3,9 +3,9 @@
  */
 import {
     trigger
-}from '../../util'
+}from 'test/util'
 
-describe('test ops', () => {
+describe('test scrollPanel component', () => {
     let ins = null;
     let vs = null;
     let data = deepMerge(globalData, {});
@@ -27,17 +27,7 @@ describe('test ops', () => {
         ins.$destroy();
         document.body.removeChild(ins.$el);
     })
-    describe('test rail options', () => {
-        it('test rail and bar pos', (done) => {
-            ins.ops.vRail['pos'] = 'right';
-            vs.forceUpdate();
-            ins.$nextTick(() => {
-                expect(vs.$refs['verticalRail'].$el.style.right).toBe('0px');
-                expect(vs.$refs['verticalBar'].$el.style.right).toBe('0px');
-                done();
-            })
-        });
-    });
+    
 
     describe('test scrollPanel options', () => {
         it('test initalScrollY and X\'s value < 0', (done) => {

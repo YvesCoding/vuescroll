@@ -4,9 +4,9 @@
 import GCF from 'root/config/GlobalConfig'
 import {
     trigger
-}from '../../util'
+}from 'test/util'
 
-describe('vuescroll-test', () => {
+describe('test vuescroll component', () => {
     let ins = null;
     let vs = null;
     let data = deepMerge(globalData, {});
@@ -48,23 +48,6 @@ describe('vuescroll-test', () => {
                 done();
             })
         })
-    });
-
-    it('test scrollTo api', (done) => {
-        vs.scrollTo({
-            x: 100,
-            y: 100
-        });
-        setTimeout(() => {
-            // use scrollTo api will not trigger 
-            // scroll automatically,
-            // so, we trigger scroll manually,
-            trigger(vs.scrollPanelElm, 'scroll');
-
-            expect(vs.scrollPanelElm.scrollTop).toBe(100);
-            expect(vs.scrollPanelElm.scrollLeft).toBe(100);
-            done();
-        }, 600);
     });
 
     it('give an accuracy that is smaller than 0', (done) => {

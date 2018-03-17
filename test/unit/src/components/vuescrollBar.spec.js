@@ -3,9 +3,9 @@
  */
 import {
     trigger
-}from '../../util'
+}from 'test/util'
 
-describe('test vueScroll bar', () => {
+describe('test vueScrollBar component', () => {
     let ins = null;
     let vs = null;
     let data = deepMerge(globalData, {});
