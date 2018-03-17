@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.6.0
+    * @name: vuescroll 3.6.1
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
