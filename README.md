@@ -5,48 +5,22 @@
   <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage Status"></a>
            <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 </p>
-  
-> User Guide
-- [Demo](#demo)
-- [Runnig Pictures](#pictures)
-- [UseAge](#useage)
-    - [Install](#install)
-	- [DemoCode](#democode)
-- [Options](#options)
-    - [Vuescroll Options](#vuescroll-options)
-    - [ScrollPanel Options](#scrollpanel-options)
-    - [ScrollContent Options](#scrollcontent-options)
-    - [Scrollbar Options](#scrollbar-options)
-    - [Rail Options](#rail-options)
-    - [Event](#event)
-    - [Global Configuartion](#global-configuartion)
-- [Inspire](#inspire)
-- [Liscence](#liscence)
 
 ## Demo
 
  vuescroll is A virtual scrollbar based on [vue.js](https://github.com/wangyi7099/vuescroll) 2.X , The experience of using it just like using native scrollbar. It both support PC and Mobile Phone. Here is a living [demo](https://wangyi7099.github.io/vuescrollDemo).
 
-## Pictures
-
-### PC
-
-![Pc](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/PC-V3.1.gif?raw=true)
-
-### Moblie
-
-![Mobile](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/MOBILE-V3.1.gif?raw=true)
 
 ## Useage
 
 ### Install
 
-If you are in a browser envoriment. Include vuescroll.js and vue.js by script tag:
+Browser:
 ```html
     <script src="https://unpkg.com/vue"></script>
     <script src="https://unpkg.com/vuescroll"></script>
 ```
-Or if you are in the nodejs environment, install it by npm, and use it:
+NodeJs:
 ```bash
    npm install vuescroll -S
 ```
@@ -56,7 +30,7 @@ Or if you are in the nodejs environment, install it by npm, and use it:
 
 	Vue.use(vuescroll)
 ```
-And then, wrap the content you want to scroll.
+Wrap the content you want to scroll.
 ```html
 <div class="container">
     <vue-scroll :ops="ops">
@@ -65,7 +39,7 @@ And then, wrap the content you want to scroll.
     </vue-scroll>
 </div>
 ```
-Finally, set the options in the data property, go to the [Options](#options) section to look through the detailed configs.
+JS:
 ```javascript
     new Vue({
         data: {
@@ -207,7 +181,7 @@ export default {
 ```
 ## Inspire
 
-It's inpired by jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)  and  [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src).
+jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)  and  [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src).
 
 ## Liscence
 
