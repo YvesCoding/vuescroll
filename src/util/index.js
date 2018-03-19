@@ -212,7 +212,25 @@ export function goScrolling(
     let positionX = null;
     let positionY = null;
     const startLocationY = elm['scrollTop'];
-    const startLocationX = elm['scrollLeft']
+    const startLocationX = elm['scrollLeft'];
+    /**
+     * keep the limit of scroll delta.
+     */
+    /* istanbul ignore next */
+    {
+        if(startLocationY + deltaY < 0) {
+            deltaY = -startLocationY;
+        }
+        if(startLocationY + deltaY > elm['scrollHeight']) {
+            deltaY = elm['scrollHeight'] - startLocationY;
+        }
+        if(startLocationX + deltaX < 0) {
+            deltaX = -startLocationX;
+        }
+        if(startLocationX + deltaX > elm['scrollWidth']) {
+            deltaX = elm['scrollWidth'] - startLocationX;
+        }
+    }
     const loopScroll = function(timeStamp) {
         if(!start) {
             start = timeStamp;

@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.6.4
+    * @name: vuescroll 3.6.5
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -221,6 +221,24 @@ function goScrolling(elm, deltaX, deltaY, speed, easing) {
     var positionY = null;
     var startLocationY = elm['scrollTop'];
     var startLocationX = elm['scrollLeft'];
+    /**
+     * keep the limit of scroll delta.
+     */
+    /* istanbul ignore next */
+    {
+        if (startLocationY + deltaY < 0) {
+            deltaY = -startLocationY;
+        }
+        if (startLocationY + deltaY > elm['scrollHeight']) {
+            deltaY = elm['scrollHeight'] - startLocationY;
+        }
+        if (startLocationX + deltaX < 0) {
+            deltaX = -startLocationX;
+        }
+        if (startLocationX + deltaX > elm['scrollWidth']) {
+            deltaX = elm['scrollWidth'] - startLocationX;
+        }
+    }
     var loopScroll = function loopScroll(timeStamp) {
         if (!start) {
             start = timeStamp;
