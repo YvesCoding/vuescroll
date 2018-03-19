@@ -96,6 +96,15 @@ export function getGutter() {
   return scrollBarWidth;
 };
 
+// for macOs user, the gutter will be 0,
+// so, we hide the system scrollbar
+export function hideSystemBar() {
+    let styleDom = document.createElement('style');
+    styleDom.type = 'text/css';
+    styleDom.innerHTML=".scrollPanel::-webkit-scrollbar{width:0;height:0}";
+    document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
+}
+
 /**
  * @description render bar's style
  * @author wangyi

@@ -1,4 +1,7 @@
-import {getGutter} from '../util'
+import {
+    getGutter,
+    hideSystemBar
+} from '../util'
 
 // vueScrollPanel
 export default   {
@@ -39,12 +42,7 @@ export default   {
             style.height = '100%';
             if(!getGutter.isUsed) {
                 getGutter.isUsed = true;
-                // for macOs user, the gutter will be 0,
-                // so, we hide the system scrollbar
-                let styleDom = document.createElement('style');
-                styleDom.type = 'text/css';
-                styleDom.innerHTML=".vueScrollPanel::-webkit-scrollbar{width:0;height:0}";
-                document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
+                hideSytemBar();
             }
         }
         let data = {
