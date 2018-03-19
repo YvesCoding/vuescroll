@@ -6,9 +6,9 @@
            <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 </p>
 
-## Demo
+## What is vuescroll?
 
- vuescroll is A virtual scrollbar based on [vue.js](https://github.com/wangyi7099/vuescroll) 2.X , The experience of using it just like using native scrollbar. It both support PC and Mobile Phone. Here is a living [demo](https://wangyi7099.github.io/vuescrollDemo).
+ vuescroll is a virtual scrollbar based on [vue.js](https://github.com/wangyi7099/vuescroll) 2.X , it can transform a div into a scrollable area, the experience of using it just like using native scrollbar. It can both support PC and Mobile Phone. Here is a living [demo](https://wangyi7099.github.io/vuescrollDemo).
 
 
 ## Useage
