@@ -42,7 +42,7 @@ export default   {
             style.height = '100%';
             if(!getGutter.isUsed) {
                 getGutter.isUsed = true;
-                hideSytemBar();
+                hideSystemBar();
             }
         }
         let data = {

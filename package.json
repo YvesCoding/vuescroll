@@ -20,6 +20,8 @@
     "vue"
   ],
   "license": "MIT",
+  "unpkg": "./dist/vuescroll.js",
+  "jsdelivr": "./dist/vuescroll.js",
   "main": "./dist/vuescroll.common.js",
   "name": "vuescroll",
   "repository": {
@@ -31,7 +33,7 @@
     "test:cover": "karma start test/karma.conf.js",
     "report-coverage": "codecov"
   },
-  "version": "3.6.5",
+  "version": "3.6.6",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",

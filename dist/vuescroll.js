@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.6.5
+    * @name: vuescroll 3.6.6
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -138,7 +138,12 @@ function getGutter() {
 
 // for macOs user, the gutter will be 0,
 // so, we hide the system scrollbar
-
+function hideSystemBar() {
+    var styleDom = document.createElement('style');
+    styleDom.type = 'text/css';
+    styleDom.innerHTML = ".scrollPanel::-webkit-scrollbar{width:0;height:0}";
+    document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
+}
 
 /**
  * @description render bar's style
@@ -616,7 +621,7 @@ var scrollPanel = {
                 style.height = '100%';
                 if (!getGutter.isUsed) {
                     getGutter.isUsed = true;
-                    hideSytemBar();
+                    hideSystemBar();
                 }
             }
         var data = {
