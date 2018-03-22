@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.6.6
+    * @name: vuescroll 3.6.7
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -696,6 +696,7 @@ var vuescroll = {
             listeners: [],
             mousedown: false,
             pointerLeave: true,
+            timeoutId: 0,
             mergedOptions: {
                 scrollPanel: {},
                 scrollContent: {},
@@ -805,6 +806,21 @@ var vuescroll = {
     methods: {
         handleScroll: function handleScroll() {
             this.update();
+            if (this.pointerLeave) {
+                if (this.timeoutId) {
+                    clearTimeout(this.timeoutId);
+                }
+                this.showAndDefferedHideBar();
+            }
+        },
+        showAndDefferedHideBar: function showAndDefferedHideBar() {
+            var _this = this;
+
+            this.showBar();
+            this.timeoutId = setTimeout(function () {
+                _this.timeoutId = 0;
+                _this.hideBar();
+            }, 500);
         },
         triggerScrollEvent: function triggerScrollEvent() {
             var scrollPanel$$1 = this.scrollPanelElm;
@@ -854,17 +870,6 @@ var vuescroll = {
         }
     },
     mounted: function mounted() {
-        var _this = this;
-
-        this.$nextTick(function () {
-            if (!_this._isDestroyed) {
-                _this.update();
-                _this.showBar();
-                _this.hideBar();
-            }
-        });
-    },
-    updated: function updated() {
         var _this2 = this;
 
         this.$nextTick(function () {
@@ -872,6 +877,17 @@ var vuescroll = {
                 _this2.update();
                 _this2.showBar();
                 _this2.hideBar();
+            }
+        });
+    },
+    updated: function updated() {
+        var _this3 = this;
+
+        this.$nextTick(function () {
+            if (!_this3._isDestroyed) {
+                _this3.update();
+                _this3.showBar();
+                _this3.hideBar();
             }
         });
     },

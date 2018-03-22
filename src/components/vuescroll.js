@@ -60,6 +60,7 @@ export default  {
             listeners: [],
             mousedown: false,
             pointerLeave: true,
+            timeoutId: 0,
             mergedOptions: {
                 scrollPanel: {
                 },
@@ -194,6 +195,19 @@ export default  {
     methods: {
         handleScroll() {
             this.update();
+            if(this.pointerLeave) {
+                if(this.timeoutId) {
+                    clearTimeout(this.timeoutId);
+                }
+                this.showAndDefferedHideBar();
+            }
+        },
+        showAndDefferedHideBar() {
+            this.showBar();
+            this.timeoutId = setTimeout(() => {
+               this.timeoutId = 0;
+               this.hideBar();
+           }, 500);
         },
         triggerScrollEvent() {
             const scrollPanel = this.scrollPanelElm;
