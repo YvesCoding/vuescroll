@@ -5,19 +5,19 @@ import {
 // scrollContent
 export default  {
     name: 'scrollContent',
-    render(_c) {
-        let vm = this;
-        let style = deepMerge(vm.state.style, {});
-        style.height = vm.ops.height;
-        if(vm.ops.padding) {
-            style[vm.ops.paddPos] =  vm.ops.paddValue;
+    functional: true,
+    render(h, {props, slots}) {
+        let style = deepMerge(props.state.style, {});
+        style.height = props.ops.height;
+        if(props.ops.padding) {
+            style[props.ops.paddPos] =  props.ops.paddValue;
         }
-        return _c(vm.ops.tag, {
+        return h(props.ops.tag, {
             style: style,
             class: "scrollContent",
-            props: vm.ops.props,
-            attrs: vm.ops.attrs
-        }, this.$slots.default);
+            props: props.ops.props,
+            attrs: props.ops.attrs
+        }, slots().default);
     },
     props: {
         ops: {

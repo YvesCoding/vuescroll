@@ -399,7 +399,10 @@ var vuescrollApi = {
 
             this.$forceUpdate();
             Object.keys(this.$refs).forEach(function (ref) {
-                _this.$refs[ref].$forceUpdate();
+                var $ref = _this.$refs[ref];
+                if ($ref._isVue) {
+                    $ref.$forceUpdate();
+                }
             });
         }
     }
@@ -411,6 +414,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var bar = {
     name: "bar",
+
     computed: {
         bar: function bar() {
             return map[this.type].bar;
@@ -455,8 +459,8 @@ var bar = {
             }
             /* istanbul ignore next */
             {
-                var delta = e[this.bar.client] - this.parent[this.type + 'Rail'].$el.getBoundingClientRect()[this.bar.posName];
-                var percent = (delta - this.axisStartPos) / this.parent[this.type + 'Rail'].$el[this.bar.offset];
+                var delta = e[this.bar.client] - this.parent[this.type + 'Rail'].getBoundingClientRect()[this.bar.posName];
+                var percent = (delta - this.axisStartPos) / this.parent[this.type + 'Rail'][this.bar.offset];
                 this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent;
             }
         },
@@ -486,72 +490,59 @@ var bar = {
 
 function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function handleClickTrack(e, bar, parentRef, type, parent) {
+    var page = bar.page;
+    var barOffset = parentRef[type + 'Bar'].$el[bar.offset];
+    var percent = (e[page] - e.target.getBoundingClientRect()[bar.posName] - barOffset / 2) / e.target[bar.offset];
+    var pos = parentRef['scrollPanel'].$el[bar.scrollSize] * percent;
+    parent.scrollTo(_defineProperty$1({}, map[type].axis.toLowerCase(), pos));
+}
+
 var rail = {
     name: "rail",
-    computed: {
-        bar: function bar() {
-            return map[this.type].bar;
-        },
-        parentRef: function parentRef() {
-            return this.$parent.$refs;
-        }
-    },
-    methods: {
-        handleClickTrack: function handleClickTrack(e) {
-            var page = this.bar.page;
-            var barOffset = this.parentRef[this.type + 'Bar'].$el[this.bar.offset];
-            var percent = (e[page] - e.target.getBoundingClientRect()[this.bar.posName] - barOffset / 2) / e.target[this.bar.offset];
-            var pos = this.parentRef['scrollPanel'].$el[this.bar.scrollSize] * percent;
-            this.$parent.scrollTo(_defineProperty$1({}, map[this.type].axis.toLowerCase(), pos));
-        }
-    },
-    render: function render(h) {
+    functional: true,
+    render: function render(h, _ref) {
         var _style;
 
-        var vm = this;
-        var style = (_style = {}, _defineProperty$1(_style, vm.bar.posName, 0), _defineProperty$1(_style, vm.ops.pos, 0), _defineProperty$1(_style, vm.bar.size, '100%'), _defineProperty$1(_style, vm.bar.opsSize, vm.ops[vm.bar.opsSize]), _defineProperty$1(_style, 'background', vm.ops.background), _defineProperty$1(_style, 'opacity', vm.ops.opacity), _defineProperty$1(_style, 'position', 'absolute'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'borderRadius', '4px'), _style);
+        var parent = _ref.parent,
+            props = _ref.props;
+
+        var bar = map[props.type].bar;
+        var parentRef = parent.$refs;
+        var style = (_style = {}, _defineProperty$1(_style, bar.posName, 0), _defineProperty$1(_style, props.ops.pos, 0), _defineProperty$1(_style, bar.size, '100%'), _defineProperty$1(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$1(_style, 'background', props.ops.background), _defineProperty$1(_style, 'opacity', props.ops.opacity), _defineProperty$1(_style, 'position', 'absolute'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'borderRadius', '4px'), _style);
         var data = {
             style: style,
-            class: this.type + 'Rail',
+            class: props.type + 'Rail',
+            ref: props.type + 'Rail',
             on: {
-                click: this.handleClickTrack
+                click: function click(e) {
+                    handleClickTrack(e, bar, parentRef, props.type, parent);
+                }
             }
         };
         return h('div', data);
-    },
-
-    props: {
-        type: {
-            required: true,
-            type: String
-        },
-        ops: {
-            required: true,
-            type: Object
-        },
-        state: {
-            required: true,
-            type: Object
-        }
     }
 };
 
 // scrollContent
 var scrollContent = {
     name: 'scrollContent',
-    render: function render(_c) {
-        var vm = this;
-        var style = deepMerge(vm.state.style, {});
-        style.height = vm.ops.height;
-        if (vm.ops.padding) {
-            style[vm.ops.paddPos] = vm.ops.paddValue;
+    functional: true,
+    render: function render(h, _ref) {
+        var props = _ref.props,
+            slots = _ref.slots;
+
+        var style = deepMerge(props.state.style, {});
+        style.height = props.ops.height;
+        if (props.ops.padding) {
+            style[props.ops.paddPos] = props.ops.paddValue;
         }
-        return _c(vm.ops.tag, {
+        return h(props.ops.tag, {
             style: style,
             class: "scrollContent",
-            props: vm.ops.props,
-            attrs: vm.ops.attrs
-        }, this.$slots.default);
+            props: props.ops.props,
+            attrs: props.ops.attrs
+        }, slots().default);
     },
 
     props: {
@@ -645,6 +636,122 @@ var scrollPanel = {
 // import global config
 // import api
 // import necessary components
+/**
+ * create a scrollPanel
+ * 
+ * @param {any} size 
+ * @param {any} vm 
+ * @returns 
+ */
+function createPanel(h, vm) {
+    // scrollPanel data start
+    var scrollPanelData = {
+        ref: "scrollPanel",
+        style: {},
+        nativeOn: {
+            scroll: vm.handleScroll
+        },
+        props: {
+            ops: vm.mergedOptions.scrollPanel
+        }
+        // dynamic set overflow scroll
+    };scrollPanelData.style['overflowY'] = vm.vBar.state.size ? 'scroll' : 'visible';
+    scrollPanelData.style['overflowX'] = vm.hBar.state.size ? 'scroll' : 'visible';
+    var gutter = getGutter();
+    if (!getGutter.isUsed) {
+        getGutter.isUsed = true;
+    }
+    if (gutter) {
+        scrollPanelData.style.marginRight = vm.hBar.state.size ? -gutter + 'px' : 0;
+        if (vm.hBar.state.size) {
+            scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
+        } else {
+            scrollPanelData.style.height = '100%';
+        }
+        scrollPanelData.style.marginBottom = -gutter + 'px';
+    } else /* istanbul ignore next */{
+            scrollPanelData.style.height = '100%';
+        }
+    return h(
+        'scrollPanel',
+        scrollPanelData,
+        [createContent(h, vm)]
+    );
+}
+
+/**
+ * create scroll content
+ * 
+ * @param {any} size 
+ * @param {any} vm 
+ * @returns 
+ */
+function createContent(h, vm) {
+    // scrollContent data
+    var scrollContentData = {
+        props: {
+            ops: vm.mergedOptions.scrollContent
+        }
+    };
+    return h(
+        'scrollContent',
+        scrollContentData,
+        [[vm.$slots.default]]
+    );
+}
+
+/**
+ * create rails
+ * 
+ * @param {any} size 
+ * @param {any} type 
+ * @param {any} vm 
+ * @returns 
+ */
+function createRail(h, vm, type) {
+    // rail data
+    var railOptionType = type === 'vertical' ? 'vRail' : 'hRail';
+    var barOptionType = type === 'vertical' ? 'vBar' : 'hBar';
+
+    var railData = {
+        props: {
+            type: type,
+            ops: vm.mergedOptions[railOptionType],
+            state: vm[railOptionType].state
+        }
+    };
+    if (vm[barOptionType].state.size) {
+        return h('rail', railData);
+    }
+    return null;
+}
+
+/**
+ * create bars
+ * 
+ * @param {any} size 
+ * @param {any} type 
+ */
+function createBar(h, vm, type) {
+    // hBar data
+    var barOptionType = type === 'vertical' ? 'vBar' : 'hBar';
+    var barData = {
+        props: {
+            type: type,
+            ops: vm.mergedOptions[barOptionType],
+            state: vm[barOptionType].state
+        },
+        on: {
+            setMousedown: vm.setMousedown
+        },
+        ref: type + 'Bar'
+    };
+    if (vm[barOptionType].state.size) {
+        return h('bar', barData);
+    }
+    return null;
+}
+
 var vuescroll = {
     name: "vueScroll",
     mixins: [LifeCycleMix, vuescrollApi],
@@ -721,92 +828,10 @@ var vuescroll = {
         };vuescrollData.style['overflowY'] = vm.vBar.state.size ? 'hidden' : 'visible';
         vuescrollData.style['overflowX'] = vm.hBar.state.size ? 'hidden' : 'visible';
 
-        // scrollPanel data start
-        var scrollPanelData = {
-            ref: "scrollPanel",
-            style: {},
-            nativeOn: {
-                scroll: vm.handleScroll
-            },
-            props: {
-                ops: vm.mergedOptions.scrollPanel
-            }
-            // dynamic set overflow scroll
-        };scrollPanelData.style['overflowY'] = vm.vBar.state.size ? 'scroll' : 'visible';
-        scrollPanelData.style['overflowX'] = vm.hBar.state.size ? 'scroll' : 'visible';
-        var gutter = getGutter();
-        if (!getGutter.isUsed) {
-            getGutter.isUsed = true;
-        }
-        if (gutter) {
-            scrollPanelData.style.marginRight = vm.hBar.state.size ? -gutter + 'px' : 0;
-            if (vm.hBar.state.size) {
-                scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
-            } else {
-                scrollPanelData.style.height = '100%';
-            }
-            scrollPanelData.style.marginBottom = -gutter + 'px';
-        } else /* istanbul ignore next */{
-                scrollPanelData.style.height = '100%';
-            }
-
-        // scrollContent data
-        var scrollContentData = {
-            props: {
-                ops: vm.mergedOptions.scrollContent
-            },
-            ref: "scrollContent"
-            // vBar data
-        };var verticalBarData = {
-            props: {
-                type: "vertical",
-                ops: vm.mergedOptions.vBar,
-                state: vm.vBar.state
-            },
-            on: {
-                setMousedown: this.setMousedown
-            },
-            ref: 'verticalBar'
-            // vRail data
-        };var verticalRailData = {
-            props: {
-                type: "vertical",
-                ops: vm.mergedOptions.vRail,
-                state: vm.vRail.state
-            },
-            ref: 'verticalRail'
-            // hBar data
-        };var horizontalBarData = {
-            props: {
-                type: "horizontal",
-                ops: vm.mergedOptions.hBar,
-                state: vm.hBar.state
-            },
-            on: {
-                setMousedown: this.setMousedown
-            },
-            ref: 'horizontalBar'
-            // hRail data
-        };var horizontalRailData = {
-            props: {
-                type: "horizontal",
-                ops: vm.mergedOptions.hRail,
-                state: vm.hRail.state
-            },
-            ref: 'horizontalRail'
-        };
         return h(
             'div',
             vuescrollData,
-            [h(
-                'scrollPanel',
-                scrollPanelData,
-                [h(
-                    'scrollContent',
-                    scrollContentData,
-                    [[vm.$slots.default]]
-                )]
-            ), h('rail', verticalRailData), h('bar', verticalBarData), h('rail', horizontalRailData), h('bar', horizontalBarData)]
+            [createPanel(h, vm), createRail(h, vm, 'vertical'), createBar(h, vm, 'vertical'), createRail(h, vm, 'horizontal'), createBar(h, vm, 'horizontal')]
         );
     },
 

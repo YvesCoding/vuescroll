@@ -7,6 +7,7 @@ import {
 
 export default {
     name: "bar",
+    
     computed: {
         bar() {
             return scrollMap[this.type].bar
@@ -67,8 +68,8 @@ export default {
             }
             /* istanbul ignore next */
             {
-                const delta = e[this.bar.client] - this.parent[`${this.type}Rail`].$el.getBoundingClientRect()[this.bar.posName];
-                const percent = (delta-this.axisStartPos) / this.parent[`${this.type}Rail`].$el[this.bar.offset];
+                const delta = e[this.bar.client] - this.parent[`${this.type}Rail`].getBoundingClientRect()[this.bar.posName];
+                const percent = (delta-this.axisStartPos) / this.parent[`${this.type}Rail`][this.bar.offset];
                 this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent; 
             } 
         },

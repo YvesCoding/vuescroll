@@ -23,6 +23,136 @@ import bar from "./vuescrollBar";
 import rail from "./vuescrollRail";
 import scrollContent from './vueScrollContent';
 import scrollPanel from './vueScrollPanel';
+/**
+ * create a scrollPanel
+ * 
+ * @param {any} size 
+ * @param {any} vm 
+ * @returns 
+ */
+function createPanel(h, vm) {
+    // scrollPanel data start
+    const scrollPanelData = {
+        ref: "scrollPanel",
+        style: {
+
+        },
+        nativeOn: {
+            scroll: vm.handleScroll
+        },
+        props: {
+            ops: vm.mergedOptions.scrollPanel,
+        }
+    }
+    // dynamic set overflow scroll
+    scrollPanelData.style['overflowY'] = vm.vBar.state.size?'scroll':'visible';
+    scrollPanelData.style['overflowX'] = vm.hBar.state.size?'scroll':'visible';
+    let gutter = getGutter();
+    if(!getGutter.isUsed) {
+        getGutter.isUsed = true;
+    }
+    if(gutter) {
+        scrollPanelData.style.marginRight = vm.hBar.state.size?-gutter + 'px': 0;
+        if(vm.hBar.state.size) {
+            scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
+        } else {
+            scrollPanelData.style.height = '100%';
+        }
+        scrollPanelData.style.marginBottom = -gutter + 'px';
+    } else /* istanbul ignore next */{
+        scrollPanelData.style.height = '100%';
+    }
+    return (
+        <scrollPanel
+            {...scrollPanelData}
+        >
+            {createContent(h, vm)}
+        </scrollPanel>
+    )
+}
+
+/**
+ * create scroll content
+ * 
+ * @param {any} size 
+ * @param {any} vm 
+ * @returns 
+ */
+function createContent(h, vm) {
+    // scrollContent data
+    const scrollContentData = {
+        props: {
+            ops: vm.mergedOptions.scrollContent,
+        }
+    }
+    return (
+        <scrollContent
+            {...scrollContentData}
+        >
+            {[vm.$slots.default]}
+        </scrollContent>
+    )
+}
+
+/**
+ * create rails
+ * 
+ * @param {any} size 
+ * @param {any} type 
+ * @param {any} vm 
+ * @returns 
+ */
+function createRail(h, vm, type) {
+    // rail data
+    const railOptionType = type === 'vertical'? 'vRail': 'hRail';
+    const barOptionType = type === 'vertical'? 'vBar': 'hBar';
+
+    const railData = {
+        props: {
+            type: type,
+            ops: vm.mergedOptions[railOptionType],
+            state: vm[railOptionType].state
+        }
+    }
+    if(vm[barOptionType].state.size) {
+        return (
+            <rail 
+            {...railData}
+            />
+        )
+    }
+    return null;
+}
+
+/**
+ * create bars
+ * 
+ * @param {any} size 
+ * @param {any} type 
+ */
+function createBar(h, vm, type) {
+     // hBar data
+     const barOptionType = type === 'vertical'? 'vBar': 'hBar';
+     const barData = {
+        props: {
+            type: type,
+            ops: vm.mergedOptions[barOptionType],
+            state: vm[barOptionType].state
+        },
+        on: {
+            setMousedown: vm.setMousedown
+        },
+        ref: `${type}Bar`
+    }
+    if(vm[barOptionType].state.size) {
+        return (
+            <bar 
+            {...barData}
+            />
+        )
+    }
+    return null;
+}
 
 export default  {
     name: "vueScroll",
@@ -112,112 +242,13 @@ export default  {
         vuescrollData.style['overflowY'] = vm.vBar.state.size?'hidden':'visible';
         vuescrollData.style['overflowX'] = vm.hBar.state.size?'hidden':'visible';
         
-        // scrollPanel data start
-        const scrollPanelData = {
-            ref: "scrollPanel",
-            style: {
-
-            },
-            nativeOn: {
-                scroll: vm.handleScroll
-            },
-            props: {
-                ops: vm.mergedOptions.scrollPanel,
-            }
-        }
-        // dynamic set overflow scroll
-        scrollPanelData.style['overflowY'] = vm.vBar.state.size?'scroll':'visible';
-        scrollPanelData.style['overflowX'] = vm.hBar.state.size?'scroll':'visible';
-        let gutter = getGutter();
-        if(!getGutter.isUsed) {
-            getGutter.isUsed = true;
-        }
-        if(gutter) {
-            scrollPanelData.style.marginRight = vm.hBar.state.size?-gutter + 'px': 0;
-            if(vm.hBar.state.size) {
-                scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
-            } else {
-                scrollPanelData.style.height = '100%';
-            }
-            scrollPanelData.style.marginBottom = -gutter + 'px';
-        } else /* istanbul ignore next */{
-            scrollPanelData.style.height = '100%';
-        }
-
-        // scrollContent data
-        const scrollContentData = {
-            props: {
-                ops: vm.mergedOptions.scrollContent,
-            },
-            ref: "scrollContent"
-        }
-        // vBar data
-        const verticalBarData = {
-            props: {
-                type: "vertical",
-                ops: vm.mergedOptions.vBar,
-                state: vm.vBar.state
-            },
-            on: {
-                setMousedown: this.setMousedown
-            },
-            ref: 'verticalBar'
-        }
-        // vRail data
-        const verticalRailData = {
-            props: {
-                type: "vertical",
-                ops: vm.mergedOptions.vRail,
-                state: vm.vRail.state
-            },
-            ref: 'verticalRail'
-        }
-        // hBar data
-        const horizontalBarData = {
-            props: {
-                type: "horizontal",
-                ops: vm.mergedOptions.hBar,
-                state: vm.hBar.state
-            },
-            on: {
-                setMousedown: this.setMousedown
-            },
-            ref: 'horizontalBar'
-        }
-        // hRail data
-        const horizontalRailData = {
-            props: {
-                type: "horizontal",
-                ops: vm.mergedOptions.hRail,
-                state: vm.hRail.state
-            },
-            ref: 'horizontalRail'
-        }
         return (
             <div {...vuescrollData}>
-                <scrollPanel
-                   {...scrollPanelData}
-                >
-                    <scrollContent
-                        {...scrollContentData}
-                    >
-                        {[vm.$slots.default]}
-                    </scrollContent>
-                </scrollPanel>
-               
-                <rail 
-                    {...verticalRailData}
-                />
-                 <bar
-                    {...verticalBarData}
-                />
-                
-                <rail
-                   {...horizontalRailData}
-                />
-                <bar 
-                    {...horizontalBarData}
-                />
+                {createPanel(h, vm)}
+                {createRail(h, vm, 'vertical')}
+                {createBar(h, vm, 'vertical')}
+                {createRail(h, vm, 'horizontal')}
+                {createBar(h, vm, 'horizontal')}
             </div>
         );
     },

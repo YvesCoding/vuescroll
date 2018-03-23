@@ -22,15 +22,17 @@ describe('test vueScrollBar component', () => {
         document.body.removeChild(ins.$el);
     })
     it('test mousemove and movedown', (done) => {
-        trigger(vs.$refs['verticalBar'].$el, 'mousedown');
-        trigger(vs.$refs['verticalBar'].$el, 'mousemove');
-        ins.$nextTick(() => {
-            expect(vs.mousedown).toBe(true);
-            trigger(document, 'mouseup');
+        setTimeout(() => {
+            trigger(vs.$refs['verticalBar'].$el, 'mousedown');
+            trigger(vs.$refs['verticalBar'].$el, 'mousemove');
             ins.$nextTick(() => {
-                expect(vs.mousedown).toBe(false);
-                done();
+                expect(vs.mousedown).toBe(true);
+                trigger(document, 'mouseup');
+                ins.$nextTick(() => {
+                    expect(vs.mousedown).toBe(false);
+                    done();
+                })
             })
-        })
+        }, 0);
     });
 });

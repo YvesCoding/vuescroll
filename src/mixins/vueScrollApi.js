@@ -45,7 +45,10 @@ export default {
         forceUpdate() {
             this.$forceUpdate();
             Object.keys(this.$refs).forEach(ref => {
-                this.$refs[ref].$forceUpdate();
+                const $ref = this.$refs[ref];
+                if($ref._isVue) {
+                    $ref.$forceUpdate();
+                }
             })
         }
     }

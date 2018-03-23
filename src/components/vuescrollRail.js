@@ -1,43 +1,46 @@
 import map from '../config/scrollMap'
+
+function handleClickTrack(e, bar, parentRef, type, parent) {
+    const page = bar.page;
+    const barOffset = parentRef[`${type}Bar`].$el[bar.offset];
+    const percent = (e[page] - e.target.getBoundingClientRect()[bar.posName] - barOffset/2) / e.target[bar.offset];
+    const pos = parentRef['scrollPanel'].$el[bar.scrollSize] * percent; 
+    parent.scrollTo({
+        [map[type].axis.toLowerCase()]: pos
+    })
+}
+
 export default {
     name: "rail",
-    computed: {
-        bar() {
-            return map[this.type].bar
-        },
-        parentRef() {
-            return this.$parent.$refs;
-        }
-    },
-    methods: {
-        handleClickTrack(e) {
-            const page = this.bar.page;
-            const barOffset = this.parentRef[`${this.type}Bar`].$el[this.bar.offset];
-            const percent = (e[page] - e.target.getBoundingClientRect()[this.bar.posName] - barOffset/2) / e.target[this.bar.offset];
-            const pos = this.parentRef['scrollPanel'].$el[this.bar.scrollSize] * percent; 
-            this.$parent.scrollTo({
-                [map[this.type].axis.toLowerCase()]: pos
-            })
-        }
-    },
-    render(h) {
-        let vm = this;
+    functional: true,
+    render(h, {parent, props}) {
+        const bar = map[props.type].bar;
+        const parentRef = parent.$refs;
         let style = {
-            [vm.bar.posName]: 0,
-            [vm.ops.pos]: 0,
-            [vm.bar.size]: '100%',
-            [vm.bar.opsSize]: vm.ops[vm.bar.opsSize],
-            background: vm.ops.background,
-            opacity: vm.ops.opacity,
+            [bar.posName]: 0,
+            [props.ops.pos]: 0,
+            [bar.size]: '100%',
+            [bar.opsSize]: props.ops[bar.opsSize],
+            background: props.ops.background,
+            opacity: props.ops.opacity,
             position: 'absolute',
             cursor: 'pointer',
             borderRadius: '4px'
         };
         let data = {
             style: style,
-            class: `${this.type}Rail`,
+            class: `${props.type}Rail`,
+            ref: `${props.type}Rail`,
             on: {
-                click: this.handleClickTrack
+                click(e) {
+                    handleClickTrack(
+                        e,
+                        bar,
+                        parentRef,
+                        props.type,
+                        parent
+                    );
+                }
             }
         }
         return (
@@ -46,19 +49,5 @@ export default {
             >
             </div>
         );
-    },
-    props: {
-        type: {
-            required: true,
-            type: String
-        },
-        ops: {
-            required: true,
-            type: Object
-        },
-        state: {
-            required: true,
-            type: Object
-        }
     }
 }

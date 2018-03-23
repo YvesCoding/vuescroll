@@ -22,7 +22,7 @@ describe('test vuescrollApi', () => {
         ins.$destroy();
         document.body.removeChild(ins.$el);
     })
-    it('sscroll x or y', (done) => {
+    it('scroll x or y', (done) => {
         setTimeout(() => {
             vs.scrollTo({
                 x: '10%',
@@ -38,7 +38,6 @@ describe('test vuescrollApi', () => {
                     expect(top).toBe(100);
                     done();
                 }, 700);
-                done();
             }, 700); 
         }, 100);
     });

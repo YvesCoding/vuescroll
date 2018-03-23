@@ -21,16 +21,20 @@ describe('test vueScrollRail component', () => {
         ins.$destroy();
         document.body.removeChild(ins.$el);
     })
-    it('test rail click', () => {
-        trigger(vs.$refs['verticalRail'].$el, 'click');
+    it('test rail click', (done) => {
+        // use a marco task to ensure that all components have been updated
+        setTimeout(() => {
+            trigger(vs.$refs['verticalRail'], 'click');
+            done();
+        }, 0);
     });
     it('test rail and bar pos', (done) => {
         ins.ops.vRail['pos'] = 'right';
         vs.forceUpdate();
-        ins.$nextTick(() => {
-            expect(vs.$refs['verticalRail'].$el.style.right).toBe('0px');
+        setTimeout(() => {
+            expect(vs.$refs['verticalRail'].style.right).toBe('0px');
             expect(vs.$refs['verticalBar'].$el.style.right).toBe('0px');
             done();
-        })
+        }, 0);
     });
 });
