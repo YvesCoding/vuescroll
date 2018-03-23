@@ -1,15 +1,5 @@
 export default {
     // vuescroll
-    vuescroll: {
-        style: {
-            position: 'relative',
-            height: '100%',
-            width: '100%',
-            padding: 0,
-            overflow: 'hidden'
-        },
-        class: ['vueScroll']
-    },
     scrollPanel: {
         initialScrollY: false,
         initialScrollX: false,

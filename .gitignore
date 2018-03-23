@@ -4,5 +4,4 @@ server.js
 compress.js
 coverage
 dist/vue.js
-dist/test.html
 index.html

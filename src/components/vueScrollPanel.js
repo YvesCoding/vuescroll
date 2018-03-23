@@ -1,5 +1,4 @@
 import {
-    getGutter,
     hideSystemBar
 } from '../util'
 
@@ -30,23 +29,8 @@ export default   {
         })
     },
     render(h) {
-        let gutter = getGutter();
-        let style = {
-            overflow: 'scroll'
-        }
-        if(gutter) {
-            style.marginRight = -gutter + 'px';
-            style.height = `calc(100% + ${gutter}px)`;
-            style.marginBottom = -gutter + 'px';
-        } else /* istanbul ignore next */{
-            style.height = '100%';
-            if(!getGutter.isUsed) {
-                getGutter.isUsed = true;
-                hideSystemBar();
-            }
-        }
+        hideSystemBar();
         let data = {
-            style: style,
             class: ['scrollPanel']
         }
         return (

@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.6.7
+    * @name: vuescroll 3.6.9
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -270,16 +270,6 @@ function goScrolling(elm, deltaX, deltaY, speed, easing) {
 
 var GCF = {
     // vuescroll
-    vuescroll: {
-        style: {
-            position: 'relative',
-            height: '100%',
-            width: '100%',
-            padding: 0,
-            overflow: 'hidden'
-        },
-        class: ['vueScroll']
-    },
     scrollPanel: {
         initialScrollY: false,
         initialScrollX: false,
@@ -607,23 +597,8 @@ var scrollPanel = {
         });
     },
     render: function render(h) {
-        var gutter = getGutter();
-        var style = {
-            overflow: 'scroll'
-        };
-        if (gutter) {
-            style.marginRight = -gutter + 'px';
-            style.height = 'calc(100% + ' + gutter + 'px)';
-            style.marginBottom = -gutter + 'px';
-        } else /* istanbul ignore next */{
-                style.height = '100%';
-                if (!getGutter.isUsed) {
-                    getGutter.isUsed = true;
-                    hideSystemBar();
-                }
-            }
+        hideSystemBar();
         var data = {
-            style: style,
             class: ['scrollPanel']
         };
         return h(
@@ -701,6 +676,8 @@ var vuescroll = {
             mousedown: false,
             pointerLeave: true,
             timeoutId: 0,
+            overflowY: true,
+            overflowX: true,
             mergedOptions: {
                 scrollPanel: {},
                 scrollContent: {},
@@ -715,8 +692,13 @@ var vuescroll = {
         var vm = this;
         // vuescroll data
         var vuescrollData = {
-            style: GCF.vuescroll.style,
-            class: GCF.vuescroll.class,
+            style: {
+                position: 'relative',
+                height: '100%',
+                width: '100%',
+                padding: 0
+            },
+            class: 'vueScroll',
             on: {
                 mouseenter: function mouseenter() {
                     vm.pointerLeave = false;
@@ -733,17 +715,37 @@ var vuescroll = {
                     vm.update();
                 }
             }
-            // scrollPanel data
-        };var scrollPanelData = {
+            // dynamic set overflow
+        };vuescrollData.style['overflowY'] = vm.vBar.state.size ? 'hidden' : 'visible';
+        vuescrollData.style['overflowX'] = vm.hBar.state.size ? 'hidden' : 'visible';
+
+        // scrollPanel data start
+        var scrollPanelData = {
             ref: "scrollPanel",
+            style: {},
             nativeOn: {
                 scroll: vm.handleScroll
             },
             props: {
                 ops: vm.mergedOptions.scrollPanel
             }
-            // scrollContent data
-        };var scrollContentData = {
+            // dynamic set overflow scroll
+        };scrollPanelData.style['overflowY'] = vm.vBar.state.size ? 'scroll' : 'visible';
+        scrollPanelData.style['overflowX'] = vm.hBar.state.size ? 'scroll' : 'visible';
+        var gutter = getGutter();
+        if (!getGutter.isUsed) {
+            getGutter.isUsed = true;
+        }
+        if (gutter) {
+            scrollPanelData.style.marginRight = vm.hBar.state.size ? -gutter + 'px' : 0;
+            scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
+            scrollPanelData.style.marginBottom = -gutter + 'px';
+        } else /* istanbul ignore next */{
+                scrollPanelData.style.height = '100%';
+            }
+
+        // scrollContent data
+        var scrollContentData = {
             props: {
                 ops: vm.mergedOptions.scrollContent
             },
@@ -846,8 +848,8 @@ var vuescroll = {
             heightPercentage = scrollPanel$$1.clientHeight * 100 / (scrollPanel$$1.scrollHeight - this.accuracy);
             widthPercentage = scrollPanel$$1.clientWidth * 100 / (scrollPanel$$1.scrollWidth - this.accuracy);
 
-            this.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : '';
-            this.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : '';
+            this.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
+            this.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
 
             this.vBar.state.posValue = scrollPanel$$1.scrollTop * 100 / scrollPanel$$1.clientHeight;
             this.hBar.state.posValue = scrollPanel$$1.scrollLeft * 100 / scrollPanel$$1.clientWidth;

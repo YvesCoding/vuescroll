@@ -5,7 +5,8 @@
 // begin importing
 import {
     deepMerge,
-    defineReactive
+    defineReactive,
+    getGutter
 } from '../util';
 
 // import lefrCycle
@@ -61,6 +62,8 @@ export default  {
             mousedown: false,
             pointerLeave: true,
             timeoutId: 0,
+            overflowY: true,
+            overflowX: true,
             mergedOptions: {
                 scrollPanel: {
                 },
@@ -81,8 +84,13 @@ export default  {
         let vm = this;
         // vuescroll data
         const vuescrollData = {
-            style: GCF.vuescroll.style,
-            class: GCF.vuescroll.class,
+            style: {
+                position: 'relative',
+                height: '100%',
+                width: '100%',
+                padding: 0
+            },
+            class: 'vueScroll',
             on: {
                 mouseenter() {
                     vm.pointerLeave = false;
@@ -100,9 +108,16 @@ export default  {
                 }
             }
         }
-        // scrollPanel data
+        // dynamic set overflow
+        vuescrollData.style['overflowY'] = vm.vBar.state.size?'hidden':'visible';
+        vuescrollData.style['overflowX'] = vm.hBar.state.size?'hidden':'visible';
+        
+        // scrollPanel data start
         const scrollPanelData = {
             ref: "scrollPanel",
+            style: {
+
+            },
             nativeOn: {
                 scroll: vm.handleScroll
             },
@@ -110,6 +125,21 @@ export default  {
                 ops: vm.mergedOptions.scrollPanel,
             }
         }
+        // dynamic set overflow scroll
+        scrollPanelData.style['overflowY'] = vm.vBar.state.size?'scroll':'visible';
+        scrollPanelData.style['overflowX'] = vm.hBar.state.size?'scroll':'visible';
+        let gutter = getGutter();
+        if(!getGutter.isUsed) {
+            getGutter.isUsed = true;
+        }
+        if(gutter) {
+            scrollPanelData.style.marginRight = vm.hBar.state.size?-gutter + 'px': 0;
+            scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
+            scrollPanelData.style.marginBottom = -gutter + 'px';
+        } else /* istanbul ignore next */{
+            scrollPanelData.style.height = '100%';
+        }
+        
         // scrollContent data
         const scrollContentData = {
             props: {
@@ -231,8 +261,8 @@ export default  {
             heightPercentage = (scrollPanel.clientHeight * 100 / (scrollPanel.scrollHeight - this.accuracy));
             widthPercentage = (scrollPanel.clientWidth * 100 / (scrollPanel.scrollWidth - this.accuracy));
 
-            this.vBar.state.size = (heightPercentage < 100) ? (heightPercentage + '%') : '';
-            this.hBar.state.size = (widthPercentage < 100) ? (widthPercentage + '%') : '';
+            this.vBar.state.size = (heightPercentage < 100) ? (heightPercentage + '%') : 0;
+            this.hBar.state.size = (widthPercentage < 100) ? (widthPercentage + '%') : 0;
 
             this.vBar.state.posValue =  ((scrollPanel.scrollTop * 100) / scrollPanel.clientHeight);
             this.hBar.state.posValue =  ((scrollPanel.scrollLeft * 100) / scrollPanel.clientWidth);
