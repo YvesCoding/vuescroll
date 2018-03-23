@@ -8,7 +8,7 @@
 
 ## What is vuescroll?
 
- vuescroll is a virtual scrollbar based on [vue.js](https://github.com/wangyi7099/vuescroll) 2.X , it can transform a div into a scrollable area, the experience of using it just like using native scrollbar. It can both support PC and Mobile Phone. Here is the offical [website](https://wangyi7099.github.io/vuescrollDemo).
+ vuescroll is a virtual scrollbar based on [vue.js](https://github.com/vuejs/vue) 2.X , it can transform a div into a scrollable area, the experience of using it just like using native scrollbar. It can both support PC and Mobile Phone. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs).
 
 
 ## Get Started
