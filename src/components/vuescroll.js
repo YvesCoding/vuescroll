@@ -134,7 +134,7 @@ export default  {
         }
         if(gutter) {
             scrollPanelData.style.marginRight = vm.hBar.state.size?-gutter + 'px': 0;
-            if(vm.vBar.state.size) {
+            if(vm.hBar.state.size) {
                 scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
             } else {
                 scrollPanelData.style.height = '100%';
