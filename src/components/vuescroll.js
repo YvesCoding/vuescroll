@@ -134,12 +134,16 @@ export default  {
         }
         if(gutter) {
             scrollPanelData.style.marginRight = vm.hBar.state.size?-gutter + 'px': 0;
-            scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
+            if(vm.vBar.state.size) {
+                scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
+            } else {
+                scrollPanelData.style.height = '100%';
+            }
             scrollPanelData.style.marginBottom = -gutter + 'px';
         } else /* istanbul ignore next */{
             scrollPanelData.style.height = '100%';
         }
-        
+
         // scrollContent data
         const scrollContentData = {
             props: {

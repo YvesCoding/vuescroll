@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.6.9
+    * @name: vuescroll 3.6.10
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -740,7 +740,11 @@ var vuescroll = {
         }
         if (gutter) {
             scrollPanelData.style.marginRight = vm.hBar.state.size ? -gutter + 'px' : 0;
-            scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
+            if (vm.vBar.state.size) {
+                scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
+            } else {
+                scrollPanelData.style.height = '100%';
+            }
             scrollPanelData.style.marginBottom = -gutter + 'px';
         } else /* istanbul ignore next */{
                 scrollPanelData.style.height = '100%';
