@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.7.1
+    * @name: vuescroll 3.7.2
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -911,6 +911,14 @@ var vuescroll = {
                 _this2.update();
                 _this2.showBar();
                 _this2.hideBar();
+                /* istanbul ignore next */
+                {
+                    window.addEventListener("resize", function () {
+                        _this2.update();
+                        _this2.showBar();
+                        _this2.hideBar();
+                    }, false);
+                }
             }
         });
     },

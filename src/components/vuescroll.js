@@ -329,6 +329,14 @@ export default  {
                 this.update();
                 this.showBar();
                 this.hideBar();
+                /* istanbul ignore next */
+                {
+                    window.addEventListener("resize", () => {
+                        this.update();
+                        this.showBar();
+                        this.hideBar();
+                    }, false);
+                }
             }
         }) 
     },
