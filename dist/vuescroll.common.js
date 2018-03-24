@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.7.2
+    * @name: vuescroll 3.7.3
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -877,8 +877,8 @@ var vuescroll = {
             /* istanbul ignore if */
             if (!scrollPanel$$1) return;
 
-            heightPercentage = scrollPanel$$1.clientHeight * 100 / (scrollPanel$$1.scrollHeight - this.accuracy);
-            widthPercentage = scrollPanel$$1.clientWidth * 100 / (scrollPanel$$1.scrollWidth - this.accuracy);
+            heightPercentage = scrollPanel$$1.clientHeight * 100 / scrollPanel$$1.scrollHeight;
+            widthPercentage = scrollPanel$$1.clientWidth * 100 / scrollPanel$$1.scrollWidth;
 
             this.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
             this.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
@@ -956,16 +956,6 @@ var vuescroll = {
                     hRail: {},
                     hBar: {}
                 };
-            }
-        },
-        accuracy: {
-            default: 0,
-            validator: function validator(value) {
-                if (value < 0) {
-                    console.error('[vuescroll]:The prop `accury` must be 0 or higher!');
-                    return false;
-                }
-                return true;
             }
         }
     }

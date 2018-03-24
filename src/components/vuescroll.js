@@ -293,8 +293,8 @@ export default  {
             /* istanbul ignore if */
             if (!scrollPanel) return;
       
-            heightPercentage = (scrollPanel.clientHeight * 100 / (scrollPanel.scrollHeight - this.accuracy));
-            widthPercentage = (scrollPanel.clientWidth * 100 / (scrollPanel.scrollWidth - this.accuracy));
+            heightPercentage = (scrollPanel.clientHeight * 100 / scrollPanel.scrollHeight);
+            widthPercentage = (scrollPanel.clientWidth * 100 / scrollPanel.scrollWidth);
 
             this.vBar.state.size = (heightPercentage < 100) ? (heightPercentage + '%') : 0;
             this.hBar.state.size = (widthPercentage < 100) ? (widthPercentage + '%') : 0;
@@ -379,16 +379,6 @@ export default  {
 
                 }
                }
-            }
-        },
-        accuracy: {
-            default: 0,
-            validator(value) {
-                if(value < 0) {
-                    console.error('[vuescroll]:The prop `accury` must be 0 or higher!')
-                    return false;
-                }
-                return true;
             }
         }
     }

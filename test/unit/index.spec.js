@@ -26,13 +26,12 @@ window.globalData = {
         },
         hBar: {
         }
-    },
-    accuracy: 0
+    }
 };
 
 window.template = `
     <div :style="{width: parentWidth, height: parentHeight}">
-        <vue-scroll ref="vsIns" :ops="ops" :accuracy="accuracy">
+        <vue-scroll ref="vsIns" :ops="ops">
             <div :style="{width: childWidth, height: childHeight}">
             </div>
         </vue-scroll>

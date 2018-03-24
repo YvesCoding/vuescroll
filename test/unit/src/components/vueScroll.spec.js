@@ -49,12 +49,4 @@ describe('test vuescroll component', () => {
             })
         })
     });
-
-    it('give an accuracy that is smaller than 0', (done) => {
-        data.accuracy = -1;
-        ins.$nextTick(() => {
-            data.accuracy = 0;
-            done();
-        })
-    });
 });

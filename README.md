@@ -64,8 +64,7 @@ JS:
 
 option|defaultValue|description
 -----|------------|----
-ops|`{vBar:{},hBar:{}, scrollContent:{}}`| The configs of vBar and hBar, see detail below.
-accuracy|`5`| The accuracy of scroll.
+ops|`{vBar:{},hBar:{}, scrollContent:{}}`| The configs of vBar and hBar, see detail below
 ### ScrollPanel Options
 option|defaultValue|description
 -----|------------|----
