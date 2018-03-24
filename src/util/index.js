@@ -24,14 +24,14 @@ export function deepMerge(from, to) {
     to = to || {};
     for (var key in from) {
         if (typeof from[key] === 'object') {
-            if (!to[key]) {
+            if (typeof(to[key]) === 'undefined') {
                 to[key] = {};
                 deepCopy(from[key], to[key])
             } else {
                 deepMerge(from[key], to[key]);
             }
         } else {
-            if(!to[key])
+            if(typeof(to[key]) === 'undefined')
             to[key] = from[key]
         }
     }
@@ -98,7 +98,12 @@ export function getGutter() {
 
 // for macOs user, the gutter will be 0,
 // so, we hide the system scrollbar
+let haveHideen = false;
 export function hideSystemBar() {
+    if(haveHideen) {
+        return;
+    }
+    haveHideen = true;
     let styleDom = document.createElement('style');
     styleDom.type = 'text/css';
     styleDom.innerHTML=".scrollPanel::-webkit-scrollbar{width:0;height:0}";

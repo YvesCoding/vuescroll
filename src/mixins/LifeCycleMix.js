@@ -32,18 +32,16 @@ function hackPropsData() {
         defineReactive(vm.mergedOptions.hBar, 'height', vm.mergedOptions.hRail);
         
         const prefix = "padding-";
-        if(vm.mergedOptions.scrollContent.padding) {
-            defineReactive(vm.mergedOptions.scrollContent, 'paddPos',   
-                () => {
-                    return prefix + vm.mergedOptions.vRail.pos
-                }
-            )
-            defineReactive(vm.mergedOptions.scrollContent, 'paddValue',  
-                () => {
-                    return vm.mergedOptions.vRail.width
-                }
-            )
-        } 
+        defineReactive(vm.mergedOptions.scrollContent, 'paddPos',   
+            () => {
+                return prefix + vm.mergedOptions.vRail.pos
+            }
+        )
+        defineReactive(vm.mergedOptions.scrollContent, 'paddValue',  
+            () => {
+                return vm.mergedOptions.vRail.width
+            }
+        )
     } 
      
 }

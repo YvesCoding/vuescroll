@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.7.0
+    * @name: vuescroll 3.7.1
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -67,14 +67,14 @@ function deepMerge(from, to) {
     to = to || {};
     for (var key in from) {
         if (_typeof(from[key]) === 'object') {
-            if (!to[key]) {
+            if (typeof to[key] === 'undefined') {
                 to[key] = {};
                 deepCopy(from[key], to[key]);
             } else {
                 deepMerge(from[key], to[key]);
             }
         } else {
-            if (!to[key]) to[key] = from[key];
+            if (typeof to[key] === 'undefined') to[key] = from[key];
         }
     }
     return to;
@@ -136,7 +136,12 @@ function getGutter() {
 
 // for macOs user, the gutter will be 0,
 // so, we hide the system scrollbar
+var haveHideen = false;
 function hideSystemBar() {
+    if (haveHideen) {
+        return;
+    }
+    haveHideen = true;
     var styleDom = document.createElement('style');
     styleDom.type = 'text/css';
     styleDom.innerHTML = ".scrollPanel::-webkit-scrollbar{width:0;height:0}";
@@ -341,14 +346,12 @@ function hackPropsData() {
         defineReactive(vm.mergedOptions.hBar, 'height', vm.mergedOptions.hRail);
 
         var prefix = "padding-";
-        if (vm.mergedOptions.scrollContent.padding) {
-            defineReactive(vm.mergedOptions.scrollContent, 'paddPos', function () {
-                return prefix + vm.mergedOptions.vRail.pos;
-            });
-            defineReactive(vm.mergedOptions.scrollContent, 'paddValue', function () {
-                return vm.mergedOptions.vRail.width;
-            });
-        }
+        defineReactive(vm.mergedOptions.scrollContent, 'paddPos', function () {
+            return prefix + vm.mergedOptions.vRail.pos;
+        });
+        defineReactive(vm.mergedOptions.scrollContent, 'paddValue', function () {
+            return vm.mergedOptions.vRail.width;
+        });
     }
 }
 var LifeCycleMix = {
