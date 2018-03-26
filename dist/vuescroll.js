@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.7.3
+    * @name: vuescroll 3.7.5
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -593,7 +593,6 @@ var scrollPanel = {
         });
     },
     render: function render(h) {
-        hideSystemBar();
         var data = {
             class: ['scrollPanel']
         };
@@ -658,23 +657,15 @@ function createPanel(h, vm) {
             ops: vm.mergedOptions.scrollPanel
         }
         // dynamic set overflow scroll
-    };scrollPanelData.style['overflowY'] = vm.vBar.state.size ? 'scroll' : 'visible';
-    scrollPanelData.style['overflowX'] = vm.hBar.state.size ? 'scroll' : 'visible';
+    };scrollPanelData.style['overflowY'] = vm.vBar.state.size ? 'scroll' : 'inherit';
+    scrollPanelData.style['overflowX'] = vm.hBar.state.size ? 'scroll' : 'inherit';
     var gutter = getGutter();
     if (!getGutter.isUsed) {
         getGutter.isUsed = true;
     }
-    if (gutter) {
-        scrollPanelData.style.marginRight = vm.hBar.state.size ? -gutter + 'px' : 0;
-        if (vm.hBar.state.size) {
-            scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
-        } else {
-            scrollPanelData.style.height = '100%';
-        }
-        scrollPanelData.style.marginBottom = -gutter + 'px';
-    } else /* istanbul ignore next */{
-            scrollPanelData.style.height = '100%';
-        }
+    hideSystemBar();
+    scrollPanelData.style.height = '100%';
+
     return h(
         'scrollPanel',
         scrollPanelData,
@@ -828,8 +819,8 @@ var vuescroll = {
                 }
             }
             // dynamic set overflow
-        };vuescrollData.style['overflowY'] = vm.vBar.state.size ? 'hidden' : 'visible';
-        vuescrollData.style['overflowX'] = vm.hBar.state.size ? 'hidden' : 'visible';
+        };vuescrollData.style['overflowY'] = vm.vBar.state.size ? 'hidden' : 'inherit';
+        vuescrollData.style['overflowX'] = vm.hBar.state.size ? 'hidden' : 'inherit';
 
         return h(
             'div',

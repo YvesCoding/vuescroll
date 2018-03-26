@@ -1,6 +1,4 @@
-import {
-    hideSystemBar
-} from '../util'
+
 
 // vueScrollPanel
 export default   {
@@ -29,7 +27,6 @@ export default   {
         })
     },
     render(h) {
-        hideSystemBar();
         let data = {
             class: ['scrollPanel']
         }
