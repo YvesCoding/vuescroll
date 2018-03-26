@@ -8,12 +8,14 @@ export default  {
     functional: true,
     render(h, {props, slots}) {
         let style = deepMerge(props.state.style, {});
-        style.height = props.ops.height;
+        style.position = 'relative';
+        style.minHeight = "100%";
         if(props.ops.padding) {
             style[props.ops.paddPos] =  props.ops.paddValue;
         }
         return h(props.ops.tag, {
             style: style,
+            ref: 'scrollContent',
             class: "scrollContent",
             props: props.ops.props,
             attrs: props.ops.attrs

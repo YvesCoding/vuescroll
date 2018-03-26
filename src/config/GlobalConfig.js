@@ -10,7 +10,6 @@ export default {
     scrollContent: {
         tag: 'div',
         padding: true,
-        height: '100%',
         props: {
         },
         attrs: {

@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.7.5
+    * @name: vuescroll 3.7.6
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -273,6 +273,24 @@ function goScrolling(elm, deltaX, deltaY, speed, easing) {
     requestAnimationFrame(loopScroll);
 }
 
+// detect content size change 
+// https://github.com/wnr/element-resize-detector/blob/465fe68efbea85bb9fe22db2f68ebc7fde8bbcf5/src/detection-strategy/object.js
+// modified by wangyi7099
+function listenResize(element, funArr) {
+    var OBJECT_STYLE = "display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;";
+    var style = window.getComputedStyle(element);
+    var object = document.createElement("object");
+    object.style.cssText = OBJECT_STYLE;
+    object.tabIndex = -1;
+    object.type = "text/html";
+    object.onload = function () {
+        funArr.forEach(function (func) {
+            on(object.contentDocument.defaultView, 'resize', func);
+        });
+    };
+    element.appendChild(object);
+}
+
 var GCF = {
     // vuescroll
     scrollPanel: {
@@ -285,7 +303,6 @@ var GCF = {
     scrollContent: {
         tag: 'div',
         padding: true,
-        height: '100%',
         props: {},
         attrs: {}
     },
@@ -534,12 +551,14 @@ var scrollContent = {
             slots = _ref.slots;
 
         var style = deepMerge(props.state.style, {});
-        style.height = props.ops.height;
+        style.position = 'relative';
+        style.minHeight = "100%";
         if (props.ops.padding) {
             style[props.ops.paddPos] = props.ops.paddValue;
         }
         return h(props.ops.tag, {
             style: style,
+            ref: 'scrollContent',
             class: "scrollContent",
             props: props.ops.props,
             attrs: props.ops.attrs
@@ -913,6 +932,20 @@ var vuescroll = {
                         _this2.showBar();
                         _this2.hideBar();
                     }, false);
+                    var funcArr = [function () {
+                        if (_this2.timeoutId) {
+                            clearTimeout(_this2.timeoutId);
+                        }
+                        _this2.showAndDefferedHideBar();
+                        _this2.update();
+                    }];
+                    if (_this2.$listeners['handle-resize']) {
+                        funcArr.push(_this2.$listeners['handle-resize']);
+                    }
+                    // registry resize event
+                    var contentElm = _this2.$refs['scrollContent']._isVue ? _this2.$refs['scrollContent'].$el : _this2.$refs['scrollContent'];
+
+                    listenResize(contentElm, funcArr);
                 }
             }
         });

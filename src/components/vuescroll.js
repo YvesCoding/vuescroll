@@ -7,7 +7,8 @@ import {
     deepMerge,
     defineReactive,
     getGutter,
-    hideSystemBar
+    hideSystemBar,
+    listenResize
 } from '../util';
 
 // import lefrCycle
@@ -329,6 +330,26 @@ export default  {
                         this.showBar();
                         this.hideBar();
                     }, false);
+                    let funcArr = [
+                        () => {
+                            if(this.timeoutId) {
+                                clearTimeout(this.timeoutId);
+                            }
+                            this.showAndDefferedHideBar();
+                            this.update();
+                        }
+                    ];
+                    if(this.$listeners['handle-resize']) {
+                        funcArr.push(this.$listeners['handle-resize']);
+                    }
+                    // registry resize event
+                    const contentElm = this.$refs['scrollContent']._isVue?this.$refs['scrollContent'].$el:this.$refs['scrollContent'];
+
+                    listenResize(
+                        contentElm
+                        ,
+                        funcArr
+                    )
                 }
             }
         }) 
