@@ -58,61 +58,6 @@ JS:
         }
     })
 ```
-## Options
-
-### Vuescroll Options
-
-option|defaultValue|description
------|------------|----
-ops|`{vBar:{},hBar:{}, scrollContent:{}}`| The configs of vBar and hBar, see detail below
-### ScrollPanel Options
-option|defaultValue|description
------|------------|----
-initialScrollY|`false`|The vertical distance  that will scroll while component has mounted.e.g.**100** or **10%**
-initialScrollX|`false`|The horizontal distance  that will scroll while component has mounted.e.g.**100** or **10%**
-speed|`300`|The time that scrollPanel scrolls completely.
-easing|`null`|The scrolling animate kind, see [detail](https://gist.github.com/gre/1650294).
-### ScrollContent Options
-option|defaultValue|description
------|------------|----
-padding|`false`|Set false to get rid of the padding of scroll content, otherwise, scroll content will have a padding of rail's width of height
-height|`100%`| Set the scrollContent's height.
-tag|`div`|Setting tag means you can treat scrollcontent as other third-party component, e.g. **{tag: 'v-layout'}**, treat it as vuetify component `v-layout`.
-props|`{}`|If you want to pass props to third party component, use the props, e.g. **props:{someProp: true}**
-attrs|`{}`|The attrs opation is the same as props optioin.
-
-
-### Scrollbar Options
-
-vBar/hBar|defaultValue|description
------|------------|----
-background|`#4caf50`|**Set the scrollbar's background
-keepShow|false|Set whether the scrollbars will keep showing or not.
-opacity|1|Set the scrollbar's  opacity when it shows.
-
-
-### Rail Options
-
-vRail/hRail|defaultValue|description
------|------------|-
-background|`#a5d6a7`|Set the rail's background
-width|`5px`|Set the scrollbar and the rail's width
-pos|`right(vBar,vRail)/bottom/(hBar, hRail)`|Set the position of vBar and vRail or hBar and hRail
-opacity|0|Set the rail's  opacity
-
-
-### Event
-
-event|params|description
------|------------|----
-handle-scroll|`vertical, horizontal`|Pass two params to you, vertical includes information about vertical bar and process of vertical bar scrolls, the value is from 0 to 1.0 , and so does horizontal scroll bar.
-
-### Api
-
-Api|params|description
------|------------|----
-scrollTo|`{x:number, y:number}`|ScrollTo a concrete place
-forceUpdate||update the vuescroll's all components.
 
 ### Global Configuartion
 
