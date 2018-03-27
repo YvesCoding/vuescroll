@@ -33,7 +33,7 @@ jobs:
       - attach_workspace:
           at: ~/project
       # run tests!
-      - run: npm run test:cover
+      - run: npm run test
       - run:
          name: report coverage stats for non-PRs
          command: |

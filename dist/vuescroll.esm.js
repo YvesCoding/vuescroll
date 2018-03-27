@@ -273,9 +273,14 @@ function goScrolling(elm, deltaX, deltaY, speed, easing) {
 // https://github.com/wnr/element-resize-detector/blob/465fe68efbea85bb9fe22db2f68ebc7fde8bbcf5/src/detection-strategy/object.js
 // modified by wangyi7099
 function listenResize(element, funArr) {
+    /* istanbul ignore if */
+    if (element.isResized) {
+        return;
+    }
     var OBJECT_STYLE = "display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;";
     var style = window.getComputedStyle(element);
     var object = document.createElement("object");
+    element.isResized = true;
     object.style.cssText = OBJECT_STYLE;
     object.tabIndex = -1;
     object.type = "text/html";
@@ -794,6 +799,7 @@ var vuescroll = {
             timeoutId: 0,
             overflowY: true,
             overflowX: true,
+            updateType: '',
             mergedOptions: {
                 scrollPanel: {},
                 scrollContent: {},
@@ -850,17 +856,15 @@ var vuescroll = {
     methods: {
         handleScroll: function handleScroll() {
             this.update();
-            if (this.pointerLeave) {
-                if (this.timeoutId) {
-                    clearTimeout(this.timeoutId);
-                }
-                this.showAndDefferedHideBar();
-            }
+            this.showAndDefferedHideBar();
         },
         showAndDefferedHideBar: function showAndDefferedHideBar() {
             var _this = this;
 
             this.showBar();
+            if (this.timeoutId) {
+                clearTimeout(this.timeoutId);
+            }
             this.timeoutId = setTimeout(function () {
                 _this.timeoutId = 0;
                 _this.hideBar();
@@ -929,11 +933,9 @@ var vuescroll = {
                         _this2.hideBar();
                     }, false);
                     var funcArr = [function () {
-                        if (_this2.timeoutId) {
-                            clearTimeout(_this2.timeoutId);
-                        }
-                        _this2.showAndDefferedHideBar();
+                        _this2.updateType = 'resize';
                         _this2.update();
+                        _this2.showAndDefferedHideBar();
                     }];
                     if (_this2.$listeners['handle-resize']) {
                         funcArr.push(_this2.$listeners['handle-resize']);
@@ -951,6 +953,11 @@ var vuescroll = {
 
         this.$nextTick(function () {
             if (!_this3._isDestroyed) {
+                /* istanbul ignore if */
+                if (_this3.updateType == 'resize') {
+                    _this3.updateType = '';
+                    return;
+                }
                 _this3.update();
                 _this3.showBar();
                 _this3.hideBar();

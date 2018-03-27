@@ -188,6 +188,7 @@ export default  {
             timeoutId: 0,
             overflowY: true,
             overflowX: true,
+            updateType: '',
             mergedOptions: {
                 scrollPanel: {
                 },
@@ -254,15 +255,13 @@ export default  {
     methods: {
         handleScroll() {
             this.update();
-            if(this.pointerLeave) {
-                if(this.timeoutId) {
-                    clearTimeout(this.timeoutId);
-                }
-                this.showAndDefferedHideBar();
-            }
+            this.showAndDefferedHideBar();
         },
         showAndDefferedHideBar() {
             this.showBar();
+            if(this.timeoutId) {
+                clearTimeout(this.timeoutId);
+            }
             this.timeoutId = setTimeout(() => {
                this.timeoutId = 0;
                this.hideBar();
@@ -332,11 +331,9 @@ export default  {
                     }, false);
                     let funcArr = [
                         () => {
-                            if(this.timeoutId) {
-                                clearTimeout(this.timeoutId);
-                            }
-                            this.showAndDefferedHideBar();
+                            this.updateType = 'resize';
                             this.update();
+                            this.showAndDefferedHideBar();
                         }
                     ];
                     if(this.$listeners['handle-resize']) {
@@ -357,6 +354,11 @@ export default  {
     updated() { 
         this.$nextTick(() => {
             if(!this._isDestroyed) {
+                /* istanbul ignore if */
+                if(this.updateType == 'resize') {
+                    this.updateType = '';
+                    return;
+                }
                 this.update();
                 this.showBar();
                 this.hideBar();

@@ -49,4 +49,11 @@ describe('test vuescroll component', () => {
             })
         })
     });
+
+    it('trigger resize', (done) => {
+        ins.childHeight = '500px';
+        setTimeout(() => {
+            done();
+        }, 600);
+    });
 });
