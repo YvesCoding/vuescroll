@@ -186,8 +186,6 @@ export default  {
             mousedown: false,
             pointerLeave: true,
             timeoutId: 0,
-            overflowY: true,
-            overflowX: true,
             updateType: '',
             mergedOptions: {
                 scrollPanel: {

@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.7.7
+    * @name: vuescroll 3.7.8
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -801,8 +801,6 @@ var vuescroll = {
             mousedown: false,
             pointerLeave: true,
             timeoutId: 0,
-            overflowY: true,
-            overflowX: true,
             updateType: '',
             mergedOptions: {
                 scrollPanel: {},
