@@ -40,6 +40,14 @@ export default {
                 mousedown: this.handleMousedown 
             }
         }
+        if(this.ops.hover) {
+            data.on['mouseenter'] = () => {
+                this.$el.style.background = this.ops.hover;
+            }
+            data.on['mouseleave'] = () => {
+                this.$el.style.background = this.ops.background;
+            }   
+        }
         return (
             <div
                 {...data}

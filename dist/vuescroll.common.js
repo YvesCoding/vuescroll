@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.7.9
+    * @name: vuescroll 3.7.10
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -319,15 +319,6 @@ var GCF = {
         opacity: 0 //'0.5'
     },
     // 
-    vBar: {
-        width: '5px',
-        pos: 'right',
-        background: '#4caf50',
-        deltaY: 100,
-        keepShow: false,
-        opacity: 1
-    },
-    // 
     hRail: {
         height: '5px',
         pos: 'bottom',
@@ -335,12 +326,23 @@ var GCF = {
         opacity: 0 //'0.5'
     },
     // 
+    vBar: {
+        width: '5px',
+        pos: 'right',
+        background: '#4caf50',
+        deltaY: 100,
+        keepShow: false,
+        opacity: 1,
+        hover: false
+    },
+    // 
     hBar: {
         height: '5px',
         pos: 'bottom',
         background: '#4caf50',
         keepShow: false,
-        opacity: 1
+        opacity: 1,
+        hover: false
     }
 };
 
@@ -448,7 +450,8 @@ var bar = {
         }
     },
     render: function render(h) {
-        var _extends2;
+        var _extends2,
+            _this = this;
 
         var style = _extends((_extends2 = {}, _defineProperty(_extends2, this.bar.posName, 0), _defineProperty(_extends2, this.ops.pos, 0), _defineProperty(_extends2, this.bar.size, this.state.size), _defineProperty(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty(_extends2, 'background', this.ops.background), _defineProperty(_extends2, 'opacity', this.state.opacity), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'position', 'absolute'), _defineProperty(_extends2, 'borderRadius', '4px'), _defineProperty(_extends2, 'transition', 'opacity .5s'), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'userSelect', 'none'), _extends2), renderTransform(this.type, this.state.posValue));
         var data = {
@@ -458,6 +461,14 @@ var bar = {
                 mousedown: this.handleMousedown
             }
         };
+        if (this.ops.hover) {
+            data.on['mouseenter'] = function () {
+                _this.$el.style.background = _this.ops.hover;
+            };
+            data.on['mouseleave'] = function () {
+                _this.$el.style.background = _this.ops.background;
+            };
+        }
         return h('div', data);
     },
 

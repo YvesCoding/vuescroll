@@ -23,15 +23,6 @@ export default {
         opacity: 0 //'0.5'
     },
     // 
-    vBar: {
-        width: '5px',
-        pos: 'right',
-        background: '#4caf50',
-        deltaY: 100,
-        keepShow: false,
-        opacity: 1,
-    },
-    // 
     hRail: {
         height: '5px',
         pos: 'bottom',
@@ -39,11 +30,22 @@ export default {
         opacity: 0 //'0.5'
     },
     // 
+    vBar: {
+        width: '5px',
+        pos: 'right',
+        background: '#4caf50',
+        deltaY: 100,
+        keepShow: false,
+        opacity: 1,
+        hover: false
+    },
+    // 
     hBar: {
         height: '5px',
         pos: 'bottom',
         background: '#4caf50',
         keepShow: false,
-        opacity: 1
+        opacity: 1,
+        hover: false
     } 
 }

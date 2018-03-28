@@ -9,6 +9,8 @@ describe('test vueScrollBar component', () => {
     let ins = null;
     let vs = null;
     let data = deepMerge(globalData, {});
+    data.ops.vBar.hover = "red";
+    data.ops.vBar.keepShow = true;
     beforeAll(() => {
         ins = new Vue({
             template,
@@ -34,5 +36,18 @@ describe('test vueScrollBar component', () => {
                 })
             })
         }, 0);
+    });
+
+    it('test hover options', () => {
+        trigger(
+            vs.$refs['verticalBar'].$el, 
+            'mouseenter'
+        )
+        expect(vs.$refs['verticalBar'].$el.style.background).toBe("red");
+        trigger(
+            vs.$refs['verticalBar'].$el, 
+            'mouseleave'
+        )
+        expect(vs.$refs['verticalBar'].$el.style.background).not.toBe("red");
     });
 });
