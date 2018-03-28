@@ -13,7 +13,7 @@ describe('test util', () => {
         parent.style.height = '100px';
         parent.style.width = '100px';
         parent.style.overflow = 'scroll';
-        parent.classList.add('scrollPanel');
+        parent.classList.add('vuescroll-panel');
         child.style.height = '200px';
         child.style.width = '200px';
         document.body.appendChild(parent);
