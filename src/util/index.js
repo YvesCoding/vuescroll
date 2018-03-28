@@ -106,7 +106,7 @@ export function hideSystemBar() {
     haveHideen = true;
     let styleDom = document.createElement('style');
     styleDom.type = 'text/css';
-    styleDom.innerHTML=".scrollPanel::-webkit-scrollbar{width:0;height:0}";
+    styleDom.innerHTML=".vuescroll-panel::-webkit-scrollbar{width:0;height:0}";
     document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
 }
 

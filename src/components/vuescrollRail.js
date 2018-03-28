@@ -29,7 +29,7 @@ export default {
         };
         let data = {
             style: style,
-            class: `${props.type}Rail`,
+            class: `vuescroll-${props.type}-rail`,
             ref: `${props.type}Rail`,
             on: {
                 click(e) {

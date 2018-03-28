@@ -16,7 +16,7 @@ export default  {
         return h(props.ops.tag, {
             style: style,
             ref: 'scrollContent',
-            class: "scrollContent",
+            class: "vuescroll-content",
             props: props.ops.props,
             attrs: props.ops.attrs
         }, slots().default);

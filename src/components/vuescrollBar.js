@@ -35,7 +35,7 @@ export default {
         }
         const data = {
             style: style,
-            class: `${this.type}Scrollbar`,
+            class: `vuescroll-${this.type}-scrollbar`,
             on: {
                 mousedown: this.handleMousedown 
             }

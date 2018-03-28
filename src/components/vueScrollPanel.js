@@ -28,7 +28,7 @@ export default   {
     },
     render(h) {
         let data = {
-            class: ['scrollPanel']
+            class: ['vuescroll-panel']
         }
         return (
             <div

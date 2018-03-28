@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.7.8
+    * @name: vuescroll 3.7.9
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -140,7 +140,7 @@ function hideSystemBar() {
     haveHideen = true;
     var styleDom = document.createElement('style');
     styleDom.type = 'text/css';
-    styleDom.innerHTML = ".scrollPanel::-webkit-scrollbar{width:0;height:0}";
+    styleDom.innerHTML = ".vuescroll-panel::-webkit-scrollbar{width:0;height:0}";
     document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
 }
 
@@ -449,7 +449,7 @@ var bar = {
         var style = _extends((_extends2 = {}, _defineProperty(_extends2, this.bar.posName, 0), _defineProperty(_extends2, this.ops.pos, 0), _defineProperty(_extends2, this.bar.size, this.state.size), _defineProperty(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty(_extends2, 'background', this.ops.background), _defineProperty(_extends2, 'opacity', this.state.opacity), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'position', 'absolute'), _defineProperty(_extends2, 'borderRadius', '4px'), _defineProperty(_extends2, 'transition', 'opacity .5s'), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'userSelect', 'none'), _extends2), renderTransform(this.type, this.state.posValue));
         var data = {
             style: style,
-            class: this.type + 'Scrollbar',
+            class: 'vuescroll-' + this.type + '-scrollbar',
             on: {
                 mousedown: this.handleMousedown
             }
@@ -531,7 +531,7 @@ var rail = {
         var style = (_style = {}, _defineProperty$1(_style, bar.posName, 0), _defineProperty$1(_style, props.ops.pos, 0), _defineProperty$1(_style, bar.size, '100%'), _defineProperty$1(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$1(_style, 'background', props.ops.background), _defineProperty$1(_style, 'opacity', props.ops.opacity), _defineProperty$1(_style, 'position', 'absolute'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'borderRadius', '4px'), _style);
         var data = {
             style: style,
-            class: props.type + 'Rail',
+            class: 'vuescroll-' + props.type + '-rail',
             ref: props.type + 'Rail',
             on: {
                 click: function click(e) {
@@ -560,7 +560,7 @@ var scrollContent = {
         return h(props.ops.tag, {
             style: style,
             ref: 'scrollContent',
-            class: "scrollContent",
+            class: "vuescroll-content",
             props: props.ops.props,
             attrs: props.ops.attrs
         }, slots().default);
@@ -612,7 +612,7 @@ var scrollPanel = {
     },
     render: function render(h) {
         var data = {
-            class: ['scrollPanel']
+            class: ['vuescroll-panel']
         };
         return h(
             'div',
@@ -818,7 +818,7 @@ var vuescroll = {
                 width: '100%',
                 padding: 0
             },
-            class: 'vueScroll',
+            class: 'vue-scroll',
             on: {
                 mouseenter: function mouseenter() {
                     vm.pointerLeave = false;
