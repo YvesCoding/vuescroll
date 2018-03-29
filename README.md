@@ -19,6 +19,59 @@ There many scroll animates you can chooes.
 vuescroll can auto detect the changes of the contents you scroll. And react to the users.
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/handle-resize.gif?raw=true)
 
+## GetStarted
+### Direct Download / CDN
+
+You need not to  manually use it ,vuescroll will automatically detect vue and use it.
+```html
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/vuescroll"></script>
+```
+### npm
+```bash
+npm install vuescroll -S
+```
+And you should import `Vue` and  `vuescroll` and then manually use it.
+```javascript
+import Vue from 'vue'
+import vuescroll from 'vuescroll'
+Vue.use(vuescroll)
+```
+### Bind it by ops
+```html
+<div id="app" >
+    <!-- bind your own options in data -->
+    <vue-scroll :ops="ops">
+        <!-- the content you want to scroll -->
+        <div 
+        class="content"
+        v-for= "item in 100"
+        :key="item"
+        >
+        <span>{{item}}</span>
+        </div>
+    </vue-scroll>
+</div>
+```
+### Write your own options and that's all.
+```javascript
+var vm = new Vue({
+    el: "#app",
+    data: {
+        ops: {
+            // write your own options
+            scrollContent: {
+
+            },
+            vRail: {
+                
+            }
+            // ...
+        }
+    }
+})
+```
+
 ## Todo List
 
 * Integrate with the future releases of Vue.js

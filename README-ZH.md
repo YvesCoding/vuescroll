@@ -19,6 +19,59 @@
 vuescroll 能侦测到内容的变动并且把变动的信息反馈给用户。
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/handle-resize.gif?raw=true)
 
+## 快速上手
+### 直接下载 / CDN
+
+在浏览器中引入所需的文件， vuescroll会自动进行安装。
+```html
+<script src="https://unpkg.com/vue"></script>
+<script src="https://unpkg.com/vuescroll"></script>
+```
+### npm
+```bash
+npm install vuescroll -S
+```
+引入vue和vuescroll， 然后手动地安装(use)一下即可。
+```javascript
+import Vue from 'vue'
+import vuescroll from 'vuescroll'
+Vue.use(vuescroll)
+```
+### 绑定你的配置项
+```html
+<div id="app" >
+    <!-- bind your own options in data -->
+    <vue-scroll :ops="ops">
+        <!-- the content you want to scroll -->
+        <div 
+        class="content"
+        v-for= "item in 100"
+        :key="item"
+        >
+        <span>{{item}}</span>
+        </div>
+    </vue-scroll>
+</div>
+```
+### 编写你的配置项即可。
+```javascript
+var vm = new Vue({
+    el: "#app",
+    data: {
+        ops: {
+            // write your own options
+            scrollContent: {
+
+            },
+            vRail: {
+                
+            }
+            // ...
+        }
+    }
+})
+```
+
 ## 待办列表
 
 * 准备整合 Vue.js的未来版本。
