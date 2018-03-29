@@ -19,7 +19,7 @@ There many scroll animates you can chooes.
 vuescroll can auto detect the changes of the contents you scroll. And react to the users.
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/handle-resize.gif?raw=true)
 
-## GetStarted
+## Get Started
 ### Direct Download / CDN
 
 You need not to  manually use it ,vuescroll will automatically detect vue and use it.
