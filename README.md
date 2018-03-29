@@ -71,7 +71,8 @@ var vm = new Vue({
     }
 })
 ```
-
+### Preview
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll.gif?raw=true)
 ## Todo List
 
 * Integrate with the future releases of Vue.js

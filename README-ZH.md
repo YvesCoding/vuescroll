@@ -71,6 +71,8 @@ var vm = new Vue({
     }
 })
 ```
+### 预览
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll.gif?raw=true)
 
 ## 待办列表
 
