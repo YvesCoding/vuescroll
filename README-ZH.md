@@ -6,27 +6,27 @@
            <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 </p>
 
-## What is vuescroll?
+## 什么是vuescroll?
 
- vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ,both supports PC and mobile phone, it can transform a div into a scrollable area, [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) are using it. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs) of vuescroll.[中文版README.MD](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
+ vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue) 的虚拟滚动条,同时支持PC和手机端, 它能把一个div变成可滚动的, [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) 和 [CodePen(Code edit box)](https://codepen.io/wangyi7099/) 和 都在用虚拟滚动条. 这里是[官方地址](https://wangyi7099.github.io/VuescrollDocs).
 
-## Feature
+## 特性
 
-### More smoothly than native
-There many scroll animates you can chooes. 
+### 比原生的滚动更加流畅
+你可以选择很多滚动动画。
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/smooth-scroll.gif?raw=true)
-### Auto detect content size changes
-vuescroll can auto detect the changes of the contents you scroll. And react to the users.
+### 自动侦测内容发动变动
+vuescroll 能侦测到内容的变动并且把变动的信息反馈给用户。
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/handle-resize.gif?raw=true)
 
-## Todo List
+## 待办列表
 
-* Integrate with the future releases of Vue.js
+* 准备整合 Vue.js的未来版本。
 * ...
-## Inspire
+## 灵感来源
 
-jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)  and  [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src).
+jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)  和  [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src).
 
-## Liscence
+## 协议
 
 **MIT** 
