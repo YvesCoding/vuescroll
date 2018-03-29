@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 3.7.10
+    * @name: vuescroll 3.7.11
     * @author: (c) 2018-2018 wangyi7099
     * @description: A virtual scrollbar based on vue.js 2.x
     * @license: MIT
@@ -867,8 +867,8 @@ var vuescroll = {
         }
     },
     methods: {
-        handleScroll: function handleScroll() {
-            this.update();
+        handleScroll: function handleScroll(nativeEvent) {
+            this.update('handle-scroll', nativeEvent);
             this.showAndDefferedHideBar();
         },
         showAndDefferedHideBar: function showAndDefferedHideBar() {
@@ -883,17 +883,25 @@ var vuescroll = {
                 _this.hideBar();
             }, 500);
         },
-        triggerScrollEvent: function triggerScrollEvent() {
+        triggerEvent: function triggerEvent(eventType) {
+            var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
             var scrollPanel$$1 = this.scrollPanelElm;
-            var vertical = {},
-                horizontal = {};
+            var vertical = {
+                type: 'vertical'
+            },
+                horizontal = {
+                type: 'horizontal'
+            };
             vertical['process'] = scrollPanel$$1.scrollTop / (scrollPanel$$1.scrollHeight - scrollPanel$$1.clientHeight);
             horizontal['process'] = scrollPanel$$1.scrollLeft / (scrollPanel$$1.scrollWidth - scrollPanel$$1.clientWidth);
             vertical['barSize'] = this.vBar.state.size;
             horizontal['barSize'] = this.hBar.state.size;
-            this.$emit('handle-scroll', vertical, horizontal);
+            this.$emit(eventType, vertical, horizontal, nativeEvent);
         },
-        update: function update() {
+        update: function update(eventType) {
+            var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
             var heightPercentage = void 0,
                 widthPercentage = void 0;
             var scrollPanel$$1 = this.scrollPanelElm;
@@ -909,8 +917,10 @@ var vuescroll = {
             this.vBar.state.posValue = scrollPanel$$1.scrollTop * 100 / scrollPanel$$1.clientHeight;
             this.hBar.state.posValue = scrollPanel$$1.scrollLeft * 100 / scrollPanel$$1.clientWidth;
 
-            // trigger scroll event
-            this.triggerScrollEvent();
+            // trigger event such as scroll or resize
+            if (eventType) {
+                this.triggerEvent(eventType, nativeEvent);
+            }
         },
         showBar: function showBar() {
             this.vBar.state.opacity = this.mergedOptions.vBar.opacity;
@@ -945,17 +955,20 @@ var vuescroll = {
                         _this2.showBar();
                         _this2.hideBar();
                     }, false);
-                    var funcArr = [function () {
+                    var funcArr = [function (nativeEvent) {
+                        /** 
+                         *  set updateType to prevent
+                         *  the conflict update of the `updated
+                         *  hook` of the vuescroll itself. 
+                         */
                         _this2.updateType = 'resize';
-                        _this2.update();
+                        _this2.update('handle-resize', nativeEvent);
                         _this2.showAndDefferedHideBar();
                     }];
-                    if (_this2.$listeners['handle-resize']) {
-                        funcArr.push(_this2.$listeners['handle-resize']);
-                    }
                     // registry resize event
+                    // because scrollContent is a functional component
+                    // so it maybe a component or a dom element
                     var contentElm = _this2.$refs['scrollContent']._isVue ? _this2.$refs['scrollContent'].$el : _this2.$refs['scrollContent'];
-
                     listenResize(contentElm, funcArr);
                 }
             }

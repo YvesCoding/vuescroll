@@ -251,8 +251,8 @@ export default  {
         }
     },
     methods: {
-        handleScroll() {
-            this.update();
+        handleScroll(nativeEvent) {
+            this.update('handle-scroll', nativeEvent);
             this.showAndDefferedHideBar();
         },
         showAndDefferedHideBar() {
@@ -265,20 +265,20 @@ export default  {
                this.hideBar();
            }, 500);
         },
-        triggerScrollEvent() {
+        triggerEvent(eventType, nativeEvent = null) {
             const scrollPanel = this.scrollPanelElm;
             let vertical = {
-
+                type: 'vertical'
             }, horizontal = {
-
+                type: 'horizontal'
             };
             vertical['process'] = scrollPanel.scrollTop / (scrollPanel.scrollHeight - scrollPanel.clientHeight);
             horizontal['process'] = scrollPanel.scrollLeft / (scrollPanel.scrollWidth - scrollPanel.clientWidth);
             vertical['barSize'] = this.vBar.state.size;
             horizontal['barSize'] = this.hBar.state.size;
-            this.$emit('handle-scroll', vertical, horizontal);
+            this.$emit(eventType, vertical, horizontal, nativeEvent);
         },
-        update() {
+        update(eventType, nativeEvent = null) {
             let heightPercentage, widthPercentage;
             const scrollPanel = this.scrollPanelElm;
             /* istanbul ignore if */
@@ -293,8 +293,10 @@ export default  {
             this.vBar.state.posValue =  ((scrollPanel.scrollTop * 100) / scrollPanel.clientHeight);
             this.hBar.state.posValue =  ((scrollPanel.scrollLeft * 100) / scrollPanel.clientWidth);
 
-            // trigger scroll event
-            this.triggerScrollEvent();
+            // trigger event such as scroll or resize
+            if(eventType) {
+                this.triggerEvent(eventType, nativeEvent);
+            }
         },
         showBar() {
             this.vBar.state.opacity =  this.mergedOptions.vBar.opacity;
@@ -328,18 +330,21 @@ export default  {
                         this.hideBar();
                     }, false);
                     let funcArr = [
-                        () => {
+                        (nativeEvent) => {    
+                            /** 
+                             *  set updateType to prevent
+                             *  the conflict update of the `updated
+                             *  hook` of the vuescroll itself. 
+                             */
                             this.updateType = 'resize';
-                            this.update();
+                            this.update('handle-resize', nativeEvent);
                             this.showAndDefferedHideBar();
                         }
                     ];
-                    if(this.$listeners['handle-resize']) {
-                        funcArr.push(this.$listeners['handle-resize']);
-                    }
                     // registry resize event
+                    // because scrollContent is a functional component
+                    // so it maybe a component or a dom element
                     const contentElm = this.$refs['scrollContent']._isVue?this.$refs['scrollContent'].$el:this.$refs['scrollContent'];
-
                     listenResize(
                         contentElm
                         ,

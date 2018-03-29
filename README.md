@@ -8,121 +8,21 @@
 
 ## What is vuescroll?
 
- vuescroll is a virtual scrollbar based on [vue.js](https://github.com/vuejs/vue) 2.X , it can transform a div into a scrollable area, the experience of using it just like using native scrollbar. It can both support PC and Mobile Phone. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs).
+ vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ,both supports PC and mobile phone, it can transform a div into a scrollable area, [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) are using it. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs) of vuescroll.
 
+## Feature
 
-## Get Started
+### More smoothly than native
+There many scroll animates you can chooes. 
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/smooth-scroll.gif?raw=true)
+### Auto detect content size changes
+vuescroll can auto detect the changes of the contents you scroll. And react to the users.
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/handle-resize.gif?raw=true)
 
-### Install
+## Todo List
 
-Browser:
-```html
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/vuescroll"></script>
-```
-NodeJs:
-```bash
-   npm install vuescroll -S
-```
-```javascript
-	import Vue from 'vue'
-	import vuescroll from 'vuescroll'
-
-	Vue.use(vuescroll)
-```
-Wrap the content you want to scroll.
-```html
-<div class="container">
-    <vue-scroll :ops="ops">
-        <div class="content">
-        </div>
-    </vue-scroll>
-</div>
-```
-JS:
-```javascript
-    new Vue({
-        data: {
-            ops: {
-                vRail: {
-                    // ...
-                },
-                vBar: {
-                    // ...
-                },
-                scrollContent: {
-                    // ...
-                }
-                // ...
-            }
-        }
-    })
-```
-
-### Global Configuartion
-
-> To set all the scrollbars style , you can change the global vuescroll configs `Vue.prototype.$vuescrollConfig`, the priority of global config is the lowest. If you set the exact style for a vuescroll component, the global config will be overwrote.
-
-```javascript
-// The global config settings. Bar's widht/height or pos depend on the corresponding rail.
-export default {
-    // vuescroll
-    vuescroll: {
-        style: {
-            position: 'relative',
-            height: '100%',
-            width: '100%',
-            overflow: 'hidden'
-        },
-        class: ['vueScroll']
-    },
-    scrollPanel: {
-        initialScrollY: false,
-        initialScrollX: false
-    },
-    // 
-    scrollContent: {
-        tag: 'div',
-        padding: true,
-        height: '100%',
-        props: {
-        },
-        attrs: {
-        }
-    },
-    // 
-    vRail: {
-        width: '5px',
-        pos: 'right',
-        background: "#a5d6a7",
-        opacity: 0 //'0.5'
-    },
-    // 
-    vBar: {
-        width: '5px',
-        pos: 'right',
-        background: '#4caf50',
-        deltaY: 100,
-        keepShow: false,
-        opacity: 1,
-    },
-    // 
-    hRail: {
-        height: '5px',
-        pos: 'bottom',
-        background: "#a5d6a7",
-        opacity: 0 //'0.5'
-    },
-    // 
-    hBar: {
-        height: '5px',
-        pos: 'bottom',
-        background: '#4caf50',
-        keepShow: false,
-        opacity: 1
-    } 
-}
-```
+* Integrate with the future releases of Vue.js
+* ...
 ## Inspire
 
 jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)  and  [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src).
