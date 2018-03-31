@@ -1,3 +1,4 @@
+
 <p align="center"><a href="https://wangyi7099.github.io/vuescrollDemo/" target="_blank" rel="noopener noreferrer"><img width="100" src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/logo.png?raw=true" alt="vuescroll logo"></a></p>
 <p align="center">
     <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a>
@@ -5,24 +6,30 @@
   <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage Status"></a>
            <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 </p>
+<p align="center">vuescroll-A virtual scrollbar based on vue.js 2.x</p>
 
-## What is vuescroll?
+[中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 
- vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ,both supports PC and mobile phone, it can transform a div into a scrollable area, [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) are using it. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs) of vuescroll.[中文版README.MD](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
+## Introduction
 
-## Feature
+ vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) which can both support PC and mobile phone.You can customize the scrollbar you like instead of using native in browser.Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs).
+ 
+ ## Who use vitural scrollbar?
+ [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) are using it. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs) of vuescroll.
+
+## Vuescroll Feature
 
 ### More smoothly than native
-There many scroll animates you can chooes. 
+[Here](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) are many scroll animations you can choose. 
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/smooth-scroll.gif?raw=true)
-### Auto detect content size changes
-vuescroll can auto detect the changes of the contents you scroll. And react to the users.
+### Automatically detect content size changes
+vuescroll can automatically detect the changes of the content you scroll. And react to the users.
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/handle-resize.gif?raw=true)
 
 ## Get Started
 ### Direct Download / CDN
 
-You need not to  manually use it ,vuescroll will automatically detect vue and use it.
+In browser,you need not to  manually use it , and vuescroll will automatically detect vue and install itself.
 ```html
 <script src="https://unpkg.com/vue"></script>
 <script src="https://unpkg.com/vuescroll"></script>
@@ -31,13 +38,13 @@ You need not to  manually use it ,vuescroll will automatically detect vue and us
 ```bash
 npm install vuescroll -S
 ```
-And you should import `Vue` and  `vuescroll` and then manually use it.
+And in nodejs, you should import `Vue` and  `vuescroll` and  manually use it.
 ```javascript
 import Vue from 'vue'
 import vuescroll from 'vuescroll'
 Vue.use(vuescroll)
 ```
-### Bind it by ops
+### Bind your own options in HTML
 ```html
 <div id="app" >
     <!-- bind your own options in data -->
@@ -53,7 +60,7 @@ Vue.use(vuescroll)
     </vue-scroll>
 </div>
 ```
-### Write your own options and that's all.
+### Write your own options and that's all. For the detail options please visit [vuescrll Get Started](https://wangyi7099.github.io/VuescrollDocs/getStarted/)
 ```javascript
 var vm = new Vue({
     el: "#app",
@@ -71,12 +78,12 @@ var vm = new Vue({
     }
 })
 ```
-### Preview
+### This is the preview of vuescroll.
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll.gif?raw=true)
+
 ## Todo List
 
 * Integrate with the future releases of Vue.js
-* ...
 ## Inspire
 
 jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)  and  [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src).
