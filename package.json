@@ -34,7 +34,7 @@
     "test:cover": "karma start test/karma.conf.js",
     "report-coverage": "codecov"
   },
-  "version": "3.7.11",
+  "version": "3.7.12",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
@@ -59,6 +59,7 @@
     "rollup": "^0.55.1",
     "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-node-resolve": "^3.0.2",
+    "rollup-plugin-replace": "^2.0.0",
     "uglify-es": "^3.3.9",
     "webpack": "^3.10.0",
     "zlib": "^1.0.5"

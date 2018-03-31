@@ -1033,8 +1033,8 @@ var scroll = {
         scroll.isInstalled = true;
     }
 };
-
-if (typeof Vue !== 'undefined') {
+/* istanbul ignore if */
+if (typeof Vue !== 'undefined' && "umd" === 'umd') {
     Vue.use(scroll);
 }
 

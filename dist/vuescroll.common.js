@@ -1019,7 +1019,7 @@ var vuescroll = {
 var scroll = {
     install: function install(Vue$$1) {
         if (scroll.isInstalled) {
-            console.warn("[vuescroll]:You should not install the vuescroll again!");
+            console.warn("You should not install the vuescroll again!");
             return;
         }
         //vueScroll
@@ -1031,5 +1031,9 @@ var scroll = {
         scroll.isInstalled = true;
     }
 };
+/* istanbul ignore if */
+if (typeof Vue !== 'undefined' && "cjs" === 'umd') {
+    Vue.use(scroll);
+}
 
 module.exports = scroll;

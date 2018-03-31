@@ -1,5 +1,5 @@
 import Vue from 'vue/dist/vue'
-import vuescroll from 'vsUnins'
+import vuescroll from 'vuescroll'
 import {
     deepMerge
 } from 'root/util';

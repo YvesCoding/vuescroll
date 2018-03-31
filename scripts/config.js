@@ -1,7 +1,7 @@
 // rollup.config.js
 const resolveNode = require('rollup-plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
-
+const replace = require('rollup-plugin-replace')
 const path = require('path')
 const version = process.env.VERSION || require('../package.json').version
  
@@ -30,44 +30,42 @@ const root = aliases.root;
 
 const builds = {
    'web-dev': {
-    entry: resolve(root + '/index.ins.js'),
+    entry: resolve(root + '/index.js'),
     dest: resolve('dist/vuescroll.js'),
     format: 'umd',
-    env: 'development',
     external: ['vue'],
     banner
   },
    'web-prod': {
-    entry: resolve(root + '/index.ins.js'),
+    entry: resolve(root + '/index.js'),
     dest: resolve('dist/vuescroll.min.js'),
     format: 'umd',
-    env: 'production',
     external: ['vue'],
     banner
   },
    'esm-dev': {
-    entry: resolve(root + '/index.unins.js'),
+    entry: resolve(root + '/index.js'),
     dest: resolve('dist/vuescroll.esm.js'),
     format: 'es',
     external: ['vue'],
     banner
   },
   'esm-pro': {
-    entry: resolve(root + '/index.unins.js'),
+    entry: resolve(root + '/index.js'),
     dest: resolve('dist/vuescroll.esm.min.js'),
     format: 'es',
     external: ['vue'],
     banner
   },
    'cjs-dev': {
-    entry: resolve(root + '/index.unins.js'),
+    entry: resolve(root + '/index.js'),
     dest: resolve('dist/vuescroll.common.js'),
     format: 'cjs',
     external: ['vue'],
     banner
   },
   'cjs-pro': {
-    entry: resolve(root + '/index.unins.js'),
+    entry: resolve(root + '/index.js'),
     dest: resolve('dist/vuescroll.common.min.js'),
     format: 'cjs',
     external: ['vue'],
@@ -93,6 +91,9 @@ function genConfig (name) {
       resolveNode(),
       babel({
         exclude: 'node_modules/**', // only transpile our source code
+      }),
+      replace({
+        'process.env.NODE_FORMAT': JSON.stringify(opts.format)
       })
     ]
   }
@@ -107,9 +108,5 @@ function genConfig (name) {
   return config
 }
 
-if (process.env.TARGET) {
-  module.exports = genConfig(process.env.TARGET)
-} else {
-  exports.getBuild = genConfig
-  exports.getAllBuilds = () => Object.keys(builds).map(genConfig)
-}
+exports.getBuild = genConfig
+exports.getAllBuilds = () => Object.keys(builds).map(genConfig)
