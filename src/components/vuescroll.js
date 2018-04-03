@@ -25,6 +25,15 @@ import bar from "./vuescrollBar";
 import rail from "./vuescrollRail";
 import scrollContent from './vueScrollContent';
 import scrollPanel from './vueScrollPanel';
+
+// import scroller
+import Scroller from '../util/scroller'
+import {
+    render 
+} from '../util/scroller/render'
+import {
+    listenContainer
+}from '../util/scroller/listener'
 /**
  * create a scrollPanel
  * 
@@ -44,23 +53,28 @@ function createPanel(h, vm) {
         },
         props: {
             ops: vm.mergedOptions.scrollPanel,
+            state: vm.scrollPanel.state
         }
     }
-    // dynamic set overflow scroll
-    scrollPanelData.style['overflowY'] = vm.vBar.state.size?'scroll':'inherit';
-    scrollPanelData.style['overflowX'] = vm.hBar.state.size?'scroll':'inherit';
-    let gutter = getGutter();
-    if(!getGutter.isUsed) {
-        getGutter.isUsed = true;
+    // set overflow only if the in native mode
+    if(vm.mode == 'native') {
+        // dynamic set overflow scroll
+        scrollPanelData.style['overflowY'] = vm.vBar.state.size?'scroll':'inherit';
+        scrollPanelData.style['overflowX'] = vm.hBar.state.size?'scroll':'inherit';
+        let gutter = getGutter();
+        if(!getGutter.isUsed) {
+            getGutter.isUsed = true;
+        }
+        hideSystemBar();
+        scrollPanelData.style.height = '100%';
+    } else {
+        scrollPanelData.style['userSelect'] = 'none';
     }
-    hideSystemBar();
-    scrollPanelData.style.height = '100%';
-    
     return (
         <scrollPanel
             {...scrollPanelData}
         >
-            {createContent(h, vm)}
+            {vm.mode == 'native'?createContent(h, vm): [vm.$slots.default]}
         </scrollPanel>
     )
 }
@@ -153,8 +167,19 @@ export default  {
     mixins: [LifeCycleMix, vuescrollApi],
     data() {
         return {
+            vuescroll: {
+                state: {
+                    scrollTop: 0,
+                    scrollLeft: 0
+                }
+            },
             scrollPanel: {
-                el: ""
+                el: "",
+                state: {
+                    left: 0,
+                    top: 0,
+                    zoom: 1
+                }
             },
             scrollContent: {
             },
@@ -187,7 +212,11 @@ export default  {
             pointerLeave: true,
             timeoutId: 0,
             updateType: '',
+            isInitScroller: false,
             mergedOptions: {
+                vuescroll: {
+
+                },
                 scrollPanel: {
                 },
                 scrollContent: {
@@ -205,6 +234,7 @@ export default  {
     },
     render(h) {
         let vm = this;
+
         // vuescroll data
         const vuescrollData = {
             style: {
@@ -227,30 +257,57 @@ export default  {
                 mousemove()/* istanbul ignore next */{
                     vm.pointerLeave = false;
                     vm.showBar();
-                    vm.update();
+                    vm.update(); 
                 }
             }
         }
-        // dynamic set overflow
-        vuescrollData.style['overflowY'] = vm.vBar.state.size?'hidden':'inherit';
-        vuescrollData.style['overflowX'] = vm.hBar.state.size?'hidden':'inherit';
-        
-        return (
-            <div {...vuescrollData}>
-                {createPanel(h, vm)}
-                {createRail(h, vm, 'vertical')}
-                {createBar(h, vm, 'vertical')}
-                {createRail(h, vm, 'horizontal')}
-                {createBar(h, vm, 'horizontal')}
-            </div>
-        );
+        if(this.mode == 'native') {
+             // dynamic set overflow
+            vuescrollData.style['overflowY'] = vm.vBar.state.size?'hidden':'inherit';
+            vuescrollData.style['overflowX'] = vm.hBar.state.size?'hidden':'inherit';  
+        }
+        else {
+            vuescrollData.style['overflow'] = 'hidden';
+        }
+            return (
+                <div {...vuescrollData}>
+                    {createPanel(h, vm)}
+                    {createRail(h, vm, 'vertical')}
+                    {createBar(h, vm, 'vertical')}
+                    {createRail(h, vm, 'horizontal')}
+                    {createBar(h, vm, 'horizontal')}
+                </div>
+            )
     },
     computed: {
         scrollPanelElm() {
             return this.$refs.scrollPanel.$el;
+        },
+        mode() {
+            return this.mergedOptions.vuescroll.mode
         }
     },
     methods: {
+        updateScroller() {
+            if(!this.isInitScroller) {
+                this.isInitScroller = true;
+                if(this.scroller) {
+                    return;
+                }
+                // Initialize Scroller
+                this.scroller = new Scroller(render(this.scrollPanelElm, window), {
+                    zooming: true
+                });
+                var rect = this.$el.getBoundingClientRect();
+                this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);    
+                listenContainer(this.$el, this.scroller);
+            }
+            const clientWidth = this.$el.clientWidth;
+            const clientHeight = this.$el.clientHeight;
+            const contentWidth = this.$el.scrollWidth;
+            const contentHeight = this.$el.scrollHeight;
+            this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
+        },
         handleScroll(nativeEvent) {
             this.update('handle-scroll', nativeEvent);
             this.showAndDefferedHideBar();
@@ -265,7 +322,7 @@ export default  {
                this.hideBar();
            }, 500);
         },
-        triggerEvent(eventType, nativeEvent = null) {
+        emitEvent(eventType, nativeEvent = null) {
             const scrollPanel = this.scrollPanelElm;
             let vertical = {
                 type: 'vertical'
@@ -281,21 +338,33 @@ export default  {
         update(eventType, nativeEvent = null) {
             let heightPercentage, widthPercentage;
             const scrollPanel = this.scrollPanelElm;
+            const vuescroll = this.$el;
             /* istanbul ignore if */
             if (!scrollPanel) return;
-      
-            heightPercentage = (scrollPanel.clientHeight * 100 / scrollPanel.scrollHeight);
-            widthPercentage = (scrollPanel.clientWidth * 100 / scrollPanel.scrollWidth);
 
+            if(this.mode == 'native') {
+                heightPercentage = (scrollPanel.clientHeight * 100 / scrollPanel.scrollHeight);
+                widthPercentage = (scrollPanel.clientWidth * 100 / scrollPanel.scrollWidth);    
+                this.vBar.state.posValue =  ((scrollPanel.scrollTop * 100) / scrollPanel.clientHeight);
+                this.hBar.state.posValue =  ((scrollPanel.scrollLeft * 100) / scrollPanel.clientWidth);    
+            } else  {
+                heightPercentage = (vuescroll.clientHeight * 100 / scrollPanel.clientHeight);
+                widthPercentage = (vuescroll.clientWidth * 100 / scrollPanel.clientWidth);
+                this.vBar.state.posValue =  ((this.vuescroll.state.scrollTop * 100) / vuescroll.clientHeight);
+                this.hBar.state.posValue =  ((this.vuescroll.state.scrollLeft * 100) / vuescroll.clientWidth);    
+            }
+           
             this.vBar.state.size = (heightPercentage < 100) ? (heightPercentage + '%') : 0;
             this.hBar.state.size = (widthPercentage < 100) ? (widthPercentage + '%') : 0;
 
-            this.vBar.state.posValue =  ((scrollPanel.scrollTop * 100) / scrollPanel.clientHeight);
-            this.hBar.state.posValue =  ((scrollPanel.scrollLeft * 100) / scrollPanel.clientWidth);
-
+           
             // trigger event such as scroll or resize
             if(eventType) {
-                this.triggerEvent(eventType, nativeEvent);
+                this.emitEvent(eventType, nativeEvent);
+            }
+
+            if(this.mode !== 'native') {
+                this.updateScroller();
             }
         },
         showBar() {
@@ -322,6 +391,7 @@ export default  {
                 this.update();
                 this.showBar();
                 this.hideBar();
+                // registry resize event
                 /* istanbul ignore next */
                 {
                     window.addEventListener("resize", () => {
@@ -344,12 +414,17 @@ export default  {
                     // registry resize event
                     // because scrollContent is a functional component
                     // so it maybe a component or a dom element
-                    const contentElm = this.$refs['scrollContent']._isVue?this.$refs['scrollContent'].$el:this.$refs['scrollContent'];
+                    const contentElm = this.mode!== 'native'?this.scrollPanelElm: this.$refs['scrollContent']._isVue?this.$refs['scrollContent'].$el:this.$refs['scrollContent'];
                     listenResize(
                         contentElm
                         ,
                         funcArr
                     )
+                }
+                if(this.mode == 'native') {
+                    this.updateScroller();
+                } else {
+                    this.isInitScroller = false;
                 }
             }
         }) 
@@ -379,6 +454,9 @@ export default  {
             default() {
                /* istanbul ignore next */
                return {
+                vuescroll: {
+
+                },
                 scrollPanel: {
 
                 },

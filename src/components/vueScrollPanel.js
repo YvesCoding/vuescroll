@@ -1,5 +1,3 @@
-
-
 // vueScrollPanel
 export default   {
     name: 'scrollPanel',
@@ -61,6 +59,9 @@ export default   {
                 }
                 return rtn;
             }
+        },
+        state: {
+
         }
     }
 }

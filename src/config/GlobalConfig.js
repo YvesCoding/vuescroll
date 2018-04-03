@@ -1,5 +1,8 @@
 export default {
     // vuescroll
+    vuescroll: {
+        mode: 'native'
+    },
     scrollPanel: {
         initialScrollY: false,
         initialScrollX: false,
