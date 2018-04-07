@@ -1,75 +1,97 @@
-export function listenContainer(container, scroller) {
-    if(container.isListened) {
-        return
-    }
-    container.isListened = true;
+export function listenContainer(container, scroller, eventCallback) {
+    let destroy = null;
     if ('ontouchstart' in window) {
-
-        container.addEventListener("touchstart", function(e) {
+        function touchstart(e) {
             // Don't react if initial down happens on a form element
             if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
                 return;
             }
-    
+            eventCallback('mousedown');
             scroller.doTouchStart(e.touches, e.timeStamp);
             e.preventDefault();
-        }, false);
-    
-        document.addEventListener("touchmove", function(e) {
+        }
+        function touchmove(e) {
+            eventCallback('mousemove');
             scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
-        }, false);
-    
-        document.addEventListener("touchend", function(e) {
+        }
+        function touchend(e) {
+            eventCallback('mouseup');
             scroller.doTouchEnd(e.timeStamp);
-        }, false);
-    
-        document.addEventListener("touchcancel", function(e) {
+        }
+        function touchcancel(e) {
             scroller.doTouchEnd(e.timeStamp);
-        }, false);
+        }
+        container.addEventListener("touchstart", touchstart, false);
+        
+        document.addEventListener("touchmove", touchmove, false);
+        
+        document.addEventListener("touchend", touchend, false);
     
+        document.addEventListener("touchcancel",touchcancel , false);
+        
+        destroy = function() {
+            container.removeEventListener("touchstart", touchstart, false);
+        
+            document.removeEventListener("touchmove", touchmove, false);
+            
+            document.removeEventListener("touchend", touchend, false);
+        
+            document.removeEventListener("touchcancel",touchcancel , false);
+        }
     } else {
     
         var mousedown = false;
-    
-        container.addEventListener("mousedown", function(e) {
+        function mousedownEvent(e) {
             if (e.target.tagName.match(/input|textarea|select/i)) {
                 return;
             }
-            console.log('start');
+            eventCallback('mousedown');
             scroller.doTouchStart([{
                 pageX: e.pageX,
                 pageY: e.pageY
             }], e.timeStamp);
     
             mousedown = true;
-        }, false);
-    
-        document.addEventListener("mousemove", function(e) {
+        }
+        function mousemove(e) {
             if (!mousedown) {
                 return;
             }
-            console.log('mousemove');
+            eventCallback('mousemove');
             scroller.doTouchMove([{
                 pageX: e.pageX,
                 pageY: e.pageY
             }], e.timeStamp);
     
             mousedown = true;
-        }, false);
-    
-        document.addEventListener("mouseup", function(e) {
+        }
+        function mouseup(e) {
             if (!mousedown) {
                 return;
             }
-            
+            eventCallback('mouseup');
             scroller.doTouchEnd(e.timeStamp);
     
             mousedown = false;
-        }, false);
+        }
+        container.addEventListener("mousedown", mousedownEvent, false);
+    
+        document.addEventListener("mousemove", mousemove, false);
+    
+        document.addEventListener("mouseup", mouseup, false);
     
         // container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", function(e) {
         //     scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
         // }, false);
-    
+        destroy = function() {
+            container.removeEventListener("mousedown", mousedownEvent, false);
+            document.removeEventListener("mousemove", mousemove, false);
+            document.removeEventListener("mouseup", mouseup, false);
+        }
     }
+    // handle __publish event
+    scroller.options.onScroll = () => {
+        eventCallback('onscroll');
+    }
+    return destroy;
 }

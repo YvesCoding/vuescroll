@@ -167,11 +167,11 @@ export default  {
     mixins: [LifeCycleMix, vuescrollApi],
     data() {
         return {
+            // vuescroll components' state
             vuescroll: {
-                state: {
-                    scrollTop: 0,
-                    scrollLeft: 0
-                }
+               state: {
+                   isDragging: false
+               }
             },
             scrollPanel: {
                 el: "",
@@ -207,12 +207,16 @@ export default  {
                     opacity: 0
                 }
             },
+            // vuescroll internal states
             listeners: [],
             mousedown: false,
             pointerLeave: true,
             timeoutId: 0,
             updateType: '',
-            isInitScroller: false,
+            // for non-native scroll dimensions
+            internalScrollTop: 0,
+            internalScrollLeft: 0,
+            // merged options afer created hook
             mergedOptions: {
                 vuescroll: {
 
@@ -289,19 +293,6 @@ export default  {
     },
     methods: {
         updateScroller() {
-            if(!this.isInitScroller) {
-                this.isInitScroller = true;
-                if(this.scroller) {
-                    return;
-                }
-                // Initialize Scroller
-                this.scroller = new Scroller(render(this.scrollPanelElm, window), {
-                    zooming: true
-                });
-                var rect = this.$el.getBoundingClientRect();
-                this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);    
-                listenContainer(this.$el, this.scroller);
-            }
             const clientWidth = this.$el.clientWidth;
             const clientHeight = this.$el.clientHeight;
             const contentWidth = this.$el.scrollWidth;
@@ -347,24 +338,56 @@ export default  {
                 widthPercentage = (scrollPanel.clientWidth * 100 / scrollPanel.scrollWidth);    
                 this.vBar.state.posValue =  ((scrollPanel.scrollTop * 100) / scrollPanel.clientHeight);
                 this.hBar.state.posValue =  ((scrollPanel.scrollLeft * 100) / scrollPanel.clientWidth);    
-            } else  {
-                heightPercentage = (vuescroll.clientHeight * 100 / scrollPanel.clientHeight);
-                widthPercentage = (vuescroll.clientWidth * 100 / scrollPanel.clientWidth);
-                this.vBar.state.posValue =  ((this.vuescroll.state.scrollTop * 100) / vuescroll.clientHeight);
-                this.hBar.state.posValue =  ((this.vuescroll.state.scrollLeft * 100) / vuescroll.clientWidth);    
             }
-           
+            // else branch handle for other mode 
+            else  {
+                // update scroller first then 
+                // calculate state
+                // prevent from infinite update
+                if(nativeEvent !== false) {
+                    this.updateScroller();
+                }
+                // update non-native scrollbars' state
+                const scroller = this.scroller;
+                let outerLeft = 0;
+                let outerTop = 0;
+                const clientWidth = this.$el.clientWidth;
+                const clientHeight = this.$el.clientHeight;
+                const contentWidth = this.scrollPanelElm.offsetWidth;
+                const contentHeight = this.scrollPanelElm.offsetHeight;
+                const __enableScrollX = clientWidth < contentWidth;
+                const __enableScrollY = clientHeight < contentHeight;
+                // out of horizontal bountry 
+                if(__enableScrollX) {
+                    if(scroller.__scrollLeft < 0) {
+                        outerLeft = -scroller.__scrollLeft;
+                    } else if(scroller.__scrollLeft > scroller.__maxScrollLeft) {
+                        outerLeft = scroller.__scrollLeft - scroller.__maxScrollLeft;
+                    }
+                }
+                
+                // out of vertical bountry
+                if(__enableScrollY) {
+                    if(scroller.__scrollTop < 0) {
+                        outerTop = -scroller.__scrollTop;
+                    } else if(scroller.__scrollTop > scroller.__maxScrollTop) {
+                        outerTop = scroller.__scrollTop - scroller.__maxScrollTop;
+                    }
+                } 
+
+                heightPercentage = (vuescroll.clientHeight * 100 / (scrollPanel.clientHeight + outerTop));
+                widthPercentage = (vuescroll.clientWidth * 100 / (scrollPanel.clientWidth + outerLeft));
+                const scrollTop = Math.min(Math.max(0, scroller.__scrollTop), scroller.__maxScrollTop);
+                const scrollLeft = Math.min(Math.max(0, scroller.__scrollLeft), scroller.__maxScrollLeft);
+                this.vBar.state.posValue =  ((scrollTop * 100) / vuescroll.clientHeight);
+                this.hBar.state.posValue =  ((scrollLeft * 100) / vuescroll.clientWidth);    
+            }
             this.vBar.state.size = (heightPercentage < 100) ? (heightPercentage + '%') : 0;
             this.hBar.state.size = (widthPercentage < 100) ? (widthPercentage + '%') : 0;
-
-           
+        
             // trigger event such as scroll or resize
             if(eventType) {
                 this.emitEvent(eventType, nativeEvent);
-            }
-
-            if(this.mode !== 'native') {
-                this.updateScroller();
             }
         },
         showBar() {
@@ -372,6 +395,11 @@ export default  {
             this.hBar.state.opacity =  this.mergedOptions.hBar.opacity;
         },
         hideBar() {
+            // when in non-native mode dragging
+            // just return
+            if(this.vuescroll.state.isDragging) {
+                return;
+            }
             // add mousedown condition 
             // to prevent from hiding bar while dragging the bar 
             if(!this.mergedOptions.vBar.keepShow && !this.mousedown && this.pointerLeave) {
@@ -383,51 +411,113 @@ export default  {
         },
         setMousedown(val) {
             this.mousedown = val;
-        }  
+        },
+        registryResize() {
+            /* istanbul ignore next */
+            {
+                if(this.destroyResize) {
+                    // when toggling the mode
+                    // we should clean the flag  object.
+                    this.destroyResize();
+                }
+                const contentElm = this.mode!== 'native'?this.scrollPanelElm: this.$refs['scrollContent']._isVue?this.$refs['scrollContent'].$el:this.$refs['scrollContent'];
+                
+                window.addEventListener("resize", () => {
+                    this.update();
+                    this.showBar();
+                    this.hideBar();
+                }, false);
+                let funcArr = [
+                    (nativeEvent) => {    
+                        /** 
+                         *  set updateType to prevent
+                         *  the conflict update of the `updated
+                         *  hook` of the vuescroll itself. 
+                         */
+                        this.updateType = 'resize';
+                        this.update('handle-resize', nativeEvent);
+                        this.showAndDefferedHideBar();
+                    }
+                ];
+                // registry resize event
+                // because scrollContent is a functional component
+                // so it maybe a component or a dom element
+                this.destroyResize = listenResize(
+                    contentElm
+                    ,
+                    funcArr
+                )
+            }
+        },
+        registryScroller() {
+            // Initialize Scroller
+            this.scroller = new Scroller(render(this.scrollPanelElm, window), {
+                zooming: true
+            });
+            var rect = this.$el.getBoundingClientRect();
+            this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);    
+            const cb = listenContainer(this.$el, this.scroller, (eventType) => {
+                switch(eventType) {
+                    case 'mousedown':
+                    this.vuescroll.state.isDragging = true;
+                    break;
+                    case 'onscroll':
+                    this.handleScroll(false);
+                    break;
+                    case 'mouseup':
+                    this.vuescroll.state.isDragging = false;
+                    break;
+                }
+            });
+            // this.scroller.scrollTo(this.scrollPanelElm)
+            this.updateScroller();
+            return cb;
+        }
     },
     mounted() {
         this.$nextTick(() => {
             if(!this._isDestroyed) {
+                if(this.mode !== 'native') {
+                    this.destroyScroller = this.registryScroller();
+                }
+                // registry resize event
+                this.registryResize() || this.$watch('mergedOptions.vuescroll.mode', () => {
+                    this.registryResize();
+                    if(this.destroyScroller) {
+                        this.destroyScroller();
+                        this.destroyScroller = null;
+                    }
+                    if(this.mode !== 'native') {
+                        this.destroyScroller = this.registryScroller();
+                        this.scroller.scrollTo(
+                            this.internalScrollLeft,
+                            this.internalScrollTop,
+                            false
+                        )
+                    } else {
+                        this.scrollPanelElm.style.transform = ''
+                        this.scrollTo({
+                            x: this.internalScrollLeft,
+                            y: this.internalScrollTop 
+                        }, false);
+                    }
+                })
                 this.update();
                 this.showBar();
                 this.hideBar();
-                // registry resize event
-                /* istanbul ignore next */
-                {
-                    window.addEventListener("resize", () => {
-                        this.update();
-                        this.showBar();
-                        this.hideBar();
-                    }, false);
-                    let funcArr = [
-                        (nativeEvent) => {    
-                            /** 
-                             *  set updateType to prevent
-                             *  the conflict update of the `updated
-                             *  hook` of the vuescroll itself. 
-                             */
-                            this.updateType = 'resize';
-                            this.update('handle-resize', nativeEvent);
-                            this.showAndDefferedHideBar();
-                        }
-                    ];
-                    // registry resize event
-                    // because scrollContent is a functional component
-                    // so it maybe a component or a dom element
-                    const contentElm = this.mode!== 'native'?this.scrollPanelElm: this.$refs['scrollContent']._isVue?this.$refs['scrollContent'].$el:this.$refs['scrollContent'];
-                    listenResize(
-                        contentElm
-                        ,
-                        funcArr
-                    )
-                }
-                if(this.mode == 'native') {
-                    this.updateScroller();
-                } else {
-                    this.isInitScroller = false;
-                }
             }
         }) 
+    },
+    beforeUpdate() {
+        // record the scrollLeft and scrollTop
+        // by judging the last mode
+        if(this.mode == 'native') {
+            this.internalScrollLeft = this.scroller.__scrollLeft
+            this.internalScrollTop = this.scroller.__scrollTop
+        }else {
+            this.internalScrollLeft = this.scrollPanelElm.scrollLeft
+            this.internalScrollTop = this.scrollPanelElm.scrollTop
+        }
     },
     updated() { 
         this.$nextTick(() => {

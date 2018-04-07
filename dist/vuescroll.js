@@ -279,14 +279,9 @@ function goScrolling(elm, deltaX, deltaY, speed, easing) {
 // https://github.com/wnr/element-resize-detector/blob/465fe68efbea85bb9fe22db2f68ebc7fde8bbcf5/src/detection-strategy/object.js
 // modified by wangyi7099
 function listenResize(element, funArr) {
-    /* istanbul ignore if */
-    if (element.isResized) {
-        return;
-    }
     var OBJECT_STYLE = "display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;";
     var style = window.getComputedStyle(element);
     var object = document.createElement("object");
-    element.isResized = true;
     object.style.cssText = OBJECT_STYLE;
     object.tabIndex = -1;
     object.type = "text/html";
@@ -296,6 +291,14 @@ function listenResize(element, funArr) {
         });
     };
     element.appendChild(object);
+    return function destroy() {
+        if (object.contentDocument) {
+            funArr.forEach(function (func) {
+                off(object.contentDocument.defaultView, 'resize', func);
+            });
+        }
+        element.removeChild(object);
+    };
 }
 
 var GCF = {
@@ -410,6 +413,8 @@ function extractScrollDistance(distance, scroll, el) {
 var vuescrollApi = {
     methods: {
         scrollTo: function scrollTo(pos) {
+            var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
             if (typeof pos.x === 'undefined') {
                 pos.x = this.$refs['scrollPanel'].$el.scrollLeft;
             } else {
@@ -422,7 +427,11 @@ var vuescrollApi = {
             }
             var x = pos.x;
             var y = pos.y;
-            goScrolling(this.$refs['scrollPanel'].$el, x - this.$refs['scrollPanel'].$el.scrollLeft, y - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
+            if (animate) {
+                goScrolling(this.$refs['scrollPanel'].$el, x - this.$refs['scrollPanel'].$el.scrollLeft, y - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
+            } else {
+                this.$refs['scrollPanel'].$el.scrollTo(x, y);
+            }
         },
         forceUpdate: function forceUpdate() {
             var _this = this;
@@ -970,6 +979,9 @@ function Scroller(callback, options) {
   	provided that another scrolling action has not begun. Used to know
   	when to fade out a scrollbar. */
 		scrollingComplete: NOOP,
+
+		/** Handle on scroll/publish */
+		onScroll: NOOP,
 
 		/** This configures the amount of change applied to deceleration when reaching boundaries  **/
 		penetrationDeceleration: 0.03,
@@ -1906,6 +1918,7 @@ var members = {
 					// Push values out
 					if (self.__callback) {
 						self.__callback(self.__scrollLeft, self.__scrollTop, self.__zoomLevel);
+						self.options.onScroll();
 					}
 				}
 			};
@@ -1942,6 +1955,7 @@ var members = {
 			// Push values out
 			if (self.__callback) {
 				self.__callback(left, top, zoom);
+				self.options.onScroll();
 			}
 
 			// Fix max scroll ranges
@@ -1968,7 +1982,6 @@ var members = {
 
 		self.__maxScrollLeft = Math.max(self.__contentWidth * zoomLevel - self.__clientWidth, 0);
 		self.__maxScrollTop = Math.max(self.__contentHeight * zoomLevel - self.__clientHeight, 0);
-		console.log("maxTop:", self.__maxScrollTop);
 	},
 
 	/*
@@ -2206,78 +2219,109 @@ function render(content, global) {
 	}
 }
 
-function listenContainer(container, scroller) {
-    if (container.isListened) {
-        return;
-    }
-    container.isListened = true;
+function listenContainer(container, scroller, eventCallback) {
+    var destroy = null;
     if ('ontouchstart' in window) {
-
-        container.addEventListener("touchstart", function (e) {
+        var touchstart = function touchstart(e) {
             // Don't react if initial down happens on a form element
             if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
                 return;
             }
-
+            eventCallback('mousedown');
             scroller.doTouchStart(e.touches, e.timeStamp);
             e.preventDefault();
-        }, false);
+        };
 
-        document.addEventListener("touchmove", function (e) {
+        var touchmove = function touchmove(e) {
+            eventCallback('mousemove');
             scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
-        }, false);
+        };
 
-        document.addEventListener("touchend", function (e) {
+        var touchend = function touchend(e) {
+            eventCallback('mouseup');
             scroller.doTouchEnd(e.timeStamp);
-        }, false);
+        };
 
-        document.addEventListener("touchcancel", function (e) {
+        var touchcancel = function touchcancel(e) {
             scroller.doTouchEnd(e.timeStamp);
-        }, false);
+        };
+
+        container.addEventListener("touchstart", touchstart, false);
+
+        document.addEventListener("touchmove", touchmove, false);
+
+        document.addEventListener("touchend", touchend, false);
+
+        document.addEventListener("touchcancel", touchcancel, false);
+
+        destroy = function destroy() {
+            container.removeEventListener("touchstart", touchstart, false);
+
+            document.removeEventListener("touchmove", touchmove, false);
+
+            document.removeEventListener("touchend", touchend, false);
+
+            document.removeEventListener("touchcancel", touchcancel, false);
+        };
     } else {
-
-        var mousedown = false;
-
-        container.addEventListener("mousedown", function (e) {
+        var mousedownEvent = function mousedownEvent(e) {
             if (e.target.tagName.match(/input|textarea|select/i)) {
                 return;
             }
-            console.log('start');
+            eventCallback('mousedown');
             scroller.doTouchStart([{
                 pageX: e.pageX,
                 pageY: e.pageY
             }], e.timeStamp);
 
             mousedown = true;
-        }, false);
+        };
 
-        document.addEventListener("mousemove", function (e) {
+        var mousemove = function mousemove(e) {
             if (!mousedown) {
                 return;
             }
-            console.log('mousemove');
+            eventCallback('mousemove');
             scroller.doTouchMove([{
                 pageX: e.pageX,
                 pageY: e.pageY
             }], e.timeStamp);
 
             mousedown = true;
-        }, false);
+        };
 
-        document.addEventListener("mouseup", function (e) {
+        var mouseup = function mouseup(e) {
             if (!mousedown) {
                 return;
             }
-
+            eventCallback('mouseup');
             scroller.doTouchEnd(e.timeStamp);
 
             mousedown = false;
-        }, false);
+        };
+
+        var mousedown = false;
+
+        container.addEventListener("mousedown", mousedownEvent, false);
+
+        document.addEventListener("mousemove", mousemove, false);
+
+        document.addEventListener("mouseup", mouseup, false);
 
         // container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", function(e) {
         //     scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
         // }, false);
+        destroy = function destroy() {
+            container.removeEventListener("mousedown", mousedownEvent, false);
+            document.removeEventListener("mousemove", mousemove, false);
+            document.removeEventListener("mouseup", mouseup, false);
+        };
     }
+    // handle __publish event
+    scroller.options.onScroll = function () {
+        eventCallback('onscroll');
+    };
+    return destroy;
 }
 
 // vuescroll core component
@@ -2408,10 +2452,10 @@ var vuescroll = {
     mixins: [LifeCycleMix, vuescrollApi],
     data: function data() {
         return {
+            // vuescroll components' state
             vuescroll: {
                 state: {
-                    scrollTop: 0,
-                    scrollLeft: 0
+                    isDragging: false
                 }
             },
             scrollPanel: {
@@ -2443,12 +2487,16 @@ var vuescroll = {
                     opacity: 0
                 }
             },
+            // vuescroll internal states
             listeners: [],
             mousedown: false,
             pointerLeave: true,
             timeoutId: 0,
             updateType: '',
-            isInitScroller: false,
+            // for non-native scroll dimensions
+            internalScrollTop: 0,
+            internalScrollLeft: 0,
+            // merged options afer created hook
             mergedOptions: {
                 vuescroll: {},
                 scrollPanel: {},
@@ -2513,19 +2561,6 @@ var vuescroll = {
     },
     methods: {
         updateScroller: function updateScroller() {
-            if (!this.isInitScroller) {
-                this.isInitScroller = true;
-                if (this.scroller) {
-                    return;
-                }
-                // Initialize Scroller
-                this.scroller = new Scroller(render(this.scrollPanelElm, window), {
-                    zooming: true
-                });
-                var rect = this.$el.getBoundingClientRect();
-                this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);
-                listenContainer(this.$el, this.scroller);
-            }
             var clientWidth = this.$el.clientWidth;
             var clientHeight = this.$el.clientHeight;
             var contentWidth = this.$el.scrollWidth;
@@ -2579,13 +2614,50 @@ var vuescroll = {
                 widthPercentage = scrollPanel$$1.clientWidth * 100 / scrollPanel$$1.scrollWidth;
                 this.vBar.state.posValue = scrollPanel$$1.scrollTop * 100 / scrollPanel$$1.clientHeight;
                 this.hBar.state.posValue = scrollPanel$$1.scrollLeft * 100 / scrollPanel$$1.clientWidth;
-            } else {
-                heightPercentage = vuescroll.clientHeight * 100 / scrollPanel$$1.clientHeight;
-                widthPercentage = vuescroll.clientWidth * 100 / scrollPanel$$1.clientWidth;
-                this.vBar.state.posValue = this.vuescroll.state.scrollTop * 100 / vuescroll.clientHeight;
-                this.hBar.state.posValue = this.vuescroll.state.scrollLeft * 100 / vuescroll.clientWidth;
             }
+            // else branch handle for other mode 
+            else {
+                    // update scroller first then 
+                    // calculate state
+                    // prevent from infinite update
+                    if (nativeEvent !== false) {
+                        this.updateScroller();
+                    }
+                    // update non-native scrollbars' state
+                    var scroller = this.scroller;
+                    var outerLeft = 0;
+                    var outerTop = 0;
+                    var clientWidth = this.$el.clientWidth;
+                    var clientHeight = this.$el.clientHeight;
+                    var contentWidth = this.scrollPanelElm.offsetWidth;
+                    var contentHeight = this.scrollPanelElm.offsetHeight;
+                    var __enableScrollX = clientWidth < contentWidth;
+                    var __enableScrollY = clientHeight < contentHeight;
+                    // out of horizontal bountry 
+                    if (__enableScrollX) {
+                        if (scroller.__scrollLeft < 0) {
+                            outerLeft = -scroller.__scrollLeft;
+                        } else if (scroller.__scrollLeft > scroller.__maxScrollLeft) {
+                            outerLeft = scroller.__scrollLeft - scroller.__maxScrollLeft;
+                        }
+                    }
 
+                    // out of vertical bountry
+                    if (__enableScrollY) {
+                        if (scroller.__scrollTop < 0) {
+                            outerTop = -scroller.__scrollTop;
+                        } else if (scroller.__scrollTop > scroller.__maxScrollTop) {
+                            outerTop = scroller.__scrollTop - scroller.__maxScrollTop;
+                        }
+                    }
+
+                    heightPercentage = vuescroll.clientHeight * 100 / (scrollPanel$$1.clientHeight + outerTop);
+                    widthPercentage = vuescroll.clientWidth * 100 / (scrollPanel$$1.clientWidth + outerLeft);
+                    var scrollTop = Math.min(Math.max(0, scroller.__scrollTop), scroller.__maxScrollTop);
+                    var scrollLeft = Math.min(Math.max(0, scroller.__scrollLeft), scroller.__maxScrollLeft);
+                    this.vBar.state.posValue = scrollTop * 100 / vuescroll.clientHeight;
+                    this.hBar.state.posValue = scrollLeft * 100 / vuescroll.clientWidth;
+                }
             this.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
             this.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
 
@@ -2593,16 +2665,17 @@ var vuescroll = {
             if (eventType) {
                 this.emitEvent(eventType, nativeEvent);
             }
-
-            if (this.mode !== 'native') {
-                this.updateScroller();
-            }
         },
         showBar: function showBar() {
             this.vBar.state.opacity = this.mergedOptions.vBar.opacity;
             this.hBar.state.opacity = this.mergedOptions.hBar.opacity;
         },
         hideBar: function hideBar() {
+            // when in non-native mode dragging
+            // just return
+            if (this.vuescroll.state.isDragging) {
+                return;
+            }
             // add mousedown condition 
             // to prevent from hiding bar while dragging the bar 
             if (!this.mergedOptions.vBar.keepShow && !this.mousedown && this.pointerLeave) {
@@ -2614,61 +2687,123 @@ var vuescroll = {
         },
         setMousedown: function setMousedown(val) {
             this.mousedown = val;
+        },
+        registryResize: function registryResize() {
+            var _this2 = this;
+
+            /* istanbul ignore next */
+            {
+                if (this.destroyResize) {
+                    // when toggling the mode
+                    // we should clean the flag  object.
+                    this.destroyResize();
+                }
+                var contentElm = this.mode !== 'native' ? this.scrollPanelElm : this.$refs['scrollContent']._isVue ? this.$refs['scrollContent'].$el : this.$refs['scrollContent'];
+
+                window.addEventListener("resize", function () {
+                    _this2.update();
+                    _this2.showBar();
+                    _this2.hideBar();
+                }, false);
+                var funcArr = [function (nativeEvent) {
+                    /** 
+                     *  set updateType to prevent
+                     *  the conflict update of the `updated
+                     *  hook` of the vuescroll itself. 
+                     */
+                    _this2.updateType = 'resize';
+                    _this2.update('handle-resize', nativeEvent);
+                    _this2.showAndDefferedHideBar();
+                }];
+                // registry resize event
+                // because scrollContent is a functional component
+                // so it maybe a component or a dom element
+                this.destroyResize = listenResize(contentElm, funcArr);
+            }
+        },
+        registryScroller: function registryScroller() {
+            var _this3 = this;
+
+            // Initialize Scroller
+            this.scroller = new Scroller(render(this.scrollPanelElm, window), {
+                zooming: true
+            });
+            var rect = this.$el.getBoundingClientRect();
+            this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);
+            var cb = listenContainer(this.$el, this.scroller, function (eventType) {
+                switch (eventType) {
+                    case 'mousedown':
+                        _this3.vuescroll.state.isDragging = true;
+                        break;
+                    case 'onscroll':
+                        _this3.handleScroll(false);
+                        break;
+                    case 'mouseup':
+                        _this3.vuescroll.state.isDragging = false;
+                        break;
+                }
+            });
+            // this.scroller.scrollTo(this.scrollPanelElm)
+            this.updateScroller();
+            return cb;
         }
     },
     mounted: function mounted() {
-        var _this2 = this;
+        var _this4 = this;
 
         this.$nextTick(function () {
-            if (!_this2._isDestroyed) {
-                _this2.update();
-                _this2.showBar();
-                _this2.hideBar();
+            if (!_this4._isDestroyed) {
+                if (_this4.mode !== 'native') {
+                    _this4.destroyScroller = _this4.registryScroller();
+                }
                 // registry resize event
-                /* istanbul ignore next */
-                {
-                    window.addEventListener("resize", function () {
-                        _this2.update();
-                        _this2.showBar();
-                        _this2.hideBar();
-                    }, false);
-                    var funcArr = [function (nativeEvent) {
-                        /** 
-                         *  set updateType to prevent
-                         *  the conflict update of the `updated
-                         *  hook` of the vuescroll itself. 
-                         */
-                        _this2.updateType = 'resize';
-                        _this2.update('handle-resize', nativeEvent);
-                        _this2.showAndDefferedHideBar();
-                    }];
-                    // registry resize event
-                    // because scrollContent is a functional component
-                    // so it maybe a component or a dom element
-                    var contentElm = _this2.mode !== 'native' ? _this2.scrollPanelElm : _this2.$refs['scrollContent']._isVue ? _this2.$refs['scrollContent'].$el : _this2.$refs['scrollContent'];
-                    listenResize(contentElm, funcArr);
-                }
-                if (_this2.mode == 'native') {
-                    _this2.updateScroller();
-                } else {
-                    _this2.isInitScroller = false;
-                }
+                _this4.registryResize() || _this4.$watch('mergedOptions.vuescroll.mode', function () {
+                    _this4.registryResize();
+                    if (_this4.destroyScroller) {
+                        _this4.destroyScroller();
+                        _this4.destroyScroller = null;
+                    }
+                    if (_this4.mode !== 'native') {
+                        _this4.destroyScroller = _this4.registryScroller();
+                        _this4.scroller.scrollTo(_this4.internalScrollLeft, _this4.internalScrollTop, false);
+                    } else {
+                        _this4.scrollPanelElm.style.transform = '';
+                        _this4.scrollTo({
+                            x: _this4.internalScrollLeft,
+                            y: _this4.internalScrollTop
+                        }, false);
+                    }
+                });
+                _this4.update();
+                _this4.showBar();
+                _this4.hideBar();
             }
         });
     },
+    beforeUpdate: function beforeUpdate() {
+        // record the scrollLeft and scrollTop
+        // by judging the last mode
+        if (this.mode == 'native') {
+            this.internalScrollLeft = this.scroller.__scrollLeft;
+            this.internalScrollTop = this.scroller.__scrollTop;
+        } else {
+            this.internalScrollLeft = this.scrollPanelElm.scrollLeft;
+            this.internalScrollTop = this.scrollPanelElm.scrollTop;
+        }
+    },
     updated: function updated() {
-        var _this3 = this;
+        var _this5 = this;
 
         this.$nextTick(function () {
-            if (!_this3._isDestroyed) {
+            if (!_this5._isDestroyed) {
                 /* istanbul ignore if */
-                if (_this3.updateType == 'resize') {
-                    _this3.updateType = '';
+                if (_this5.updateType == 'resize') {
+                    _this5.updateType = '';
                     return;
                 }
-                _this3.update();
-                _this3.showBar();
-                _this3.hideBar();
+                _this5.update();
+                _this5.showBar();
+                _this5.hideBar();
             }
         });
     },

@@ -21,7 +21,7 @@ function extractScrollDistance(distance, scroll, el) {
 
 export default {
     methods: {
-        scrollTo(pos) {
+        scrollTo(pos, animate = true) {
             if(typeof pos.x === 'undefined') {
                 pos.x = this.$refs['scrollPanel'].$el.scrollLeft;
             } else {
@@ -34,13 +34,20 @@ export default {
             }
             const x = pos.x;
             const y = pos.y;
-            goScrolling(
-                this.$refs['scrollPanel'].$el,
-                x - this.$refs['scrollPanel'].$el.scrollLeft,
-                y - this.$refs['scrollPanel'].$el.scrollTop,
-                this.mergedOptions.scrollPanel.speed,
-                this.mergedOptions.scrollPanel.easing
-            );
+            if(animate) {
+                goScrolling(
+                    this.$refs['scrollPanel'].$el,
+                    x - this.$refs['scrollPanel'].$el.scrollLeft,
+                    y - this.$refs['scrollPanel'].$el.scrollTop,
+                    this.mergedOptions.scrollPanel.speed,
+                    this.mergedOptions.scrollPanel.easing
+                );
+            } else {
+                this.$refs['scrollPanel'].$el.scrollTo(
+                    x,
+                    y
+                )
+            }
         },
         forceUpdate() {
             this.$forceUpdate();

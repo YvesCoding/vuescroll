@@ -90,6 +90,9 @@ export default function Scroller(callback, options) {
 				when to fade out a scrollbar. */
 			scrollingComplete: NOOP,
 
+			/** Handle on scroll/publish */
+			onScroll: NOOP,
+
 			/** This configures the amount of change applied to deceleration when reaching boundaries  **/
             penetrationDeceleration : 0.03,
 
@@ -1085,6 +1088,7 @@ var members = {
 					// Push values out
 					if (self.__callback) {
 						self.__callback(self.__scrollLeft, self.__scrollTop, self.__zoomLevel);
+						self.options.onScroll();
 					}
 
 				}
@@ -1123,6 +1127,7 @@ var members = {
 			// Push values out
 			if (self.__callback) {
 				self.__callback(left, top, zoom);
+				self.options.onScroll();
 			}
 
 			// Fix max scroll ranges
@@ -1150,7 +1155,6 @@ var members = {
 
 		self.__maxScrollLeft = Math.max((self.__contentWidth * zoomLevel) - self.__clientWidth, 0);
 		self.__maxScrollTop = Math.max((self.__contentHeight * zoomLevel) - self.__clientHeight, 0);
-		console.log("maxTop:", self.__maxScrollTop);
 	},
 
 
