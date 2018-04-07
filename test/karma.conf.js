@@ -14,7 +14,12 @@ var webpack = {
         loader: 'babel-loader',
         exclude: /node_modules/,
         options: {
-          plugins: [['istanbul', { }]]
+          plugins: [['istanbul', {
+            "exclude": [
+              "src/util/scroller/*.js",
+              'test/**/*.js'
+            ]
+           }]]
         } 
       }
     ]

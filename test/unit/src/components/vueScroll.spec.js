@@ -56,4 +56,25 @@ describe('test vuescroll component', () => {
             done();
         }, 600);
     });
+
+    it('test non-native mode', (done) => {
+        document.body.removeChild(ins.$el);
+        data.ops.vuescroll = {
+            mode: 'non-native'
+        }
+        ins = new Vue({
+            template,
+            data
+        }).$mount();
+        vs = ins.$refs['vsIns'];
+        data.ops.vuescroll.mode = 'native';
+        vs.$nextTick(() => {
+            vs.scrollTo({
+                x: 10,
+                y: 10
+            }, false)
+            done();
+        })
+        document.body.appendChild(ins.$el);
+    });
 });
