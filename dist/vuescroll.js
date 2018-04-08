@@ -427,11 +427,17 @@ var vuescrollApi = {
             }
             var x = pos.x;
             var y = pos.y;
-            if (animate) {
-                goScrolling(this.$refs['scrollPanel'].$el, x - this.$refs['scrollPanel'].$el.scrollLeft, y - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
-            } else {
-                this.$refs['scrollPanel'].$el.scrollTo(x, y);
+            if (this.mode == 'native') {
+                if (animate) {
+                    goScrolling(this.$refs['scrollPanel'].$el, x - this.$refs['scrollPanel'].$el.scrollLeft, y - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
+                } else {
+                    this.$refs['scrollPanel'].$el.scrollTo(x, y);
+                }
             }
+            // for non-native we use scroller's scorllTo 
+            else {
+                    this.scroller.scrollTo(pos.x, pos.y, animate);
+                }
         },
         forceUpdate: function forceUpdate() {
             var _this = this;
@@ -1446,7 +1452,7 @@ var members = {
 		// Limit for allowed ranges
 		left = Math.max(Math.min(self.__maxScrollLeft, left), 0);
 		top = Math.max(Math.min(self.__maxScrollTop, top), 0);
-
+		console.log(left, top, self);
 		// Don't animate when no change detected, still call publish to make sure
 		// that rendered position is really in-sync with internal data
 		if (left === self.__scrollLeft && top === self.__scrollTop) {
@@ -2455,7 +2461,17 @@ var vuescroll = {
             // vuescroll components' state
             vuescroll: {
                 state: {
-                    isDragging: false
+                    isDragging: false,
+                    // vuescroll internal states
+                    listeners: [],
+                    mousedown: false,
+                    pointerLeave: true,
+                    timeoutId: 0,
+                    updateType: '',
+                    // for non-native scroll dimensions
+                    internalScrollTop: 0,
+                    internalScrollLeft: 0
+                    // merged options afer created hook
                 }
             },
             scrollPanel: {
@@ -2487,16 +2503,6 @@ var vuescroll = {
                     opacity: 0
                 }
             },
-            // vuescroll internal states
-            listeners: [],
-            mousedown: false,
-            pointerLeave: true,
-            timeoutId: 0,
-            updateType: '',
-            // for non-native scroll dimensions
-            internalScrollTop: 0,
-            internalScrollLeft: 0,
-            // merged options afer created hook
             mergedOptions: {
                 vuescroll: {},
                 scrollPanel: {},
@@ -2510,7 +2516,6 @@ var vuescroll = {
     },
     render: function render$$1(h) {
         var vm = this;
-
         // vuescroll data
         var vuescrollData = {
             style: {
@@ -2522,16 +2527,16 @@ var vuescroll = {
             class: 'vue-scroll',
             on: {
                 mouseenter: function mouseenter() {
-                    vm.pointerLeave = false;
+                    vm.vuescroll.state.pointerLeave = false;
                     vm.showBar();
                     vm.update();
                 },
                 mouseleave: function mouseleave() {
-                    vm.pointerLeave = true;
+                    vm.vuescroll.state.pointerLeave = true;
                     vm.hideBar();
                 },
                 mousemove: function mousemove() /* istanbul ignore next */{
-                    vm.pointerLeave = false;
+                    vm.vuescroll.state.pointerLeave = false;
                     vm.showBar();
                     vm.update();
                 }
@@ -2563,8 +2568,8 @@ var vuescroll = {
         updateScroller: function updateScroller() {
             var clientWidth = this.$el.clientWidth;
             var clientHeight = this.$el.clientHeight;
-            var contentWidth = this.$el.scrollWidth;
-            var contentHeight = this.$el.scrollHeight;
+            var contentWidth = this.scrollPanelElm.scrollWidth;
+            var contentHeight = this.scrollPanelElm.scrollHeight;
             this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
         },
         handleScroll: function handleScroll(nativeEvent) {
@@ -2575,11 +2580,11 @@ var vuescroll = {
             var _this = this;
 
             this.showBar();
-            if (this.timeoutId) {
-                clearTimeout(this.timeoutId);
+            if (this.vuescroll.state.timeoutId) {
+                clearTimeout(this.vuescroll.state.timeoutId);
             }
-            this.timeoutId = setTimeout(function () {
-                _this.timeoutId = 0;
+            this.vuescroll.state.timeoutId = setTimeout(function () {
+                _this.vuescroll.state.timeoutId = 0;
                 _this.hideBar();
             }, 500);
         },
@@ -2627,10 +2632,10 @@ var vuescroll = {
                     var scroller = this.scroller;
                     var outerLeft = 0;
                     var outerTop = 0;
-                    var clientWidth = this.$el.clientWidth;
-                    var clientHeight = this.$el.clientHeight;
-                    var contentWidth = this.scrollPanelElm.offsetWidth;
-                    var contentHeight = this.scrollPanelElm.offsetHeight;
+                    var clientWidth = vuescroll.clientWidth;
+                    var clientHeight = vuescroll.clientHeight;
+                    var contentWidth = this.scrollPanelElm.scrollWidth;
+                    var contentHeight = this.scrollPanelElm.scrollHeight;
                     var __enableScrollX = clientWidth < contentWidth;
                     var __enableScrollY = clientHeight < contentHeight;
                     // out of horizontal bountry 
@@ -2651,12 +2656,18 @@ var vuescroll = {
                         }
                     }
 
-                    heightPercentage = vuescroll.clientHeight * 100 / (scrollPanel$$1.clientHeight + outerTop);
-                    widthPercentage = vuescroll.clientWidth * 100 / (scrollPanel$$1.clientWidth + outerLeft);
+                    heightPercentage = clientHeight * 100 / (contentHeight + outerTop);
+                    widthPercentage = clientWidth * 100 / (contentWidth + outerLeft);
                     var scrollTop = Math.min(Math.max(0, scroller.__scrollTop), scroller.__maxScrollTop);
                     var scrollLeft = Math.min(Math.max(0, scroller.__scrollLeft), scroller.__maxScrollLeft);
-                    this.vBar.state.posValue = scrollTop * 100 / vuescroll.clientHeight;
-                    this.hBar.state.posValue = scrollLeft * 100 / vuescroll.clientWidth;
+                    this.vBar.state.posValue = (scrollTop + outerTop) * 100 / vuescroll.clientHeight;
+                    this.hBar.state.posValue = (scrollLeft + outerLeft) * 100 / vuescroll.clientWidth;
+                    if (scroller.__scrollLeft < 0) {
+                        this.hBar.state.posValue = 0;
+                    }
+                    if (scroller.__scrollTop < 0) {
+                        this.vBar.state.posValue = 0;
+                    }
                 }
             this.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
             this.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
@@ -2678,15 +2689,15 @@ var vuescroll = {
             }
             // add mousedown condition 
             // to prevent from hiding bar while dragging the bar 
-            if (!this.mergedOptions.vBar.keepShow && !this.mousedown && this.pointerLeave) {
+            if (!this.mergedOptions.vBar.keepShow && !this.vuescroll.state.mousedown && this.vuescroll.state.pointerLeave) {
                 this.vBar.state.opacity = 0;
             }
-            if (!this.mergedOptions.hBar.keepShow && !this.mousedown && this.pointerLeave) {
+            if (!this.mergedOptions.hBar.keepShow && !this.vuescroll.state.mousedown && this.vuescroll.state.pointerLeave) {
                 this.hBar.state.opacity = 0;
             }
         },
         setMousedown: function setMousedown(val) {
-            this.mousedown = val;
+            this.vuescroll.state.mousedown = val;
         },
         registryResize: function registryResize() {
             var _this2 = this;
@@ -2711,7 +2722,7 @@ var vuescroll = {
                      *  the conflict update of the `updated
                      *  hook` of the vuescroll itself. 
                      */
-                    _this2.updateType = 'resize';
+                    _this2.vuescroll.state.updateType = 'resize';
                     _this2.update('handle-resize', nativeEvent);
                     _this2.showAndDefferedHideBar();
                 }];
@@ -2757,7 +2768,8 @@ var vuescroll = {
                     _this4.destroyScroller = _this4.registryScroller();
                 }
                 // registry resize event
-                _this4.registryResize() || _this4.$watch('mergedOptions.vuescroll.mode', function () {
+                _this4.registryResize();
+                _this4.$watch('mergedOptions.vuescroll.mode', function () {
                     _this4.registryResize();
                     if (_this4.destroyScroller) {
                         _this4.destroyScroller();
@@ -2765,31 +2777,36 @@ var vuescroll = {
                     }
                     if (_this4.mode !== 'native') {
                         _this4.destroyScroller = _this4.registryScroller();
-                        _this4.scroller.scrollTo(_this4.internalScrollLeft, _this4.internalScrollTop, false);
+                        _this4.scroller.scrollTo(_this4.vuescroll.state.internalScrollLeft, _this4.vuescroll.state.internalScrollTop, false);
                     } else {
                         _this4.scrollPanelElm.style.transform = '';
                         _this4.scrollTo({
-                            x: _this4.internalScrollLeft,
-                            y: _this4.internalScrollTop
+                            x: _this4.vuescroll.state.internalScrollLeft,
+                            y: _this4.vuescroll.state.internalScrollTop
                         }, false);
                     }
                 });
+                // react to sync's change sync.
+                _this4.$watch('mergedOptions.vuescroll.mode', function () {
+                    // record the scrollLeft and scrollTop
+                    // by judging the last mode
+                    if (_this4.mode == 'native') {
+                        _this4.vuescroll.state.internalScrollLeft = _this4.scroller.__scrollLeft;
+                        _this4.vuescroll.state.internalScrollTop = _this4.scroller.__scrollTop;
+                    } else {
+                        _this4.vuescroll.state.internalScrollLeft = _this4.scrollPanelElm.scrollLeft;
+                        _this4.vuescroll.state.internalScrollTop = _this4.scrollPanelElm.scrollTop;
+                    }
+                }, {
+                    sync: true
+                });
+
+                // update state
                 _this4.update();
                 _this4.showBar();
                 _this4.hideBar();
             }
         });
-    },
-    beforeUpdate: function beforeUpdate() {
-        // record the scrollLeft and scrollTop
-        // by judging the last mode
-        if (this.mode == 'native') {
-            this.internalScrollLeft = this.scroller.__scrollLeft;
-            this.internalScrollTop = this.scroller.__scrollTop;
-        } else {
-            this.internalScrollLeft = this.scrollPanelElm.scrollLeft;
-            this.internalScrollTop = this.scrollPanelElm.scrollTop;
-        }
     },
     updated: function updated() {
         var _this5 = this;
@@ -2797,8 +2814,8 @@ var vuescroll = {
         this.$nextTick(function () {
             if (!_this5._isDestroyed) {
                 /* istanbul ignore if */
-                if (_this5.updateType == 'resize') {
-                    _this5.updateType = '';
+                if (_this5.vuescroll.state.updateType == 'resize') {
+                    _this5.vuescroll.state.updateType = '';
                     return;
                 }
                 _this5.update();

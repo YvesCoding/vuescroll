@@ -589,7 +589,7 @@ var members = {
 		// Limit for allowed ranges
 		left = Math.max(Math.min(self.__maxScrollLeft, left), 0);
 		top = Math.max(Math.min(self.__maxScrollTop, top), 0);
-
+		console.log(left, top, self);
 		// Don't animate when no change detected, still call publish to make sure
 		// that rendered position is really in-sync with internal data
 		if (left === self.__scrollLeft && top === self.__scrollTop) {
