@@ -2,6 +2,8 @@
 export default   {
     name: 'scrollPanel',
     methods: {
+        // trigger scrollPanel options initialScrollX, 
+        // initialScrollY
         updateInitialScroll() {
             let x = 0;
             let y = 0;

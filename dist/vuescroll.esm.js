@@ -615,6 +615,8 @@ var scrollContent = {
 var scrollPanel = {
     name: 'scrollPanel',
     methods: {
+        // trigger scrollPanel options initialScrollX, 
+        // initialScrollY
         updateInitialScroll: function updateInitialScroll() {
             var x = 0;
             var y = 0;
@@ -2300,6 +2302,10 @@ function listenContainer(container, scroller, eventCallback) {
             mousedown = false;
         };
 
+        var zoomHandle = function zoomHandle(e) {
+            scroller.doMouseZoom(e.detail ? e.detail * -120 : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
+        };
+
         var mousedown = false;
 
         container.addEventListener("mousedown", mousedownEvent, false);
@@ -2307,7 +2313,7 @@ function listenContainer(container, scroller, eventCallback) {
         document.addEventListener("mousemove", mousemove, false);
 
         document.addEventListener("mouseup", mouseup, false);
-
+        container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" : "mousewheel", zoomHandle, false);
         // container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", function(e) {
         //     scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
         // }, false);
@@ -2315,6 +2321,7 @@ function listenContainer(container, scroller, eventCallback) {
             container.removeEventListener("mousedown", mousedownEvent, false);
             document.removeEventListener("mousemove", mousemove, false);
             document.removeEventListener("mouseup", mouseup, false);
+            container.removeEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" : "mousewheel", zoomHandle, false);
         };
     }
     // handle __publish event
@@ -2364,7 +2371,9 @@ function createPanel(h, vm) {
         }
         hideSystemBar();
         scrollPanelData.style.height = '100%';
+        scrollPanelData.style['transformOrigin'] = '';
     } else {
+        scrollPanelData.style['transformOrigin'] = 'left top 0px';
         scrollPanelData.style['userSelect'] = 'none';
     }
     return h(
@@ -2592,8 +2601,14 @@ var vuescroll = {
                 horizontal = {
                 type: 'horizontal'
             };
-            vertical['process'] = scrollPanel$$1.scrollTop / (scrollPanel$$1.scrollHeight - scrollPanel$$1.clientHeight);
-            horizontal['process'] = scrollPanel$$1.scrollLeft / (scrollPanel$$1.scrollWidth - scrollPanel$$1.clientWidth);
+            var scrollTop = scrollPanel$$1.scrollTop;
+            var scrollLeft = scrollPanel$$1.scrollLeft;
+            if (this.mode != 'native') {
+                scrollTop = this.scroller.__scrollTop;
+                scrollLeft = this.scroller.__scrollLeft;
+            }
+            vertical['process'] = scrollTop / (scrollPanel$$1.scrollHeight - scrollPanel$$1.clientHeight);
+            horizontal['process'] = scrollLeft / (scrollPanel$$1.scrollWidth - scrollPanel$$1.clientWidth);
             vertical['barSize'] = this.vBar.state.size;
             horizontal['barSize'] = this.hBar.state.size;
             this.$emit(eventType, vertical, horizontal, nativeEvent);
@@ -2628,8 +2643,8 @@ var vuescroll = {
                     var outerTop = 0;
                     var clientWidth = vuescroll.clientWidth;
                     var clientHeight = vuescroll.clientHeight;
-                    var contentWidth = this.scrollPanelElm.scrollWidth;
-                    var contentHeight = this.scrollPanelElm.scrollHeight;
+                    var contentWidth = clientWidth + this.scroller.__maxScrollLeft;
+                    var contentHeight = clientHeight + this.scroller.__maxScrollTop;
                     var __enableScrollX = clientWidth < contentWidth;
                     var __enableScrollY = clientHeight < contentHeight;
                     // out of horizontal bountry 
@@ -2756,51 +2771,50 @@ var vuescroll = {
     mounted: function mounted() {
         var _this4 = this;
 
-        this.$nextTick(function () {
-            if (!_this4._isDestroyed) {
+        if (!this._isDestroyed) {
+            if (this.mode !== 'native') {
+                this.destroyScroller = this.registryScroller();
+            }
+            // registry resize event
+            this.registryResize();
+            this.$watch('mergedOptions.vuescroll.mode', function () {
+                _this4.registryResize();
+                if (_this4.destroyScroller) {
+                    _this4.destroyScroller();
+                    _this4.destroyScroller = null;
+                }
                 if (_this4.mode !== 'native') {
                     _this4.destroyScroller = _this4.registryScroller();
+                    _this4.scroller.scrollTo(_this4.vuescroll.state.internalScrollLeft, _this4.vuescroll.state.internalScrollTop, false);
+                } else {
+                    // remove the transform style attribute
+                    _this4.scrollPanelElm.style.transform = '';
+                    _this4.scrollTo({
+                        x: _this4.vuescroll.state.internalScrollLeft,
+                        y: _this4.vuescroll.state.internalScrollTop
+                    }, false);
                 }
-                // registry resize event
-                _this4.registryResize();
-                _this4.$watch('mergedOptions.vuescroll.mode', function () {
-                    _this4.registryResize();
-                    if (_this4.destroyScroller) {
-                        _this4.destroyScroller();
-                        _this4.destroyScroller = null;
-                    }
-                    if (_this4.mode !== 'native') {
-                        _this4.destroyScroller = _this4.registryScroller();
-                        _this4.scroller.scrollTo(_this4.vuescroll.state.internalScrollLeft, _this4.vuescroll.state.internalScrollTop, false);
-                    } else {
-                        _this4.scrollPanelElm.style.transform = '';
-                        _this4.scrollTo({
-                            x: _this4.vuescroll.state.internalScrollLeft,
-                            y: _this4.vuescroll.state.internalScrollTop
-                        }, false);
-                    }
-                });
-                // react to sync's change sync.
-                _this4.$watch('mergedOptions.vuescroll.mode', function () {
-                    // record the scrollLeft and scrollTop
-                    // by judging the last mode
-                    if (_this4.mode == 'native') {
-                        _this4.vuescroll.state.internalScrollLeft = _this4.scroller.__scrollLeft;
-                        _this4.vuescroll.state.internalScrollTop = _this4.scroller.__scrollTop;
-                    } else {
-                        _this4.vuescroll.state.internalScrollLeft = _this4.scrollPanelElm.scrollLeft;
-                        _this4.vuescroll.state.internalScrollTop = _this4.scrollPanelElm.scrollTop;
-                    }
-                }, {
-                    sync: true
-                });
+            });
+            // react to sync's change sync.
+            this.$watch('mergedOptions.vuescroll.mode', function () {
+                // record the scrollLeft and scrollTop
+                // by judging the last mode
+                if (_this4.mode == 'native') {
+                    _this4.vuescroll.state.internalScrollLeft = _this4.scroller.__scrollLeft;
+                    _this4.vuescroll.state.internalScrollTop = _this4.scroller.__scrollTop;
+                } else {
+                    _this4.vuescroll.state.internalScrollLeft = _this4.scrollPanelElm.scrollLeft;
+                    _this4.vuescroll.state.internalScrollTop = _this4.scrollPanelElm.scrollTop;
+                }
+            }, {
+                sync: true
+            });
 
-                // update state
-                _this4.update();
-                _this4.showBar();
-                _this4.hideBar();
-            }
-        });
+            // update state
+            this.update();
+            this.showBar();
+            this.hideBar();
+        }
     },
     updated: function updated() {
         var _this5 = this;

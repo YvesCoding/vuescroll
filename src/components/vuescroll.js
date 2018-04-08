@@ -67,7 +67,9 @@ function createPanel(h, vm) {
         }
         hideSystemBar();
         scrollPanelData.style.height = '100%';
+        scrollPanelData.style['transformOrigin'] = '';
     } else {
+        scrollPanelData.style['transformOrigin'] = 'left top 0px'
         scrollPanelData.style['userSelect'] = 'none';
     }
     return (
@@ -319,8 +321,14 @@ export default  {
             }, horizontal = {
                 type: 'horizontal'
             };
-            vertical['process'] = scrollPanel.scrollTop / (scrollPanel.scrollHeight - scrollPanel.clientHeight);
-            horizontal['process'] = scrollPanel.scrollLeft / (scrollPanel.scrollWidth - scrollPanel.clientWidth);
+            let scrollTop = scrollPanel.scrollTop;
+            let scrollLeft = scrollPanel.scrollLeft;
+            if(this.mode != 'native') {
+                scrollTop = this.scroller.__scrollTop;
+                scrollLeft = this.scroller.__scrollLeft;
+            }
+            vertical['process'] = scrollTop / (scrollPanel.scrollHeight - scrollPanel.clientHeight);
+            horizontal['process'] = scrollLeft / (scrollPanel.scrollWidth - scrollPanel.clientWidth);
             vertical['barSize'] = this.vBar.state.size;
             horizontal['barSize'] = this.hBar.state.size;
             this.$emit(eventType, vertical, horizontal, nativeEvent);
@@ -352,8 +360,8 @@ export default  {
                 let outerTop = 0;
                 const clientWidth = vuescroll.clientWidth;
                 const clientHeight = vuescroll.clientHeight;
-                const contentWidth = this.scrollPanelElm.scrollWidth;
-                const contentHeight = this.scrollPanelElm.scrollHeight;
+                const contentWidth = clientWidth + this.scroller.__maxScrollLeft;
+                const contentHeight = clientHeight + this.scroller.__maxScrollTop;
                 const __enableScrollX = clientWidth < contentWidth;
                 const __enableScrollY = clientHeight < contentHeight;
                 // out of horizontal bountry 
@@ -480,55 +488,54 @@ export default  {
         }
     },
     mounted() {
-        this.$nextTick(() => {
-            if(!this._isDestroyed) {
+        if(!this._isDestroyed) {
+            if(this.mode !== 'native') {
+                this.destroyScroller = this.registryScroller();
+            }
+            // registry resize event
+            this.registryResize();
+            this.$watch('mergedOptions.vuescroll.mode', () => {
+                this.registryResize();
+                if(this.destroyScroller) {
+                    this.destroyScroller();
+                    this.destroyScroller = null;
+                }
                 if(this.mode !== 'native') {
                     this.destroyScroller = this.registryScroller();
+                    this.scroller.scrollTo(
+                        this.vuescroll.state.internalScrollLeft,
+                        this.vuescroll.state.internalScrollTop,
+                        false
+                    )
+                } else {
+                    // remove the transform style attribute
+                    this.scrollPanelElm.style.transform = '';
+                    this.scrollTo({
+                        x: this.vuescroll.state.internalScrollLeft,
+                        y: this.vuescroll.state.internalScrollTop 
+                    }, false);
                 }
-                // registry resize event
-                this.registryResize();
-                this.$watch('mergedOptions.vuescroll.mode', () => {
-                    this.registryResize();
-                    if(this.destroyScroller) {
-                        this.destroyScroller();
-                        this.destroyScroller = null;
-                    }
-                    if(this.mode !== 'native') {
-                        this.destroyScroller = this.registryScroller();
-                        this.scroller.scrollTo(
-                            this.vuescroll.state.internalScrollLeft,
-                            this.vuescroll.state.internalScrollTop,
-                            false
-                        )
-                    } else {
-                        this.scrollPanelElm.style.transform = ''
-                        this.scrollTo({
-                            x: this.vuescroll.state.internalScrollLeft,
-                            y: this.vuescroll.state.internalScrollTop 
-                        }, false);
-                    }
-                })
-                // react to sync's change sync.
-                this.$watch('mergedOptions.vuescroll.mode', () => {
-                    // record the scrollLeft and scrollTop
-                    // by judging the last mode
-                    if(this.mode == 'native') {
-                        this.vuescroll.state.internalScrollLeft = this.scroller.__scrollLeft
-                        this.vuescroll.state.internalScrollTop = this.scroller.__scrollTop
-                    }else {
-                        this.vuescroll.state.internalScrollLeft = this.scrollPanelElm.scrollLeft
-                        this.vuescroll.state.internalScrollTop = this.scrollPanelElm.scrollTop
-                    }
-                }, {
-                    sync: true
-                })
+            })
+            // react to sync's change sync.
+            this.$watch('mergedOptions.vuescroll.mode', () => {
+                // record the scrollLeft and scrollTop
+                // by judging the last mode
+                if(this.mode == 'native') {
+                    this.vuescroll.state.internalScrollLeft = this.scroller.__scrollLeft
+                    this.vuescroll.state.internalScrollTop = this.scroller.__scrollTop
+                }else {
+                    this.vuescroll.state.internalScrollLeft = this.scrollPanelElm.scrollLeft
+                    this.vuescroll.state.internalScrollTop = this.scrollPanelElm.scrollTop
+                }
+            }, {
+                sync: true
+            })
 
-                // update state
-                this.update();
-                this.showBar();
-                this.hideBar();
-            }
-        }) 
+            // update state
+            this.update();
+            this.showBar();
+            this.hideBar();
+        }
     },
     updated() { 
         this.$nextTick(() => {
