@@ -11,7 +11,7 @@
     "vue": "^2.0"
   },
   "deprecated": false,
-  "description": "A virtuak scrollbar based on vuejs 2.X",
+  "description": "A reactive virtual scrollbar based on vue.js 2.X",
   "homepage": "https://github.com/wangyi7099/vuescroll#readme",
   "keywords": [
     "vuescroll",

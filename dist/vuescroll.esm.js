@@ -915,26 +915,15 @@ core.effect.Animate = {
  */
 var NOOP = function NOOP() {};
 
-// Easing Equations (c) 2003 Robert Penner, all rights reserved.
-// Open source under the BSD License.
+function createEasingFunction(easing) {
+	return function (pos) {
+		return easingPattern(easing, pos);
+	};
+}
 
-/**
- * @param pos {Number} position between 0 (start of effect) and 1 (end of effect)
-**/
-var easeOutCubic = function easeOutCubic(pos) {
-	return Math.pow(pos - 1, 3) + 1;
-};
+var animatingMethod = null;
 
-/**
- * @param pos {Number} position between 0 (start of effect) and 1 (end of effect)
-**/
-var easeInOutCubic = function easeInOutCubic(pos) {
-	if ((pos /= 0.5) < 1) {
-		return 0.5 * Math.pow(pos, 3);
-	}
-
-	return 0.5 * (Math.pow(pos - 2, 3) + 2);
-};
+var noAnimatingMethod = null;
 
 function Scroller(callback, options) {
 	this.__callback = callback;
@@ -982,8 +971,14 @@ function Scroller(callback, options) {
   	when to fade out a scrollbar. */
 		scrollingComplete: NOOP,
 
-		/** Handle on scroll/publish */
-		onScroll: NOOP,
+		/**
+   * easing mode..
+   * @description 
+   * @author wangyi
+   */
+		animatingEasing: 'easeOutCubic',
+
+		noAnimatingEasing: 'easeInOutCubic',
 
 		/** This configures the amount of change applied to deceleration when reaching boundaries  **/
 		penetrationDeceleration: 0.03,
@@ -996,6 +991,9 @@ function Scroller(callback, options) {
 	for (var key in options) {
 		this.options[key] = options[key];
 	}
+
+	animatingMethod = createEasingFunction(this.options.animatingEasing);
+	noAnimatingMethod = createEasingFunction(this.options.noAnimatingEasing);
 }
 
 var members = {
@@ -1448,7 +1446,6 @@ var members = {
 		// Limit for allowed ranges
 		left = Math.max(Math.min(self.__maxScrollLeft, left), 0);
 		top = Math.max(Math.min(self.__maxScrollTop, top), 0);
-		console.log(left, top, self);
 		// Don't animate when no change detected, still call publish to make sure
 		// that rendered position is really in-sync with internal data
 		if (left === self.__scrollLeft && top === self.__scrollTop) {
@@ -1870,6 +1867,9 @@ var members = {
 		self.__positions.length = 0;
 	},
 
+	/** Handle on scroll/publish */
+	onScroll: NOOP,
+
 	/*
  ---------------------------------------------------------------------------
  	PRIVATE API
@@ -1920,7 +1920,7 @@ var members = {
 					// Push values out
 					if (self.__callback) {
 						self.__callback(self.__scrollLeft, self.__scrollTop, self.__zoomLevel);
-						self.options.onScroll();
+						self.onScroll();
 					}
 				}
 			};
@@ -1947,7 +1947,7 @@ var members = {
 			};
 
 			// When continuing based on previous animation we choose an ease-out animation instead of ease-in-out
-			self.__isAnimating = core.effect.Animate.start(step, verify, completed, self.options.animationDuration, wasAnimating ? easeOutCubic : easeInOutCubic);
+			self.__isAnimating = core.effect.Animate.start(step, verify, completed, self.options.animationDuration, wasAnimating ? animatingMethod : noAnimatingMethod);
 		} else {
 
 			self.__scheduledLeft = self.__scrollLeft = left;
@@ -1957,7 +1957,7 @@ var members = {
 			// Push values out
 			if (self.__callback) {
 				self.__callback(left, top, zoom);
-				self.options.onScroll();
+				self.onScroll();
 			}
 
 			// Fix max scroll ranges
@@ -2325,7 +2325,7 @@ function listenContainer(container, scroller, eventCallback) {
         };
     }
     // handle __publish event
-    scroller.options.onScroll = function () {
+    scroller.onScroll = function () {
         eventCallback('onscroll');
     };
     return destroy;
@@ -2568,51 +2568,6 @@ var vuescroll = {
         }
     },
     methods: {
-        updateScroller: function updateScroller() {
-            var clientWidth = this.$el.clientWidth;
-            var clientHeight = this.$el.clientHeight;
-            var contentWidth = this.scrollPanelElm.scrollWidth;
-            var contentHeight = this.scrollPanelElm.scrollHeight;
-            this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
-        },
-        handleScroll: function handleScroll(nativeEvent) {
-            this.update('handle-scroll', nativeEvent);
-            this.showAndDefferedHideBar();
-        },
-        showAndDefferedHideBar: function showAndDefferedHideBar() {
-            var _this = this;
-
-            this.showBar();
-            if (this.vuescroll.state.timeoutId) {
-                clearTimeout(this.vuescroll.state.timeoutId);
-            }
-            this.vuescroll.state.timeoutId = setTimeout(function () {
-                _this.vuescroll.state.timeoutId = 0;
-                _this.hideBar();
-            }, 500);
-        },
-        emitEvent: function emitEvent(eventType) {
-            var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-            var scrollPanel$$1 = this.scrollPanelElm;
-            var vertical = {
-                type: 'vertical'
-            },
-                horizontal = {
-                type: 'horizontal'
-            };
-            var scrollTop = scrollPanel$$1.scrollTop;
-            var scrollLeft = scrollPanel$$1.scrollLeft;
-            if (this.mode != 'native') {
-                scrollTop = this.scroller.__scrollTop;
-                scrollLeft = this.scroller.__scrollLeft;
-            }
-            vertical['process'] = scrollTop / (scrollPanel$$1.scrollHeight - scrollPanel$$1.clientHeight);
-            horizontal['process'] = scrollLeft / (scrollPanel$$1.scrollWidth - scrollPanel$$1.clientWidth);
-            vertical['barSize'] = this.vBar.state.size;
-            horizontal['barSize'] = this.hBar.state.size;
-            this.$emit(eventType, vertical, horizontal, nativeEvent);
-        },
         update: function update(eventType) {
             var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
@@ -2631,12 +2586,6 @@ var vuescroll = {
             }
             // else branch handle for other mode 
             else {
-                    // update scroller first then 
-                    // calculate state
-                    // prevent from infinite update
-                    if (nativeEvent !== false) {
-                        this.updateScroller();
-                    }
                     // update non-native scrollbars' state
                     var scroller = this.scroller;
                     var outerLeft = 0;
@@ -2686,6 +2635,68 @@ var vuescroll = {
                 this.emitEvent(eventType, nativeEvent);
             }
         },
+        updateScroller: function updateScroller() {
+            var clientWidth = this.$el.clientWidth;
+            var clientHeight = this.$el.clientHeight;
+            var contentWidth = this.scrollPanelElm.scrollWidth;
+            var contentHeight = this.scrollPanelElm.scrollHeight;
+            this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
+        },
+        updateMode: function updateMode() {
+            if (this.destroyScroller) {
+                this.destroyScroller();
+                this.destroyScroller = null;
+            }
+            if (this.mode !== 'native') {
+                this.destroyScroller = this.registryScroller();
+                this.scroller.scrollTo(this.vuescroll.state.internalScrollLeft, this.vuescroll.state.internalScrollTop, false);
+            } else {
+                // remove the transform style attribute
+                this.scrollPanelElm.style.transform = '';
+                this.scrollTo({
+                    x: this.vuescroll.state.internalScrollLeft,
+                    y: this.vuescroll.state.internalScrollTop
+                }, false);
+            }
+        },
+        handleScroll: function handleScroll(nativeEvent) {
+            this.update('handle-scroll', nativeEvent);
+            this.showAndDefferedHideBar();
+        },
+        showAndDefferedHideBar: function showAndDefferedHideBar() {
+            var _this = this;
+
+            this.showBar();
+            if (this.vuescroll.state.timeoutId) {
+                clearTimeout(this.vuescroll.state.timeoutId);
+            }
+            this.vuescroll.state.timeoutId = setTimeout(function () {
+                _this.vuescroll.state.timeoutId = 0;
+                _this.hideBar();
+            }, 500);
+        },
+        emitEvent: function emitEvent(eventType) {
+            var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+            var scrollPanel$$1 = this.scrollPanelElm;
+            var vertical = {
+                type: 'vertical'
+            },
+                horizontal = {
+                type: 'horizontal'
+            };
+            var scrollTop = scrollPanel$$1.scrollTop;
+            var scrollLeft = scrollPanel$$1.scrollLeft;
+            if (this.mode != 'native') {
+                scrollTop = this.scroller.__scrollTop;
+                scrollLeft = this.scroller.__scrollLeft;
+            }
+            vertical['process'] = scrollTop / (scrollPanel$$1.scrollHeight - scrollPanel$$1.clientHeight);
+            horizontal['process'] = scrollLeft / (scrollPanel$$1.scrollWidth - scrollPanel$$1.clientWidth);
+            vertical['barSize'] = this.vBar.state.size;
+            horizontal['barSize'] = this.hBar.state.size;
+            this.$emit(eventType, vertical, horizontal, nativeEvent);
+        },
         showBar: function showBar() {
             this.vBar.state.opacity = this.mergedOptions.vBar.opacity;
             this.hBar.state.opacity = this.mergedOptions.hBar.opacity;
@@ -2724,6 +2735,9 @@ var vuescroll = {
                     _this2.update();
                     _this2.showBar();
                     _this2.hideBar();
+                    if (_this2.mode !== 'native') {
+                        _this2.updateScroller();
+                    }
                 }, false);
                 var funcArr = [function (nativeEvent) {
                     /** 
@@ -2732,6 +2746,9 @@ var vuescroll = {
                      *  hook` of the vuescroll itself. 
                      */
                     _this2.vuescroll.state.updateType = 'resize';
+                    if (_this2.mode !== 'native') {
+                        _this2.updateScroller();
+                    }
                     _this2.update('handle-resize', nativeEvent);
                     _this2.showAndDefferedHideBar();
                 }];
@@ -2746,7 +2763,8 @@ var vuescroll = {
 
             // Initialize Scroller
             this.scroller = new Scroller(render(this.scrollPanelElm, window), {
-                zooming: true
+                zooming: true,
+                animationDuration: this.mergedOptions.scrollPanel.speed
             });
             var rect = this.$el.getBoundingClientRect();
             this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);
@@ -2779,21 +2797,7 @@ var vuescroll = {
             this.registryResize();
             this.$watch('mergedOptions.vuescroll.mode', function () {
                 _this4.registryResize();
-                if (_this4.destroyScroller) {
-                    _this4.destroyScroller();
-                    _this4.destroyScroller = null;
-                }
-                if (_this4.mode !== 'native') {
-                    _this4.destroyScroller = _this4.registryScroller();
-                    _this4.scroller.scrollTo(_this4.vuescroll.state.internalScrollLeft, _this4.vuescroll.state.internalScrollTop, false);
-                } else {
-                    // remove the transform style attribute
-                    _this4.scrollPanelElm.style.transform = '';
-                    _this4.scrollTo({
-                        x: _this4.vuescroll.state.internalScrollLeft,
-                        y: _this4.vuescroll.state.internalScrollTop
-                    }, false);
-                }
+                _this4.updateMode();
             });
             // react to sync's change sync.
             this.$watch('mergedOptions.vuescroll.mode', function () {

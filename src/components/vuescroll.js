@@ -293,46 +293,8 @@ export default  {
         }
     },
     methods: {
-        updateScroller() {
-            const clientWidth = this.$el.clientWidth;
-            const clientHeight = this.$el.clientHeight;
-            const contentWidth = this.scrollPanelElm.scrollWidth;
-            const contentHeight = this.scrollPanelElm.scrollHeight;
-            this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
-        },
-        handleScroll(nativeEvent) {
-            this.update('handle-scroll', nativeEvent);
-            this.showAndDefferedHideBar();
-        },
-        showAndDefferedHideBar() {
-            this.showBar();
-            if(this.vuescroll.state.timeoutId) {
-                clearTimeout(this.vuescroll.state.timeoutId);
-            }
-            this.vuescroll.state.timeoutId = setTimeout(() => {
-               this.vuescroll.state.timeoutId = 0;
-               this.hideBar();
-           }, 500);
-        },
-        emitEvent(eventType, nativeEvent = null) {
-            const scrollPanel = this.scrollPanelElm;
-            let vertical = {
-                type: 'vertical'
-            }, horizontal = {
-                type: 'horizontal'
-            };
-            let scrollTop = scrollPanel.scrollTop;
-            let scrollLeft = scrollPanel.scrollLeft;
-            if(this.mode != 'native') {
-                scrollTop = this.scroller.__scrollTop;
-                scrollLeft = this.scroller.__scrollLeft;
-            }
-            vertical['process'] = scrollTop / (scrollPanel.scrollHeight - scrollPanel.clientHeight);
-            horizontal['process'] = scrollLeft / (scrollPanel.scrollWidth - scrollPanel.clientWidth);
-            vertical['barSize'] = this.vBar.state.size;
-            horizontal['barSize'] = this.hBar.state.size;
-            this.$emit(eventType, vertical, horizontal, nativeEvent);
-        },
+        // update function 
+        // update some states of vuescroll
         update(eventType, nativeEvent = null) {
             let heightPercentage, widthPercentage;
             const scrollPanel = this.scrollPanelElm;
@@ -348,12 +310,6 @@ export default  {
             }
             // else branch handle for other mode 
             else  {
-                // update scroller first then 
-                // calculate state
-                // prevent from infinite update
-                if(nativeEvent !== false) {
-                    this.updateScroller();
-                }
                 // update non-native scrollbars' state
                 const scroller = this.scroller;
                 let outerLeft = 0;
@@ -403,6 +359,67 @@ export default  {
                 this.emitEvent(eventType, nativeEvent);
             }
         },
+        updateScroller() {
+            const clientWidth = this.$el.clientWidth;
+            const clientHeight = this.$el.clientHeight;
+            const contentWidth = this.scrollPanelElm.scrollWidth;
+            const contentHeight = this.scrollPanelElm.scrollHeight;
+            this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
+        },
+        updateMode() {
+            if(this.destroyScroller) {
+                this.destroyScroller();
+                this.destroyScroller = null;
+            }
+            if(this.mode !== 'native') {
+                this.destroyScroller = this.registryScroller();
+                this.scroller.scrollTo(
+                    this.vuescroll.state.internalScrollLeft,
+                    this.vuescroll.state.internalScrollTop,
+                    false
+                )
+            } else {
+                // remove the transform style attribute
+                this.scrollPanelElm.style.transform = '';
+                this.scrollTo({
+                    x: this.vuescroll.state.internalScrollLeft,
+                    y: this.vuescroll.state.internalScrollTop 
+                }, false);
+            }
+        },
+        handleScroll(nativeEvent) {
+            this.update('handle-scroll', nativeEvent);
+            this.showAndDefferedHideBar();
+        },
+        showAndDefferedHideBar() {
+            this.showBar();
+            if(this.vuescroll.state.timeoutId) {
+                clearTimeout(this.vuescroll.state.timeoutId);
+            }
+            this.vuescroll.state.timeoutId = setTimeout(() => {
+               this.vuescroll.state.timeoutId = 0;
+               this.hideBar();
+           }, 500);
+        },
+        emitEvent(eventType, nativeEvent = null) {
+            const scrollPanel = this.scrollPanelElm;
+            let vertical = {
+                type: 'vertical'
+            }, horizontal = {
+                type: 'horizontal'
+            };
+            let scrollTop = scrollPanel.scrollTop;
+            let scrollLeft = scrollPanel.scrollLeft;
+            if(this.mode != 'native') {
+                scrollTop = this.scroller.__scrollTop;
+                scrollLeft = this.scroller.__scrollLeft;
+            }
+            vertical['process'] = scrollTop / (scrollPanel.scrollHeight - scrollPanel.clientHeight);
+            horizontal['process'] = scrollLeft / (scrollPanel.scrollWidth - scrollPanel.clientWidth);
+            vertical['barSize'] = this.vBar.state.size;
+            horizontal['barSize'] = this.hBar.state.size;
+            this.$emit(eventType, vertical, horizontal, nativeEvent);
+        },
         showBar() {
             this.vBar.state.opacity =  this.mergedOptions.vBar.opacity;
             this.hBar.state.opacity =  this.mergedOptions.hBar.opacity;
@@ -439,6 +456,9 @@ export default  {
                     this.update();
                     this.showBar();
                     this.hideBar();
+                    if(this.mode !== 'native') {
+                        this.updateScroller();
+                    }
                 }, false);
                 let funcArr = [
                     (nativeEvent) => {    
@@ -448,6 +468,9 @@ export default  {
                          *  hook` of the vuescroll itself. 
                          */
                         this.vuescroll.state.updateType = 'resize';
+                        if(this.mode !== 'native') {
+                            this.updateScroller();
+                        }
                         this.update('handle-resize', nativeEvent);
                         this.showAndDefferedHideBar();
                     }
@@ -465,7 +488,8 @@ export default  {
         registryScroller() {
             // Initialize Scroller
             this.scroller = new Scroller(render(this.scrollPanelElm, window), {
-                zooming: true
+                zooming: true,
+                animationDuration: this.mergedOptions.scrollPanel.speed
             });
             var rect = this.$el.getBoundingClientRect();
             this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);    
@@ -496,25 +520,7 @@ export default  {
             this.registryResize();
             this.$watch('mergedOptions.vuescroll.mode', () => {
                 this.registryResize();
-                if(this.destroyScroller) {
-                    this.destroyScroller();
-                    this.destroyScroller = null;
-                }
-                if(this.mode !== 'native') {
-                    this.destroyScroller = this.registryScroller();
-                    this.scroller.scrollTo(
-                        this.vuescroll.state.internalScrollLeft,
-                        this.vuescroll.state.internalScrollTop,
-                        false
-                    )
-                } else {
-                    // remove the transform style attribute
-                    this.scrollPanelElm.style.transform = '';
-                    this.scrollTo({
-                        x: this.vuescroll.state.internalScrollLeft,
-                        y: this.vuescroll.state.internalScrollTop 
-                    }, false);
-                }
+                this.updateMode();
             })
             // react to sync's change sync.
             this.$watch('mergedOptions.vuescroll.mode', () => {

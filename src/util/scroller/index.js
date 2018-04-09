@@ -23,26 +23,15 @@ import {
 
 var NOOP = function(){};
 
-// Easing Equations (c) 2003 Robert Penner, all rights reserved.
-// Open source under the BSD License.
-
-/**
- * @param pos {Number} position between 0 (start of effect) and 1 (end of effect)
-**/
-var easeOutCubic = function(pos) {
-	return (Math.pow((pos - 1), 3) + 1);
-};
-
-/**
- * @param pos {Number} position between 0 (start of effect) and 1 (end of effect)
-**/
-var easeInOutCubic = function(pos) {
-	if ((pos /= 0.5) < 1) {
-		return 0.5 * Math.pow(pos, 3);
+function createEasingFunction(easing) {
+	return function (pos) {
+		return easingPattern(easing, pos);
 	}
+}
 
-	return 0.5 * (Math.pow((pos - 2), 3) + 2);
-};
+var animatingMethod = null;
+
+var noAnimatingMethod = null;
 
 export default function Scroller(callback, options) {
     this.__callback = callback;
@@ -90,8 +79,14 @@ export default function Scroller(callback, options) {
 				when to fade out a scrollbar. */
 			scrollingComplete: NOOP,
 
-			/** Handle on scroll/publish */
-			onScroll: NOOP,
+			/**
+			 * easing mode..
+			 * @description 
+			 * @author wangyi
+			 */
+			animatingEasing: 'easeOutCubic',
+
+			noAnimatingEasing: 'easeInOutCubic',
 
 			/** This configures the amount of change applied to deceleration when reaching boundaries  **/
             penetrationDeceleration : 0.03,
@@ -104,6 +99,9 @@ export default function Scroller(callback, options) {
 		for (var key in options) {
 			this.options[key] = options[key];
 		}
+
+		animatingMethod = createEasingFunction(this.options.animatingEasing);
+		noAnimatingMethod =  createEasingFunction(this.options.noAnimatingEasing);
 }
 
 var members = {
@@ -589,7 +587,6 @@ var members = {
 		// Limit for allowed ranges
 		left = Math.max(Math.min(self.__maxScrollLeft, left), 0);
 		top = Math.max(Math.min(self.__maxScrollTop, top), 0);
-		console.log(left, top, self);
 		// Don't animate when no change detected, still call publish to make sure
 		// that rendered position is really in-sync with internal data
 		if (left === self.__scrollLeft && top === self.__scrollTop) {
@@ -1036,7 +1033,8 @@ var members = {
 
 	},
 
-
+	/** Handle on scroll/publish */
+	onScroll: NOOP,	
 
 	/*
 	---------------------------------------------------------------------------
@@ -1088,7 +1086,7 @@ var members = {
 					// Push values out
 					if (self.__callback) {
 						self.__callback(self.__scrollLeft, self.__scrollTop, self.__zoomLevel);
-						self.options.onScroll();
+						self.onScroll();
 					}
 
 				}
@@ -1116,7 +1114,7 @@ var members = {
 			};
 
 			// When continuing based on previous animation we choose an ease-out animation instead of ease-in-out
-			self.__isAnimating = core.effect.Animate.start(step, verify, completed, self.options.animationDuration, wasAnimating ? easeOutCubic : easeInOutCubic);
+			self.__isAnimating = core.effect.Animate.start(step, verify, completed, self.options.animationDuration, wasAnimating ? animatingMethod : noAnimatingMethod);
 
 		} else {
 
@@ -1127,7 +1125,7 @@ var members = {
 			// Push values out
 			if (self.__callback) {
 				self.__callback(left, top, zoom);
-				self.options.onScroll();
+				self.onScroll();
 			}
 
 			// Fix max scroll ranges

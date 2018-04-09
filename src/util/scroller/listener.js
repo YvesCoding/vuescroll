@@ -94,7 +94,7 @@ export function listenContainer(container, scroller, eventCallback) {
         }
     }
     // handle __publish event
-    scroller.options.onScroll = () => {
+    scroller.onScroll = () => {
         eventCallback('onscroll');
     }
     return destroy;

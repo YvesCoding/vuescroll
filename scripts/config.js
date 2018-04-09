@@ -9,7 +9,7 @@ const banner =
    `/*
     * @name: vuescroll ${version}
     * @author: (c) 2018-${new Date().getFullYear()} wangyi7099
-    * @description: A virtual scrollbar based on vue.js 2.x
+    * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
     * @GitHub: https://github.com/wangyi7099/vuescroll
     */
