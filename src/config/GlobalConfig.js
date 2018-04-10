@@ -1,9 +1,9 @@
+const modes = ['slide', 'native'];
 export default {
     // vuescroll
     vuescroll: {
         mode: 'native',
-        refresh: false,
-        refreshHeight: 50
+        refresh: false
     },
     scrollPanel: {
         initialScrollY: false,
@@ -53,4 +53,42 @@ export default {
         opacity: 1,
         hover: false
     } 
+}
+/**
+ * validate the options
+ * 
+ * @export
+ * @param {any} ops 
+ */
+export function validateOptions(ops) {
+    let shouldStopRender = false;
+    const {
+        vuescroll, 
+        scrollPanel, 
+        scrollContent, 
+        vRail, 
+        hRail,
+        vBar,
+        hBar
+    } = ops;
+
+    // validate vuescroll
+    if(!~modes.indexOf(vuescroll.mode)) {
+        console.error(`[vuescroll]: The vuescroll\'s option "mode" should be one of the ${modes}`)
+        shouldStopRender = true;
+    }
+
+    // validate scrollPanel
+    const initialScrollY = scrollPanel['initialScrollY'];
+    const initialScrollX = scrollPanel['initialScrollX'];
+
+    if(initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
+        console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.')
+    }
+
+    if(initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
+        console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.')
+    }
+
+    return shouldStopRender;
 }

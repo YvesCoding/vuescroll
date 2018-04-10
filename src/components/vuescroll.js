@@ -79,7 +79,8 @@ function createPanel(h, vm) {
                     } else if(vm.mode == 'slide') {
                         let renderChildren = [vm.$slots.default];
                         if(vm.$slots.refresh && vm.mergedOptions.vuescroll.refresh) {
-                            renderChildren.unshift(vm.$slots.refresh)
+                            vm.$refs['refreshDom'] = vm.$slots.refresh[0];
+                            renderChildren.unshift(vm.$slots.refresh[0])
                         } else if(vm.mergedOptions.vuescroll.refresh) {
                             createRefreshDomStyle();
                             // no slot refresh elm, use default
@@ -255,6 +256,14 @@ export default  {
     },
     render(h) {
         let vm = this;
+
+        if(vm.shouldStopRender) {
+            return (
+                <div>
+                    {[vm.$slots['default']]}
+                </div>
+            )
+        }
         // vuescroll data
         const vuescrollData = {
             style: {
@@ -456,7 +465,7 @@ export default  {
         }
     },
     mounted() {
-        if(!this._isDestroyed) {
+        if(!this._isDestroyed && !this.shouldStopRender) {
             if(this.mode == 'slide') {
                 this.destroyScroller = this.registryScroller();
             }

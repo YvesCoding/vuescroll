@@ -306,12 +306,12 @@ function listenResize(element, funArr) {
     };
 }
 
+var modes = ['slide', 'native'];
 var GCF = {
     // vuescroll
     vuescroll: {
         mode: 'native',
-        refresh: false,
-        refreshHeight: 50
+        refresh: false
     },
     scrollPanel: {
         initialScrollY: false,
@@ -359,7 +359,43 @@ var GCF = {
         opacity: 1,
         hover: false
     }
-};
+    /**
+     * validate the options
+     * 
+     * @export
+     * @param {any} ops 
+     */
+};function validateOptions(ops) {
+    var shouldStopRender = false;
+    var vuescroll = ops.vuescroll,
+        scrollPanel = ops.scrollPanel,
+        scrollContent = ops.scrollContent,
+        vRail = ops.vRail,
+        hRail = ops.hRail,
+        vBar = ops.vBar,
+        hBar = ops.hBar;
+
+    // validate vuescroll
+
+    if (!~modes.indexOf(vuescroll.mode)) {
+        console.error('[vuescroll]: The vuescroll\'s option "mode" should be one of the ' + modes);
+        shouldStopRender = true;
+    }
+
+    // validate scrollPanel
+    var initialScrollY = scrollPanel['initialScrollY'];
+    var initialScrollX = scrollPanel['initialScrollX'];
+
+    if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
+        console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
+    }
+
+    if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
+        console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
+    }
+
+    return shouldStopRender;
+}
 
 /**
  * hack the lifeCycle 
@@ -394,8 +430,14 @@ function hackPropsData() {
     }
 }
 var LifeCycleMix = {
+    data: function data() {
+        return {
+            shouldStopRender: false
+        };
+    },
     created: function created() {
         hackPropsData.call(this);
+        this.shouldStopRender = validateOptions(this.mergedOptions);
     }
 };
 
@@ -2140,19 +2182,20 @@ function listenContainer(container, scroller, eventCallback) {
 
 // import scroller
 var activateCallback = function activateCallback() {
-    var refreshElem = this.$refs['refreshDom'];
+    var refreshElem = this.refreshDom;
     refreshElem.className += " active";
     refreshElem.innerHTML = "Release to Refresh";
 };
 
 var deactivateCallback = function deactivateCallback() {
-    var refreshElem = this.$refs['refreshDom'];
+    var refreshElem = this.refreshDom;
     refreshElem.className = refreshElem.className.replace(" active", "");
     refreshElem.innerHTML = "Pull to Refresh";
 };
+
 var startCallback = function startCallback() {
     var vm = this;
-    var refreshElem = vm.$refs['refreshDom'];
+    var refreshElem = vm.refreshDom;
     refreshElem.className += " running";
     refreshElem.innerHTML = "Refreshing...";
     setTimeout(function () {
@@ -2160,15 +2203,25 @@ var startCallback = function startCallback() {
         vm.scroller.finishPullToRefresh();
     }, 2000);
 };
+
 var slideMode = {
+    computed: {
+        refreshDom: function refreshDom() {
+            return this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
+        }
+    },
     methods: {
         updateScroller: function updateScroller() {
             var clientWidth = this.$el.clientWidth;
             var clientHeight = this.$el.clientHeight;
             var contentWidth = this.scrollPanelElm.scrollWidth;
             var contentHeight = this.scrollPanelElm.scrollHeight;
-            if (this.mergedOptions.vuescroll.refreshHeight) {
-                contentHeight -= this.mergedOptions.vuescroll.refreshHeight;
+            var refreshHeight = 0;
+            if (this.mergedOptions.vuescroll.refresh) {
+                var refreshDom = this.refreshDom;
+                refreshHeight = refreshDom.scrollHeight;
+                refreshDom.style.marginTop = -refreshHeight + 'px';
+                contentHeight -= refreshHeight;
             }
             this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
         },
@@ -2205,20 +2258,22 @@ var slideMode = {
                 var refreshElem = this.$refs['refreshDom'];
                 if (this.$listeners.activate) {
                     activateCallback = function activateCallback() {
-                        _this.$emit('activate', _this);
+                        _this.$emit('activate', _this, _this.refreshDom);
                     };
                 }
                 if (this.$listeners.deactivate) {
                     deactivateCallback = function deactivateCallback() {
-                        _this.$emit('deactivate', _this);
+                        _this.$emit('deactivate', _this, _this.refreshDom);
                     };
                 }
                 if (this.$listeners.start) {
                     startCallback = function startCallback() {
-                        _this.$emit('start', _this);
+                        _this.$emit('start', _this, _this.refreshDom);
                     };
                 }
-                this.scroller.activatePullToRefresh(this.mergedOptions.vuescroll.refreshHeight, activateCallback.bind(this), deactivateCallback.bind(this), startCallback.bind(this));
+                var refreshDom = this.refreshDom;
+                var refreshHeight = refreshDom.scrollHeight;
+                this.scroller.activatePullToRefresh(refreshHeight, activateCallback.bind(this), deactivateCallback.bind(this), startCallback.bind(this));
             }
             this.updateScroller();
             return cb;
@@ -2478,28 +2533,7 @@ var scrollPanel = {
     },
 
     props: {
-        ops: {
-            default: function _default() {
-                /* istanbul ignore next */
-                return {};
-            },
-
-            validator: function validator(ops) {
-                ops = ops || {};
-                var rtn = true;
-                var initialScrollY = ops['initialScrollY'];
-                var initialScrollX = ops['initialScrollX'];
-                if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
-                    console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
-                    rtn = false;
-                }
-                if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
-                    console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
-                    rtn = false;
-                }
-                return rtn;
-            }
-        },
+        ops: {},
         state: {}
     }
 };
@@ -2564,7 +2598,8 @@ function createPanel(h, vm) {
             } else if (vm.mode == 'slide') {
                 var renderChildren = [vm.$slots.default];
                 if (vm.$slots.refresh && vm.mergedOptions.vuescroll.refresh) {
-                    renderChildren.unshift(vm.$slots.refresh);
+                    vm.$refs['refreshDom'] = vm.$slots.refresh[0];
+                    renderChildren.unshift(vm.$slots.refresh[0]);
                 } else if (vm.mergedOptions.vuescroll.refresh) {
                     createRefreshDomStyle();
                     // no slot refresh elm, use default
@@ -2716,6 +2751,10 @@ var vuescroll = {
     },
     render: function render(h) {
         var vm = this;
+
+        if (vm.shouldStopRender) {
+            return h('div', [[vm.$slots['default']]]);
+        }
         // vuescroll data
         var vuescrollData = {
             style: {
@@ -2918,7 +2957,7 @@ var vuescroll = {
     mounted: function mounted() {
         var _this3 = this;
 
-        if (!this._isDestroyed) {
+        if (!this._isDestroyed && !this.shouldStopRender) {
             if (this.mode == 'slide') {
                 this.destroyScroller = this.registryScroller();
             }

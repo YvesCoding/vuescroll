@@ -1,4 +1,4 @@
-import GCF from '../config/GlobalConfig' 
+import GCF, {validateOptions} from '../config/GlobalConfig' 
 import {
      deepMerge,
      defineReactive
@@ -43,10 +43,16 @@ function hackPropsData() {
             }
         )
     } 
-     
+    
 }
 export default {
+    data() {
+        return {
+            shouldStopRender: false
+        }
+    },
     created() {
         hackPropsData.call(this);
+        this.shouldStopRender = validateOptions(this.mergedOptions);
     }
 }
