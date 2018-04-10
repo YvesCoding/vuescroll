@@ -1,7 +1,7 @@
 /*
     * @name: vuescroll 3.7.12
     * @author: (c) 2018-2018 wangyi7099
-    * @description: A virtual scrollbar based on vue.js 2.x
+    * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
     * @GitHub: https://github.com/wangyi7099/vuescroll
     */
@@ -453,235 +453,18 @@ var vuescrollApi = {
     }
 };
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var bar = {
-    name: "bar",
-
-    computed: {
-        bar: function bar() {
-            return map[this.type].bar;
-        },
-        parent: function parent() {
-            /* istanbul ignore next */
-            return this.$parent.$refs;
-        }
-    },
-    render: function render(h) {
-        var _extends2,
-            _this = this;
-
-        var style = _extends((_extends2 = {}, _defineProperty(_extends2, this.bar.posName, 0), _defineProperty(_extends2, this.ops.pos, 0), _defineProperty(_extends2, this.bar.size, this.state.size), _defineProperty(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty(_extends2, 'background', this.ops.background), _defineProperty(_extends2, 'opacity', this.state.opacity), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'position', 'absolute'), _defineProperty(_extends2, 'borderRadius', '4px'), _defineProperty(_extends2, 'transition', 'opacity .5s'), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'userSelect', 'none'), _extends2), renderTransform(this.type, this.state.posValue));
-        var data = {
-            style: style,
-            class: 'vuescroll-' + this.type + '-scrollbar',
-            on: {
-                mousedown: this.handleMousedown
-            }
-        };
-        if (this.ops.hover) {
-            data.on['mouseenter'] = function () {
-                _this.$el.style.background = _this.ops.hover;
-            };
-            data.on['mouseleave'] = function () {
-                _this.$el.style.background = _this.ops.background;
-            };
-        }
-        return h('div', data);
-    },
-
+var nativeMode = {
     methods: {
-        handleMousedown: function handleMousedown(e) {
-            e.stopPropagation();
-            this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
-            // tell parent that the mouse has been down.
-            this.$emit("setMousedown", true);
-            on(document, 'mousemove', this.handleMouseMove);
-            on(document, 'mouseup', this.handleMouseUp);
-        },
-        handleMouseMove: function handleMouseMove(e) {
-            /**
-             * I really don't have an
-             * idea to test mousemove...
-             */
-
-            /* istanbul ignore next */
-            if (!this.axisStartPos) {
-                return;
-            }
-            /* istanbul ignore next */
-            {
-                var delta = e[this.bar.client] - this.parent[this.type + 'Rail'].getBoundingClientRect()[this.bar.posName];
-                var percent = (delta - this.axisStartPos) / this.parent[this.type + 'Rail'][this.bar.offset];
-                this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent;
-            }
-        },
-        handleMouseUp: function handleMouseUp() {
-            this.$emit("setMousedown", false);
-            this.$parent.hideBar();
-            this.axisStartPos = 0;
-            off(document, 'mousemove', this.handleMouseMove);
-            off(document, 'mouseup', this.handleMouseUp);
+        updateNativeModeBarState: function updateNativeModeBarState() {
+            var scrollPanel = this.scrollPanelElm;
+            var vuescroll = this.$el;
+            var heightPercentage = scrollPanel.clientHeight * 100 / scrollPanel.scrollHeight;
+            var widthPercentage = scrollPanel.clientWidth * 100 / scrollPanel.scrollWidth;
+            this.vBar.state.posValue = scrollPanel.scrollTop * 100 / scrollPanel.clientHeight;
+            this.hBar.state.posValue = scrollPanel.scrollLeft * 100 / scrollPanel.clientWidth;
+            this.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
+            this.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
         }
-    },
-    props: {
-        ops: {
-            type: Object,
-            required: true
-        },
-        state: {
-            type: Object,
-            required: true
-        },
-        type: {
-            type: String,
-            required: true
-        }
-    }
-};
-
-function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function handleClickTrack(e, bar, parentRef, type, parent) {
-    var page = bar.page;
-    var barOffset = parentRef[type + 'Bar'].$el[bar.offset];
-    var percent = (e[page] - e.target.getBoundingClientRect()[bar.posName] - barOffset / 2) / e.target[bar.offset];
-    var pos = parentRef['scrollPanel'].$el[bar.scrollSize] * percent;
-    parent.scrollTo(_defineProperty$1({}, map[type].axis.toLowerCase(), pos));
-}
-
-var rail = {
-    name: "rail",
-    functional: true,
-    render: function render(h, _ref) {
-        var _style;
-
-        var parent = _ref.parent,
-            props = _ref.props;
-
-        var bar = map[props.type].bar;
-        var parentRef = parent.$refs;
-        var style = (_style = {}, _defineProperty$1(_style, bar.posName, 0), _defineProperty$1(_style, props.ops.pos, 0), _defineProperty$1(_style, bar.size, '100%'), _defineProperty$1(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$1(_style, 'background', props.ops.background), _defineProperty$1(_style, 'opacity', props.ops.opacity), _defineProperty$1(_style, 'position', 'absolute'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'borderRadius', '4px'), _style);
-        var data = {
-            style: style,
-            class: 'vuescroll-' + props.type + '-rail',
-            ref: props.type + 'Rail',
-            on: {
-                click: function click(e) {
-                    handleClickTrack(e, bar, parentRef, props.type, parent);
-                }
-            }
-        };
-        return h('div', data);
-    }
-};
-
-// scrollContent
-var scrollContent = {
-    name: 'scrollContent',
-    functional: true,
-    render: function render(h, _ref) {
-        var props = _ref.props,
-            slots = _ref.slots;
-
-        var style = deepMerge(props.state.style, {});
-        style.position = 'relative';
-        style.minHeight = "100%";
-        if (props.ops.padding) {
-            style[props.ops.paddPos] = props.ops.paddValue;
-        }
-        return h(props.ops.tag, {
-            style: style,
-            ref: 'scrollContent',
-            class: "vuescroll-content",
-            props: props.ops.props,
-            attrs: props.ops.attrs
-        }, slots().default);
-    },
-
-    props: {
-        ops: {
-            default: function _default() {
-                /* istanbul ignore next */
-                return {};
-            }
-        },
-        state: {
-            default: function _default() {
-                /* istanbul ignore next */
-                return {};
-            }
-        }
-    }
-};
-
-// vueScrollPanel
-var scrollPanel = {
-    name: 'scrollPanel',
-    methods: {
-        // trigger scrollPanel options initialScrollX, 
-        // initialScrollY
-        updateInitialScroll: function updateInitialScroll() {
-            var x = 0;
-            var y = 0;
-            if (this.ops.initialScrollX) {
-                x = this.ops.initialScrollX;
-            }
-            if (this.ops.initialScrollY) {
-                y = this.ops.initialScrollY;
-            }
-            this.$parent.scrollTo({
-                x: x,
-                y: y
-            });
-        }
-    },
-    mounted: function mounted() {
-        var _this = this;
-
-        this.$nextTick(function () {
-            if (!_this._isDestroyed) {
-                _this.updateInitialScroll();
-            }
-        });
-    },
-    render: function render(h) {
-        var data = {
-            class: ['vuescroll-panel']
-        };
-        return h(
-            'div',
-            data,
-            [[this.$slots.default]]
-        );
-    },
-
-    props: {
-        ops: {
-            default: function _default() {
-                /* istanbul ignore next */
-                return {};
-            },
-
-            validator: function validator(ops) {
-                ops = ops || {};
-                var rtn = true;
-                var initialScrollY = ops['initialScrollY'];
-                var initialScrollX = ops['initialScrollX'];
-                if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
-                    console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
-                    rtn = false;
-                }
-                if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
-                    console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
-                    rtn = false;
-                }
-                return rtn;
-            }
-        },
-        state: {}
     }
 };
 
@@ -2337,16 +2120,337 @@ function listenContainer(container, scroller, eventCallback) {
     return destroy;
 }
 
+// import scroller
+var slideMode = {
+    methods: {
+        updateScroller: function updateScroller() {
+            var clientWidth = this.$el.clientWidth;
+            var clientHeight = this.$el.clientHeight;
+            var contentWidth = this.scrollPanelElm.scrollWidth;
+            var contentHeight = this.scrollPanelElm.scrollHeight;
+            this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
+        },
+        registryScroller: function registryScroller() {
+            var _this = this;
+
+            // Initialize Scroller
+            this.scroller = new Scroller(render(this.scrollPanelElm, window), {
+                zooming: true,
+                animationDuration: this.mergedOptions.scrollPanel.speed
+            });
+            var rect = this.$el.getBoundingClientRect();
+            this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);
+            var cb = listenContainer(this.$el, this.scroller, function (eventType) {
+                switch (eventType) {
+                    case 'mousedown':
+                        _this.vuescroll.state.isDragging = true;
+                        break;
+                    case 'onscroll':
+                        _this.handleScroll(false);
+                        break;
+                    case 'mouseup':
+                        _this.vuescroll.state.isDragging = false;
+                        break;
+                }
+            });
+            this.updateScroller();
+            return cb;
+        },
+        updateSlideModeBarState: function updateSlideModeBarState() {
+            // update slide mode scrollbars' state
+            var heightPercentage = void 0,
+                widthPercentage = void 0;
+            var scrollPanel = this.scrollPanelElm;
+            var vuescroll = this.$el;
+            var scroller = this.scroller;
+            var outerLeft = 0;
+            var outerTop = 0;
+            var clientWidth = vuescroll.clientWidth;
+            var clientHeight = vuescroll.clientHeight;
+            var contentWidth = clientWidth + this.scroller.__maxScrollLeft;
+            var contentHeight = clientHeight + this.scroller.__maxScrollTop;
+            var __enableScrollX = clientWidth < contentWidth;
+            var __enableScrollY = clientHeight < contentHeight;
+            // out of horizontal bountry 
+            if (__enableScrollX) {
+                if (scroller.__scrollLeft < 0) {
+                    outerLeft = -scroller.__scrollLeft;
+                } else if (scroller.__scrollLeft > scroller.__maxScrollLeft) {
+                    outerLeft = scroller.__scrollLeft - scroller.__maxScrollLeft;
+                }
+            }
+            // out of vertical bountry
+            if (__enableScrollY) {
+                if (scroller.__scrollTop < 0) {
+                    outerTop = -scroller.__scrollTop;
+                } else if (scroller.__scrollTop > scroller.__maxScrollTop) {
+                    outerTop = scroller.__scrollTop - scroller.__maxScrollTop;
+                }
+            }
+            heightPercentage = clientHeight * 100 / (contentHeight + outerTop);
+            widthPercentage = clientWidth * 100 / (contentWidth + outerLeft);
+            var scrollTop = Math.min(Math.max(0, scroller.__scrollTop), scroller.__maxScrollTop);
+            var scrollLeft = Math.min(Math.max(0, scroller.__scrollLeft), scroller.__maxScrollLeft);
+            this.vBar.state.posValue = (scrollTop + outerTop) * 100 / vuescroll.clientHeight;
+            this.hBar.state.posValue = (scrollLeft + outerLeft) * 100 / vuescroll.clientWidth;
+            if (scroller.__scrollLeft < 0) {
+                this.hBar.state.posValue = 0;
+            }
+            if (scroller.__scrollTop < 0) {
+                this.vBar.state.posValue = 0;
+            }
+            this.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
+            this.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
+        }
+    }
+};
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var bar = {
+    name: "bar",
+
+    computed: {
+        bar: function bar() {
+            return map[this.type].bar;
+        },
+        parent: function parent() {
+            /* istanbul ignore next */
+            return this.$parent.$refs;
+        }
+    },
+    render: function render(h) {
+        var _extends2,
+            _this = this;
+
+        var style = _extends((_extends2 = {}, _defineProperty(_extends2, this.bar.posName, 0), _defineProperty(_extends2, this.ops.pos, 0), _defineProperty(_extends2, this.bar.size, this.state.size), _defineProperty(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty(_extends2, 'background', this.ops.background), _defineProperty(_extends2, 'opacity', this.state.opacity), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'position', 'absolute'), _defineProperty(_extends2, 'borderRadius', '4px'), _defineProperty(_extends2, 'transition', 'opacity .5s'), _defineProperty(_extends2, 'cursor', 'pointer'), _defineProperty(_extends2, 'userSelect', 'none'), _extends2), renderTransform(this.type, this.state.posValue));
+        var data = {
+            style: style,
+            class: 'vuescroll-' + this.type + '-scrollbar',
+            on: {
+                mousedown: this.handleMousedown
+            }
+        };
+        if (this.ops.hover) {
+            data.on['mouseenter'] = function () {
+                _this.$el.style.background = _this.ops.hover;
+            };
+            data.on['mouseleave'] = function () {
+                _this.$el.style.background = _this.ops.background;
+            };
+        }
+        return h('div', data);
+    },
+
+    methods: {
+        handleMousedown: function handleMousedown(e) {
+            e.stopPropagation();
+            this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
+            // tell parent that the mouse has been down.
+            this.$emit("setMousedown", true);
+            on(document, 'mousemove', this.handleMouseMove);
+            on(document, 'mouseup', this.handleMouseUp);
+        },
+        handleMouseMove: function handleMouseMove(e) {
+            /**
+             * I really don't have an
+             * idea to test mousemove...
+             */
+
+            /* istanbul ignore next */
+            if (!this.axisStartPos) {
+                return;
+            }
+            /* istanbul ignore next */
+            {
+                var delta = e[this.bar.client] - this.parent[this.type + 'Rail'].getBoundingClientRect()[this.bar.posName];
+                var percent = (delta - this.axisStartPos) / this.parent[this.type + 'Rail'][this.bar.offset];
+                this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent;
+            }
+        },
+        handleMouseUp: function handleMouseUp() {
+            this.$emit("setMousedown", false);
+            this.$parent.hideBar();
+            this.axisStartPos = 0;
+            off(document, 'mousemove', this.handleMouseMove);
+            off(document, 'mouseup', this.handleMouseUp);
+        }
+    },
+    props: {
+        ops: {
+            type: Object,
+            required: true
+        },
+        state: {
+            type: Object,
+            required: true
+        },
+        type: {
+            type: String,
+            required: true
+        }
+    }
+};
+
+function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function handleClickTrack(e, bar, parentRef, type, parent) {
+    var page = bar.page;
+    var barOffset = parentRef[type + 'Bar'].$el[bar.offset];
+    var percent = (e[page] - e.target.getBoundingClientRect()[bar.posName] - barOffset / 2) / e.target[bar.offset];
+    var pos = parentRef['scrollPanel'].$el[bar.scrollSize] * percent;
+    parent.scrollTo(_defineProperty$1({}, map[type].axis.toLowerCase(), pos));
+}
+
+var rail = {
+    name: "rail",
+    functional: true,
+    render: function render(h, _ref) {
+        var _style;
+
+        var parent = _ref.parent,
+            props = _ref.props;
+
+        var bar = map[props.type].bar;
+        var parentRef = parent.$refs;
+        var style = (_style = {}, _defineProperty$1(_style, bar.posName, 0), _defineProperty$1(_style, props.ops.pos, 0), _defineProperty$1(_style, bar.size, '100%'), _defineProperty$1(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$1(_style, 'background', props.ops.background), _defineProperty$1(_style, 'opacity', props.ops.opacity), _defineProperty$1(_style, 'position', 'absolute'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'borderRadius', '4px'), _style);
+        var data = {
+            style: style,
+            class: 'vuescroll-' + props.type + '-rail',
+            ref: props.type + 'Rail',
+            on: {
+                click: function click(e) {
+                    handleClickTrack(e, bar, parentRef, props.type, parent);
+                }
+            }
+        };
+        return h('div', data);
+    }
+};
+
+// scrollContent
+var scrollContent = {
+    name: 'scrollContent',
+    functional: true,
+    render: function render(h, _ref) {
+        var props = _ref.props,
+            slots = _ref.slots;
+
+        var style = deepMerge(props.state.style, {});
+        style.position = 'relative';
+        style.minHeight = "100%";
+        if (props.ops.padding) {
+            style[props.ops.paddPos] = props.ops.paddValue;
+        }
+        return h(props.ops.tag, {
+            style: style,
+            ref: 'scrollContent',
+            class: "vuescroll-content",
+            props: props.ops.props,
+            attrs: props.ops.attrs
+        }, slots().default);
+    },
+
+    props: {
+        ops: {
+            default: function _default() {
+                /* istanbul ignore next */
+                return {};
+            }
+        },
+        state: {
+            default: function _default() {
+                /* istanbul ignore next */
+                return {};
+            }
+        }
+    }
+};
+
+// vueScrollPanel
+var scrollPanel = {
+    name: 'scrollPanel',
+    methods: {
+        // trigger scrollPanel options initialScrollX, 
+        // initialScrollY
+        updateInitialScroll: function updateInitialScroll() {
+            var x = 0;
+            var y = 0;
+            if (this.ops.initialScrollX) {
+                x = this.ops.initialScrollX;
+            }
+            if (this.ops.initialScrollY) {
+                y = this.ops.initialScrollY;
+            }
+            this.$parent.scrollTo({
+                x: x,
+                y: y
+            });
+        }
+    },
+    mounted: function mounted() {
+        var _this = this;
+
+        this.$nextTick(function () {
+            if (!_this._isDestroyed) {
+                _this.updateInitialScroll();
+            }
+        });
+    },
+    render: function render(h) {
+        var data = {
+            class: ['vuescroll-panel']
+        };
+        return h(
+            'div',
+            data,
+            [[this.$slots.default]]
+        );
+    },
+
+    props: {
+        ops: {
+            default: function _default() {
+                /* istanbul ignore next */
+                return {};
+            },
+
+            validator: function validator(ops) {
+                ops = ops || {};
+                var rtn = true;
+                var initialScrollY = ops['initialScrollY'];
+                var initialScrollX = ops['initialScrollX'];
+                if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
+                    console.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
+                    rtn = false;
+                }
+                if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
+                    console.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
+                    rtn = false;
+                }
+                return rtn;
+            }
+        },
+        state: {}
+    }
+};
+
 // vuescroll core component
 // refered to: https://github.com/ElemeFE/element/blob/dev/packages/scrollbar/src/main.js
 // vue-jsx: https://github.com/vuejs/babel-plugin-transform-vue-jsx/blob/master/example/example.js
 
 // begin importing
+// import mix begin.....
+
 // import lefrCycle
-// import global config
 // import api
+// import native mode
+// import slide mode
+// import mix end......
+
 // import necessary components
-// import scroller
 /**
  * create a scrollPanel
  * 
@@ -2377,15 +2481,23 @@ function createPanel(h, vm) {
         }
         hideSystemBar();
         scrollPanelData.style.height = '100%';
-        scrollPanelData.style['transformOrigin'] = '';
-    } else {
+        // clear unuseful styles...
+        scrollPanelData.style.transformOrigin = '';
+        scrollPanelData.style.transform = '';
+    } else if (vm.mode == 'slide') {
         scrollPanelData.style['transformOrigin'] = 'left top 0px';
         scrollPanelData.style['userSelect'] = 'none';
     }
     return h(
         'scrollPanel',
         scrollPanelData,
-        [vm.mode == 'native' ? createContent(h, vm) : [vm.$slots.default]]
+        [function () {
+            if (vm.mode == 'native') {
+                return createContent(h, vm);
+            } else if (vm.mode == 'slide') {
+                return [vm.$slots.default];
+            }
+        }()]
     );
 }
 
@@ -2464,7 +2576,7 @@ function createBar(h, vm, type) {
 
 var vuescroll = {
     name: "vueScroll",
-    mixins: [LifeCycleMix, vuescrollApi],
+    mixins: [LifeCycleMix, vuescrollApi, nativeMode, slideMode],
     data: function data() {
         return {
             // vuescroll components' state
@@ -2523,7 +2635,7 @@ var vuescroll = {
             }
         };
     },
-    render: function render$$1(h) {
+    render: function render(h) {
         var vm = this;
         // vuescroll data
         var vuescrollData = {
@@ -2555,7 +2667,7 @@ var vuescroll = {
             // dynamic set overflow
             vuescrollData.style['overflowY'] = vm.vBar.state.size ? 'hidden' : 'inherit';
             vuescrollData.style['overflowX'] = vm.hBar.state.size ? 'hidden' : 'inherit';
-        } else {
+        } else if (this.mode == 'slide') {
             vuescrollData.style['overflow'] = 'hidden';
         }
         return h(
@@ -2575,97 +2687,41 @@ var vuescroll = {
     },
     methods: {
         // update function 
-        // update some states of vuescroll
+        // update some states of scrollbar
         update: function update(eventType) {
             var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-            var heightPercentage = void 0,
-                widthPercentage = void 0;
-            var scrollPanel$$1 = this.scrollPanelElm;
-            var vuescroll = this.$el;
-            /* istanbul ignore if */
-            if (!scrollPanel$$1) return;
-
             if (this.mode == 'native') {
-                heightPercentage = scrollPanel$$1.clientHeight * 100 / scrollPanel$$1.scrollHeight;
-                widthPercentage = scrollPanel$$1.clientWidth * 100 / scrollPanel$$1.scrollWidth;
-                this.vBar.state.posValue = scrollPanel$$1.scrollTop * 100 / scrollPanel$$1.clientHeight;
-                this.hBar.state.posValue = scrollPanel$$1.scrollLeft * 100 / scrollPanel$$1.clientWidth;
+                this.updateNativeModeBarState();
             }
             // else branch handle for other mode 
-            else {
-                    // update non-native scrollbars' state
-                    var scroller = this.scroller;
-                    var outerLeft = 0;
-                    var outerTop = 0;
-                    var clientWidth = vuescroll.clientWidth;
-                    var clientHeight = vuescroll.clientHeight;
-                    var contentWidth = clientWidth + this.scroller.__maxScrollLeft;
-                    var contentHeight = clientHeight + this.scroller.__maxScrollTop;
-                    var __enableScrollX = clientWidth < contentWidth;
-                    var __enableScrollY = clientHeight < contentHeight;
-                    // out of horizontal bountry 
-                    if (__enableScrollX) {
-                        if (scroller.__scrollLeft < 0) {
-                            outerLeft = -scroller.__scrollLeft;
-                        } else if (scroller.__scrollLeft > scroller.__maxScrollLeft) {
-                            outerLeft = scroller.__scrollLeft - scroller.__maxScrollLeft;
-                        }
-                    }
-
-                    // out of vertical bountry
-                    if (__enableScrollY) {
-                        if (scroller.__scrollTop < 0) {
-                            outerTop = -scroller.__scrollTop;
-                        } else if (scroller.__scrollTop > scroller.__maxScrollTop) {
-                            outerTop = scroller.__scrollTop - scroller.__maxScrollTop;
-                        }
-                    }
-
-                    heightPercentage = clientHeight * 100 / (contentHeight + outerTop);
-                    widthPercentage = clientWidth * 100 / (contentWidth + outerLeft);
-                    var scrollTop = Math.min(Math.max(0, scroller.__scrollTop), scroller.__maxScrollTop);
-                    var scrollLeft = Math.min(Math.max(0, scroller.__scrollLeft), scroller.__maxScrollLeft);
-                    this.vBar.state.posValue = (scrollTop + outerTop) * 100 / vuescroll.clientHeight;
-                    this.hBar.state.posValue = (scrollLeft + outerLeft) * 100 / vuescroll.clientWidth;
-                    if (scroller.__scrollLeft < 0) {
-                        this.hBar.state.posValue = 0;
-                    }
-                    if (scroller.__scrollTop < 0) {
-                        this.vBar.state.posValue = 0;
-                    }
+            else if (this.mode == 'slide') {
+                    this.updateSlideModeBarState();
                 }
-            this.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
-            this.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
-
             // trigger event such as scroll or resize
             if (eventType) {
                 this.emitEvent(eventType, nativeEvent);
             }
         },
-        updateScroller: function updateScroller() {
-            var clientWidth = this.$el.clientWidth;
-            var clientHeight = this.$el.clientHeight;
-            var contentWidth = this.scrollPanelElm.scrollWidth;
-            var contentHeight = this.scrollPanelElm.scrollHeight;
-            this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
-        },
+
+        // when mode changes,
+        // update it
         updateMode: function updateMode() {
             if (this.destroyScroller) {
                 this.destroyScroller();
                 this.destroyScroller = null;
             }
-            if (this.mode !== 'native') {
+            if (this.mode == 'slide') {
                 this.destroyScroller = this.registryScroller();
-                this.scroller.scrollTo(this.vuescroll.state.internalScrollLeft, this.vuescroll.state.internalScrollTop, false);
-            } else {
+            } else if (this.mode == 'native') {
                 // remove the transform style attribute
                 this.scrollPanelElm.style.transform = '';
-                this.scrollTo({
-                    x: this.vuescroll.state.internalScrollLeft,
-                    y: this.vuescroll.state.internalScrollTop
-                }, false);
+                this.scrollPanelElm.style.transformOrigin = '';
             }
+            this.scrollTo({
+                x: this.vuescroll.state.internalScrollLeft,
+                y: this.vuescroll.state.internalScrollTop
+            }, false);
         },
         handleScroll: function handleScroll(nativeEvent) {
             this.update('handle-scroll', nativeEvent);
@@ -2695,7 +2751,7 @@ var vuescroll = {
             };
             var scrollTop = scrollPanel$$1.scrollTop;
             var scrollLeft = scrollPanel$$1.scrollLeft;
-            if (this.mode != 'native') {
+            if (this.mode == 'slide') {
                 scrollTop = this.scroller.__scrollTop;
                 scrollLeft = this.scroller.__scrollLeft;
             }
@@ -2737,13 +2793,25 @@ var vuescroll = {
                     // we should clean the flag  object.
                     this.destroyResize();
                 }
-                var contentElm = this.mode !== 'native' ? this.scrollPanelElm : this.$refs['scrollContent']._isVue ? this.$refs['scrollContent'].$el : this.$refs['scrollContent'];
+                var contentElm = null;
+                if (this.mode == 'slide') {
 
+                    contentElm = this.scrollPanelElm;
+                } else if (this.mode == 'native') {
+                    // because we can customize the tag
+                    // of the scrollContent, so, scrollContent
+                    // maybe a dom or a component
+                    if (this.$refs['scrollContent']._isVue) {
+                        contentElm = this.$refs['scrollContent'].$el;
+                    } else {
+                        contentElm = this.$refs['scrollContent'];
+                    }
+                }
                 window.addEventListener("resize", function () {
                     _this2.update();
                     _this2.showBar();
                     _this2.hideBar();
-                    if (_this2.mode !== 'native') {
+                    if (_this2.mode == 'slide') {
                         _this2.updateScroller();
                     }
                 }, false);
@@ -2754,7 +2822,7 @@ var vuescroll = {
                      *  hook` of the vuescroll itself. 
                      */
                     _this2.vuescroll.state.updateType = 'resize';
-                    if (_this2.mode !== 'native') {
+                    if (_this2.mode == 'slide') {
                         _this2.updateScroller();
                     }
                     _this2.update('handle-resize', nativeEvent);
@@ -2765,58 +2833,31 @@ var vuescroll = {
                 // so it maybe a component or a dom element
                 this.destroyResize = listenResize(contentElm, funcArr);
             }
-        },
-        registryScroller: function registryScroller() {
-            var _this3 = this;
-
-            // Initialize Scroller
-            this.scroller = new Scroller(render(this.scrollPanelElm, window), {
-                zooming: true,
-                animationDuration: this.mergedOptions.scrollPanel.speed
-            });
-            var rect = this.$el.getBoundingClientRect();
-            this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);
-            var cb = listenContainer(this.$el, this.scroller, function (eventType) {
-                switch (eventType) {
-                    case 'mousedown':
-                        _this3.vuescroll.state.isDragging = true;
-                        break;
-                    case 'onscroll':
-                        _this3.handleScroll(false);
-                        break;
-                    case 'mouseup':
-                        _this3.vuescroll.state.isDragging = false;
-                        break;
-                }
-            });
-            // this.scroller.scrollTo(this.scrollPanelElm)
-            this.updateScroller();
-            return cb;
         }
     },
     mounted: function mounted() {
-        var _this4 = this;
+        var _this3 = this;
 
         if (!this._isDestroyed) {
-            if (this.mode !== 'native') {
+            if (this.mode == 'slide') {
                 this.destroyScroller = this.registryScroller();
             }
             // registry resize event
             this.registryResize();
             this.$watch('mergedOptions.vuescroll.mode', function () {
-                _this4.registryResize();
-                _this4.updateMode();
+                _this3.registryResize();
+                _this3.updateMode();
             });
             // react to sync's change sync.
             this.$watch('mergedOptions.vuescroll.mode', function () {
                 // record the scrollLeft and scrollTop
                 // by judging the last mode
-                if (_this4.mode == 'native') {
-                    _this4.vuescroll.state.internalScrollLeft = _this4.scroller.__scrollLeft;
-                    _this4.vuescroll.state.internalScrollTop = _this4.scroller.__scrollTop;
-                } else {
-                    _this4.vuescroll.state.internalScrollLeft = _this4.scrollPanelElm.scrollLeft;
-                    _this4.vuescroll.state.internalScrollTop = _this4.scrollPanelElm.scrollTop;
+                if (_this3.mode == 'native') {
+                    _this3.vuescroll.state.internalScrollLeft = _this3.scroller.__scrollLeft;
+                    _this3.vuescroll.state.internalScrollTop = _this3.scroller.__scrollTop;
+                } else if (_this3.mode == 'slide') {
+                    _this3.vuescroll.state.internalScrollLeft = _this3.scrollPanelElm.scrollLeft;
+                    _this3.vuescroll.state.internalScrollTop = _this3.scrollPanelElm.scrollTop;
                 }
             }, {
                 sync: true
@@ -2829,18 +2870,18 @@ var vuescroll = {
         }
     },
     updated: function updated() {
-        var _this5 = this;
+        var _this4 = this;
 
         this.$nextTick(function () {
-            if (!_this5._isDestroyed) {
+            if (!_this4._isDestroyed) {
                 /* istanbul ignore if */
-                if (_this5.vuescroll.state.updateType == 'resize') {
-                    _this5.vuescroll.state.updateType = '';
+                if (_this4.vuescroll.state.updateType == 'resize') {
+                    _this4.vuescroll.state.updateType = '';
                     return;
                 }
-                _this5.update();
-                _this5.showBar();
-                _this5.hideBar();
+                _this4.update();
+                _this4.showBar();
+                _this4.hideBar();
             }
         });
     },
