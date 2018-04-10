@@ -1,7 +1,9 @@
 export default {
     // vuescroll
     vuescroll: {
-        mode: 'native'
+        mode: 'native',
+        refresh: false,
+        refreshHeight: 50
     },
     scrollPanel: {
         initialScrollY: false,

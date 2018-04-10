@@ -223,7 +223,8 @@ var members = {
 		INTERNAL FIELDS :: LAST POSITIONS
 	---------------------------------------------------------------------------
 	*/
-
+	/** whether the scroller is disabled or not */
+	__disable : false,
 	/** {Number} Left position of finger at start */
 	__lastTouchLeft: null,
 
@@ -1036,6 +1037,14 @@ var members = {
 	/** Handle on scroll/publish */
 	onScroll: NOOP,	
 
+	stop: function() {
+		var self = this;
+
+		self.__disable = true;
+	},
+	start: function() {
+		self.__disable = true;
+	},
 	/*
 	---------------------------------------------------------------------------
 		PRIVATE API
@@ -1052,7 +1061,9 @@ var members = {
 	__publish: function(left, top, zoom, animate) {
 
 		var self = this;
-
+		if(self.__disable) {
+			return;
+		}
 		// Remember whether we had an animation, then we try to continue based on the current "drive" of the animation
 		var wasAnimating = self.__isAnimating;
 		if (wasAnimating) {

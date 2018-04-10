@@ -99,6 +99,7 @@ export function getGutter() {
 // for macOs user, the gutter will be 0,
 // so, we hide the system scrollbar
 let haveHideen = false;
+let haveCreatedRefreshDomClass = false;
 export function hideSystemBar() {
     if(haveHideen) {
         return;
@@ -110,6 +111,43 @@ export function hideSystemBar() {
     document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
 }
 
+export function createRefreshDomStyle() {
+    if(haveCreatedRefreshDomClass) {
+        return;
+    }
+    haveCreatedRefreshDomClass = true;
+    let styleDom = document.createElement('style');
+    styleDom.type = 'text/css';
+    styleDom.innerHTML=`
+    .vuescroll-refresh {
+        background: #7b91aa;
+        color: white;
+        font-weight: bold;
+        height: 50px;
+        margin-top: -50px;
+        text-align: center;
+        font-size: 16px;
+        line-height: 50px;
+        -webkit-transition: background-color 
+    
+    300ms;
+        -moz-transition: background-color 
+    
+    300ms;
+        -ms-transition: background-color 300ms;
+        -o-transition: background-color 300ms;
+        transition: background-color 300ms;
+    }
+    .vuescroll-refresh.active{
+		background: #006eb3;
+	}
+	
+	.vuescroll-refresh.running{
+		background: #00b373;
+	}
+    `;
+    document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
+}
 /**
  * @description render bar's style
  * @author wangyi

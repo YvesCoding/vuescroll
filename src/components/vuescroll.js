@@ -6,7 +6,8 @@
 import {
     getGutter,
     hideSystemBar,
-    listenResize
+    listenResize,
+    createRefreshDomStyle
 } from '../util';
 
 // import mix begin.....
@@ -74,9 +75,17 @@ function createPanel(h, vm) {
             {
                 (function(){
                     if(vm.mode == 'native') {
-                        return createContent(h, vm);
+                        return [createContent(h, vm)];
                     } else if(vm.mode == 'slide') {
-                        return [vm.$slots.default];
+                        let renderChildren = [vm.$slots.default];
+                        if(vm.$slots.refresh && vm.mergedOptions.vuescroll.refresh) {
+                            renderChildren.unshift(vm.$slots.refresh)
+                        } else if(vm.mergedOptions.vuescroll.refresh) {
+                            createRefreshDomStyle();
+                            // no slot refresh elm, use default
+                            renderChildren.unshift(<div class="vuescroll-refresh" ref="refreshDom">refresh</div>)
+                        }
+                        return renderChildren;
                     }
                 })()
             }
@@ -318,6 +327,7 @@ export default  {
         // update it
         updateMode() {
             if(this.destroyScroller) {
+                this.scroller.stop();
                 this.destroyScroller();
                 this.destroyScroller = null;
             }

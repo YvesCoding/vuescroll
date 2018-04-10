@@ -51,7 +51,7 @@ export default {
                 }
             } 
             // for non-native we use scroller's scorllTo 
-            else {
+            else if(this.mode == 'slide'){
                 this.scroller.scrollTo(
                     pos.x,
                     pos.y,

@@ -7,19 +7,48 @@ import {
     listenContainer
 }from '../../util/scroller/listener'
 
+let activateCallback = function() {
+    const refreshElem = this.$refs['refreshDom'];
+    refreshElem.className += " active";
+	refreshElem.innerHTML = "Release to Refresh";
+}
+
+let deactivateCallback = function() {
+    const refreshElem = this.$refs['refreshDom'];
+    refreshElem.className = refreshElem.className.replace(" active", "");
+	refreshElem.innerHTML = "Pull to Refresh";
+}
+let startCallback = function() {
+    let vm = this;
+    const refreshElem = vm.$refs['refreshDom'];
+    refreshElem.className += " running";
+    refreshElem.innerHTML = "Refreshing...";
+    setTimeout(function() {
+        refreshElem.className = refreshElem.className.replace(" running", "");
+        vm.scroller.finishPullToRefresh();
+    }, 2000);
+}
 export default {
     methods: {
         updateScroller() {
             const clientWidth = this.$el.clientWidth;
             const clientHeight = this.$el.clientHeight;
             const contentWidth = this.scrollPanelElm.scrollWidth;
-            const contentHeight = this.scrollPanelElm.scrollHeight;
+            let contentHeight = this.scrollPanelElm.scrollHeight;
+            if(this.mergedOptions.vuescroll.refreshHeight) {
+                contentHeight -= this.mergedOptions.vuescroll.refreshHeight;
+            }
             this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
         },
         registryScroller() {
+            let zooming = true;
+            // disale zooming when refresh enabled
+            if(this.mergedOptions.vuescroll.refresh) {
+                zooming = false;
+            }
             // Initialize Scroller
             this.scroller = new Scroller(render(this.scrollPanelElm, window), {
-                zooming: true,
+                zooming,
                 animationDuration: this.mergedOptions.scrollPanel.speed
             });
             var rect = this.$el.getBoundingClientRect();
@@ -37,6 +66,31 @@ export default {
                     break;
                 }
             });
+            // registry refresh
+            if(this.mergedOptions.vuescroll.refresh) {
+                const refreshElem = this.$refs['refreshDom'];
+                if(this.$listeners.activate) {
+                    activateCallback = () => {
+                        this.$emit('activate', this);
+                    }
+                }
+                if(this.$listeners.deactivate) {
+                    deactivateCallback = () => {
+                        this.$emit('deactivate', this);
+                    }
+                }
+                if(this.$listeners.start) {
+                    startCallback = () => {
+                        this.$emit('start', this);
+                    }
+                }
+                this.scroller.activatePullToRefresh(
+                    this.mergedOptions.vuescroll.refreshHeight,
+                    activateCallback.bind(this),
+                    deactivateCallback.bind(this),
+                    startCallback.bind(this)
+                )
+            }
             this.updateScroller();
             return cb;
         },

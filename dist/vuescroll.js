@@ -139,6 +139,7 @@ function getGutter() {
 // for macOs user, the gutter will be 0,
 // so, we hide the system scrollbar
 var haveHideen = false;
+var haveCreatedRefreshDomClass = false;
 function hideSystemBar() {
     if (haveHideen) {
         return;
@@ -150,6 +151,16 @@ function hideSystemBar() {
     document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
 }
 
+function createRefreshDomStyle() {
+    if (haveCreatedRefreshDomClass) {
+        return;
+    }
+    haveCreatedRefreshDomClass = true;
+    var styleDom = document.createElement('style');
+    styleDom.type = 'text/css';
+    styleDom.innerHTML = '\n    .vuescroll-refresh {\n        background: #7b91aa;\n        color: white;\n        font-weight: bold;\n        height: 50px;\n        margin-top: -50px;\n        text-align: center;\n        font-size: 16px;\n        line-height: 50px;\n        -webkit-transition: background-color \n    \n    300ms;\n        -moz-transition: background-color \n    \n    300ms;\n        -ms-transition: background-color 300ms;\n        -o-transition: background-color 300ms;\n        transition: background-color 300ms;\n    }\n    .vuescroll-refresh.active{\n\t\tbackground: #006eb3;\n\t}\n\t\n\t.vuescroll-refresh.running{\n\t\tbackground: #00b373;\n\t}\n    ';
+    document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
+}
 /**
  * @description render bar's style
  * @author wangyi
@@ -304,7 +315,9 @@ function listenResize(element, funArr) {
 var GCF = {
     // vuescroll
     vuescroll: {
-        mode: 'native'
+        mode: 'native',
+        refresh: false,
+        refreshHeight: 50
     },
     scrollPanel: {
         initialScrollY: false,
@@ -435,7 +448,7 @@ var vuescrollApi = {
                 }
             }
             // for non-native we use scroller's scorllTo 
-            else {
+            else if (this.mode == 'slide') {
                     this.scroller.scrollTo(pos.x, pos.y, animate);
                 }
         },
@@ -900,7 +913,8 @@ var members = {
  	INTERNAL FIELDS :: LAST POSITIONS
  ---------------------------------------------------------------------------
  */
-
+	/** whether the scroller is disabled or not */
+	__disable: false,
 	/** {Number} Left position of finger at start */
 	__lastTouchLeft: null,
 
@@ -1659,6 +1673,14 @@ var members = {
 	/** Handle on scroll/publish */
 	onScroll: NOOP,
 
+	stop: function stop() {
+		var self = this;
+
+		self.__disable = true;
+	},
+	start: function start() {
+		self.__disable = true;
+	},
 	/*
  ---------------------------------------------------------------------------
  	PRIVATE API
@@ -1675,7 +1697,9 @@ var members = {
 	__publish: function __publish(left, top, zoom, animate) {
 
 		var self = this;
-
+		if (self.__disable) {
+			return;
+		}
 		// Remember whether we had an animation, then we try to continue based on the current "drive" of the animation
 		var wasAnimating = self.__isAnimating;
 		if (wasAnimating) {
@@ -2121,6 +2145,27 @@ function listenContainer(container, scroller, eventCallback) {
 }
 
 // import scroller
+var activateCallback = function activateCallback() {
+    var refreshElem = this.$refs['refreshDom'];
+    refreshElem.className += " active";
+    refreshElem.innerHTML = "Release to Refresh";
+};
+
+var deactivateCallback = function deactivateCallback() {
+    var refreshElem = this.$refs['refreshDom'];
+    refreshElem.className = refreshElem.className.replace(" active", "");
+    refreshElem.innerHTML = "Pull to Refresh";
+};
+var startCallback = function startCallback() {
+    var vm = this;
+    var refreshElem = vm.$refs['refreshDom'];
+    refreshElem.className += " running";
+    refreshElem.innerHTML = "Refreshing...";
+    setTimeout(function () {
+        refreshElem.className = refreshElem.className.replace(" running", "");
+        vm.scroller.finishPullToRefresh();
+    }, 2000);
+};
 var slideMode = {
     methods: {
         updateScroller: function updateScroller() {
@@ -2128,14 +2173,22 @@ var slideMode = {
             var clientHeight = this.$el.clientHeight;
             var contentWidth = this.scrollPanelElm.scrollWidth;
             var contentHeight = this.scrollPanelElm.scrollHeight;
+            if (this.mergedOptions.vuescroll.refreshHeight) {
+                contentHeight -= this.mergedOptions.vuescroll.refreshHeight;
+            }
             this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
         },
         registryScroller: function registryScroller() {
             var _this = this;
 
+            var zooming = true;
+            // disale zooming when refresh enabled
+            if (this.mergedOptions.vuescroll.refresh) {
+                zooming = false;
+            }
             // Initialize Scroller
             this.scroller = new Scroller(render(this.scrollPanelElm, window), {
-                zooming: true,
+                zooming: zooming,
                 animationDuration: this.mergedOptions.scrollPanel.speed
             });
             var rect = this.$el.getBoundingClientRect();
@@ -2153,6 +2206,26 @@ var slideMode = {
                         break;
                 }
             });
+            // registry refresh
+            if (this.mergedOptions.vuescroll.refresh) {
+                var refreshElem = this.$refs['refreshDom'];
+                if (this.$listeners.activate) {
+                    activateCallback = function activateCallback() {
+                        _this.$emit('activate', _this);
+                    };
+                }
+                if (this.$listeners.deactivate) {
+                    deactivateCallback = function deactivateCallback() {
+                        _this.$emit('deactivate', _this);
+                    };
+                }
+                if (this.$listeners.start) {
+                    startCallback = function startCallback() {
+                        _this.$emit('start', _this);
+                    };
+                }
+                this.scroller.activatePullToRefresh(this.mergedOptions.vuescroll.refreshHeight, activateCallback.bind(this), deactivateCallback.bind(this), startCallback.bind(this));
+            }
             this.updateScroller();
             return cb;
         },
@@ -2493,9 +2566,21 @@ function createPanel(h, vm) {
         scrollPanelData,
         [function () {
             if (vm.mode == 'native') {
-                return createContent(h, vm);
+                return [createContent(h, vm)];
             } else if (vm.mode == 'slide') {
-                return [vm.$slots.default];
+                var renderChildren = [vm.$slots.default];
+                if (vm.$slots.refresh && vm.mergedOptions.vuescroll.refresh) {
+                    renderChildren.unshift(vm.$slots.refresh);
+                } else if (vm.mergedOptions.vuescroll.refresh) {
+                    createRefreshDomStyle();
+                    // no slot refresh elm, use default
+                    renderChildren.unshift(h(
+                        'div',
+                        { 'class': 'vuescroll-refresh', ref: 'refreshDom' },
+                        ['refresh']
+                    ));
+                }
+                return renderChildren;
             }
         }()]
     );
@@ -2708,6 +2793,7 @@ var vuescroll = {
         // update it
         updateMode: function updateMode() {
             if (this.destroyScroller) {
+                this.scroller.stop();
                 this.destroyScroller();
                 this.destroyScroller = null;
             }
