@@ -19,13 +19,13 @@
 ## Vuescroll 特性
 
 ### 可以选择两种模式, slide模式或者 native模式
-[](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
 ### 平滑滚动
-[]()
+![]()
 好吧, [这里](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) 有很多滚动动画可以供你选择~
 
 ### 支持下拉刷新（只在slide模式下有效）
-[](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-pull-refresh.gif?raw=true)
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-pull-refresh.gif?raw=true)
 
 ## 开始上手
 ### 直接下载 / CDN
