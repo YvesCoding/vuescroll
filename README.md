@@ -6,7 +6,7 @@
   <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage Status"></a>
            <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 </p>
-<p align="center">vuescroll-A virtual scrollbar based on vue.js 2.x</p>
+<p align="center">A reactive virtual scrollbar based on vue.js 2.X</p>
 
 [中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 
@@ -17,15 +17,15 @@
  ## Who use vitural scrollbar?
  [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) are using it. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs) of vuescroll.
 
-## Vuescroll Feature
+## Vuescroll Features
+### Two modes you can choose, slide mode or native mode
+[](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
+### Smooth
+[]()
+BTW, [Here](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) are many scroll animations you can choose. 
 
-### More smoothly than native
-[Here](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) are many scroll animations you can choose. 
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/smooth-scroll.gif?raw=true)
-### Automatically detect content size changes
-vuescroll can automatically detect the changes of the content you scroll. And react to the users.
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/handle-resize.gif?raw=true)
-
+### Pull-Refresh supported(Only for slide mode)
+[](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-pull-refresh.gif?raw=true)
 ## Get Started
 ### Direct Download / CDN
 

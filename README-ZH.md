@@ -6,7 +6,7 @@
   <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage Status"></a>
            <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 </p>
-<p align="center">vuescroll-基于vue.js 2.x的虚拟滚动条</p>
+<p align="center">vuescroll-基于vue.js 2.x的响应式虚拟滚动条</p>
 
 ## 介绍
 
@@ -16,14 +16,16 @@
  ## 谁在用虚拟滚动条?
  [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) 正在用. 
 
-## Vuescroll 亮点
+## Vuescroll 特性
 
-### 比原生滑动的更加流畅
-[这里](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182)有很多滚动的动画可供你选择
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/smooth-scroll.gif?raw=true)
-### 自动侦测内容的尺寸发生变化
-vuescroll 能自动侦测滚动内容的尺寸发生了变化， 并将这些变化反馈给用户
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/handle-resize.gif?raw=true)
+### 可以选择两种模式, slide模式或者 native模式
+[](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
+### 平滑滚动
+[]()
+好吧, [这里](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) 有很多滚动动画可以供你选择~
+
+### 支持下拉刷新（只在slide模式下有效）
+[](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-pull-refresh.gif?raw=true)
 
 ## 开始上手
 ### 直接下载 / CDN

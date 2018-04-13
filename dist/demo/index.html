@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+    <script src="../vuescroll.js"></script>
+    <style>
+    html, body {
+        height: 90%;
+    }
+    #app {
+        width: 100%;
+        height: 100%;
+    }
+    #operateArea {
+        float: left;
+        margin-left: 10px;;
+    }
+    #parent {
+        float: left;
+        width: 800px;
+        height: 100%;
+    }
+    .content {
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        transition:all 2s;
+        opacity: 0.8;
+    }
+    .vuescroll-panel {
+        white-space: nowrap;
+    }
+    </style>
+</head>
+<body>
+    <div id="test">
+
+    </div>
+    <div id="app" >
+           
+        <div id="parent">
+          <!-- bind your own options in data -->
+          <vue-scroll 
+          :ops="ops"
+           ref="vs"
+           @refresh-start="handleRefreshStart" 
+           >
+           <template
+           v-for= "(item, index) in randomArray"
+           >
+            <div 
+            class="content"
+            :key="item"
+            :style="{backgroundColor: item}"
+            >
+            <span>{{index+1 + '.' + item}}</span>
+            </div>
+            <br 
+            v-if="(index+1) % 8 == 0"
+            />
+           </template>
+          </vue-scroll>
+        </div>
+        <div id="operateArea">
+            <fieldset>
+                <legend>operation</legend>
+                <fieldset>
+                    <legend>common</legend>
+                    mode: <br>
+                    native: <input 
+                    type="radio" 
+                    value="native"
+                    v-model="ops.vuescroll.mode"
+                    >
+                    slide: <input 
+                    type="radio" 
+                    value="slide"
+                    v-model="ops.vuescroll.mode"
+                    >
+                    <br>speed: <br>
+                    <input type="number"
+                    v-model="ops.scrollPanel.speed"
+                    min="100"
+                    max="5000"
+                    >
+                </fieldset>
+                <fieldset>
+                    <legend>slide-mode</legend>
+                    refresh: <br>
+                    enable: <input 
+                    type="radio" 
+                    :value="true"
+                    v-model="ops.vuescroll.refreshEnable"
+                    >
+                    disable: <input 
+                    type="radio" 
+                    :value="false"
+                    v-model="ops.vuescroll.refreshEnable"
+                    >
+                </fieldset>
+                <fieldset>
+                    <legend>native-mode</legend>
+                    animate: <br>
+                    <select 
+                    v-model="ops.scrollPanel.easing"
+                    >
+                        <option
+                        v-for="easing in easings"
+                        :value="easing"
+                        >
+                            {{easing}}
+                        </option>
+                    </select>
+                </fieldset>
+            </fieldset>
+        </div>
+      </div>
+    <script>
+    var easings = [
+    'easeInQuad',
+    'easeOutQuad',
+    'easeInOutQuad',
+    'easeInCubic',
+    'easeOutCubic',
+    'easeInOutCubic',
+    'easeInQuart',
+    'easeOutQuart',
+    'easeInOutQuart',
+    'easeInQuint',
+    'easeOutQuint',
+    'easeInOutQuint'
+    ]
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            ops: {
+              vuescroll: {
+                mode: "slide",
+                refreshEnable: false
+              },
+              scrollPanel: {
+                easing: "easeInQuad",
+                speed: 300
+              },
+              vBar: {
+                  background: "#000"
+              },
+              hBar: {
+                  background: "#000"
+              }
+            },
+            reRender: 1,
+            easings
+        },
+        computed: {
+            randomArray() {
+                function getRandom() {
+                    let str = "#";
+                    for(let i = 0; i < 6; i++) {
+                        str += Math.floor(Math.random() * 16).toString(16);
+                    }
+                    return str;
+                }
+                return this.reRender && Array.apply(null, {
+                    length: 400
+                }).map(item => {
+                    return getRandom();
+                })
+            }
+        },
+        methods: {
+            refresh() {
+                this.reRender ++;
+            },
+            handleRefreshStart(vm, dom, done) {
+                setTimeout(() => {
+                    this.reRender ++;
+                    done();
+                }, 2000);
+            }
+        }
+    })
+    </script>
+</body>
+</html>

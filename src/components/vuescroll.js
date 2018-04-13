@@ -9,6 +9,7 @@ import {
     listenResize,
     createRefreshDomStyle
 } from '../util';
+import {modes} from '../config/GlobalConfig' 
 
 // import mix begin.....
 
@@ -40,7 +41,7 @@ function createPanel(h, vm) {
     const scrollPanelData = {
         ref: "scrollPanel",
         style: {
-           
+           position: 'relative'
         },
         nativeOn: {
             scroll: vm.handleScroll
@@ -59,9 +60,19 @@ function createPanel(h, vm) {
         if(!getGutter.isUsed) {
             getGutter.isUsed = true;
         }
-        hideSystemBar();
-        scrollPanelData.style.height = '100%';
-        // clear unuseful styles...
+        if(!gutter) {
+            hideSystemBar();
+            scrollPanelData.style.height = '100%';
+        } else {
+            // hide system bar by use a negative value px
+            // for panel and overflow hidden for parent elm,
+            // because just hide system bar doesn't work 
+            // for firefox. #10
+            scrollPanelData.style.marginRight = `-${gutter}px`;
+            scrollPanelData.style.marginBottom = `-${gutter}px`;
+            scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
+        }
+        // clear legency styles of slide mode...
         scrollPanelData.style.transformOrigin = '';
         scrollPanelData.style.transform = '';
     } else if(vm.mode == 'slide') {
@@ -81,10 +92,41 @@ function createPanel(h, vm) {
                         if(vm.$slots.refresh && vm.mergedOptions.vuescroll.refresh) {
                             vm.$refs['refreshDom'] = vm.$slots.refresh[0];
                             renderChildren.unshift(vm.$slots.refresh[0])
-                        } else if(vm.mergedOptions.vuescroll.refresh) {
+                        } else if(vm.mergedOptions.vuescroll.refreshEnable) {
                             createRefreshDomStyle();
+                            let refreshDom = null;
+                            // before approaching release
+                            if(vm.vuescroll.state.refreshState == 0) {
+                                refreshDom = (<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xmlSpace="preserve">
+                                    <metadata> Svg Vector Icons : http://www.sfont.cn </metadata><g><g transform="matrix(1 0 0 -1 0 1008)"><path d="M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z"></path></g></g></svg>)
+                            }
+                            // refreshing
+                            else if(vm.vuescroll.state.refreshState == 1) {
+                                refreshDom = (<svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                 viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xmlSpace="preserve">
+                                            <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
+                                                <animateTransform attributeType="xml"
+                                                attributeName="transform"
+                                                type="rotate"
+                                                from="0 25 25"
+                                                to="360 25 25"
+                                                dur="0.6s"
+                                                repeatCount="indefinite"/>
+                                                </path>
+                                            </svg>)
+                            }
+                            // release to refresh
+                            else if(vm.vuescroll.state.refreshState == 2) {
+                                refreshDom = (<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xmlSpace="preserve">
+                                <metadata> Svg Vector Icons : http://www.sfont.cn </metadata><g><g transform="matrix(1 0 0 -1 0 1008)"><path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z"></path></g></g></svg>
+                                )
+                            }
                             // no slot refresh elm, use default
-                            renderChildren.unshift(<div class="vuescroll-refresh" ref="refreshDom">refresh</div>)
+                            renderChildren.unshift(
+                            <div class="vuescroll-refresh" ref="refreshDom" key="refshDom">
+                               {[refreshDom, vm.refreshTip]}
+                            </div>
+                            )
                         }
                         return renderChildren;
                     }
@@ -191,14 +233,21 @@ export default  {
                    isDragging: false,
                    // vuescroll internal states
                     listeners: [],
+                    // judge whether the mouse pointer keeps pressing
+                    // the scrollbar or not, if true, we don't hide the 
+                    // scrollbar when mouse leave the vuescroll.
                     mousedown: false,
                     pointerLeave: true,
                     timeoutId: 0,
                     updateType: '',
-                    // for non-native scroll dimensions
+                    // for  recording the current states of
+                    // scrollTop and scrollHeight when switching the
+                    // mode
                     internalScrollTop: 0,
                     internalScrollLeft: 0,
-                    // merged options afer created hook
+                    // refresh internal state..
+                    // handle for refresh state
+                    refreshState : 0
                }
             },
             scrollPanel: {
@@ -270,7 +319,8 @@ export default  {
                 position: 'relative',
                 height: '100%',
                 width: '100%',
-                padding: 0
+                padding: 0,
+                overflow: 'hidden'
             },
             class: 'vue-scroll',
             on: {
@@ -290,14 +340,6 @@ export default  {
                 }
             }
         }
-        if(this.mode == 'native') {
-             // dynamic set overflow
-            vuescrollData.style['overflowY'] = vm.vBar.state.size?'hidden':'inherit';
-            vuescrollData.style['overflowX'] = vm.hBar.state.size?'hidden':'inherit';  
-        }
-        else if(this.mode == 'slide'){
-            vuescrollData.style['overflow'] = 'hidden';
-        }
         return (
             <div {...vuescrollData}>
                 {createPanel(h, vm)}
@@ -314,11 +356,14 @@ export default  {
         },
         mode() {
             return this.mergedOptions.vuescroll.mode
+        },
+        refreshTip() {
+            return this.mergedOptions.vuescroll.refreshTip[this.vuescroll.state.refreshState];
         }
     },
     methods: {
         // update function 
-        // update some states of scrollbar
+        // update different modes of states of scrollbar
         update(eventType, nativeEvent = null) {
             if(this.mode == 'native') {
                 this.updateNativeModeBarState();   
@@ -327,7 +372,7 @@ export default  {
             else  if(this.mode == 'slide') {
                 this.updateSlideModeBarState();
             }       
-            // trigger event such as scroll or resize
+            // emit event
             if(eventType) {
                 this.emitEvent(eventType, nativeEvent);
             }
@@ -335,6 +380,8 @@ export default  {
         // when mode changes,
         // update it
         updateMode() {
+            const x = this.vuescroll.state.internalScrollLeft;
+            const y = this.vuescroll.state.internalScrollTop;
             if(this.destroyScroller) {
                 this.scroller.stop();
                 this.destroyScroller();
@@ -348,11 +395,12 @@ export default  {
                 this.scrollPanelElm.style.transformOrigin = '';
             }
             this.scrollTo({
-                x: this.vuescroll.state.internalScrollLeft,
-                y: this.vuescroll.state.internalScrollTop 
+               x,
+               y
             }, false);
         },
         handleScroll(nativeEvent) {
+            this.recordCurrentPos();
             this.update('handle-scroll', nativeEvent);
             this.showAndDefferedHideBar();
         },
@@ -462,34 +510,48 @@ export default  {
                     funcArr
                 )
             }
+        },
+        recordCurrentPos(reverse) {
+            // record the scrollLeft and scrollTop
+            // by judging the last mode
+            if(this.mode == 'native') {
+                this.vuescroll.state.internalScrollLeft = reverse?this.scroller.__scrollLeft:this.scrollPanelElm.scrollLeft;
+                this.vuescroll.state.internalScrollTop = reverse?this.scroller.__scrollTop:this.scrollPanelElm.scrollTop;
+            }else if(this.mode == 'slide'){
+                this.vuescroll.state.internalScrollLeft = reverse?this.scrollPanelElm.scrollLeft:this.scroller.__scrollLeft;
+                this.vuescroll.state.internalScrollTop = reverse?this.scrollPanelElm.scrollTop:this.scroller.__scrollTop;
+            }
         }
     },
     mounted() {
+        // do something once mounted
         if(!this._isDestroyed && !this.shouldStopRender) {
             if(this.mode == 'slide') {
                 this.destroyScroller = this.registryScroller();
             }
             // registry resize event
             this.registryResize();
-            this.$watch('mergedOptions.vuescroll.mode', () => {
-                this.registryResize();
-                this.updateMode();
+            // react to vuescroll's change.
+            this.$watch('mergedOptions', () => {
+                // record current position
+                this.recordCurrentPos();
+                this.$nextTick(() => {
+                    // update scroll..
+                    this.registryResize();
+                    this.updateMode();
+                })
+            }, {
+                deep: true,
+                sync: true
             })
-            // react to sync's change sync.
-            this.$watch('mergedOptions.vuescroll.mode', () => {
-                // record the scrollLeft and scrollTop
-                // by judging the last mode
-                if(this.mode == 'native') {
-                    this.vuescroll.state.internalScrollLeft = this.scroller.__scrollLeft
-                    this.vuescroll.state.internalScrollTop = this.scroller.__scrollTop
-                }else if(this.mode == 'slide'){
-                    this.vuescroll.state.internalScrollLeft = this.scrollPanelElm.scrollLeft
-                    this.vuescroll.state.internalScrollTop = this.scrollPanelElm.scrollTop
-                }
+            // react to mode's change immediately.
+            this.$watch('mergedOptions.vuescroll.mode', (newVal, oldVal) => {
+                // record current position
+                // reverse: true
+                this.recordCurrentPos(true);
             }, {
                 sync: true
             })
-
             // update state
             this.update();
             this.showBar();

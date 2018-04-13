@@ -3,5 +3,3 @@ node_modules/
 server.js
 compress.js
 coverage
-dist/vue.js
-index.html

@@ -120,31 +120,22 @@ export function createRefreshDomStyle() {
     styleDom.type = 'text/css';
     styleDom.innerHTML=`
     .vuescroll-refresh {
-        background: #7b91aa;
-        color: white;
-        font-weight: bold;
+        color: black;
         height: 50px;
-        margin-top: -50px;
         text-align: center;
         font-size: 16px;
         line-height: 50px;
-        -webkit-transition: background-color 
-    
-    300ms;
-        -moz-transition: background-color 
-    
-    300ms;
-        -ms-transition: background-color 300ms;
-        -o-transition: background-color 300ms;
-        transition: background-color 300ms;
     }
-    .vuescroll-refresh.active{
-		background: #006eb3;
-	}
-	
-	.vuescroll-refresh.running{
-		background: #00b373;
-	}
+    .vuescroll-refresh svg {
+        margin-right: 10px;
+        width: 25px;
+        height: 25px;
+        vertical-align: sub;
+    }
+    .vuescroll-refresh svg path,
+    .vuescroll-refresh svg rect{
+    fill: #FF6700;
+    }
     `;
     document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
 }

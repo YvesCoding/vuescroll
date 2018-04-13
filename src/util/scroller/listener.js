@@ -1,4 +1,4 @@
-export function listenContainer(container, scroller, eventCallback) {
+export function listenContainer(container, scroller, eventCallback, zooming) {
     let destroy = null;
     if ('ontouchstart' in window) {
         function touchstart(e) {
@@ -82,7 +82,9 @@ export function listenContainer(container, scroller, eventCallback) {
         document.addEventListener("mousemove", mousemove, false);
     
         document.addEventListener("mouseup", mouseup, false);
-        container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", zoomHandle, false);
+        if(zooming) {
+            container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", zoomHandle, false);
+        }
         // container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", function(e) {
         //     scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
         // }, false);

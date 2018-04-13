@@ -1354,10 +1354,6 @@ var members = {
 					self.__decelerationVelocityY = scrollOutsideY * penetrationAcceleration;
 				}
 			}
-			if(Math.abs(self.__decelerationVelocityY) < 0.001) {
-				console.log(self.__decelerationVelocityY);
-			}
-			
 		}
 	}
 };

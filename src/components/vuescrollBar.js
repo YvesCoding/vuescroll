@@ -12,8 +12,10 @@ export default {
         bar() {
             return scrollMap[this.type].bar
         },
+        axis() {
+            return scrollMap[this.type].axis
+        },
         parent() {
-            /* istanbul ignore next */
             return this.$parent.$refs
         }
     },
@@ -78,7 +80,12 @@ export default {
             {
                 const delta = e[this.bar.client] - this.parent[`${this.type}Rail`].getBoundingClientRect()[this.bar.posName];
                 const percent = (delta-this.axisStartPos) / this.parent[`${this.type}Rail`][this.bar.offset];
-                this.parent['scrollPanel'].$el[this.bar.scroll] = this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent; 
+                this.$parent.scrollTo(
+                    {
+                        [this.axis.toLowerCase()]: (this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent)
+                    },
+                    false
+                )
             } 
         },
         handleMouseUp() {

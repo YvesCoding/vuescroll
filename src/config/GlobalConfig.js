@@ -1,9 +1,10 @@
-const modes = ['slide', 'native'];
+export const modes = ['slide', 'native'];
 export default {
     // vuescroll
     vuescroll: {
         mode: 'native',
-        refresh: false
+        refreshEnable: false,
+        refreshTip: ['Pull to Refresh', 'Refreshing...', 'Release to Refresh']
     },
     scrollPanel: {
         initialScrollY: false,

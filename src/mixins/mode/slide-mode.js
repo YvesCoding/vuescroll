@@ -8,55 +8,47 @@ import {
 }from '../../util/scroller/listener'
 
 let activateCallback = function() {
-    const refreshElem = this.refreshDom;
-    refreshElem.className += " active";
-	refreshElem.innerHTML = "Release to Refresh";
+    const refreshElem = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
+    this.vuescroll.state.refreshState = 2;
 }
 
 let deactivateCallback = function() {
-    const refreshElem = this.refreshDom;
-    refreshElem.className = refreshElem.className.replace(" active", "");
-	refreshElem.innerHTML = "Pull to Refresh";
+    this.vuescroll.state.refreshState = 0;
 }
 
 let startCallback = function() {
     let vm = this;
-    const refreshElem = vm.refreshDom;
-    refreshElem.className += " running";
-    refreshElem.innerHTML = "Refreshing...";
+    vm.vuescroll.state.refreshState = 1;
     setTimeout(function() {
-        refreshElem.className = refreshElem.className.replace(" running", "");
         vm.scroller.finishPullToRefresh();
     }, 2000);
 }
 
 export default {
-    computed: {
-        refreshDom() {
-            return this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
-        }
-    },
     methods: {
         updateScroller() {
             const clientWidth = this.$el.clientWidth;
             const clientHeight = this.$el.clientHeight;
-            const contentWidth = this.scrollPanelElm.scrollWidth;
+            let contentWidth = this.scrollPanelElm.scrollWidth;
             let contentHeight = this.scrollPanelElm.scrollHeight;
             let refreshHeight = 0;
-            if(this.mergedOptions.vuescroll.refresh) {
-                const refreshDom = this.refreshDom;
+            // If the refresh option is true,let's  give a "margin-top" style to 
+            // the refresh-tip dom. let it to be invisible when doesn't trigger
+            // refresh.
+            if(this.mergedOptions.vuescroll.refreshEnable) {
+                const refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
                 refreshHeight = refreshDom.scrollHeight;
                 refreshDom.style.marginTop = -refreshHeight + 'px';
-                contentHeight -= refreshHeight;
+                // the content height should subtracting the refresh dom height
+                contentHeight -= refreshHeight; 
+                // fix the width.
+                contentWidth = clientWidth;
             }
             this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
         },
         registryScroller() {
-            let zooming = true;
-            // disale zooming when refresh enabled
-            if(this.mergedOptions.vuescroll.refresh) {
-                zooming = false;
-            }
+             // disale zooming when refresh enabled
+            let zooming = !this.mergedOptions.vuescroll.refreshEnable;
             // Initialize Scroller
             this.scroller = new Scroller(render(this.scrollPanelElm, window), {
                 zooming,
@@ -65,6 +57,8 @@ export default {
             var rect = this.$el.getBoundingClientRect();
             this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);    
             const cb = listenContainer(this.$el, this.scroller, (eventType) => {
+                // Thie is to dispatch the event from the scroller.
+                // to let vuescroll refresh the dom
                 switch(eventType) {
                     case 'mousedown':
                     this.vuescroll.state.isDragging = true;
@@ -76,26 +70,29 @@ export default {
                     this.vuescroll.state.isDragging = false;
                     break;
                 }
-            });
+            }, zooming);
             // registry refresh
-            if(this.mergedOptions.vuescroll.refresh) {
-                const refreshElem = this.$refs['refreshDom'];
-                if(this.$listeners.activate) {
+            if(this.mergedOptions.vuescroll.refreshEnable) {
+                const refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
+                if(this.$listeners['refresh-activate']) {
                     activateCallback = () => {
-                        this.$emit('activate', this, this.refreshDom);
+                        this.vuescroll.state.refreshState = 0;
+                        this.$emit('refresh-activate', this, refreshDom);
                     }
                 }
-                if(this.$listeners.deactivate) {
+                if(this.$listeners['refresh-deactivate']) {
                     deactivateCallback = () => {
-                        this.$emit('deactivate', this, this.refreshDom);
+                        this.vuescroll.state.refreshState = 2;
+                        this.$emit('refresh-deactivate', this, refreshDom);
                     }
                 }
-                if(this.$listeners.start) {
+                if(this.$listeners['refresh-start']) {
                     startCallback = () => {
-                        this.$emit('start', this, this.refreshDom);
+                        this.vuescroll.state.refreshState = 1;
+                        this.$emit('refresh-start', this, refreshDom, this.scroller.finishPullToRefresh.bind(this.scroller));
                     }
                 }
-                const refreshDom = this.refreshDom;
+                
                 let refreshHeight = refreshDom.scrollHeight;
                 this.scroller.activatePullToRefresh(
                     refreshHeight,
