@@ -21,7 +21,7 @@
 ### Two modes you can choose, slide mode or native mode
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
 ### Smooth
-![]()
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-smooth.gif?raw=true)
 BTW, [Here](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) are many scroll animations you can choose. 
 
 ### Pull-Refresh supported(Only for slide mode)
