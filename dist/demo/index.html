@@ -38,9 +38,6 @@
     </style>
 </head>
 <body>
-    <div id="test">
-
-    </div>
     <div id="app" >
            
         <div id="parent">
@@ -48,7 +45,9 @@
           <vue-scroll 
           :ops="ops"
            ref="vs"
-           @refresh-start="handleRefreshStart" 
+           @refresh-activate="handleActivate"
+           @refresh-deactivate="handleDeactive"
+            @refresh-start="handleStart"
            >
            <template
            v-for= "(item, index) in randomArray"
@@ -141,7 +140,7 @@
             ops: {
               vuescroll: {
                 mode: "slide",
-                refreshEnable: false
+                refreshEnable: true
               },
               scrollPanel: {
                 easing: "easeInQuad",
@@ -177,7 +176,13 @@
             refresh() {
                 this.reRender ++;
             },
-            handleRefreshStart(vm, dom, done) {
+            handleActivate(vm, refreshDom) {
+                console.log(vm, refreshDom, 'handleActive');
+            },
+            handleDeactive(vm, refreshDom) {
+                console.log(vm, refreshDom, 'handleDeactive');
+            },
+            handleStart(vm, dom, done) {
                 setTimeout(() => {
                     this.reRender ++;
                     done();

@@ -9,16 +9,16 @@ import {
 
 let activateCallback = function() {
     const refreshElem = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
-    this.vuescroll.state.refreshState = 2;
+    this.vuescroll.state.refreshStage = 2;
 }
 
 let deactivateCallback = function() {
-    this.vuescroll.state.refreshState = 0;
+    this.vuescroll.state.refreshStage = 0;
 }
 
 let startCallback = function() {
     let vm = this;
-    vm.vuescroll.state.refreshState = 1;
+    vm.vuescroll.state.refreshStage = 1;
     setTimeout(function() {
         vm.scroller.finishPullToRefresh();
     }, 2000);
@@ -76,19 +76,19 @@ export default {
                 const refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
                 if(this.$listeners['refresh-activate']) {
                     activateCallback = () => {
-                        this.vuescroll.state.refreshState = 0;
+                        this.vuescroll.state.refreshStage = 0;
                         this.$emit('refresh-activate', this, refreshDom);
                     }
                 }
                 if(this.$listeners['refresh-deactivate']) {
                     deactivateCallback = () => {
-                        this.vuescroll.state.refreshState = 2;
+                        this.vuescroll.state.refreshStage = 2;
                         this.$emit('refresh-deactivate', this, refreshDom);
                     }
                 }
                 if(this.$listeners['refresh-start']) {
                     startCallback = () => {
-                        this.vuescroll.state.refreshState = 1;
+                        this.vuescroll.state.refreshStage = 1;
                         this.$emit('refresh-start', this, refreshDom, this.scroller.finishPullToRefresh.bind(this.scroller));
                     }
                 }

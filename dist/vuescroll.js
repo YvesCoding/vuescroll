@@ -2189,16 +2189,16 @@ function listenContainer(container, scroller, eventCallback, zooming) {
 // import scroller
 var activateCallback = function activateCallback() {
     var refreshElem = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
-    this.vuescroll.state.refreshState = 2;
+    this.vuescroll.state.refreshStage = 2;
 };
 
 var deactivateCallback = function deactivateCallback() {
-    this.vuescroll.state.refreshState = 0;
+    this.vuescroll.state.refreshStage = 0;
 };
 
 var startCallback = function startCallback() {
     var vm = this;
-    vm.vuescroll.state.refreshState = 1;
+    vm.vuescroll.state.refreshStage = 1;
     setTimeout(function () {
         vm.scroller.finishPullToRefresh();
     }, 2000);
@@ -2258,19 +2258,19 @@ var slideMode = {
                 var refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
                 if (this.$listeners['refresh-activate']) {
                     activateCallback = function activateCallback() {
-                        _this.vuescroll.state.refreshState = 0;
+                        _this.vuescroll.state.refreshStage = 0;
                         _this.$emit('refresh-activate', _this, refreshDom);
                     };
                 }
                 if (this.$listeners['refresh-deactivate']) {
                     deactivateCallback = function deactivateCallback() {
-                        _this.vuescroll.state.refreshState = 2;
+                        _this.vuescroll.state.refreshStage = 2;
                         _this.$emit('refresh-deactivate', _this, refreshDom);
                     };
                 }
                 if (this.$listeners['refresh-start']) {
                     startCallback = function startCallback() {
-                        _this.vuescroll.state.refreshState = 1;
+                        _this.vuescroll.state.refreshStage = 1;
                         _this.$emit('refresh-start', _this, refreshDom, _this.scroller.finishPullToRefresh.bind(_this.scroller));
                     };
                 }
@@ -2621,7 +2621,7 @@ function createPanel(h, vm) {
                     createRefreshDomStyle();
                     var refreshDom = null;
                     // before approaching release
-                    if (vm.vuescroll.state.refreshState == 0) {
+                    if (vm.vuescroll.state.refreshStage == 0) {
                         refreshDom = h(
                             'svg',
                             {
@@ -2639,7 +2639,7 @@ function createPanel(h, vm) {
                         );
                     }
                     // refreshing
-                    else if (vm.vuescroll.state.refreshState == 1) {
+                    else if (vm.vuescroll.state.refreshStage == 1) {
                             refreshDom = h(
                                 'svg',
                                 {
@@ -2664,7 +2664,7 @@ function createPanel(h, vm) {
                             );
                         }
                         // release to refresh
-                        else if (vm.vuescroll.state.refreshState == 2) {
+                        else if (vm.vuescroll.state.refreshStage == 2) {
                                 refreshDom = h(
                                     'svg',
                                     {
@@ -2792,7 +2792,7 @@ var vuescroll = {
                     internalScrollLeft: 0,
                     // refresh internal state..
                     // handle for refresh state
-                    refreshState: 0
+                    refreshStage: 0
                 }
             },
             scrollPanel: {
@@ -2883,7 +2883,7 @@ var vuescroll = {
             return this.mergedOptions.vuescroll.mode;
         },
         refreshTip: function refreshTip() {
-            return this.mergedOptions.vuescroll.refreshTip[this.vuescroll.state.refreshState];
+            return this.mergedOptions.vuescroll.refreshTip[this.vuescroll.state.refreshStage];
         }
     },
     methods: {
