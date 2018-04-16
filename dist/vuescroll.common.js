@@ -315,8 +315,8 @@ var GCF = {
     // vuescroll
     vuescroll: {
         mode: 'native',
-        refreshEnable: false,
-        refreshTip: ['Pull to Refresh', 'Refreshing...', 'Release to Refresh']
+        pullRefreshEnable: false,
+        pullRefreshTip: ['Pull to Refresh', 'Refreshing...', 'Release to Refresh']
     },
     scrollPanel: {
         initialScrollY: false,
@@ -2213,7 +2213,7 @@ var slideMode = {
             // If the refresh option is true,let's  give a "margin-top" style to 
             // the refresh-tip dom. let it to be invisible when doesn't trigger
             // refresh.
-            if (this.mergedOptions.vuescroll.refreshEnable) {
+            if (this.mergedOptions.vuescroll.pullRefreshEnable) {
                 var refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
                 refreshHeight = refreshDom.scrollHeight;
                 refreshDom.style.marginTop = -refreshHeight + 'px';
@@ -2228,7 +2228,7 @@ var slideMode = {
             var _this = this;
 
             // disale zooming when refresh enabled
-            var zooming = !this.mergedOptions.vuescroll.refreshEnable;
+            var zooming = !this.mergedOptions.vuescroll.pullRefreshEnable;
             // Initialize Scroller
             this.scroller = new Scroller(render(this.scrollPanelElm, window), {
                 zooming: zooming,
@@ -2252,7 +2252,7 @@ var slideMode = {
                 }
             }, zooming);
             // registry refresh
-            if (this.mergedOptions.vuescroll.refreshEnable) {
+            if (this.mergedOptions.vuescroll.pullRefreshEnable) {
                 var refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
                 if (this.$listeners['refresh-activate']) {
                     activateCallback = function activateCallback() {
@@ -2615,7 +2615,7 @@ function createPanel(h, vm) {
                 if (vm.$slots.refresh && vm.mergedOptions.vuescroll.refresh) {
                     vm.$refs['refreshDom'] = vm.$slots.refresh[0];
                     renderChildren.unshift(vm.$slots.refresh[0]);
-                } else if (vm.mergedOptions.vuescroll.refreshEnable) {
+                } else if (vm.mergedOptions.vuescroll.pullRefreshEnable) {
                     createRefreshDomStyle();
                     var refreshDom = null;
                     // before approaching release
@@ -2683,7 +2683,7 @@ function createPanel(h, vm) {
                     renderChildren.unshift(h(
                         'div',
                         { 'class': 'vuescroll-refresh', ref: 'refreshDom', key: 'refshDom' },
-                        [[refreshDom, vm.refreshTip]]
+                        [[refreshDom, vm.pullRefreshTip]]
                     ));
                 }
                 return renderChildren;
@@ -2880,8 +2880,8 @@ var vuescroll = {
         mode: function mode() {
             return this.mergedOptions.vuescroll.mode;
         },
-        refreshTip: function refreshTip() {
-            return this.mergedOptions.vuescroll.refreshTip[this.vuescroll.state.refreshStage];
+        pullRefreshTip: function pullRefreshTip() {
+            return this.mergedOptions.vuescroll.pullRefreshTip[this.vuescroll.state.refreshStage];
         }
     },
     methods: {

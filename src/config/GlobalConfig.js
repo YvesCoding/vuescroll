@@ -3,8 +3,10 @@ export default {
     // vuescroll
     vuescroll: {
         mode: 'native',
-        refreshEnable: false,
-        refreshTip: ['Pull to Refresh', 'Refreshing...', 'Release to Refresh']
+        pullRefreshEnable: false,
+        pullRefreshTip: ['Pull to Refresh', 'Refreshing...', 'Release to Refresh'],
+        pushLoadEnable: false,
+        pushLoadTip: ['Push to Load', 'Loading...', 'Release to Load']
     },
     scrollPanel: {
         initialScrollY: false,

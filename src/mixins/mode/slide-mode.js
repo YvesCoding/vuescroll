@@ -35,7 +35,7 @@ export default {
             // If the refresh option is true,let's  give a "margin-top" style to 
             // the refresh-tip dom. let it to be invisible when doesn't trigger
             // refresh.
-            if(this.mergedOptions.vuescroll.refreshEnable) {
+            if(this.mergedOptions.vuescroll.pullRefreshEnable) {
                 const refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
                 refreshHeight = refreshDom.scrollHeight;
                 refreshDom.style.marginTop = -refreshHeight + 'px';
@@ -48,7 +48,7 @@ export default {
         },
         registryScroller() {
              // disale zooming when refresh enabled
-            let zooming = !this.mergedOptions.vuescroll.refreshEnable;
+            let zooming = !this.mergedOptions.vuescroll.pullRefreshEnable;
             // Initialize Scroller
             this.scroller = new Scroller(render(this.scrollPanelElm, window), {
                 zooming,
@@ -72,7 +72,7 @@ export default {
                 }
             }, zooming);
             // registry refresh
-            if(this.mergedOptions.vuescroll.refreshEnable) {
+            if(this.mergedOptions.vuescroll.pullRefreshEnable) {
                 const refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
                 if(this.$listeners['refresh-activate']) {
                     activateCallback = () => {

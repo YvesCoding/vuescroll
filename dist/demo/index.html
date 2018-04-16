@@ -94,12 +94,12 @@
                     enable: <input 
                     type="radio" 
                     :value="true"
-                    v-model="ops.vuescroll.refreshEnable"
+                    v-model="ops.vuescroll.pullRefreshEnable"
                     >
                     disable: <input 
                     type="radio" 
                     :value="false"
-                    v-model="ops.vuescroll.refreshEnable"
+                    v-model="ops.vuescroll.pullRefreshEnable"
                     >
                 </fieldset>
                 <fieldset>
@@ -140,7 +140,7 @@
             ops: {
               vuescroll: {
                 mode: "slide",
-                refreshEnable: true
+                pullRefreshEnable: true
               },
               scrollPanel: {
                 easing: "easeInQuad",

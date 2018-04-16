@@ -92,7 +92,7 @@ function createPanel(h, vm) {
                         if(vm.$slots.refresh && vm.mergedOptions.vuescroll.refresh) {
                             vm.$refs['refreshDom'] = vm.$slots.refresh[0];
                             renderChildren.unshift(vm.$slots.refresh[0])
-                        } else if(vm.mergedOptions.vuescroll.refreshEnable) {
+                        } else if(vm.mergedOptions.vuescroll.pullRefreshEnable) {
                             createRefreshDomStyle();
                             let refreshDom = null;
                             // before approaching release
@@ -124,7 +124,7 @@ function createPanel(h, vm) {
                             // no slot refresh elm, use default
                             renderChildren.unshift(
                             <div class="vuescroll-refresh" ref="refreshDom" key="refshDom">
-                               {[refreshDom, vm.refreshTip]}
+                               {[refreshDom, vm.pullRefreshTip]}
                             </div>
                             )
                         }
@@ -357,8 +357,8 @@ export default  {
         mode() {
             return this.mergedOptions.vuescroll.mode
         },
-        refreshTip() {
-            return this.mergedOptions.vuescroll.refreshTip[this.vuescroll.state.refreshStage];
+        pullRefreshTip() {
+            return this.mergedOptions.vuescroll.pullRefreshTip[this.vuescroll.state.refreshStage];
         }
     },
     methods: {

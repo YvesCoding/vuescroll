@@ -363,7 +363,16 @@ var members = {
 		self.__refreshStart = startCallback;
 
 	},
+	activatePullToRefresh: function(height, activateCallback, deactivateCallback, startCallback) {
 
+		var self = this;
+
+		self.__refreshHeight = height;
+		self.__refreshActivate = activateCallback;
+		self.__refreshDeactivate = deactivateCallback;
+		self.__refreshStart = startCallback;
+
+	},
 
 	/**
 	 * Starts pull-to-refresh manually.
