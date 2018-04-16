@@ -186,12 +186,25 @@ var members = {
 	/** {Function} Callback to execute on activation. This is for signalling the user about a refresh is about to happen when he release */
 	__refreshActivate: null,
 
+	__refreshBeforeDeactivate: null,
+
 	/** {Function} Callback to execute on deactivation. This is for signalling the user about the refresh being cancelled */
 	__refreshDeactivate: null,
 
 	/** {Function} Callback to execute to start the actual refresh. Call {@link #refreshFinish} when done */
 	__refreshStart: null,
 
+	__loadActive: null,
+
+	__loadActivate: null,
+	
+	__loadBeforeDeactivate: null,
+
+	__loadDeactivate: null,
+ 
+	__loadHeight: null,
+
+	__loadStart: null,
 	/** {Number} Zoom level */
 	__zoomLevel: 1,
 
@@ -353,54 +366,92 @@ var members = {
 	 * @param deactivateCallback {Function} Callback to execute on deactivation. This is for signalling the user about the refresh being cancelled.
 	 * @param startCallback {Function} Callback to execute to start the real async refresh action. Call {@link #finishPullToRefresh} after finish of refresh.
 	 */
-	activatePullToRefresh: function(height, activateCallback, deactivateCallback, startCallback) {
+	activatePullToRefresh: function(height, activateCallback, deactivateCallback, startCallback, beforeDeactivateCallback) {
 
 		var self = this;
 
 		self.__refreshHeight = height;
 		self.__refreshActivate = activateCallback;
+		self.__refreshBeforeDeactivate = beforeDeactivateCallback;
 		self.__refreshDeactivate = deactivateCallback;
 		self.__refreshStart = startCallback;
 
 	},
-	activatePullToRefresh: function(height, activateCallback, deactivateCallback, startCallback) {
+	activatePushToLoad: function(height, activateCallback, deactivateCallback, startCallback, beforeDeactivateCallback) {
 
 		var self = this;
 
-		self.__refreshHeight = height;
-		self.__refreshActivate = activateCallback;
-		self.__refreshDeactivate = deactivateCallback;
-		self.__refreshStart = startCallback;
+		self.__loadHeight = height;
+		self.__loadActivate = activateCallback;
+		self.__loadBeforeDeactivate = beforeDeactivateCallback;
+		self.__loadDeactivate = deactivateCallback;
+		self.__loadStart = startCallback;
 
 	},
 
 	/**
 	 * Starts pull-to-refresh manually.
 	 */
-	triggerPullToRefresh: function() {
+	triggerRefreshOrLoad: function(type = 'refresh') {
 		// Use publish instead of scrollTo to allow scrolling to out of boundary position
 		// We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
-		this.__publish(this.__scrollLeft, -this.__refreshHeight, this.__zoomLevel, true);
-
-		if (this.__refreshStart) {
-			this.__refreshStart();
+		if(type == 'refresh') {
+			this.__publish(this.__scrollLeft, -this.__refreshHeight, this.__zoomLevel, true);
+			if (this.__refreshStart) {
+				this.__refreshStart();
+			}
+		} else {
+			this.__publish(this.__scrollLeft, this.__maxScrollTop + this.__loadHeight, this.__zoomLevel, true);
+			if (this.__loadStart) {
+				this.__loadStart();
+			}
 		}
+
+		
 	},
 
 
 	/**
 	 * Signalizes that pull-to-refresh is finished.
 	 */
-	finishPullToRefresh: function() {
+	finishRefreshOrLoad: function() {
 
 		var self = this;
 
-		self.__refreshActive = false;
-		if (self.__refreshDeactivate) {
+
+
+		if (self.__refreshBeforeDeactivate && self.__refreshActive) {
+			
+			self.__refreshActive = false;
+			slef.__refreshBeforeDeactivate(() => {
+				if(self.__refreshDeactivate) {
+					self.__refreshDeactivate();
+				}
+				self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+			});
+
+		} else if (self.__refreshDeactivate && self.__refreshActive) {
+			self.__refreshActive = false;
 			self.__refreshDeactivate();
+			self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
 		}
 
-		self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+		if (self.__loadBeforeDeactivate && self.__loadActive) {
+			
+			self.__loadActive = false;
+			slef.__loadBeforeDeactivate(() => {
+				if(self.__loadDeactivate) {
+					self.__loadDeactivate();
+				}
+				self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+			});
+
+		} else if (self.__loadDeactivate && self.__loadActive) {
+			self.__loadActive = false;
+			self.__loadDeactivate();
+			self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+		}
+
 
 	},
 
@@ -852,7 +903,7 @@ var members = {
 						scrollTop += (moveY / 2 * this.options.speedMultiplier);
 
 						// Support pull-to-refresh (only when only y is scrollable)
-						if (!self.__enableScrollX && self.__refreshHeight != null) {
+						if (!self.__enableScrollX && (self.__refreshHeight != null || self.__loadHeight != null)) {
 
 							if (!self.__refreshActive && scrollTop <= -self.__refreshHeight) {
 
@@ -866,6 +917,22 @@ var members = {
 								self.__refreshActive = false;
 								if (self.__refreshDeactivate) {
 									self.__refreshDeactivate();
+								}
+
+							} 
+							// handle for push-load
+							else if (self.__loadActive && scrollTop > self.__maxScrollTop + self.__refreshHeight) {
+
+								self.__loadActive = true;
+								if (self.__loadActivate) {
+									self.__loadActivate();
+								}
+
+							} else if (self.__refreshActive && scrollTop > self.__maxScrollTop + self.__refreshHeight) {
+
+								self.__loadActive = false;
+								if (self.__loadDeactivate) {
+									self.__loadDeactivate();
 								}
 
 							}
@@ -988,9 +1055,9 @@ var members = {
 					if (Math.abs(self.__decelerationVelocityX) > minVelocityToStartDeceleration || Math.abs(self.__decelerationVelocityY) > minVelocityToStartDeceleration) {
 
 						// Deactivate pull-to-refresh when decelerating
-						if (!self.__refreshActive) {
+						if (!self.__refreshActive && !self.__loadActive) {
 							self.__startDeceleration(timeStamp);
-						}
+						}  
 					} else {
 						self.options.scrollingComplete();
 					}
@@ -1019,6 +1086,16 @@ var members = {
 					self.__refreshStart();
 				}
 
+			} else if (self.__loadActive && self.__loadStart) {
+
+				// Use publish instead of scrollTo to allow scrolling to out of boundary position
+				// We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
+				self.__publish(self.__scrollLeft, slef.__maxScrollTop + self.__loadHeight, self.__zoomLevel, true);
+
+				if (self.__loadStart) {
+					self.__loadStart();
+				}
+
 			} else {
 
 				if (self.__interruptedAnimation || self.__isDragging) {
@@ -1032,6 +1109,13 @@ var members = {
 					self.__refreshActive = false;
 					if (self.__refreshDeactivate) {
 						self.__refreshDeactivate();
+					}
+
+				} else if (self.__loadActive) {
+
+					self.__loadActive = false;
+					if (self.__loadDeactivate) {
+						self.__loadDeactivate();
 					}
 
 				}

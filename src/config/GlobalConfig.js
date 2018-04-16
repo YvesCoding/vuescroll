@@ -3,19 +3,39 @@ export default {
     // vuescroll
     vuescroll: {
         mode: 'native',
-        pullRefreshEnable: false,
-        pullRefreshTip: ['Pull to Refresh', 'Refreshing...', 'Release to Refresh'],
-        pushLoadEnable: false,
-        pushLoadTip: ['Push to Load', 'Loading...', 'Release to Load']
+        // pullRefresh or pushLoad is only for the slide mode...
+        pullRefresh: {
+            enable: false,
+            tips: {
+                deactive: "Pull to Refresh",
+                active: "Release to Refresh",
+                start: "Refreshing...",
+                resultTip: "Refresh Successfully!"
+            }
+        }
+        pushLoad: {
+            enable: false,
+            tips: {
+                deactive: "Push to Load",
+                active: "Loading...",
+                start: "Release to Load",
+                resultTip: "'Load Successfully!"
+            }
+        }
     },
     scrollPanel: {
+        // when component mounted.. it will automatically scrolls.
         initialScrollY: false,
         initialScrollX: false,
+        // feat: #11
+        scrollingX: true,
+        scrollingY: true,
         speed: 300,
         easing: undefined
     },
     // 
     scrollContent: {
+        // customize tag of scrollContent
         tag: 'div',
         padding: true,
         props: {

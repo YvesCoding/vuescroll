@@ -54,8 +54,16 @@ function createPanel(h, vm) {
     // set overflow only if the in native mode
     if(vm.mode == 'native') {
         // dynamic set overflow scroll
-        scrollPanelData.style['overflowY'] = vm.vBar.state.size?'scroll':'inherit';
-        scrollPanelData.style['overflowX'] = vm.hBar.state.size?'scroll':'inherit';
+        if(vm.mergedOptions.scrollPanel.scrollingY) {
+            scrollPanelData.style['overflowY'] = vm.vBar.state.size?'scroll':'inherit';
+        } else {
+            scrollPanelData.style['overflowY'] = vm.vBar.state.size?'hidden':'inherit';
+        }
+        if(vm.mergedOptions.scrollPanel.scrollinX) {
+            scrollPanelData.style['overflowX'] = vm.vBar.state.size?'scroll':'inherit';
+        } else  {
+            scrollPanelData.style['overflowX'] = vm.vBar.state.size?'hidden':'inherit';
+        }
         let gutter = getGutter();
         if(!getGutter.isUsed) {
             getGutter.isUsed = true;
@@ -86,8 +94,11 @@ function createPanel(h, vm) {
             {
                 (function(){
                     if(vm.mode == 'native') {
+
                         return [createContent(h, vm)];
+
                     } else if(vm.mode == 'slide') {
+                        
                         let renderChildren = [vm.$slots.default];
                         if(vm.$slots.refresh && vm.mergedOptions.vuescroll.refresh) {
                             vm.$refs['refreshDom'] = vm.$slots.refresh[0];

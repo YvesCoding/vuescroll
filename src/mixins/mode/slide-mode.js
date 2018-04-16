@@ -9,20 +9,29 @@ import {
 
 let activateCallback = function() {
     const refreshElem = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
-    this.vuescroll.state.refreshStage = 2;
-}
-
-let deactivateCallback = function() {
-    this.vuescroll.state.refreshStage = 0;
+    this.vuescroll.state.refreshStage = 'active';
 }
 
 let startCallback = function() {
     let vm = this;
-    vm.vuescroll.state.refreshStage = 1;
+    vm.vuescroll.state.refreshStage = 'start';
     setTimeout(function() {
         vm.scroller.finishPullToRefresh();
     }, 2000);
 }
+
+let beforeDeactivateCallback = function(done) {
+    vm.vuescroll.state.refreshStage = "beforeDeactive";
+    setTimeout(function() {
+        done();
+    }, 500);
+}
+
+let deactivateCallback = function() {
+    this.vuescroll.state.refreshStage = 'deactive';
+}
+
+
 
 export default {
     methods: {
@@ -32,10 +41,11 @@ export default {
             let contentWidth = this.scrollPanelElm.scrollWidth;
             let contentHeight = this.scrollPanelElm.scrollHeight;
             let refreshHeight = 0;
+            let loadHeight = 0;
             // If the refresh option is true,let's  give a "margin-top" style to 
             // the refresh-tip dom. let it to be invisible when doesn't trigger
             // refresh.
-            if(this.mergedOptions.vuescroll.pullRefreshEnable) {
+            if(this.mergedOptions.vuescroll.pullRefresh.enable) {
                 const refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
                 refreshHeight = refreshDom.scrollHeight;
                 refreshDom.style.marginTop = -refreshHeight + 'px';
@@ -44,14 +54,23 @@ export default {
                 // fix the width.
                 contentWidth = clientWidth;
             }
+            if(this.mergedOptions.vuescroll.pushLoad.enable) {
+                const loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
+                loadHeight = loadDom.scrollHeight;
+                // need not to show the loading dom..
+                contentHeight -= loadHeight; 
+            }
             this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
         },
         registryScroller() {
              // disale zooming when refresh enabled
             let zooming = !this.mergedOptions.vuescroll.pullRefreshEnable;
+            const {scrollingY, scrollingX} = this.mergedOptions.scrollPanel;
             // Initialize Scroller
             this.scroller = new Scroller(render(this.scrollPanelElm, window), {
                 zooming,
+                scrollingY,
+                scrollingX,
                 animationDuration: this.mergedOptions.scrollPanel.speed
             });
             var rect = this.$el.getBoundingClientRect();
