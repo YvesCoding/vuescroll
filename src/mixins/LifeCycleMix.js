@@ -12,7 +12,8 @@ import {
 function hackPropsData() {
   const vm = this;
   if(vm.$options.name === "vueScroll") {
-    let ops = deepMerge(GCF, {});
+    const _gfc = deepMerge(vm.$vuescrollConfig, {});
+    const ops = deepMerge(GCF, _gfc);
     vm.$options.propsData.ops = vm.$options.propsData.ops || {};
     Object.keys(vm.$options.propsData.ops).forEach(key => {
       {

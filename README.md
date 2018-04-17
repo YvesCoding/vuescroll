@@ -75,12 +75,15 @@ var vm = new Vue({
 })
 ```
 ## Change Logs
-
 ---
-V4.1
-## Features
+### v4.2.2
+ #### Features
+ * Allow to change global options **root** property #8
+---
+### V4.1
+#### Features
  * Push-Load has been supported
- ### Usage:
+ ##### Usage:
  ```javascript
     ops: {
       vuescroll: {
@@ -92,7 +95,7 @@ V4.1
  ```
  * Allow to diable scrollingX or scrollingY #11
 
- ### Usage:
+ ##### Usage:
   ```javascript
     ops: {
       scrollPanel: {
@@ -102,9 +105,9 @@ V4.1
     }
  ```
 
-## Sweaks
+#### Sweaks
 * Redefine pull-refresh tips from `Array` to `Object`
-### Before
+##### Before
 ```javascript
   ops: {
       vuescroll: {
@@ -112,7 +115,7 @@ V4.1
       }
   }
 ```
-### Now
+###### Now
 ```javascript
   ops: {
       vuescroll: {
@@ -127,8 +130,9 @@ V4.1
       }
   }
 ```
-V4.0
-## Features
+---
+### V4.0
+#### Features
   * Add a **vuescroll** option in ops. Now, you can choose two modes for vuescroll. **slide**mode or **native** mode.
   ```javascript
    ops: {
@@ -141,7 +145,7 @@ V4.0
  * Pull-refresh supported (Only for slide mode)
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-pull-refresh.gif?raw=true)
 
-## Bug Fix
+#### Bug Fix
    * Can't hide native scrollbar in FireFox.#10 
 
 ## Inspire

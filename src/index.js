@@ -5,6 +5,9 @@ import vuescroll from "./components/vuescroll";
 // import config
 import GCF from "./config/GlobalConfig";
 
+import {
+  deepMerge
+} from "./util";
 
 let scroll = {
   install(Vue) {
@@ -16,7 +19,8 @@ let scroll = {
     Vue.component(vuescroll.name, vuescroll);
 
     // registry the globe setting
-    Vue.prototype.$vuescrollConfig = GCF;
+    // feat: #8
+    Vue.prototype.$vuescrollConfig = deepMerge(GCF, {});
 
     scroll.isInstalled = true;
          

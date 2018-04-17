@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.1.1
+    * @name: vuescroll 4.2.2
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -442,7 +442,8 @@ function validateOptions(ops) {
 function hackPropsData() {
   var vm = this;
   if (vm.$options.name === "vueScroll") {
-    var ops = deepMerge(GCF, {});
+    var _gfc = deepMerge(vm.$vuescrollConfig, {});
+    var ops = deepMerge(GCF, _gfc);
     vm.$options.propsData.ops = vm.$options.propsData.ops || {};
     Object.keys(vm.$options.propsData.ops).forEach(function (key) {
       {
@@ -3481,7 +3482,8 @@ var scroll = {
     Vue$$1.component(vuescroll.name, vuescroll);
 
     // registry the globe setting
-    Vue$$1.prototype.$vuescrollConfig = GCF;
+    // feat: #8
+    Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
 
     scroll.isInstalled = true;
   }
