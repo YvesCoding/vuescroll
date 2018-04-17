@@ -3327,8 +3327,7 @@ var vuescroll = {
         window.addEventListener("resize", function () {
           //eslint-disable-line
           _this3.update();
-          _this3.showBar();
-          _this3.hideBar();
+          _this3.showAndDefferedHideBar();
           if (_this3.mode == "slide") {
             _this3.updateScroller();
           }
@@ -3352,7 +3351,12 @@ var vuescroll = {
         this.destroyResize = listenResize(contentElm, funcArr);
       }
     },
-    recordCurrentPos: function recordCurrentPos(reverse) {
+    recordCurrentPos: function recordCurrentPos() {
+      var reverse = false;
+      if (this.mode !== this.lastMode) {
+        reverse = true;
+        this.lastMode = this.mode;
+      }
       // record the scrollLeft and scrollTop
       // by judging the last mode
       if (this.mode == "native") {
@@ -3384,31 +3388,17 @@ var vuescroll = {
       });
     },
 
-    // mode changes should record position reverse
-    watchModeChanges: function watchModeChanges() {
-      var _this5 = this;
-
-      // react to mode's change immediately.
-      this.$watch("mergedOptions.vuescroll.mode", function () {
-        // record current position
-        // reverse: true
-        _this5.recordCurrentPos(true);
-      }, {
-        sync: true
-      });
-    },
-
     // when small changes , we don't need to
     // registry the scrollor 
     watchUncessaryChanges: function watchUncessaryChanges() {
-      var _this6 = this;
+      var _this5 = this;
 
       // some uncessary changes.
       ["mergedOptions.vuescroll.pullRefresh.tips", "mergedOptions.vuescroll.pushLoad.tips", "mergedOptions.vRail", "mergedOptions.hRail", "mergedOptions.vBar", "mergedOptions.hBar"].forEach(function (opts) {
-        _this6.$watch(opts, function () {
+        _this5.$watch(opts, function () {
           // record current position
           // reverse: true
-          _this6.uncessaryChanges = true;
+          _this5.uncessaryChanges = true;
         }, {
           sync: true,
           deep: true
@@ -3422,30 +3412,29 @@ var vuescroll = {
       if (this.mode == "slide") {
         this.destroyScroller = this.registryScroller();
       }
+      // trace the mode
+      this.lastMode = this.mode;
       // registry resize event
       this.registryResize();
       this.watchBreakingChanges();
-      this.watchModeChanges();
       this.watchUncessaryChanges();
       // update state
       this.update();
-      this.showBar();
-      this.hideBar();
+      this.showAndDefferedHideBar();
     }
   },
   updated: function updated() {
-    var _this7 = this;
+    var _this6 = this;
 
     this.$nextTick(function () {
-      if (!_this7._isDestroyed) {
+      if (!_this6._isDestroyed) {
         /* istanbul ignore if */
-        if (_this7.vuescroll.state.updateType == "resize") {
-          _this7.vuescroll.state.updateType = "";
+        if (_this6.vuescroll.state.updateType == "resize") {
+          _this6.vuescroll.state.updateType = "";
           return;
         }
-        _this7.update();
-        _this7.showBar();
-        _this7.hideBar();
+        _this6.update();
+        _this6.showAndDefferedHideBar();
       }
     });
   },

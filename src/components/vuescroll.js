@@ -567,8 +567,7 @@ export default  {
         }                
         window.addEventListener("resize", () => { //eslint-disable-line
           this.update();
-          this.showBar();
-          this.hideBar();
+          this.showAndDefferedHideBar();
           if(this.mode == "slide") {
             this.updateScroller();
           }
@@ -598,7 +597,12 @@ export default  {
         );
       }
     },
-    recordCurrentPos(reverse) {
+    recordCurrentPos() {
+      let reverse = false;
+      if(this.mode !== this.lastMode) {
+        reverse = true;
+        this.lastMode = this.mode;
+      }
       // record the scrollLeft and scrollTop
       // by judging the last mode
       if(this.mode == "native") {
@@ -623,17 +627,6 @@ export default  {
         });
       }, {
         deep: true,
-        sync: true
-      });
-    },
-    // mode changes should record position reverse
-    watchModeChanges() {
-      // react to mode's change immediately.
-      this.$watch("mergedOptions.vuescroll.mode", () => {
-        // record current position
-        // reverse: true
-        this.recordCurrentPos(true);
-      }, {
         sync: true
       });
     },
@@ -666,15 +659,15 @@ export default  {
       if(this.mode == "slide") {
         this.destroyScroller = this.registryScroller();
       }
+      // trace the mode
+      this.lastMode = this.mode;
       // registry resize event
       this.registryResize();
       this.watchBreakingChanges();
-      this.watchModeChanges();
       this.watchUncessaryChanges();
       // update state
       this.update();
-      this.showBar();
-      this.hideBar();
+      this.showAndDefferedHideBar();
     }
   },
   updated() { 
@@ -686,8 +679,7 @@ export default  {
           return;
         }
         this.update();
-        this.showBar();
-        this.hideBar();
+        this.showAndDefferedHideBar();
       }
     }); 
   },
