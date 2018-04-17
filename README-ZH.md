@@ -18,34 +18,31 @@
 
 ## Vuescroll 特性
 
-### 可以选择两种模式, slide模式或者 native模式
+### 多种模式
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
 ### 平滑滚动
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-smooth.gif?raw=true)
 好吧, [这里](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) 有很多滚动动画可以供你选择~
 
-### 支持下拉刷新（只在slide模式下有效）
+### 支持下拉刷新和上拉加载（只在slide模式下有效）
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-pull-refresh.gif?raw=true)
 
 ## 开始上手
-### 直接下载 / CDN
-
-在浏览器环境下， 你不需要手动引入这个滚动条， vuescroll会自动安装它自己。
+### 浏览器 -> 直接下载 / CDN
 ```html
 <script src="https://unpkg.com/vue"></script>
 <script src="https://unpkg.com/vuescroll"></script>
 ```
-### npm
+### node -> 用npm/yarn
 ```bash
 npm install vuescroll -S
+# yarn add vuescroll
 ```
-但是在node环境中， 你就需要手动 import `Vue` 和  `vuescroll` 然后手动的`use`一下。
 ```javascript
 import Vue from 'vue'
 import vuescroll from 'vuescroll'
 Vue.use(vuescroll)
 ```
-### 在html中绑定你的配置
 ```html
 <div id="app" >
     <!--  在 data 里绑定你的配置 -->
@@ -61,7 +58,6 @@ Vue.use(vuescroll)
     </vue-scroll>
 </div>
 ```
-### 在data里面写你的配置然后就大功告成了！ 详细的配置请访问 [vuescrll Get Started](https://wangyi7099.github.io/VuescrollDocs/getStarted/)
 ```javascript
 var vm = new Vue({
     el: "#app",
@@ -79,16 +75,13 @@ var vm = new Vue({
     }
 })
 ```
-### 这里是vuescroll的预览.
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll.gif?raw=true)
-
-## 代办列表。
+## 修改日志
 
 * Integrate with the future releases of Vue.js
 
 ## 受以下的项目启发
 
-jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)  and  [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src).
+jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
 
 ## 协议
 

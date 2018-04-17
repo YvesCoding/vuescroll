@@ -45,6 +45,6 @@ workflows:
   install-and-parallel-test:
     jobs:
       - install
-      - test-cover:
-          requires:
-            - install
+      # - test-cover:
+      #     requires:
+      #       - install

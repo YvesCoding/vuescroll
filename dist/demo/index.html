@@ -45,16 +45,21 @@
           <vue-scroll 
           :ops="ops"
            ref="vs"
-           @refresh-activate="handleActivate"
-           @refresh-deactivate="handleDeactive"
-            @refresh-start="handleStart"
+           @refresh-activate="refreshActivate"
+           @refresh-before-deactivate="refreshBeforeDeactivate"
+           @refresh-deactivate="refreshDeactivate"
+            @refresh-start="refreshStart"
+            @load-activate="loadActivate"
+            @load-before-deactivate="loadBeforeDeactivate"
+           @load-deactivate="loadDeactivate"
+            @load-start="loadStart"
            >
            <template
            v-for= "(item, index) in randomArray"
            >
             <div 
             class="content"
-            :key="item"
+            :key="index"
             :style="{backgroundColor: item}"
             >
             <span>{{index+1 + '.' + item}}</span>
@@ -94,12 +99,23 @@
                     enable: <input 
                     type="radio" 
                     :value="true"
-                    v-model="ops.vuescroll.pullRefreshEnable"
+                    v-model="ops.vuescroll.pullRefresh.enable"
                     >
                     disable: <input 
                     type="radio" 
                     :value="false"
-                    v-model="ops.vuescroll.pullRefreshEnable"
+                    v-model="ops.vuescroll.pullRefresh.enable"
+                    >
+                    <br>load: <br>
+                    enable: <input 
+                    type="radio" 
+                    :value="true"
+                    v-model="ops.vuescroll.pushLoad.enable"
+                    >
+                    disable: <input 
+                    type="radio" 
+                    :value="false"
+                    v-model="ops.vuescroll.pushLoad.enable"
                     >
                 </fieldset>
                 <fieldset>
@@ -140,7 +156,18 @@
             ops: {
               vuescroll: {
                 mode: "slide",
-                pullRefreshEnable: true
+                pullRefresh: {
+                    tips: {
+                        beforeDeactive: "Refresh Successfully!"
+                    },
+                    enable: true
+                },
+                pushLoad: {
+                    tips: {
+                        beforeDeactive: "Load Successfully!"
+                    },
+                    enable: true
+                }
               },
               scrollPanel: {
                 easing: "easeInQuad",
@@ -153,6 +180,7 @@
                   background: "#000"
               }
             },
+            dataNums: 500,
             reRender: 1,
             easings
         },
@@ -166,7 +194,7 @@
                     return str;
                 }
                 return this.reRender && Array.apply(null, {
-                    length: 400
+                    length: this.dataNums
                 }).map(item => {
                     return getRandom();
                 })
@@ -176,16 +204,49 @@
             refresh() {
                 this.reRender ++;
             },
-            handleActivate(vm, refreshDom) {
-                console.log(vm, refreshDom, 'handleActive');
+            refreshActivate(vm, refreshDom) {
+                console.log(vm, refreshDom, 'refreshActive');
             },
-            handleDeactive(vm, refreshDom) {
-                console.log(vm, refreshDom, 'handleDeactive');
+            refreshBeforeDeactivate(vm, refreshDom, done) {
+                console.log(vm, refreshDom, 'refreshBeforeDeactive');
+                setTimeout(() => {
+                    done();
+                }, 500)
             },
-            handleStart(vm, dom, done) {
+            refreshDeactivate(vm, refreshDom) {
+                console.log(vm, refreshDom, 'refreshDeactive');
+            },
+            refreshStart(vm, dom, done) {
                 setTimeout(() => {
                     this.reRender ++;
                     done();
+                }, 2000);
+            },
+            loadActivate(vm, loadDom) {
+                console.log(vm, loadDom, 'loadActive');
+            },
+            loadBeforeDeactivate(vm, loadDom, done) {
+                console.log(vm, loadDom, 'loadBeforeDeactive');
+                setTimeout(() => {
+                    if(this.add) {
+                        this.dataNums += 100;
+                        this.add = false;
+                    }
+                    done();
+                }, 500)
+            },
+            loadDeactivate(vm, loadDom) {
+                console.log(vm, loadDom, 'loadDeactive');
+            },
+            loadStart(vm, dom, done) {
+                setTimeout(() => {
+                    done();
+                    if(Math.random() < 0.5) {
+                        this.add = true;
+                        this.ops.vuescroll.pushLoad.tips.beforeDeactive = "load successfully!";
+                    } else {
+                        this.ops.vuescroll.pushLoad.tips.beforeDeactive = "no more data!";
+                    }
                 }, 2000);
             }
         }

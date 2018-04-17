@@ -17,34 +17,30 @@
  ## Who use vitural scrollbar?
  [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) are using it. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs) of vuescroll.
 
-## Vuescroll Features
-### Two modes you can choose, slide mode or native mode
+## Features
+### Multi modes
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
-### Smooth
+### Smooth scroll
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-smooth.gif?raw=true)
 BTW, [Here](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) are many scroll animations you can choose. 
-
-### Pull-Refresh supported(Only for slide mode)
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-pull-refresh.gif?raw=true)
+### Pull-Refresh and Pop-Load
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-refresh-load.gif?raw=true)
 ## Get Started
-### Direct Download / CDN
-
-In browser,you need not to  manually use it , and vuescroll will automatically detect vue and install itself.
+### Browser -> Direct Download / CDN
 ```html
 <script src="https://unpkg.com/vue"></script>
 <script src="https://unpkg.com/vuescroll"></script>
 ```
-### npm
+### Node-> Use npm or yarn
 ```bash
 npm install vuescroll -S
+# yarn add vuescroll
 ```
-And in nodejs, you should import `Vue` and  `vuescroll` and  manually use it.
 ```javascript
 import Vue from 'vue'
 import vuescroll from 'vuescroll'
 Vue.use(vuescroll)
 ```
-### Bind your own options in HTML
 ```html
 <div id="app" >
     <!-- bind your own options in data -->
@@ -60,7 +56,7 @@ Vue.use(vuescroll)
     </vue-scroll>
 </div>
 ```
-### Write your own options and that's all. For the detail options please visit [vuescrll Get Started](https://wangyi7099.github.io/VuescrollDocs/getStarted/)
+
 ```javascript
 var vm = new Vue({
     el: "#app",
@@ -78,15 +74,79 @@ var vm = new Vue({
     }
 })
 ```
-### This is the preview of vuescroll.
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll.gif?raw=true)
+## Change Logs
 
-## Todo List
+---
+V4.1
+## Features
+ * Push-Load has been supported
+ ### Usage:
+ ```javascript
+    ops: {
+      vuescroll: {
+          pushLoad: {
+              enable: true
+          }
+      }  
+    }
+ ```
+ * Allow to diable scrollingX or scrollingY #11
 
-* Integrate with the future releases of Vue.js
+ ### Usage:
+  ```javascript
+    ops: {
+      scrollPanel: {
+        scrollingX: true,// false to diable
+        scrollingY: true // false to diable
+      }  
+    }
+ ```
+
+## Sweaks
+* Redefine pull-refresh tips from `Array` to `Object`
+### Before
+```javascript
+  ops: {
+      vuescroll: {
+          pushRefreshTips: ['XX', 'XX']
+      }
+  }
+```
+### Now
+```javascript
+  ops: {
+      vuescroll: {
+          pushRefresh: {
+              tips: {
+                  start: "",
+                  active: "",
+                  deActive: "",
+                  beforeActive: ""
+              }
+          }
+      }
+  }
+```
+V4.0
+## Features
+  * Add a **vuescroll** option in ops. Now, you can choose two modes for vuescroll. **slide**mode or **native** mode.
+  ```javascript
+   ops: {
+    vuescroll: [
+     mode: 'native' // native or slide
+    }
+    // other options...
+  }
+ ```
+ * Pull-refresh supported (Only for slide mode)
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-pull-refresh.gif?raw=true)
+
+## Bug Fix
+   * Can't hide native scrollbar in FireFox.#10 
+
 ## Inspire
 
-jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)  and  [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src).
+jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
 
 ## Liscence
 
