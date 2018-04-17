@@ -60,7 +60,7 @@ function createPanel(h, vm) {
     } else {
       scrollPanelData.style["overflowY"] = vm.vBar.state.size?"hidden":"inherit";
     }
-    if(vm.mergedOptions.scrollPanel.scrollinX) {
+    if(vm.mergedOptions.scrollPanel.scrollingX) {
       scrollPanelData.style["overflowX"] = vm.vBar.state.size?"scroll":"inherit";
     } else  {
       scrollPanelData.style["overflowX"] = vm.vBar.state.size?"hidden":"inherit";
@@ -78,7 +78,7 @@ function createPanel(h, vm) {
       // because just hide system bar doesn't work 
       // for firefox. #10
       scrollPanelData.style.marginRight = `-${gutter}px`;
-      scrollPanelData.style.marginBottom = `-${gutter}px`;
+      // scrollPanelData.style.marginBottom = `-${gutter}px`;
       scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
     }
     // clear legency styles of slide mode...

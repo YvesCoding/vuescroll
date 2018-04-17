@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.1.0
+    * @name: vuescroll 4.1.1
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -2781,7 +2781,7 @@ function createPanel(h, vm) {
     } else {
       scrollPanelData.style["overflowY"] = vm.vBar.state.size ? "hidden" : "inherit";
     }
-    if (vm.mergedOptions.scrollPanel.scrollinX) {
+    if (vm.mergedOptions.scrollPanel.scrollingX) {
       scrollPanelData.style["overflowX"] = vm.vBar.state.size ? "scroll" : "inherit";
     } else {
       scrollPanelData.style["overflowX"] = vm.vBar.state.size ? "hidden" : "inherit";
@@ -2799,7 +2799,7 @@ function createPanel(h, vm) {
       // because just hide system bar doesn't work 
       // for firefox. #10
       scrollPanelData.style.marginRight = "-" + gutter + "px";
-      scrollPanelData.style.marginBottom = "-" + gutter + "px";
+      // scrollPanelData.style.marginBottom = `-${gutter}px`;
       scrollPanelData.style.height = "calc(100% + " + gutter + "px)";
     }
     // clear legency styles of slide mode...
