@@ -12,9 +12,9 @@
 
 ## Introduction
 
- vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) which can both support PC and mobile phone.You can customize the scrollbar you like instead of using native in browser.Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs).
+ vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) which can both support PC and mobile phone.You can customize the scrollbar how you like instead of using native in browser. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs).
  
- ## Who use vitural scrollbar?
+ ## Who uses virtual scrollbar?
  [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) are using it. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs) of vuescroll.
 
 ## Features
@@ -99,8 +99,8 @@ var vm = new Vue({
   ```javascript
     ops: {
       scrollPanel: {
-        scrollingX: true,// false to diable
-        scrollingY: true // false to diable
+        scrollingX: true,// false to disable
+        scrollingY: true // false to disable
       }  
     }
  ```
@@ -148,10 +148,10 @@ var vm = new Vue({
 #### Bug Fix
    * Can't hide native scrollbar in FireFox.#10 
 
-## Inspire
+## Inspiration
 
 jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
 
-## Liscence
+## Licence
 
 **MIT** 
