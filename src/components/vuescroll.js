@@ -77,9 +77,15 @@ function createPanel(h, vm) {
       // for panel and overflow hidden for parent elm,
       // because just hide system bar doesn't work 
       // for firefox. #10
-      scrollPanelData.style.marginRight = `-${gutter}px`;
-      // scrollPanelData.style.marginBottom = `-${gutter}px`;
-      scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
+      // gutter should be 0 whhen manually disable scrollingX #14
+      if(vm.mergedOptions.scrollPanel.scrollingY) {
+        scrollPanelData.style.marginRight = `-${gutter}px`;
+      }
+      if(!vm.mergedOptions.scrollPanel.scrollingX) {
+        scrollPanelData.style.height = "100%";
+      } else {
+        scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
+      }
     }
     // clear legency styles of slide mode...
     scrollPanelData.style.transformOrigin = "";

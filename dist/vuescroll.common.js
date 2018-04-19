@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.2.2
+    * @name: vuescroll 4.2.3
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -516,7 +516,8 @@ var vuescrollApi = {
         if (animate) {
           goScrolling(this.$refs["scrollPanel"].$el, x - this.$refs["scrollPanel"].$el.scrollLeft, y - this.$refs["scrollPanel"].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
         } else {
-          this.$refs["scrollPanel"].$el.scrollTo(x, y);
+          this.$refs["scrollPanel"].$el.scrollTop = y;
+          this.$refs["scrollPanel"].$el.scrollLeft = x;
         }
       }
       // for non-native we use scroller's scorllTo 
@@ -2803,9 +2804,15 @@ function createPanel(h, vm) {
       // for panel and overflow hidden for parent elm,
       // because just hide system bar doesn't work 
       // for firefox. #10
-      scrollPanelData.style.marginRight = "-" + gutter + "px";
-      // scrollPanelData.style.marginBottom = `-${gutter}px`;
-      scrollPanelData.style.height = "calc(100% + " + gutter + "px)";
+      // gutter should be 0 whhen manually disable scrollingX #14
+      if (vm.mergedOptions.scrollPanel.scrollingY) {
+        scrollPanelData.style.marginRight = "-" + gutter + "px";
+      }
+      if (!vm.mergedOptions.scrollPanel.scrollingX) {
+        scrollPanelData.style.height = "100%";
+      } else {
+        scrollPanelData.style.height = "calc(100% + " + gutter + "px)";
+      }
     }
     // clear legency styles of slide mode...
     scrollPanelData.style.transformOrigin = "";

@@ -44,10 +44,8 @@ export default {
             this.mergedOptions.scrollPanel.easing
           );
         } else {
-          this.$refs["scrollPanel"].$el.scrollTo(
-            x,
-            y
-          );
+          this.$refs["scrollPanel"].$el.scrollTop = y;
+          this.$refs["scrollPanel"].$el.scrollLeft = x;
         }
       } 
       // for non-native we use scroller's scorllTo 
