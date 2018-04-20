@@ -1,4 +1,10 @@
-## Change
+## Change Log
+---
+### v4.3.3
+#### Features
+* To disable scrollbar or rail, add `disabled` option to `vRail, vBar, hRail, hBar`
+#### Tweaks
+* Now, when snapping or paging enable, the bar/rail will show. 
 ---
 ### v4.3.3
 #### Features

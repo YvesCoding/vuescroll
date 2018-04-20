@@ -135,8 +135,7 @@ export function createBar(h, vm, type) {
   };
   if(!vm[barOptionType].state.size 
    || !vm.mergedOptions.scrollPanel["scrolling" + axis]
-   || vm.mergedOptions.vuescroll.paging
-   || vm.mergedOptions.vuescroll.snapping 
+   || vm.mergedOptions[barOptionType].diabled
    || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
     return null;
   }

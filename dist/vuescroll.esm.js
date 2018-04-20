@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.3.3
+    * @name: vuescroll 4.4.3
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -372,14 +372,16 @@ var GCF = {
     width: "5px",
     pos: "right",
     background: "#a5d6a7",
-    opacity: 0 //'0.5'
+    opacity: 0, //'0.5'
+    disabled: false
   },
   // 
   hRail: {
     height: "5px",
     pos: "bottom",
     background: "#a5d6a7",
-    opacity: 0 //'0.5'
+    opacity: 0, //'0.5'
+    disabled: false
   },
   // 
   vBar: {
@@ -389,7 +391,8 @@ var GCF = {
     deltaY: 100,
     keepShow: false,
     opacity: 1,
-    hover: false
+    hover: false,
+    disabled: false
   },
   // 
   hBar: {
@@ -398,7 +401,8 @@ var GCF = {
     background: "#4caf50",
     keepShow: false,
     opacity: 1,
-    hover: false
+    hover: false,
+    disabled: false
   }
 };
 /**
@@ -2655,7 +2659,7 @@ function createBar(h, vm, type) {
     },
     ref: type + "Bar"
   };
-  if (!vm[barOptionType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions.vuescroll.paging || vm.mergedOptions.vuescroll.snapping || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+  if (!vm[barOptionType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions[barOptionType].diabled || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
     return null;
   }
   return h("bar", barData);
@@ -2710,7 +2714,7 @@ function createRail(h, vm, type) {
       state: vm[railOptionType].state
     }
   };
-  if (!vm[barOptionType].state.size || vm.mergedOptions.vuescroll.paging || vm.mergedOptions.vuescroll.snapping || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+  if (!vm[barOptionType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions[railOptionType].disabled || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
     return null;
   }
   return h("rail", railData);
@@ -2883,7 +2887,7 @@ function createPanel(h, vm) {
     // clear legency styles of slide mode...
     scrollPanelData.style.transformOrigin = "";
     scrollPanelData.style.transform = "";
-  } else if (vm.mode == "slide" || vm.mode == "paging") {
+  } else if (vm.mode == "slide") {
     scrollPanelData.style["transformOrigin"] = "left top 0px";
     scrollPanelData.style["userSelect"] = "none";
   }

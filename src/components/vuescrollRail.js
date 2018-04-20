@@ -73,10 +73,9 @@ function createRail(h, vm, type) {
       state: vm[railOptionType].state
     }
   };
-  if(!vm[barOptionType].state.size 
-   || vm.mergedOptions.vuescroll.paging
-   || vm.mergedOptions.vuescroll.snapping
+  if(!vm[barOptionType].state.size
    || !vm.mergedOptions.scrollPanel["scrolling" + axis]
+   || vm.mergedOptions[railOptionType].disabled
    || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
     return null;
   }

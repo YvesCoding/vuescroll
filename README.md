@@ -14,17 +14,25 @@
 
  vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) which can both support PC and mobile phone.You can customize the scrollbar how you like instead of using native in browser. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs).
  
- ## Who uses virtual scrollbar?
+## Use case of virtual scrollbar
  [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) are using it. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs) of vuescroll.
 
 ## Features
-### Multi modes
+* Whole features of [scrollor](https://github.com/pbakaus/scroller).
+* Ability to customize scrollbar by [powerful configurations](https://github.com/wangyi7099/vuescroll/blob/dev/src/config/GlobalConfig.js).
+* Ability to [detect size change](https://wangyi7099.github.io/VuescrollDocs/getStarted/en/event/handle-resize.html) of content and automatically update.
+* [smooth-scroll](https://github.com/cferdinandi/smooth-scroll) Integration.
+* Vue-Powered.
+
+## Preview
+### Toggle between two modes
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
 ### Smooth scroll
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-smooth.gif?raw=true)
 BTW, [Here](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) are many scroll animations you can choose. 
-### Pull-Refresh and Push-Load Supported
+### Pull-Refresh and Push-Load
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-refresh-load.gif?raw=true)
+
 ## Get Started
 ### Browser -> Direct Download / CDN
 ```html
@@ -74,7 +82,6 @@ var vm = new Vue({
     }
 })
 ```
-
 ## Inspiration
 
 jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)

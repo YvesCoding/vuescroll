@@ -54,14 +54,16 @@ export default {
     width: "5px",
     pos: "right",
     background: "#a5d6a7",
-    opacity: 0 //'0.5'
+    opacity: 0, //'0.5'
+    disabled: false
   },
   // 
   hRail: {
     height: "5px",
     pos: "bottom",
     background: "#a5d6a7",
-    opacity: 0 //'0.5'
+    opacity: 0, //'0.5'
+    disabled: false
   },
   // 
   vBar: {
@@ -71,7 +73,8 @@ export default {
     deltaY: 100,
     keepShow: false,
     opacity: 1,
-    hover: false
+    hover: false,
+    disabled: false
   },
   // 
   hBar: {
@@ -80,7 +83,8 @@ export default {
     background: "#4caf50",
     keepShow: false,
     opacity: 1,
-    hover: false
+    hover: false,
+    disabled: false
   } 
 };
 /**
@@ -93,12 +97,7 @@ export function validateOptions(ops) {
   let shouldStopRender = false;
   const {
     vuescroll, 
-    scrollPanel, 
-    // scrollContent, 
-    // vRail, 
-    // hRail,
-    // vBar,
-    // hBar
+    scrollPanel
   } = ops;
 
     // validate vuescroll

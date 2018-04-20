@@ -114,7 +114,7 @@ export function createPanel(h, vm) {
     // clear legency styles of slide mode...
     scrollPanelData.style.transformOrigin = "";
     scrollPanelData.style.transform = "";
-  } else if(vm.mode == "slide" || vm.mode == "paging") {
+  } else if(vm.mode == "slide") {
     scrollPanelData.style["transformOrigin"] = "left top 0px";
     scrollPanelData.style["userSelect"] = "none";
   }
