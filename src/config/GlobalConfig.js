@@ -21,6 +21,12 @@ export default {
         start: "Loading...",
         beforeDeactive: "Load Successfully!"
       }
+    },
+    paging: false,
+    snapping: {
+      enable: false,
+      width: 100,
+      height: 100
     }
   },
   scrollPanel: {
@@ -97,20 +103,23 @@ export function validateOptions(ops) {
 
     // validate vuescroll
   if(!~modes.indexOf(vuescroll.mode)) {
-    console.error(`[vuescroll]: The vuescroll's option "mode" should be one of the ${modes}`); //eslint-disable-line 
+    console.error(`[vuescroll][ops]: The vuescroll's option "mode" should be one of the ${modes}`); //eslint-disable-line 
     shouldStopRender = true;
   }
-
+  
+  if((vuescroll.paging == vuescroll.snapping.enable) && vuescroll.paging && (vuescroll.pullRefresh || vuescroll.pushLoad)) {
+    console.error(`[vuescroll][ops]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.`); //eslint-disable-line 
+  }
   // validate scrollPanel
   const initialScrollY = scrollPanel["initialScrollY"];
   const initialScrollX = scrollPanel["initialScrollX"];
 
   if(initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error("[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
+    console.error("[vuescroll][ops]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
   }
 
   if(initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error("[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
+    console.error("[vuescroll][ops]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
   }
 
   return shouldStopRender;

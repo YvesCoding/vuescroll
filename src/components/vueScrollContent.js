@@ -40,3 +40,26 @@ export default  {
     }
   }
 };
+
+/**
+ * create scroll content
+ * 
+ * @param {any} size 
+ * @param {any} vm 
+ * @returns 
+ */
+export function createContent(h, vm) {
+  // scrollContent data
+  const scrollContentData = {
+    props: {
+      ops: vm.mergedOptions.scrollContent,
+    }
+  };
+  return (
+    <scrollContent
+      {...scrollContentData}
+    >
+      {[vm.$slots.default]}
+    </scrollContent>
+  );
+}

@@ -4,11 +4,7 @@
 
 // begin importing
 import {
-  getGutter,
-  hideSystemBar,
-  listenResize,
-  createRefreshDomStyle,
-  createLoadDomStyle
+  listenResize
 } from "../util";
 
 // import mix begin.....
@@ -24,275 +20,10 @@ import slideMode from "../mixins/mode/slide-mode";
 // import mix end......
 
 // import necessary components
-import bar from "./vuescrollBar";
-import rail from "./vuescrollRail";
+import bar, {createBar} from "./vuescrollBar";
+import rail, {createRail} from "./vuescrollRail";
 import scrollContent from "./vueScrollContent";
-import scrollPanel from "./vueScrollPanel";
-
-/**
- * create a scrollPanel
- * 
- * @param {any} size 
- * @param {any} vm 
- * @returns 
- */
-function createPanel(h, vm) {
-  // scrollPanel data start
-  const scrollPanelData = {
-    ref: "scrollPanel",
-    style: {
-      position: "relative"
-    },
-    nativeOn: {
-      scroll: vm.handleScroll
-    },
-    props: {
-      ops: vm.mergedOptions.scrollPanel,
-      state: vm.scrollPanel.state
-    }
-  };
-  // set overflow only if the in native mode
-  if(vm.mode == "native") {
-    // dynamic set overflow scroll
-    // feat: #11
-    if(vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style["overflowY"] = vm.vBar.state.size?"scroll":"inherit";
-    } else {
-      scrollPanelData.style["overflowY"] = vm.vBar.state.size?"hidden":"inherit";
-    }
-    if(vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style["overflowX"] = vm.vBar.state.size?"scroll":"inherit";
-    } else  {
-      scrollPanelData.style["overflowX"] = vm.vBar.state.size?"hidden":"inherit";
-    }
-    let gutter = getGutter();
-    if(!getGutter.isUsed) {
-      getGutter.isUsed = true;
-    }
-    if(!gutter) {
-      hideSystemBar();
-      scrollPanelData.style.height = "100%";
-    } else {
-      // hide system bar by use a negative value px
-      // for panel and overflow hidden for parent elm,
-      // because just hide system bar doesn't work 
-      // for firefox. #10
-      // gutter should be 0 whhen manually disable scrollingX #14
-      if(vm.mergedOptions.scrollPanel.scrollingY) {
-        scrollPanelData.style.marginRight = `-${gutter}px`;
-      }
-      if(!vm.mergedOptions.scrollPanel.scrollingX) {
-        scrollPanelData.style.height = "100%";
-      } else {
-        scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
-      }
-    }
-    // clear legency styles of slide mode...
-    scrollPanelData.style.transformOrigin = "";
-    scrollPanelData.style.transform = "";
-  } else if(vm.mode == "slide") {
-    scrollPanelData.style["transformOrigin"] = "left top 0px";
-    scrollPanelData.style["userSelect"] = "none";
-  }
-  return (
-    <scrollPanel
-      {...scrollPanelData}
-    >
-      {
-        (function(){
-          if(vm.mode == "native") {
-
-            return [createContent(h, vm)];
-
-          } else if(vm.mode == "slide") {
-                        
-            let renderChildren = [vm.$slots.default];
-            // handle for refresh
-            if(vm.mergedOptions.vuescroll.pullRefresh.enable) {
-              // just use user-defined refresh dom instead of default
-              if(vm.$slots.refresh) {
-                vm.$refs["refreshDom"] = vm.$slots.refresh[0];
-                renderChildren.unshift(vm.$slots.refresh[0]);
-              } else {
-                createRefreshDomStyle();
-                let refreshDom = null;
-                // front or end of the process.
-                if(vm.vuescroll.state.refreshStage == "deactive") {
-                  refreshDom = (<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xmlSpace="preserve">
-                    <metadata> Svg Vector Icons : http://www.sfont.cn </metadata><g><g transform="matrix(1 0 0 -1 0 1008)"><path d="M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z"></path></g></g></svg>);
-                }
-                // refreshing
-                else if(vm.vuescroll.state.refreshStage == "start") {
-                  refreshDom = (<svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                    viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xmlSpace="preserve">
-                    <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
-                      <animateTransform attributeType="xml"
-                        attributeName="transform"
-                        type="rotate"
-                        from="0 25 25"
-                        to="360 25 25"
-                        dur="0.6s"
-                        repeatCount="indefinite"/>
-                    </path>
-                  </svg>);
-                }
-                // release to refresh, active
-                else if(vm.vuescroll.state.refreshStage == "active") {
-                  refreshDom = (<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xmlSpace="preserve">
-                    <metadata> Svg Vector Icons : http://www.sfont.cn </metadata><g><g transform="matrix(1 0 0 -1 0 1008)"><path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z"></path></g></g></svg>
-                  );
-                }
-                // no slot refresh elm, use default
-                renderChildren.unshift(
-                  <div class="vuescroll-refresh" ref="refreshDom" key="refshDom">
-                    {[refreshDom, vm.pullRefreshTip]}
-                  </div>
-                );
-              }
-            }
-            
-            // handle for load
-            if(vm.mergedOptions.vuescroll.pushLoad.enable) {
-              if(vm.$slots.load) {
-                vm.$refs["loadDom"] = vm.$slots.load[0];
-                renderChildren.push(vm.$slots.load[0]);
-              } else {
-                createLoadDomStyle();
-                let loadDom = null;
-                // front or end of the process.
-                if(vm.vuescroll.state.loadStage == "deactive") {
-                  loadDom = (<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xmlSpace="preserve">
-                    <metadata> Svg Vector Icons : http://www.sfont.cn </metadata><g><g transform="matrix(1 0 0 -1 0 1008)"><path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z"></path></g></g></svg>
-                  );
-                }
-                // loading
-                else if(vm.vuescroll.state.loadStage == "start") {
-                  loadDom = (<svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-                    viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xmlSpace="preserve">
-                    <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
-                      <animateTransform attributeType="xml"
-                        attributeName="transform"
-                        type="rotate"
-                        from="0 25 25"
-                        to="360 25 25"
-                        dur="0.6s"
-                        repeatCount="indefinite"/>
-                    </path>
-                  </svg>);
-                }
-                // release to load, active
-                else if(vm.vuescroll.state.loadStage == "active") {
-                  loadDom = (<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xmlSpace="preserve">
-                    <metadata> Svg Vector Icons : http://www.sfont.cn </metadata><g><g transform="matrix(1 0 0 -1 0 1008)"><path d="M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z"></path></g></g></svg>);
-                }
-                // no slot load elm, use default
-                renderChildren.push(
-                  <div class="vuescroll-load" ref="loadDom" key="loadDom">
-                    {[loadDom, vm.pushLoadTip]}
-                  </div>
-                );
-              }
-            }
-            return renderChildren;
-          }
-        })()
-      }
-    </scrollPanel>
-  );
-}
-
-/**
- * create scroll content
- * 
- * @param {any} size 
- * @param {any} vm 
- * @returns 
- */
-function createContent(h, vm) {
-  // scrollContent data
-  const scrollContentData = {
-    props: {
-      ops: vm.mergedOptions.scrollContent,
-    }
-  };
-  return (
-    <scrollContent
-      {...scrollContentData}
-    >
-      {[vm.$slots.default]}
-    </scrollContent>
-  );
-}
-
-/**
- * create rails
- * 
- * @param {any} size 
- * @param {any} type 
- * @param {any} vm 
- * @returns 
- */
-function createRail(h, vm, type) {
-  // rail data
-  const railOptionType = type === "vertical"? "vRail": "hRail";
-  const barOptionType = type === "vertical"? "vBar": "hBar";
-  const axis = type === "vertical"? "Y": "X";
-
-  const railData = {
-    props: {
-      type: type,
-      ops: vm.mergedOptions[railOptionType],
-      state: vm[railOptionType].state
-    }
-  };
-  if(!vm[barOptionType].state.size 
-    || 
-    !vm.mergedOptions.scrollPanel["scrolling" + axis]
-    || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
-    return null;
-  }
-  return (
-    <rail 
-      {...railData}
-    />
-  );
-
-}
-
-/**
- * create bars
- * 
- * @param {any} size 
- * @param {any} type 
- */
-function createBar(h, vm, type) {
-  // hBar data
-  const barOptionType = type === "vertical"? "vBar": "hBar";
-  const axis = type === "vertical"? "Y": "X";
-
-  const barData = {
-    props: {
-      type: type,
-      ops: vm.mergedOptions[barOptionType],
-      state: vm[barOptionType].state
-    },
-    on: {
-      setMousedown: vm.setMousedown
-    },
-    ref: `${type}Bar`
-  };
-  if(!vm[barOptionType].state.size 
-    || !vm.mergedOptions.scrollPanel["scrolling" + axis]
-    || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
-    return null;
-  }
-  return (
-    <bar 
-      {...barData}
-    />
-  );
-  
-}
+import scrollPanel, {createPanel} from "./vueScrollPanel";
 
 export default  {
   name: "vueScroll",
@@ -314,7 +45,6 @@ export default  {
           mousedown: false,
           pointerLeave: true,
           timeoutId: 0,
-          updateType: "",
           // for  recording the current states of
           // scrollTop and scrollHeight when switching the
           // mode
@@ -402,7 +132,6 @@ export default  {
         mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
           vm.showBar();
-          vm.update();
         },
         mouseleave() {
           vm.vuescroll.state.pointerLeave = true;
@@ -411,7 +140,6 @@ export default  {
         mousemove()/* istanbul ignore next */{
           vm.vuescroll.state.pointerLeave = false;
           vm.showBar();
-          vm.update(); 
         }
       }
     };
@@ -580,12 +308,6 @@ export default  {
         }, false);
         let funcArr = [
           (nativeEvent) => {    
-            /** 
-                         *  set updateType to prevent
-                         *  the conflict update of the `updated
-                         *  hook` of the vuescroll itself. 
-                         */
-            this.vuescroll.state.updateType = "resize";
             if(this.mode == "slide") {
               this.updateScroller();
             }
@@ -679,11 +401,6 @@ export default  {
   updated() { 
     this.$nextTick(() => {
       if(!this._isDestroyed) {
-        /* istanbul ignore if */
-        if(this.vuescroll.state.updateType == "resize") {
-          this.vuescroll.state.updateType = "";
-          return;
-        }
         this.update();
         this.showAndDefferedHideBar();
       }

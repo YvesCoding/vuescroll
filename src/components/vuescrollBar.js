@@ -110,3 +110,39 @@ export default {
     }
   }
 };
+
+/**
+* create bars
+* 
+* @param {any} size 
+* @param {any} type 
+*/
+export function createBar(h, vm, type) {
+  // hBar data
+  const barOptionType = type === "vertical"? "vBar": "hBar";
+  const axis = type === "vertical"? "Y": "X";
+
+  const barData = {
+    props: {
+      type: type,
+      ops: vm.mergedOptions[barOptionType],
+      state: vm[barOptionType].state
+    },
+    on: {
+      setMousedown: vm.setMousedown
+    },
+    ref: `${type}Bar`
+  };
+  if(!vm[barOptionType].state.size 
+   || !vm.mergedOptions.scrollPanel["scrolling" + axis]
+   || vm.mergedOptions.vuescroll.paging
+   || vm.mergedOptions.vuescroll.snapping 
+   || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
+    return null;
+  }
+  return (
+    <bar 
+      {...barData}
+    />
+  );
+}

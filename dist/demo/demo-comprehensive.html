@@ -92,6 +92,28 @@
                     min="100"
                     max="5000"
                     >
+                    <br>scrollingX: <br>
+                    true: <input 
+                    type="radio" 
+                    :value="true"
+                    v-model="ops.scrollPanel.scrollingX"
+                    >
+                    false: <input 
+                    type="radio" 
+                    :value="false"
+                    v-model="ops.scrollPanel.scrollingX"
+                    >
+                    <br>scrollingY: <br>
+                    true: <input 
+                    type="radio" 
+                    :value="true"
+                    v-model="ops.scrollPanel.scrollingY"
+                    >
+                    false: <input 
+                    type="radio" 
+                    :value="false"
+                    v-model="ops.scrollPanel.scrollingY"
+                    >
                 </fieldset>
                 <fieldset>
                     <legend>slide-mode</legend>
@@ -177,11 +199,15 @@
                         beforeDeactive: "Load Successfully!"
                     },
                     enable: true
-                }
+                },
+                snapping: false,
+                paging: false
               },
               scrollPanel: {
                 easing: "easeInQuad",
-                speed: 300
+                speed: 300,
+                scrollingX: true,
+                scrollingY: true
               },
               vBar: {
                   background: "#000"

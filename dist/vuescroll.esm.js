@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.2.3
+    * @name: vuescroll 4.3.3
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -341,6 +341,12 @@ var GCF = {
         start: "Loading...",
         beforeDeactive: "Load Successfully!"
       }
+    },
+    paging: false,
+    snapping: {
+      enable: false,
+      width: 100,
+      height: 100
     }
   },
   scrollPanel: {
@@ -409,20 +415,23 @@ function validateOptions(ops) {
   // validate vuescroll
 
   if (!~modes.indexOf(vuescroll.mode)) {
-    console.error("[vuescroll]: The vuescroll's option \"mode\" should be one of the " + modes); //eslint-disable-line 
+    console.error("[vuescroll][ops]: The vuescroll's option \"mode\" should be one of the " + modes); //eslint-disable-line 
     shouldStopRender = true;
   }
 
+  if (vuescroll.paging == vuescroll.snapping.enable && vuescroll.paging && (vuescroll.pullRefresh || vuescroll.pushLoad)) {
+    console.error("[vuescroll][ops]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true."); //eslint-disable-line 
+  }
   // validate scrollPanel
   var initialScrollY = scrollPanel["initialScrollY"];
   var initialScrollX = scrollPanel["initialScrollX"];
 
   if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error("[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
+    console.error("[vuescroll][ops]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
   }
 
   if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error("[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
+    console.error("[vuescroll][ops]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
   }
 
   return shouldStopRender;
@@ -2381,8 +2390,10 @@ var slideMode = {
     registryScroller: function registryScroller() {
       var _this = this;
 
+      var paging = this.mergedOptions.vuescroll.paging;
+      var snapping = this.mergedOptions.vuescroll.snapping.enable;
       // disale zooming when refresh or load enabled
-      var zooming = !this.refreshLoad;
+      var zooming = !this.refreshLoad && !paging && !snapping;
       var _mergedOptions$scroll = this.mergedOptions.scrollPanel,
           scrollingY = _mergedOptions$scroll.scrollingY,
           scrollingX = _mergedOptions$scroll.scrollingX;
@@ -2392,8 +2403,15 @@ var slideMode = {
         zooming: zooming,
         scrollingY: scrollingY,
         scrollingX: scrollingX && !this.refreshLoad,
-        animationDuration: this.mergedOptions.scrollPanel.speed
+        animationDuration: this.mergedOptions.scrollPanel.speed,
+        paging: paging,
+        snapping: snapping
       });
+      // if snapping enabled
+      // we should set snap size
+      if (snapping) {
+        this.scroller.setSnapSize(this.mergedOptions.vuescroll.snapping.width, this.mergedOptions.vuescroll.snapping.height);
+      }
       var rect = this.$el.getBoundingClientRect();
       this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);
       var cb = listenContainer(this.$el, this.scroller, function (eventType) {
@@ -2615,6 +2633,34 @@ var bar = {
   }
 };
 
+/**
+* create bars
+* 
+* @param {any} size 
+* @param {any} type 
+*/
+function createBar(h, vm, type) {
+  // hBar data
+  var barOptionType = type === "vertical" ? "vBar" : "hBar";
+  var axis = type === "vertical" ? "Y" : "X";
+
+  var barData = {
+    props: {
+      type: type,
+      ops: vm.mergedOptions[barOptionType],
+      state: vm[barOptionType].state
+    },
+    on: {
+      setMousedown: vm.setMousedown
+    },
+    ref: type + "Bar"
+  };
+  if (!vm[barOptionType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions.vuescroll.paging || vm.mergedOptions.vuescroll.snapping || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+    return null;
+  }
+  return h("bar", barData);
+}
+
 function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function handleClickTrack(e, bar, parentRef, type, parent) {
@@ -2650,6 +2696,25 @@ var rail = {
     return h("div", data);
   }
 };
+
+function createRail(h, vm, type) {
+  // rail data
+  var railOptionType = type === "vertical" ? "vRail" : "hRail";
+  var barOptionType = type === "vertical" ? "vBar" : "hBar";
+  var axis = type === "vertical" ? "Y" : "X";
+
+  var railData = {
+    props: {
+      type: type,
+      ops: vm.mergedOptions[railOptionType],
+      state: vm[railOptionType].state
+    }
+  };
+  if (!vm[barOptionType].state.size || vm.mergedOptions.vuescroll.paging || vm.mergedOptions.vuescroll.snapping || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+    return null;
+  }
+  return h("rail", railData);
+}
 
 // scrollContent
 var scrollContent = {
@@ -2690,6 +2755,28 @@ var scrollContent = {
   }
 };
 
+/**
+ * create scroll content
+ * 
+ * @param {any} size 
+ * @param {any} vm 
+ * @returns 
+ */
+function createContent(h, vm) {
+  // scrollContent data
+  var scrollContentData = {
+    props: {
+      ops: vm.mergedOptions.scrollContent
+    }
+  };
+  return h(
+    "scrollContent",
+    scrollContentData,
+    [[vm.$slots.default]]
+  );
+}
+
+// begin importing
 // vueScrollPanel
 var scrollPanel = {
   name: "scrollPanel",
@@ -2738,20 +2825,6 @@ var scrollPanel = {
   }
 };
 
-// vuescroll core component
-// refered to: https://github.com/ElemeFE/element/blob/dev/packages/scrollbar/src/main.js
-// vue-jsx: https://github.com/vuejs/babel-plugin-transform-vue-jsx/blob/master/example/example.js
-
-// begin importing
-// import mix begin.....
-
-// import lefrCycle
-// import api
-// import native mode
-// import slide mode
-// import mix end......
-
-// import necessary components
 /**
  * create a scrollPanel
  * 
@@ -2797,10 +2870,7 @@ function createPanel(h, vm) {
       scrollPanelData.style.height = "100%";
     } else {
       // hide system bar by use a negative value px
-      // for panel and overflow hidden for parent elm,
-      // because just hide system bar doesn't work 
-      // for firefox. #10
-      // gutter should be 0 whhen manually disable scrollingX #14
+      // gutter should be 0 when manually disable scrollingX #14
       if (vm.mergedOptions.scrollPanel.scrollingY) {
         scrollPanelData.style.marginRight = "-" + gutter + "px";
       }
@@ -2813,110 +2883,80 @@ function createPanel(h, vm) {
     // clear legency styles of slide mode...
     scrollPanelData.style.transformOrigin = "";
     scrollPanelData.style.transform = "";
-  } else if (vm.mode == "slide") {
+  } else if (vm.mode == "slide" || vm.mode == "paging") {
     scrollPanelData.style["transformOrigin"] = "left top 0px";
     scrollPanelData.style["userSelect"] = "none";
   }
   return h(
     "scrollPanel",
     scrollPanelData,
-    [function () {
-      if (vm.mode == "native") {
+    [_createPanel(vm, h)]
+  );
+}
 
-        return [createContent(h, vm)];
-      } else if (vm.mode == "slide") {
+function _createPanel(vm, h) {
 
-        var renderChildren = [vm.$slots.default];
-        // handle for refresh
-        if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
-          // just use user-defined refresh dom instead of default
-          if (vm.$slots.refresh) {
-            vm.$refs["refreshDom"] = vm.$slots.refresh[0];
-            renderChildren.unshift(vm.$slots.refresh[0]);
-          } else {
-            createRefreshDomStyle();
-            var refreshDom = null;
-            // front or end of the process.
-            if (vm.vuescroll.state.refreshStage == "deactive") {
-              refreshDom = h(
-                "svg",
-                {
-                  attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
-                },
-                [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
-                  "g",
-                  {
-                    attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
-                  },
-                  [h("path", {
-                    attrs: { d: "M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" }
-                  })]
-                )])]
-              );
-            }
-            // refreshing
-            else if (vm.vuescroll.state.refreshStage == "start") {
-                refreshDom = h(
-                  "svg",
-                  {
-                    attrs: { version: "1.1", id: "loader-1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px",
-                      viewBox: "0 0 50 50", xmlSpace: "preserve" },
-                    style: "enable-background:new 0 0 50 50;" },
-                  [h(
-                    "path",
-                    {
-                      attrs: { fill: "#000", d: "M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" }
-                    },
-                    [h("animateTransform", {
-                      attrs: { attributeType: "xml",
-                        attributeName: "transform",
-                        type: "rotate",
-                        from: "0 25 25",
-                        to: "360 25 25",
-                        dur: "0.6s",
-                        repeatCount: "indefinite" }
-                    })]
-                  )]
-                );
-              }
-              // release to refresh, active
-              else if (vm.vuescroll.state.refreshStage == "active") {
-                  refreshDom = h(
-                    "svg",
-                    {
-                      attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
-                    },
-                    [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
-                      "g",
-                      {
-                        attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
-                      },
-                      [h("path", {
-                        attrs: { d: "M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" }
-                      })]
-                    )])]
-                  );
-                }
-            // no slot refresh elm, use default
-            renderChildren.unshift(h(
-              "div",
-              { "class": "vuescroll-refresh", ref: "refreshDom", key: "refshDom" },
-              [[refreshDom, vm.pullRefreshTip]]
-            ));
-          }
+  if (vm.mode == "native") {
+
+    return [createContent(h, vm)];
+  } else if (vm.mode == "slide") {
+
+    var renderChildren = [vm.$slots.default];
+    // handle for refresh
+    if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
+      // just use user-defined refresh dom instead of default
+      if (vm.$slots.refresh) {
+        vm.$refs["refreshDom"] = vm.$slots.refresh[0];
+        renderChildren.unshift(vm.$slots.refresh[0]);
+      } else {
+        createRefreshDomStyle();
+        var refreshDom = null;
+        // front or end of the process.
+        if (vm.vuescroll.state.refreshStage == "deactive") {
+          refreshDom = h(
+            "svg",
+            {
+              attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
+            },
+            [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
+              "g",
+              {
+                attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
+              },
+              [h("path", {
+                attrs: { d: "M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" }
+              })]
+            )])]
+          );
         }
-
-        // handle for load
-        if (vm.mergedOptions.vuescroll.pushLoad.enable) {
-          if (vm.$slots.load) {
-            vm.$refs["loadDom"] = vm.$slots.load[0];
-            renderChildren.push(vm.$slots.load[0]);
-          } else {
-            createLoadDomStyle();
-            var loadDom = null;
-            // front or end of the process.
-            if (vm.vuescroll.state.loadStage == "deactive") {
-              loadDom = h(
+        // refreshing
+        else if (vm.vuescroll.state.refreshStage == "start") {
+            refreshDom = h(
+              "svg",
+              {
+                attrs: { version: "1.1", id: "loader-1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px",
+                  viewBox: "0 0 50 50", xmlSpace: "preserve" },
+                style: "enable-background:new 0 0 50 50;" },
+              [h(
+                "path",
+                {
+                  attrs: { fill: "#000", d: "M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" }
+                },
+                [h("animateTransform", {
+                  attrs: { attributeType: "xml",
+                    attributeName: "transform",
+                    type: "rotate",
+                    from: "0 25 25",
+                    to: "360 25 25",
+                    dur: "0.6s",
+                    repeatCount: "indefinite" }
+                })]
+              )]
+            );
+          }
+          // release to refresh, active
+          else if (vm.vuescroll.state.refreshStage == "active") {
+              refreshDom = h(
                 "svg",
                 {
                   attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
@@ -2932,139 +2972,110 @@ function createPanel(h, vm) {
                 )])]
               );
             }
-            // loading
-            else if (vm.vuescroll.state.loadStage == "start") {
-                loadDom = h(
-                  "svg",
-                  {
-                    attrs: { version: "1.1", id: "loader-1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px",
-                      viewBox: "0 0 50 50", xmlSpace: "preserve" },
-                    style: "enable-background:new 0 0 50 50;" },
-                  [h(
-                    "path",
-                    {
-                      attrs: { fill: "#000", d: "M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" }
-                    },
-                    [h("animateTransform", {
-                      attrs: { attributeType: "xml",
-                        attributeName: "transform",
-                        type: "rotate",
-                        from: "0 25 25",
-                        to: "360 25 25",
-                        dur: "0.6s",
-                        repeatCount: "indefinite" }
-                    })]
-                  )]
-                );
-              }
-              // release to load, active
-              else if (vm.vuescroll.state.loadStage == "active") {
-                  loadDom = h(
-                    "svg",
-                    {
-                      attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
-                    },
-                    [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
-                      "g",
-                      {
-                        attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
-                      },
-                      [h("path", {
-                        attrs: { d: "M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" }
-                      })]
-                    )])]
-                  );
-                }
-            // no slot load elm, use default
-            renderChildren.push(h(
-              "div",
-              { "class": "vuescroll-load", ref: "loadDom", key: "loadDom" },
-              [[loadDom, vm.pushLoadTip]]
-            ));
-          }
-        }
-        return renderChildren;
+        // no slot refresh elm, use default
+        renderChildren.unshift(h(
+          "div",
+          { "class": "vuescroll-refresh", ref: "refreshDom", key: "refshDom" },
+          [[refreshDom, vm.pullRefreshTip]]
+        ));
       }
-    }()]
-  );
-}
-
-/**
- * create scroll content
- * 
- * @param {any} size 
- * @param {any} vm 
- * @returns 
- */
-function createContent(h, vm) {
-  // scrollContent data
-  var scrollContentData = {
-    props: {
-      ops: vm.mergedOptions.scrollContent
     }
-  };
-  return h(
-    "scrollContent",
-    scrollContentData,
-    [[vm.$slots.default]]
-  );
-}
 
-/**
- * create rails
- * 
- * @param {any} size 
- * @param {any} type 
- * @param {any} vm 
- * @returns 
- */
-function createRail(h, vm, type) {
-  // rail data
-  var railOptionType = type === "vertical" ? "vRail" : "hRail";
-  var barOptionType = type === "vertical" ? "vBar" : "hBar";
-  var axis = type === "vertical" ? "Y" : "X";
-
-  var railData = {
-    props: {
-      type: type,
-      ops: vm.mergedOptions[railOptionType],
-      state: vm[railOptionType].state
+    // handle for load
+    if (vm.mergedOptions.vuescroll.pushLoad.enable) {
+      if (vm.$slots.load) {
+        vm.$refs["loadDom"] = vm.$slots.load[0];
+        renderChildren.push(vm.$slots.load[0]);
+      } else {
+        createLoadDomStyle();
+        var loadDom = null;
+        // front or end of the process.
+        if (vm.vuescroll.state.loadStage == "deactive") {
+          loadDom = h(
+            "svg",
+            {
+              attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
+            },
+            [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
+              "g",
+              {
+                attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
+              },
+              [h("path", {
+                attrs: { d: "M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" }
+              })]
+            )])]
+          );
+        }
+        // loading
+        else if (vm.vuescroll.state.loadStage == "start") {
+            loadDom = h(
+              "svg",
+              {
+                attrs: { version: "1.1", id: "loader-1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px",
+                  viewBox: "0 0 50 50", xmlSpace: "preserve" },
+                style: "enable-background:new 0 0 50 50;" },
+              [h(
+                "path",
+                {
+                  attrs: { fill: "#000", d: "M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" }
+                },
+                [h("animateTransform", {
+                  attrs: { attributeType: "xml",
+                    attributeName: "transform",
+                    type: "rotate",
+                    from: "0 25 25",
+                    to: "360 25 25",
+                    dur: "0.6s",
+                    repeatCount: "indefinite" }
+                })]
+              )]
+            );
+          }
+          // release to load, active
+          else if (vm.vuescroll.state.loadStage == "active") {
+              loadDom = h(
+                "svg",
+                {
+                  attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
+                },
+                [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
+                  "g",
+                  {
+                    attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
+                  },
+                  [h("path", {
+                    attrs: { d: "M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" }
+                  })]
+                )])]
+              );
+            }
+        // no slot load elm, use default
+        renderChildren.push(h(
+          "div",
+          { "class": "vuescroll-load", ref: "loadDom", key: "loadDom" },
+          [[loadDom, vm.pushLoadTip]]
+        ));
+      }
     }
-  };
-  if (!vm[barOptionType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
-    return null;
+    return renderChildren;
   }
-  return h("rail", railData);
 }
 
-/**
- * create bars
- * 
- * @param {any} size 
- * @param {any} type 
- */
-function createBar(h, vm, type) {
-  // hBar data
-  var barOptionType = type === "vertical" ? "vBar" : "hBar";
-  var axis = type === "vertical" ? "Y" : "X";
+// vuescroll core component
+// refered to: https://github.com/ElemeFE/element/blob/dev/packages/scrollbar/src/main.js
+// vue-jsx: https://github.com/vuejs/babel-plugin-transform-vue-jsx/blob/master/example/example.js
 
-  var barData = {
-    props: {
-      type: type,
-      ops: vm.mergedOptions[barOptionType],
-      state: vm[barOptionType].state
-    },
-    on: {
-      setMousedown: vm.setMousedown
-    },
-    ref: type + "Bar"
-  };
-  if (!vm[barOptionType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
-    return null;
-  }
-  return h("bar", barData);
-}
+// begin importing
+// import mix begin.....
 
+// import lefrCycle
+// import api
+// import native mode
+// import slide mode
+// import mix end......
+
+// import necessary components
 var vuescroll = {
   name: "vueScroll",
   mixins: [LifeCycleMix, vuescrollApi, nativeMode, slideMode],
@@ -3082,7 +3093,6 @@ var vuescroll = {
           mousedown: false,
           pointerLeave: true,
           timeoutId: 0,
-          updateType: "",
           // for  recording the current states of
           // scrollTop and scrollHeight when switching the
           // mode
@@ -3154,7 +3164,6 @@ var vuescroll = {
         mouseenter: function mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
           vm.showBar();
-          vm.update();
         },
         mouseleave: function mouseleave() {
           vm.vuescroll.state.pointerLeave = true;
@@ -3163,7 +3172,6 @@ var vuescroll = {
         mousemove: function mousemove() /* istanbul ignore next */{
           vm.vuescroll.state.pointerLeave = false;
           vm.showBar();
-          vm.update();
         }
       }
     };
@@ -3341,12 +3349,6 @@ var vuescroll = {
           }
         }, false);
         var funcArr = [function (nativeEvent) {
-          /** 
-                       *  set updateType to prevent
-                       *  the conflict update of the `updated
-                       *  hook` of the vuescroll itself. 
-                       */
-          _this3.vuescroll.state.updateType = "resize";
           if (_this3.mode == "slide") {
             _this3.updateScroller();
           }
@@ -3436,11 +3438,6 @@ var vuescroll = {
 
     this.$nextTick(function () {
       if (!_this6._isDestroyed) {
-        /* istanbul ignore if */
-        if (_this6.vuescroll.state.updateType == "resize") {
-          _this6.vuescroll.state.updateType = "";
-          return;
-        }
         _this6.update();
         _this6.showAndDefferedHideBar();
       }

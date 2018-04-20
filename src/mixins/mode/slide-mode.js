@@ -92,16 +92,28 @@ export default {
       this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
     },
     registryScroller() {
+      const paging = this.mergedOptions.vuescroll.paging;
+      const snapping = this.mergedOptions.vuescroll.snapping.enable;
       // disale zooming when refresh or load enabled
-      let zooming = !this.refreshLoad;
+      let zooming = !this.refreshLoad && !paging && !snapping;
       const {scrollingY, scrollingX} = this.mergedOptions.scrollPanel;
       // Initialize Scroller
       this.scroller = new Scroller(render(this.scrollPanelElm, window), {
         zooming,
         scrollingY,
         scrollingX: scrollingX && !this.refreshLoad,
-        animationDuration: this.mergedOptions.scrollPanel.speed
+        animationDuration: this.mergedOptions.scrollPanel.speed,
+        paging,
+        snapping
       });
+      // if snapping enabled
+      // we should set snap size
+      if(snapping) {
+        this.scroller.setSnapSize(
+          this.mergedOptions.vuescroll.snapping.width,
+          this.mergedOptions.vuescroll.snapping.height
+        );
+      }
       var rect = this.$el.getBoundingClientRect();
       this.scroller.setPosition(rect.left + this.$el.clientLeft, rect.top + this.$el.clientTop);    
       const cb = listenContainer(this.$el, this.scroller, (eventType) => {

@@ -51,3 +51,39 @@ export default {
     );
   }
 };
+
+export /**
+* create rails
+* 
+* @param {any} size 
+* @param {any} type 
+* @param {any} vm 
+* @returns 
+*/
+function createRail(h, vm, type) {
+  // rail data
+  const railOptionType = type === "vertical"? "vRail": "hRail";
+  const barOptionType = type === "vertical"? "vBar": "hBar";
+  const axis = type === "vertical"? "Y": "X";
+
+  const railData = {
+    props: {
+      type: type,
+      ops: vm.mergedOptions[railOptionType],
+      state: vm[railOptionType].state
+    }
+  };
+  if(!vm[barOptionType].state.size 
+   || vm.mergedOptions.vuescroll.paging
+   || vm.mergedOptions.vuescroll.snapping
+   || !vm.mergedOptions.scrollPanel["scrolling" + axis]
+   || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
+    return null;
+  }
+  return (
+    <rail 
+      {...railData}
+    />
+  );
+
+}

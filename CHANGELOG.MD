@@ -1,4 +1,22 @@
-## Change 
+## Change
+---
+### v4.3.3
+#### Features
+* Add `paging` and `snapping` options to the `vuescroll` option.
+##### Usage
+```javascript
+    ops: {
+        vuescroll: {
+            paging: true, // set scrollPanel's option scrollingX or Y to enable pagingX and pagingY
+            snapping: {
+                enable: false, // or true
+                width: 100, // snap width
+                height: 100 // snap height
+            }
+        }
+    }
+
+```  
 ---
 ### v4.2.3
 #### Bug Fix
