@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.4.3
+    * @name: vuescroll 4.4.5
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -324,6 +324,7 @@ function listenResize(element, funArr) {
 var inBrowser = typeof window !== "undefined";
 var UA = inBrowser && window.navigator.userAgent.toLowerCase();
 var isIE = UA && /msie|trident/.test(UA);
+var isFF = UA && /Firefox|Mozilla/i.test(UA);
 
 var modes = ["slide", "native"];
 var GCF = {
@@ -2741,6 +2742,8 @@ var scrollContent = {
     style.minWidth = "100%";
     if (isIE) {
       style.display = "inline-block";
+    } else if (isFF) {
+      style.width = "-moz-fit-content";
     } else {
       style.width = "fit-content";
     }

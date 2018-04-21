@@ -1,4 +1,8 @@
 ## Change Log
+### v4.4.5
+#### Tweak
+* Add `-moz-fit-content` style to scrollContent for firefox.
+---
 ### v4.4.4
 #### Tweak
 * Add `fit-content` style to scrollContent to detect the width changes.
