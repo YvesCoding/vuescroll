@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.4.7
+    * @name: vuescroll 4.4.8
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -135,7 +135,6 @@ function getGutter() {
 var haveHideen = false;
 var haveCreatedRefreshDomClass = false;
 var haveCreatedLoadDomClass = false;
-var haveCreatedContentClass = false;
 function hideSystemBar() {
   if (haveHideen) {
     return;
@@ -166,17 +165,6 @@ function createLoadDomStyle() {
   var styleDom = document.createElement("style");
   styleDom.type = "text/css";
   styleDom.innerHTML = "\n        .vuescroll-load {\n            color: black;\n            height: 50px;\n            text-align: center;\n            font-size: 16px;\n            line-height: 50px;\n        }\n        .vuescroll-load svg {\n            margin-right: 10px;\n            width: 25px;\n            height: 25px;\n            vertical-align: sub;\n        }\n        .vuescroll-load svg path,\n        .vuescroll-load svg rect{\n        fill: #FF6700;\n        }\n        ";
-  document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
-}
-
-function createContentDomStyle() {
-  if (haveCreatedContentClass) {
-    return;
-  }
-  haveCreatedContentClass = true;
-  var styleDom = document.createElement("style");
-  styleDom.type = "text/css";
-  styleDom.innerHTML = "\n    .vuescroll-content {\n       text-align: left;\n    }";
   document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
 }
 /**
@@ -328,10 +316,6 @@ function listenResize(element, funArr) {
     element.removeChild(object);
   };
 }
-var inBrowser = typeof window !== "undefined";
-var UA = inBrowser && window.navigator.userAgent.toLowerCase();
-var isIE = UA && /msie|trident/.test(UA);
-var isFF = UA && /Firefox/i.test(UA);
 
 var modes = ["slide", "native"];
 var GCF = {
@@ -2747,18 +2731,11 @@ var scrollContent = {
     style.position = "relative";
     style.minHeight = "100%";
     style.minWidth = "100%";
-    if (isIE) {
-      style.display = "inline-block";
-    } else if (isFF) {
-      style.width = "-moz-fit-content";
-    } else {
-      style.width = "fit-content";
-    }
+    style.display = "inline-block";
+
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
     }
-    // create style in <style> level
-    createContentDomStyle();
 
     return h(props.ops.tag, {
       style: style,
@@ -2867,7 +2844,8 @@ function createPanel(h, vm) {
   var scrollPanelData = {
     ref: "scrollPanel",
     style: {
-      position: "relative"
+      position: "relative",
+      height: "100%"
     },
     nativeOn: {
       scroll: vm.handleScroll
@@ -2884,12 +2862,12 @@ function createPanel(h, vm) {
     if (vm.mergedOptions.scrollPanel.scrollingY) {
       scrollPanelData.style["overflowY"] = vm.vBar.state.size ? "scroll" : "inherit";
     } else {
-      scrollPanelData.style["overflowY"] = vm.vBar.state.size ? "hidden" : "inherit";
+      scrollPanelData.style["overflowY"] = "hidden";
     }
     if (vm.mergedOptions.scrollPanel.scrollingX) {
       scrollPanelData.style["overflowX"] = vm.vBar.state.size ? "scroll" : "inherit";
     } else {
-      scrollPanelData.style["overflowX"] = vm.vBar.state.size ? "hidden" : "inherit";
+      scrollPanelData.style["overflowX"] = "hidden";
     }
     var gutter = getGutter();
     if (!getGutter.isUsed) {
@@ -2901,12 +2879,10 @@ function createPanel(h, vm) {
     } else {
       // hide system bar by use a negative value px
       // gutter should be 0 when manually disable scrollingX #14
-      if (vm.mergedOptions.scrollPanel.scrollingY) {
+      if (vm.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
         scrollPanelData.style.marginRight = "-" + gutter + "px";
       }
-      if (!vm.mergedOptions.scrollPanel.scrollingX) {
-        scrollPanelData.style.height = "100%";
-      } else {
+      if (vm.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
         scrollPanelData.style.height = "calc(100% + " + gutter + "px)";
       }
     }
@@ -3515,7 +3491,7 @@ var scroll = {
 
     scroll.isInstalled = true;
 
-    scroll.version = "4.4.7";
+    scroll.version = "4.4.8";
   }
 };
 /* istanbul ignore if */

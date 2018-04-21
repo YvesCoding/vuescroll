@@ -1,9 +1,6 @@
 
 import {
-  deepMerge,
-  createContentDomStyle,
-  isIE,
-  isFF
+  deepMerge
 } from "../util";
 // scrollContent
 export default  {
@@ -14,18 +11,11 @@ export default  {
     style.position = "relative";
     style.minHeight = "100%";
     style.minWidth = "100%";
-    if(isIE) {
-      style.display = "inline-block";
-    } else if (isFF) {
-      style.width = "-moz-fit-content";
-    } else {
-      style.width = "fit-content";
-    }
+    style.display = "inline-block";
+
     if(props.ops.padding) {
       style[props.ops.paddPos] =  props.ops.paddValue;
     }
-    // create style in <style> level
-    createContentDomStyle();
 
     return h(props.ops.tag, {
       style: style,

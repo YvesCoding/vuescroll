@@ -1,4 +1,8 @@
 ## Change Log
+### v4.4.8
+#### Revert
+* Remove `fit-content` and add `inline-block` to `scrollContent`
+---
 ### v4.4.7
 #### Tweak
 * Add `text-align` to content
