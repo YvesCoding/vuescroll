@@ -1,6 +1,9 @@
 ## Change Log
+### v4.4.4
+#### Tweak
+* Add `fit-content` style to scrollContent to detect the width changes.
 ---
-### v4.3.3
+### v4.4.3
 #### Features
 * To disable scrollbar or rail, add `disabled` option to `vRail, vBar, hRail, hBar`
 #### Tweaks

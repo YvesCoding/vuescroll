@@ -1,6 +1,7 @@
 
 import {
-  deepMerge
+  deepMerge,
+  isIE
 } from "../util";
 // scrollContent
 export default  {
@@ -10,6 +11,12 @@ export default  {
     let style = deepMerge(props.state.style, {});
     style.position = "relative";
     style.minHeight = "100%";
+    style.minWidth = "100%";
+    if(isIE) {
+      style.display = "inline-block";
+    } else {
+      style.width = "fit-content";
+    }
     if(props.ops.padding) {
       style[props.ops.paddPos] =  props.ops.paddValue;
     }
