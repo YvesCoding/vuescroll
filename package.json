@@ -7,7 +7,6 @@
   },
   "bundleDependencies": false,
   "dependencies": {
-    "element-ui": "^2.1.0",
     "vue": "^2.0"
   },
   "deprecated": false,
@@ -34,7 +33,7 @@
     "test:cover": "karma start test/karma.conf.js",
     "report-coverage": "codecov"
   },
-  "version": "4.0.0",
+  "version": "4.4.3",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",

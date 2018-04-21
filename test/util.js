@@ -6,7 +6,6 @@
  * @param  {*} opts
  */
 export function trigger(elm, name, ...opts) {
-  let eventName;
   let evt = null;
 
   if (/^mouse|click/.test(name)) {
@@ -19,8 +18,8 @@ export function trigger(elm, name, ...opts) {
 
   elm.dispatchEvent
     ? elm.dispatchEvent(evt)
-    : elm.fireEvent('on' + name, evt);
+    : elm.fireEvent("on" + name, evt);
 
   return elm;
-};
+}
   
