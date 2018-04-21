@@ -321,6 +321,9 @@ function listenResize(element, funArr) {
     element.removeChild(object);
   };
 }
+var inBrowser = typeof window !== "undefined";
+var UA = inBrowser && window.navigator.userAgent.toLowerCase();
+var isIE = UA && /msie|trident/.test(UA);
 
 var modes = ["slide", "native"];
 var GCF = {
@@ -2735,6 +2738,12 @@ var scrollContent = {
     var style = deepMerge(props.state.style, {});
     style.position = "relative";
     style.minHeight = "100%";
+    style.minWidth = "100%";
+    if (isIE) {
+      style.display = "inline-block";
+    } else {
+      style.width = "fit-content";
+    }
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
     }

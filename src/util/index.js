@@ -348,3 +348,6 @@ export function listenResize(element, funArr) {
     element.removeChild(object);
   };
 }
+const inBrowser = typeof window !== "undefined";
+const UA = inBrowser && window.navigator.userAgent.toLowerCase();
+export const isIE = UA && /msie|trident/.test(UA);
