@@ -68,7 +68,8 @@ export function createPanel(h, vm) {
   const scrollPanelData = {
     ref: "scrollPanel",
     style: {
-      position: "relative"
+      position: "relative",
+      height: "100%"
     },
     nativeOn: {
       scroll: vm.handleScroll
@@ -85,12 +86,12 @@ export function createPanel(h, vm) {
     if(vm.mergedOptions.scrollPanel.scrollingY) {
       scrollPanelData.style["overflowY"] = vm.vBar.state.size?"scroll":"inherit";
     } else {
-      scrollPanelData.style["overflowY"] = vm.vBar.state.size?"hidden":"inherit";
+      scrollPanelData.style["overflowY"] = "hidden";
     }
     if(vm.mergedOptions.scrollPanel.scrollingX) {
       scrollPanelData.style["overflowX"] = vm.vBar.state.size?"scroll":"inherit";
     } else  {
-      scrollPanelData.style["overflowX"] = vm.vBar.state.size?"hidden":"inherit";
+      scrollPanelData.style["overflowX"] = "hidden";
     }
     let gutter = getGutter();
     if(!getGutter.isUsed) {
@@ -102,14 +103,12 @@ export function createPanel(h, vm) {
     } else {
       // hide system bar by use a negative value px
       // gutter should be 0 when manually disable scrollingX #14
-      if(vm.mergedOptions.scrollPanel.scrollingY) {
+      if(vm.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
         scrollPanelData.style.marginRight = `-${gutter}px`;
       }
-      if(!vm.mergedOptions.scrollPanel.scrollingX) {
-        scrollPanelData.style.height = "100%";
-      } else {
+      if(vm.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
         scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
-      }
+      } 
     }
     // clear legency styles of slide mode...
     scrollPanelData.style.transformOrigin = "";

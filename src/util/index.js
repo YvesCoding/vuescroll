@@ -101,7 +101,6 @@ export function getGutter() {
 let haveHideen = false;
 let haveCreatedRefreshDomClass = false;
 let haveCreatedLoadDomClass = false;
-let haveCreatedContentClass = false;
 export function hideSystemBar() {
   if(haveHideen) {
     return;
@@ -168,20 +167,6 @@ export function createLoadDomStyle() {
         fill: #FF6700;
         }
         `;
-  document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
-}
-
-export function createContentDomStyle() {
-  if(haveCreatedContentClass) {
-    return;
-  }
-  haveCreatedContentClass = true;
-  let styleDom = document.createElement("style");
-  styleDom.type = "text/css";
-  styleDom.innerHTML=`
-    .vuescroll-content {
-       text-align: left;
-    }`;
   document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
 }
 /**
@@ -362,7 +347,3 @@ export function listenResize(element, funArr) {
     element.removeChild(object);
   };
 }
-const inBrowser = typeof window !== "undefined"; 
-const UA = inBrowser && window.navigator.userAgent.toLowerCase();
-export const isIE = UA && /msie|trident/.test(UA);
-export const isFF = UA && /Firefox/i.test(UA);
