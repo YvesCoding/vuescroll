@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.4.6
+    * @name: vuescroll 4.4.7
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -135,7 +135,7 @@ function getGutter() {
 var haveHideen = false;
 var haveCreatedRefreshDomClass = false;
 var haveCreatedLoadDomClass = false;
-
+var haveCreatedContentClass = false;
 function hideSystemBar() {
   if (haveHideen) {
     return;
@@ -166,6 +166,17 @@ function createLoadDomStyle() {
   var styleDom = document.createElement("style");
   styleDom.type = "text/css";
   styleDom.innerHTML = "\n        .vuescroll-load {\n            color: black;\n            height: 50px;\n            text-align: center;\n            font-size: 16px;\n            line-height: 50px;\n        }\n        .vuescroll-load svg {\n            margin-right: 10px;\n            width: 25px;\n            height: 25px;\n            vertical-align: sub;\n        }\n        .vuescroll-load svg path,\n        .vuescroll-load svg rect{\n        fill: #FF6700;\n        }\n        ";
+  document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
+}
+
+function createContentDomStyle() {
+  if (haveCreatedContentClass) {
+    return;
+  }
+  haveCreatedContentClass = true;
+  var styleDom = document.createElement("style");
+  styleDom.type = "text/css";
+  styleDom.innerHTML = "\n    .vuescroll-content {\n       text-align: left;\n    }";
   document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
 }
 /**
@@ -2746,6 +2757,9 @@ var scrollContent = {
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
     }
+    // create style in <style> level
+    createContentDomStyle();
+
     return h(props.ops.tag, {
       style: style,
       ref: "scrollContent",
@@ -3501,7 +3515,7 @@ var scroll = {
 
     scroll.isInstalled = true;
 
-    scroll.version = "4.4.6";
+    scroll.version = "4.4.7";
   }
 };
 /* istanbul ignore if */

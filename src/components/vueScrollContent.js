@@ -1,6 +1,7 @@
 
 import {
   deepMerge,
+  createContentDomStyle,
   isIE,
   isFF
 } from "../util";
@@ -23,6 +24,9 @@ export default  {
     if(props.ops.padding) {
       style[props.ops.paddPos] =  props.ops.paddValue;
     }
+    // create style in <style> level
+    createContentDomStyle();
+
     return h(props.ops.tag, {
       style: style,
       ref: "scrollContent",
