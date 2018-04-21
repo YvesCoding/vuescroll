@@ -1,7 +1,8 @@
 
 import {
   deepMerge,
-  isIE
+  isIE,
+  isFF
 } from "../util";
 // scrollContent
 export default  {
@@ -14,6 +15,8 @@ export default  {
     style.minWidth = "100%";
     if(isIE) {
       style.display = "inline-block";
+    } else if (isFF) {
+      style.width = "-moz-fit-content";
     } else {
       style.width = "fit-content";
     }
