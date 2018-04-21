@@ -1,4 +1,8 @@
 ## Change Log
+### v4.4.6
+#### Fix
+* RegExp for detect browser.
+---
 ### v4.4.5
 #### Tweak
 * Add `-moz-fit-content` style to scrollContent for firefox.

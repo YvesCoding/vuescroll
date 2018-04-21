@@ -23,7 +23,8 @@ let scroll = {
     Vue.prototype.$vuescrollConfig = deepMerge(GCF, {});
 
     scroll.isInstalled = true;
-         
+    
+    scroll.version = "__version__";
   }
 };
 /* istanbul ignore if */
