@@ -266,7 +266,6 @@
                 setTimeout(() => {
                     if(this.add) {
                         this.dataNums += 100;
-                        this.add = false;
                     }
                     done();
                 }, 500)
@@ -281,6 +280,7 @@
                         this.add = true;
                         this.ops.vuescroll.pushLoad.tips.beforeDeactive = "load successfully!";
                     } else {
+                        this.add = false;
                         this.ops.vuescroll.pushLoad.tips.beforeDeactive = "no more data!";
                     }
                 }, 2000);

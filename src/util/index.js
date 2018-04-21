@@ -351,4 +351,4 @@ export function listenResize(element, funArr) {
 const inBrowser = typeof window !== "undefined"; 
 const UA = inBrowser && window.navigator.userAgent.toLowerCase();
 export const isIE = UA && /msie|trident/.test(UA);
-export const isFF = UA && /Firefox|Mozilla/i.test(UA);
+export const isFF = UA && /Firefox/i.test(UA);
