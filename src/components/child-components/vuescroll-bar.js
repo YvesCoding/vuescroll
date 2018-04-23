@@ -1,9 +1,9 @@
-import scrollMap from "../config/scrollMap";
+import scrollMap from "../../config/scroll-map";
 import {
   renderTransform,
   on,
   off
-} from "../util";
+} from "../../util";
 
 export default {
   name: "bar",
@@ -61,7 +61,7 @@ export default {
       e.stopPropagation();
       this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
       // tell parent that the mouse has been down.
-      this.$emit("setMousedown", true);
+      this.$emit("setBarClick", true);
       on(document, "mousemove", this.handleMouseMove);
       on(document, "mouseup", this.handleMouseUp);
     },
@@ -88,7 +88,7 @@ export default {
       } 
     },
     handleMouseUp() {
-      this.$emit("setMousedown", false);
+      this.$emit("setBarClick", false);
       this.$parent.hideBar();
       this.axisStartPos = 0;
       off(document, "mousemove", this.handleMouseMove);
@@ -129,7 +129,7 @@ export function createBar(h, vm, type) {
       state: vm[barOptionType].state
     },
     on: {
-      setMousedown: vm.setMousedown
+      setBarClick: vm.setBarClick
     },
     ref: `${type}Bar`
   };

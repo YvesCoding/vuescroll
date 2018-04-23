@@ -1,4 +1,4 @@
-import map from "../config/scrollMap";
+import map from "../../config/scroll-map";
 
 function handleClickTrack(e, bar, parentRef, type, parent) {
   const page = bar.page;

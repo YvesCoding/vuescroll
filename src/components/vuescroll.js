@@ -8,27 +8,26 @@ import {
 } from "../util";
 
 // import mix begin.....
-
 // import lefrCycle
-import LifeCycleMix from "../mixins/LifeCycleMix";
+import hackLifecycle from "../mixins/hack-lifecycle";
 // import api
-import vuescrollApi from "../mixins/vueScrollApi";
+import api from "../mixins/api";
 // import native mode
 import nativeMode from "../mixins/mode/native-mode";
 // import slide mode
 import slideMode from "../mixins/mode/slide-mode";
 // import mix end......
 
-// import necessary components
-import bar, {createBar} from "./vuescrollBar";
-import rail, {createRail} from "./vuescrollRail";
-import scrollContent from "./vueScrollContent";
-import scrollPanel, {createPanel} from "./vueScrollPanel";
+// import child components
+import bar, {createBar} from "./child-components/vuescroll-bar";
+import rail, {createRail} from "./child-components/vuescroll-rail";
+import scrollContent from "./child-components/vueScroll-content";
+import scrollPanel, {createPanel} from "./child-components/vueScroll-panel";
 
 export default  {
   name: "vueScroll",
-  mixins: [LifeCycleMix, 
-    vuescrollApi, 
+  mixins: [hackLifecycle, 
+    api, 
     nativeMode, 
     slideMode],
   data() {
@@ -42,7 +41,7 @@ export default  {
           // judge whether the mouse pointer keeps pressing
           // the scrollbar or not, if true, we don't hide the 
           // scrollbar when mouse leave the vuescroll.
-          mousedown: false,
+          isClickingBar: false,
           pointerLeave: true,
           timeoutId: 0,
           // for  recording the current states of
@@ -219,6 +218,9 @@ export default  {
       this.update("handle-scroll", nativeEvent);
       this.showAndDefferedHideBar();
     },
+    setBarClick(val) {
+      this.isClickingBar = val;
+    },
     showAndDefferedHideBar() {
       this.showBar();
       if(this.vuescroll.state.timeoutId) {
@@ -258,17 +260,14 @@ export default  {
       if(this.vuescroll.state.isDragging) {
         return;
       }
-      // add mousedown condition 
+      // add isClickingBar condition 
       // to prevent from hiding bar while dragging the bar 
-      if(!this.mergedOptions.vBar.keepShow && !this.vuescroll.state.mousedown && this.vuescroll.state.pointerLeave) {
+      if(!this.mergedOptions.vBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
         this.vBar.state.opacity = 0;
       }
-      if(!this.mergedOptions.hBar.keepShow && !this.vuescroll.state.mousedown && this.vuescroll.state.pointerLeave) {
+      if(!this.mergedOptions.hBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
         this.hBar.state.opacity = 0;
       }
-    },
-    setMousedown(val) {
-      this.vuescroll.state.mousedown = val;
     },
     registryResize() {
       if(this.uncessaryChanges) {
