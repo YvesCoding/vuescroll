@@ -306,11 +306,17 @@ export default  {
           }
         }, false);
         let funcArr = [
-          (nativeEvent) => {    
+          () => {
+            let currentSize = {};    
             if(this.mode == "slide") {
               this.updateScroller();
+              currentSize["width"] = this.scroller.__contentWidth;
+              currentSize["height"] = this.scroller.__contentHeight;
+            } else if(this.mode == "native") {
+              currentSize["width"] = this.scrollPanelElm.scrollWidth;
+              currentSize["height"] = this.scrollPanelElm.scrollHeight;
             }
-            this.update("handle-resize", nativeEvent);
+            this.update("handle-resize", currentSize);
             this.showAndDefferedHideBar();
           }
         ];

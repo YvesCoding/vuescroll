@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.4.8
+    * @name: vuescroll 4.4.9
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -2382,9 +2382,10 @@ var slideMode = {
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
         var refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
         refreshHeight = refreshDom.scrollHeight;
-        refreshDom.style.marginTop = -refreshHeight + "px";
-        // the content height should subtracting the refresh dom height
-        contentHeight -= refreshHeight;
+        if (!refreshDom.style.marginTop) {
+          refreshDom.style.marginTop = -refreshHeight + "px";
+          contentHeight -= refreshHeight;
+        }
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
         var loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
@@ -2671,9 +2672,9 @@ function createBar(h, vm, type) {
 function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function handleClickTrack(e, bar, parentRef, type, parent) {
-  var page = bar.page;
+  var client = bar.client;
   var barOffset = parentRef[type + "Bar"].$el[bar.offset];
-  var percent = (e[page] - e.target.getBoundingClientRect()[bar.posName] - barOffset / 2) / e.target[bar.offset];
+  var percent = (e[client] - e.target.getBoundingClientRect()[bar.posName] - barOffset / 2) / e.target[bar.offset];
   var pos = parentRef["scrollPanel"].$el[bar.scrollSize] * percent;
   parent.scrollTo(_defineProperty$1({}, map[type].axis.toLowerCase(), pos));
 }
@@ -2856,8 +2857,7 @@ function createPanel(h, vm) {
   var scrollPanelData = {
     ref: "scrollPanel",
     style: {
-      position: "relative",
-      height: "100%"
+      position: "relative"
     },
     nativeOn: {
       scroll: vm.handleScroll
@@ -2902,6 +2902,7 @@ function createPanel(h, vm) {
     scrollPanelData.style.transformOrigin = "";
     scrollPanelData.style.transform = "";
   } else if (vm.mode == "slide") {
+    scrollPanelData.style["display"] = "inline-block";
     scrollPanelData.style["transformOrigin"] = "left top 0px";
     scrollPanelData.style["userSelect"] = "none";
   }
@@ -3365,11 +3366,17 @@ var vuescroll = {
             _this3.updateScroller();
           }
         }, false);
-        var funcArr = [function (nativeEvent) {
+        var funcArr = [function () {
+          var currentSize = {};
           if (_this3.mode == "slide") {
             _this3.updateScroller();
+            currentSize["width"] = _this3.scroller.__contentWidth;
+            currentSize["height"] = _this3.scroller.__contentHeight;
+          } else if (_this3.mode == "native") {
+            currentSize["width"] = _this3.scrollPanelElm.scrollWidth;
+            currentSize["height"] = _this3.scrollPanelElm.scrollHeight;
           }
-          _this3.update("handle-resize", nativeEvent);
+          _this3.update("handle-resize", currentSize);
           _this3.showAndDefferedHideBar();
         }];
         // registry resize event
@@ -3502,7 +3509,7 @@ var scroll = {
 
     scroll.isInstalled = true;
 
-    scroll.version = "4.4.8";
+    scroll.version = "4.4.9";
   }
 };
 /* istanbul ignore if */

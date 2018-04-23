@@ -79,9 +79,10 @@ export default {
       if(this.mergedOptions.vuescroll.pullRefresh.enable) {
         const refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
         refreshHeight = refreshDom.scrollHeight;
-        refreshDom.style.marginTop = -refreshHeight + "px";
-        // the content height should subtracting the refresh dom height
-        contentHeight -= refreshHeight; 
+        if(!refreshDom.style.marginTop) {
+          refreshDom.style.marginTop = -refreshHeight + "px";
+          contentHeight -= refreshHeight; 
+        }
       }
       if(this.mergedOptions.vuescroll.pushLoad.enable) {
         const loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
