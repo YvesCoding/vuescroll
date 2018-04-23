@@ -68,8 +68,7 @@ export function createPanel(h, vm) {
   const scrollPanelData = {
     ref: "scrollPanel",
     style: {
-      position: "relative",
-      height: "100%"
+      position: "relative"
     },
     nativeOn: {
       scroll: vm.handleScroll
@@ -114,6 +113,7 @@ export function createPanel(h, vm) {
     scrollPanelData.style.transformOrigin = "";
     scrollPanelData.style.transform = "";
   } else if(vm.mode == "slide") {
+    scrollPanelData.style["display"] = "inline-block";
     scrollPanelData.style["transformOrigin"] = "left top 0px";
     scrollPanelData.style["userSelect"] = "none";
   }

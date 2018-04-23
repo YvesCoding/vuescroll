@@ -1,4 +1,7 @@
 ## Change Log
+### v4.4.9
+#### Fix
+* When push-refresh enable, set panel's `display` to `inline-block` 
 ### v4.4.8
 #### Revert
 * Remove `fit-content` and add `inline-block` to `scrollContent`

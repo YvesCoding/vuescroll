@@ -1,9 +1,9 @@
 import map from "../../config/scroll-map";
 
 function handleClickTrack(e, bar, parentRef, type, parent) {
-  const page = bar.page;
+  const client = bar.client;
   const barOffset = parentRef[`${type}Bar`].$el[bar.offset];
-  const percent = (e[page] - e.target.getBoundingClientRect()[bar.posName] - barOffset/2) / e.target[bar.offset];
+  const percent = (e[client] - e.target.getBoundingClientRect()[bar.posName] - barOffset/2) / e.target[bar.offset];
   const pos = parentRef["scrollPanel"].$el[bar.scrollSize] * percent; 
   parent.scrollTo({
     [map[type].axis.toLowerCase()]: pos
