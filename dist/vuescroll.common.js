@@ -477,7 +477,7 @@ function hackPropsData() {
     });
   }
 }
-var LifeCycleMix = {
+var hackLifecycle = {
   data: function data() {
     return {
       shouldStopRender: false
@@ -507,7 +507,7 @@ function extractScrollDistance(distance, scroll, el) {
   return number;
 }
 
-var vuescrollApi = {
+var api = {
   methods: {
     scrollTo: function scrollTo(pos) {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -2595,7 +2595,7 @@ var bar = {
       e.stopPropagation();
       this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
       // tell parent that the mouse has been down.
-      this.$emit("setMousedown", true);
+      this.$emit("setBarClick", true);
       on(document, "mousemove", this.handleMouseMove);
       on(document, "mouseup", this.handleMouseUp);
     },
@@ -2617,7 +2617,7 @@ var bar = {
       }
     },
     handleMouseUp: function handleMouseUp() {
-      this.$emit("setMousedown", false);
+      this.$emit("setBarClick", false);
       this.$parent.hideBar();
       this.axisStartPos = 0;
       off(document, "mousemove", this.handleMouseMove);
@@ -2658,7 +2658,7 @@ function createBar(h, vm, type) {
       state: vm[barOptionType].state
     },
     on: {
-      setMousedown: vm.setMousedown
+      setBarClick: vm.setBarClick
     },
     ref: type + "Bar"
   };
@@ -2773,7 +2773,15 @@ var scrollContent = {
  * @param {any} vm 
  * @returns 
  */
-function createContent(h, vm) {
+
+/**
+ * create scroll content
+ * 
+ * @param {any} size 
+ * @param {any} vm 
+ * @returns 
+ */
+function createContent$1(h, vm) {
   // scrollContent data
   var scrollContentData = {
     props: {
@@ -2908,7 +2916,7 @@ function _createPanel(vm, h) {
 
   if (vm.mode == "native") {
 
-    return [createContent(h, vm)];
+    return [createContent$1(h, vm)];
   } else if (vm.mode == "slide") {
 
     var renderChildren = [vm.$slots.default];
@@ -3078,17 +3086,16 @@ function _createPanel(vm, h) {
 
 // begin importing
 // import mix begin.....
-
 // import lefrCycle
 // import api
 // import native mode
 // import slide mode
 // import mix end......
 
-// import necessary components
+// import child components
 var vuescroll = {
   name: "vueScroll",
-  mixins: [LifeCycleMix, vuescrollApi, nativeMode, slideMode],
+  mixins: [hackLifecycle, api, nativeMode, slideMode],
   data: function data() {
     return {
       // vuescroll components' state
@@ -3100,7 +3107,7 @@ var vuescroll = {
           // judge whether the mouse pointer keeps pressing
           // the scrollbar or not, if true, we don't hide the 
           // scrollbar when mouse leave the vuescroll.
-          mousedown: false,
+          isClickingBar: false,
           pointerLeave: true,
           timeoutId: 0,
           // for  recording the current states of
@@ -3263,6 +3270,9 @@ var vuescroll = {
       this.update("handle-scroll", nativeEvent);
       this.showAndDefferedHideBar();
     },
+    setBarClick: function setBarClick(val) {
+      this.isClickingBar = val;
+    },
     showAndDefferedHideBar: function showAndDefferedHideBar() {
       var _this2 = this;
 
@@ -3308,17 +3318,14 @@ var vuescroll = {
       if (this.vuescroll.state.isDragging) {
         return;
       }
-      // add mousedown condition 
+      // add isClickingBar condition 
       // to prevent from hiding bar while dragging the bar 
-      if (!this.mergedOptions.vBar.keepShow && !this.vuescroll.state.mousedown && this.vuescroll.state.pointerLeave) {
+      if (!this.mergedOptions.vBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
         this.vBar.state.opacity = 0;
       }
-      if (!this.mergedOptions.hBar.keepShow && !this.vuescroll.state.mousedown && this.vuescroll.state.pointerLeave) {
+      if (!this.mergedOptions.hBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
         this.hBar.state.opacity = 0;
       }
-    },
-    setMousedown: function setMousedown(val) {
-      this.vuescroll.state.mousedown = val;
     },
     registryResize: function registryResize() {
       var _this3 = this;

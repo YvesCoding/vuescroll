@@ -1,5 +1,5 @@
 import Vue from "vue";
-import scrollMap from "../config/scrollMap";
+import scrollMap from "../config/scroll-map";
 /**
  * @description deepCopy a object.
  * 

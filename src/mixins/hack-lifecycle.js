@@ -1,4 +1,4 @@
-import GCF, {validateOptions} from "../config/GlobalConfig"; 
+import GCF, {validateOptions} from "../config/global-config"; 
 import {
   deepMerge,
   defineReactive

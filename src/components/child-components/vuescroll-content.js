@@ -1,7 +1,7 @@
 
 import {
   deepMerge
-} from "../util";
+} from "../../util";
 // scrollContent
 export default  {
   name: "scrollContent",

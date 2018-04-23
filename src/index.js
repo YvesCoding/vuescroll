@@ -3,7 +3,7 @@ import Vue from "vue";
 import vuescroll from "./components/vuescroll";
 
 // import config
-import GCF from "./config/GlobalConfig";
+import GCF from "./config/global-config";
 
 import {
   deepMerge

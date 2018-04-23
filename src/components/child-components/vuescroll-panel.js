@@ -4,8 +4,8 @@ import {
   hideSystemBar,
   createRefreshDomStyle,
   createLoadDomStyle
-} from "../util";
-import {createContent} from "./vueScrollContent";
+} from "../../util";
+import {createContent} from "./vuescroll-content";
 // vueScrollPanel
 export default   {
   name: "scrollPanel",
