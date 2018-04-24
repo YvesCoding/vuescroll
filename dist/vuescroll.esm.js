@@ -387,8 +387,6 @@ var GCF = {
   bar: {
     // 
     vBar: {
-      width: "5px",
-      pos: "right",
       background: "#4caf50",
       deltaY: 100,
       keepShow: false,
@@ -398,8 +396,6 @@ var GCF = {
     },
     // 
     hBar: {
-      height: "5px",
-      pos: "bottom",
       background: "#4caf50",
       keepShow: false,
       opacity: 1,

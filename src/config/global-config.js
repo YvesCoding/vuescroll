@@ -70,8 +70,6 @@ export default {
   bar: {
     // 
     vBar: {
-      width: "5px",
-      pos: "right",
       background: "#4caf50",
       deltaY: 100,
       keepShow: false,
@@ -81,8 +79,6 @@ export default {
     },
     // 
     hBar: {
-      height: "5px",
-      pos: "bottom",
       background: "#4caf50",
       keepShow: false,
       opacity: 1,
