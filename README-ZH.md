@@ -23,15 +23,6 @@
 * 整合[smooth-scroll](https://github.com/cferdinandi/smooth-scroll).
 * Vue-驱动.
 
-### 预览
-### 在两种模式之间切换
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
-### 平滑滚动
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-smooth.gif?raw=true)
-对了, [这里](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) 有许多滚动动画供你选择。 
-### 拉取刷新和推动加载
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-refresh-load.gif?raw=true)
-
 ## 开始上手
 ### 浏览器 -> 直接下载 / CDN
 ```html
@@ -80,6 +71,16 @@ var vm = new Vue({
     }
 })
 ```
+
+### 预览
+### 在两种模式之间切换
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-mode.gif?raw=true)
+### 平滑滚动
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-smooth.gif?raw=true)
+对了, [这里](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) 有许多滚动动画供你选择。 
+### 拉取刷新和推动加载
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-refresh-load.gif?raw=true)
+
 ## 受以下的项目启发
 
 jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
