@@ -85,7 +85,7 @@ BTW, [Here](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0
 
 ## Inspiration
 
-jquery [slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
+[slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
 
 ## Licence
 
