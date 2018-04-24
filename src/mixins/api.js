@@ -23,12 +23,12 @@ export default {
   methods: {
     scrollTo(pos, animate = true) {
       if(typeof pos.x === "undefined") {
-        pos.x = this.$refs["scrollPanel"].$el.scrollLeft;
+        pos.x = this.vuescroll.state.internalScrollLeft;
       } else {
         pos.x = extractScrollDistance(pos.x, "scrollWidth", this.scrollPanelElm);
       }
       if(typeof pos.y === "undefined") {
-        pos.y = this.$refs["scrollPanel"].$el.scrollTop;
+        pos.y = this.vuescroll.state.internalScrollTop;
       } else {
         pos.y = extractScrollDistance(pos.y, "scrollHeight", this.scrollPanelElm);
       }
