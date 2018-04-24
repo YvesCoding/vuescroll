@@ -27,20 +27,20 @@ function hackPropsData() {
     // from ops to mergedOptions
     deepMerge(ops, vm.mergedOptions);
     // to sync the rail and bar
-    defineReactive(vm.mergedOptions.vBar, "pos", vm.mergedOptions.vRail);
-    defineReactive(vm.mergedOptions.vBar, "width", vm.mergedOptions.vRail);
-    defineReactive(vm.mergedOptions.hBar, "pos", vm.mergedOptions.hRail);
-    defineReactive(vm.mergedOptions.hBar, "height", vm.mergedOptions.hRail);
+    defineReactive(vm.mergedOptions.bar.vBar, "pos", vm.mergedOptions.rail.vRail);
+    defineReactive(vm.mergedOptions.bar.vBar, "width", vm.mergedOptions.rail.vRail);
+    defineReactive(vm.mergedOptions.bar.hBar, "pos", vm.mergedOptions.rail.hRail);
+    defineReactive(vm.mergedOptions.bar.hBar, "height", vm.mergedOptions.rail.hRail);
         
     const prefix = "padding-";
     defineReactive(vm.mergedOptions.scrollContent, "paddPos",   
       () => {
-        return prefix + vm.mergedOptions.vRail.pos;
+        return prefix + vm.mergedOptions.rail.vRail.pos;
       }
     );
     defineReactive(vm.mergedOptions.scrollContent, "paddValue",  
       () => {
-        return vm.mergedOptions.vRail.width;
+        return vm.mergedOptions.rail.vRail.width;
       }
     );
   } 

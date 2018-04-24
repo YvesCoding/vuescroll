@@ -372,42 +372,46 @@ var GCF = {
     props: {},
     attrs: {}
   },
-  // 
-  vRail: {
-    width: "5px",
-    pos: "right",
-    background: "#a5d6a7",
-    opacity: 0, //'0.5'
-    disabled: false
+  //
+  rail: {
+    vRail: {
+      width: "5px",
+      pos: "right",
+      background: "#a5d6a7",
+      opacity: 0, //'0.5'
+      disabled: false
+    },
+    // 
+    hRail: {
+      height: "5px",
+      pos: "bottom",
+      background: "#a5d6a7",
+      opacity: 0, //'0.5'
+      disabled: false
+    }
   },
-  // 
-  hRail: {
-    height: "5px",
-    pos: "bottom",
-    background: "#a5d6a7",
-    opacity: 0, //'0.5'
-    disabled: false
-  },
-  // 
-  vBar: {
-    width: "5px",
-    pos: "right",
-    background: "#4caf50",
-    deltaY: 100,
-    keepShow: false,
-    opacity: 1,
-    hover: false,
-    disabled: false
-  },
-  // 
-  hBar: {
-    height: "5px",
-    pos: "bottom",
-    background: "#4caf50",
-    keepShow: false,
-    opacity: 1,
-    hover: false,
-    disabled: false
+  bar: {
+    // 
+    vBar: {
+      width: "5px",
+      pos: "right",
+      background: "#4caf50",
+      deltaY: 100,
+      keepShow: false,
+      opacity: 1,
+      hover: false,
+      disabled: false
+    },
+    // 
+    hBar: {
+      height: "5px",
+      pos: "bottom",
+      background: "#4caf50",
+      keepShow: false,
+      opacity: 1,
+      hover: false,
+      disabled: false
+    }
   }
 };
 /**
@@ -465,17 +469,17 @@ function hackPropsData() {
     // from ops to mergedOptions
     deepMerge(ops, vm.mergedOptions);
     // to sync the rail and bar
-    defineReactive(vm.mergedOptions.vBar, "pos", vm.mergedOptions.vRail);
-    defineReactive(vm.mergedOptions.vBar, "width", vm.mergedOptions.vRail);
-    defineReactive(vm.mergedOptions.hBar, "pos", vm.mergedOptions.hRail);
-    defineReactive(vm.mergedOptions.hBar, "height", vm.mergedOptions.hRail);
+    defineReactive(vm.mergedOptions.bar.vBar, "pos", vm.mergedOptions.rail.vRail);
+    defineReactive(vm.mergedOptions.bar.vBar, "width", vm.mergedOptions.rail.vRail);
+    defineReactive(vm.mergedOptions.bar.hBar, "pos", vm.mergedOptions.rail.hRail);
+    defineReactive(vm.mergedOptions.bar.hBar, "height", vm.mergedOptions.rail.hRail);
 
     var prefix = "padding-";
     defineReactive(vm.mergedOptions.scrollContent, "paddPos", function () {
-      return prefix + vm.mergedOptions.vRail.pos;
+      return prefix + vm.mergedOptions.rail.vRail.pos;
     });
     defineReactive(vm.mergedOptions.scrollContent, "paddValue", function () {
-      return vm.mergedOptions.vRail.width;
+      return vm.mergedOptions.rail.vRail.width;
     });
   }
 }
@@ -498,45 +502,64 @@ var hackLifecycle = {
  * @param {any} el 
  * @returns 
  */
-function extractScrollDistance(distance, scroll, el) {
+function getNumericValue(distance, size) {
   var number = void 0;
-  if (!(number = /(\d+)%$/.exec(distance))) {
-    number = distance;
+  if (!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
+    number = distance - 0;
   } else {
-    number = number[1];
-    number = el[scroll] * number / 100;
+    number = number[1] - 0;
+    number = size * number / 100;
   }
   return number;
 }
 
 var api = {
   methods: {
-    scrollTo: function scrollTo(pos) {
+    scrollTo: function scrollTo(_ref) {
+      var x = _ref.x,
+          y = _ref.y;
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-      if (typeof pos.x === "undefined") {
-        pos.x = this.vuescroll.state.internalScrollLeft;
+      if (typeof x === "undefined") {
+        x = this.vuescroll.state.internalScrollLeft;
       } else {
-        pos.x = extractScrollDistance(pos.x, "scrollWidth", this.scrollPanelElm);
+        x = getNumericValue(x, this.scrollPanelElm.scrollWidth);
       }
-      if (typeof pos.y === "undefined") {
-        pos.y = this.vuescroll.state.internalScrollTop;
+      if (typeof y === "undefined") {
+        y = this.vuescroll.state.internalScrollTop;
       } else {
-        pos.y = extractScrollDistance(pos.y, "scrollHeight", this.scrollPanelElm);
+        y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
       }
-      var x = pos.x;
-      var y = pos.y;
+      this.internalScrollTo(x, y, animate);
+    },
+    scrollBy: function scrollBy(_ref2) {
+      var dx = _ref2.dx,
+          dy = _ref2.dy;
+      var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      var _vuescroll$state = this.vuescroll.state,
+          internalScrollLeft = _vuescroll$state.internalScrollLeft,
+          internalScrollTop = _vuescroll$state.internalScrollTop;
+
+      if (dx) {
+        internalScrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth);
+      }
+      if (dy) {
+        internalScrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight);
+      }
+      this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
+    },
+    internalScrollTo: function internalScrollTo(destX, destY, animate) {
       if (this.mode == "native") {
         if (animate) {
-          goScrolling(this.$refs["scrollPanel"].$el, x - this.$refs["scrollPanel"].$el.scrollLeft, y - this.$refs["scrollPanel"].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
+          goScrolling(this.$refs["scrollPanel"].$el, destX - this.$refs["scrollPanel"].$el.scrollLeft, destY - this.$refs["scrollPanel"].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
         } else {
-          this.$refs["scrollPanel"].$el.scrollTop = y;
-          this.$refs["scrollPanel"].$el.scrollLeft = x;
+          this.$refs["scrollPanel"].$el.scrollTop = destY;
+          this.$refs["scrollPanel"].$el.scrollLeft = destX;
         }
       }
       // for non-native we use scroller's scorllTo 
       else if (this.mode == "slide") {
-          this.scroller.scrollTo(pos.x, pos.y, animate);
+          this.scroller.scrollTo(destX, destY, animate);
         }
     },
     forceUpdate: function forceUpdate() {
@@ -559,10 +582,10 @@ var nativeMode = {
       var scrollPanel = this.scrollPanelElm;
       var heightPercentage = scrollPanel.clientHeight * 100 / scrollPanel.scrollHeight;
       var widthPercentage = scrollPanel.clientWidth * 100 / scrollPanel.scrollWidth;
-      this.vBar.state.posValue = scrollPanel.scrollTop * 100 / scrollPanel.clientHeight;
-      this.hBar.state.posValue = scrollPanel.scrollLeft * 100 / scrollPanel.clientWidth;
-      this.vBar.state.size = heightPercentage < 100 ? heightPercentage + "%" : 0;
-      this.hBar.state.size = widthPercentage < 100 ? widthPercentage + "%" : 0;
+      this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / scrollPanel.clientHeight;
+      this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / scrollPanel.clientWidth;
+      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + "%" : 0;
+      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + "%" : 0;
     }
   }
 };
@@ -2537,16 +2560,16 @@ var slideMode = {
       widthPercentage = clientWidth * 100 / (contentWidth + outerLeft);
       var scrollTop = Math.min(Math.max(0, scroller.__scrollTop), scroller.__maxScrollTop);
       var scrollLeft = Math.min(Math.max(0, scroller.__scrollLeft), scroller.__maxScrollLeft);
-      this.vBar.state.posValue = (scrollTop + outerTop) * 100 / vuescroll.clientHeight;
-      this.hBar.state.posValue = (scrollLeft + outerLeft) * 100 / vuescroll.clientWidth;
+      this.bar.vBar.state.posValue = (scrollTop + outerTop) * 100 / vuescroll.clientHeight;
+      this.bar.hBar.state.posValue = (scrollLeft + outerLeft) * 100 / vuescroll.clientWidth;
       if (scroller.__scrollLeft < 0) {
-        this.hBar.state.posValue = 0;
+        this.bar.hBar.state.posValue = 0;
       }
       if (scroller.__scrollTop < 0) {
-        this.vBar.state.posValue = 0;
+        this.bar.vBar.state.posValue = 0;
       }
-      this.vBar.state.size = heightPercentage < 100 ? heightPercentage + "%" : 0;
-      this.hBar.state.size = widthPercentage < 100 ? widthPercentage + "%" : 0;
+      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + "%" : 0;
+      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + "%" : 0;
     }
   }
 };
@@ -2651,21 +2674,21 @@ var bar = {
 */
 function createBar(h, vm, type) {
   // hBar data
-  var barOptionType = type === "vertical" ? "vBar" : "hBar";
+  var barType = type === "vertical" ? "vBar" : "hBar";
   var axis = type === "vertical" ? "Y" : "X";
 
   var barData = {
     props: {
       type: type,
-      ops: vm.mergedOptions[barOptionType],
-      state: vm[barOptionType].state
+      ops: vm.mergedOptions.bar[barType],
+      state: vm.bar[barType].state
     },
     on: {
       setBarClick: vm.setBarClick
     },
     ref: type + "Bar"
   };
-  if (!vm[barOptionType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions[barOptionType].diabled || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions.bar[barType].diabled || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
     return null;
   }
   return h("bar", barData);
@@ -2709,18 +2732,18 @@ var rail = {
 
 function createRail(h, vm, type) {
   // rail data
-  var railOptionType = type === "vertical" ? "vRail" : "hRail";
-  var barOptionType = type === "vertical" ? "vBar" : "hBar";
+  var railType = type === "vertical" ? "vRail" : "hRail";
+  var barType = type === "vertical" ? "vBar" : "hBar";
   var axis = type === "vertical" ? "Y" : "X";
 
   var railData = {
     props: {
       type: type,
-      ops: vm.mergedOptions[railOptionType],
-      state: vm[railOptionType].state
+      ops: vm.mergedOptions.rail[railType],
+      state: vm.rail[railType].state
     }
   };
-  if (!vm[barOptionType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions[railOptionType].disabled || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions.rail[railType].disabled || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
     return null;
   }
   return h("rail", railData);
@@ -2874,12 +2897,12 @@ function createPanel(h, vm) {
     // dynamic set overflow scroll
     // feat: #11
     if (vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style["overflowY"] = vm.vBar.state.size ? "scroll" : "inherit";
+      scrollPanelData.style["overflowY"] = vm.bar.vBar.state.size ? "scroll" : "inherit";
     } else {
       scrollPanelData.style["overflowY"] = "hidden";
     }
     if (vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style["overflowX"] = vm.vBar.state.size ? "scroll" : "inherit";
+      scrollPanelData.style["overflowX"] = vm.bar.hBar.state.size ? "scroll" : "inherit";
     } else {
       scrollPanelData.style["overflowX"] = "hidden";
     }
@@ -2893,10 +2916,10 @@ function createPanel(h, vm) {
     } else {
       // hide system bar by use a negative value px
       // gutter should be 0 when manually disable scrollingX #14
-      if (vm.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
+      if (vm.bar.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
         scrollPanelData.style.marginRight = "-" + gutter + "px";
       }
-      if (vm.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
+      if (vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
         scrollPanelData.style.height = "calc(100% + " + gutter + "px)";
       }
     }
@@ -3133,34 +3156,37 @@ var vuescroll = {
         }
       },
       scrollContent: {},
-      vRail: {
-        state: {}
-      },
-      hRail: {
-        state: {}
-      },
-      vBar: {
-        state: {
-          posValue: 0,
-          size: 0,
-          opacity: 0
+      rail: {
+        vRail: {
+          state: {}
+        },
+        hRail: {
+          state: {}
         }
       },
-      hBar: {
-        state: {
-          posValue: 0,
-          size: 0,
-          opacity: 0
+      bar: {
+        vBar: {
+          state: {
+            posValue: 0,
+            size: 0,
+            opacity: 0
+          }
+        },
+        hBar: {
+          state: {
+            posValue: 0,
+            size: 0,
+            opacity: 0
+          }
         }
       },
+
       mergedOptions: {
         vuescroll: {},
         scrollPanel: {},
         scrollContent: {},
-        vRail: {},
-        vBar: {},
-        hRail: {},
-        hBar: {}
+        rail: {},
+        bar: {}
       }
     };
   },
@@ -3307,13 +3333,13 @@ var vuescroll = {
       }
       vertical["process"] = scrollTop / (scrollPanel$$1.scrollHeight - scrollPanel$$1.clientHeight);
       horizontal["process"] = scrollLeft / (scrollPanel$$1.scrollWidth - scrollPanel$$1.clientWidth);
-      vertical["barSize"] = this.vBar.state.size;
-      horizontal["barSize"] = this.hBar.state.size;
+      vertical["barSize"] = this.bar.vBar.state.size;
+      horizontal["barSize"] = this.bar.hBar.state.size;
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
     showBar: function showBar() {
-      this.vBar.state.opacity = this.mergedOptions.vBar.opacity;
-      this.hBar.state.opacity = this.mergedOptions.hBar.opacity;
+      this.bar.vBar.state.opacity = this.mergedOptions.bar.vBar.opacity;
+      this.bar.hBar.state.opacity = this.mergedOptions.bar.hBar.opacity;
     },
     hideBar: function hideBar() {
       // when in non-native mode dragging
@@ -3323,11 +3349,11 @@ var vuescroll = {
       }
       // add isClickingBar condition 
       // to prevent from hiding bar while dragging the bar 
-      if (!this.mergedOptions.vBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
-        this.vBar.state.opacity = 0;
+      if (!this.mergedOptions.bar.vBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
+        this.bar.vBar.state.opacity = 0;
       }
-      if (!this.mergedOptions.hBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
-        this.hBar.state.opacity = 0;
+      if (!this.mergedOptions.bar.hBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
+        this.bar.hBar.state.opacity = 0;
       }
     },
     registryResize: function registryResize() {
@@ -3430,7 +3456,7 @@ var vuescroll = {
       var _this5 = this;
 
       // some uncessary changes.
-      ["mergedOptions.vuescroll.pullRefresh.tips", "mergedOptions.vuescroll.pushLoad.tips", "mergedOptions.vRail", "mergedOptions.hRail", "mergedOptions.vBar", "mergedOptions.hBar"].forEach(function (opts) {
+      ["mergedOptions.vuescroll.pullRefresh.tips", "mergedOptions.vuescroll.pushLoad.tips", "mergedOptions.rail", "mergedOptions.bar"].forEach(function (opts) {
         _this5.$watch(opts, function () {
           // record current position
           // reverse: true
@@ -3477,20 +3503,7 @@ var vuescroll = {
     scrollPanel: scrollPanel
   },
   props: {
-    ops: {
-      default: function _default() {
-        /* istanbul ignore next */
-        return {
-          vuescroll: {},
-          scrollPanel: {},
-          scrollContent: {},
-          vRail: {},
-          vBar: {},
-          hRail: {},
-          hBar: {}
-        };
-      }
-    }
+    ops: { type: Object }
   }
 };
 

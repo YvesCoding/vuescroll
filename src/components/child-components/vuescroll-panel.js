@@ -83,12 +83,12 @@ export function createPanel(h, vm) {
     // dynamic set overflow scroll
     // feat: #11
     if(vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style["overflowY"] = vm.vBar.state.size?"scroll":"inherit";
+      scrollPanelData.style["overflowY"] = vm.bar.vBar.state.size?"scroll":"inherit";
     } else {
       scrollPanelData.style["overflowY"] = "hidden";
     }
     if(vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style["overflowX"] = vm.vBar.state.size?"scroll":"inherit";
+      scrollPanelData.style["overflowX"] = vm.bar.hBar.state.size?"scroll":"inherit";
     } else  {
       scrollPanelData.style["overflowX"] = "hidden";
     }
@@ -102,10 +102,10 @@ export function createPanel(h, vm) {
     } else {
       // hide system bar by use a negative value px
       // gutter should be 0 when manually disable scrollingX #14
-      if(vm.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
+      if(vm.bar.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
         scrollPanelData.style.marginRight = `-${gutter}px`;
       }
-      if(vm.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
+      if(vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
         scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
       } 
     }

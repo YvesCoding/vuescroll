@@ -241,16 +241,16 @@ export default {
       widthPercentage = (clientWidth * 100 / (contentWidth + outerLeft));
       const scrollTop = Math.min(Math.max(0, scroller.__scrollTop), scroller.__maxScrollTop);
       const scrollLeft = Math.min(Math.max(0, scroller.__scrollLeft), scroller.__maxScrollLeft);
-      this.vBar.state.posValue =  (((scrollTop + outerTop) * 100) / vuescroll.clientHeight);
-      this.hBar.state.posValue =  (((scrollLeft + outerLeft) * 100) / vuescroll.clientWidth);    
+      this.bar.vBar.state.posValue =  (((scrollTop + outerTop) * 100) / vuescroll.clientHeight);
+      this.bar.hBar.state.posValue =  (((scrollLeft + outerLeft) * 100) / vuescroll.clientWidth);    
       if(scroller.__scrollLeft < 0) {
-        this.hBar.state.posValue = 0;
+        this.bar.hBar.state.posValue = 0;
       }
       if(scroller.__scrollTop < 0) {
-        this.vBar.state.posValue = 0;
+        this.bar.vBar.state.posValue = 0;
       }
-      this.vBar.state.size = (heightPercentage < 100) ? (heightPercentage + "%") : 0;
-      this.hBar.state.size = (widthPercentage < 100) ? (widthPercentage + "%") : 0;
+      this.bar.vBar.state.size = (heightPercentage < 100) ? (heightPercentage + "%") : 0;
+      this.bar.hBar.state.size = (widthPercentage < 100) ? (widthPercentage + "%") : 0;
     }
   }
 };

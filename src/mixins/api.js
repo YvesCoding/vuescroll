@@ -8,53 +8,60 @@ import {
  * @param {any} el 
  * @returns 
  */
-function extractScrollDistance(distance, scroll, el) {
+function getNumericValue(distance, size) {
   let number;
-  if(!(number = /(\d+)%$/.exec(distance))) {
-    number = distance;
+  if(!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
+    number = distance - 0;
   } else {
-    number = number[1];
-    number = el[scroll] * number / 100;
+    number = number[1] - 0;
+    number = size * number / 100;
   }
   return number;
 }
 
 export default {
   methods: {
-    scrollTo(pos, animate = true) {
-      if(typeof pos.x === "undefined") {
-        pos.x = this.vuescroll.state.internalScrollLeft;
+    scrollTo({x, y}, animate = true) {
+      if(typeof x === "undefined") {
+        x = this.vuescroll.state.internalScrollLeft;
       } else {
-        pos.x = extractScrollDistance(pos.x, "scrollWidth", this.scrollPanelElm);
+        x = getNumericValue(x, this.scrollPanelElm.scrollWidth);
       }
-      if(typeof pos.y === "undefined") {
-        pos.y = this.vuescroll.state.internalScrollTop;
+      if(typeof y === "undefined") {
+        y = this.vuescroll.state.internalScrollTop;
       } else {
-        pos.y = extractScrollDistance(pos.y, "scrollHeight", this.scrollPanelElm);
+        y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
       }
-      const x = pos.x;
-      const y = pos.y;
+      this.internalScrollTo(x, y, animate);
+    },
+    scrollBy({dx, dy}, animate = true) {
+      let {internalScrollLeft, internalScrollTop} = this.vuescroll.state;
+      if(dx) {
+        internalScrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth);
+      }
+      if(dy) {
+        internalScrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight);
+      }
+      this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
+    },
+    internalScrollTo(destX, destY, animate) {
       if(this.mode == "native") {
         if(animate) {
           goScrolling(
             this.$refs["scrollPanel"].$el,
-            x - this.$refs["scrollPanel"].$el.scrollLeft,
-            y - this.$refs["scrollPanel"].$el.scrollTop,
+            destX - this.$refs["scrollPanel"].$el.scrollLeft,
+            destY - this.$refs["scrollPanel"].$el.scrollTop,
             this.mergedOptions.scrollPanel.speed,
             this.mergedOptions.scrollPanel.easing
           );
         } else {
-          this.$refs["scrollPanel"].$el.scrollTop = y;
-          this.$refs["scrollPanel"].$el.scrollLeft = x;
+          this.$refs["scrollPanel"].$el.scrollTop = destY;
+          this.$refs["scrollPanel"].$el.scrollLeft = destX;
         }
       } 
       // for non-native we use scroller's scorllTo 
       else if(this.mode == "slide"){
-        this.scroller.scrollTo(
-          pos.x,
-          pos.y,
-          animate
-        );
+        this.scroller.scrollTo(destX, destY, animate);
       }
     },
     forceUpdate() {

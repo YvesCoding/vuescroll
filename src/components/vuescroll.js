@@ -65,30 +65,35 @@ export default  {
       },
       scrollContent: {
       },
-      vRail: {
-        state: {
-
+      rail: {
+        vRail: {
+          state: {
+  
+          }
+        },
+        hRail: {
+          state: {
+  
+          }
         }
       },
-      hRail: {
-        state: {
-
+      bar: {
+        vBar: {
+          state: {
+            posValue: 0,
+            size: 0,
+            opacity: 0
+          }
+        },
+        hBar: {
+          state: {
+            posValue: 0,
+            size: 0,
+            opacity: 0
+          }
         }
-      },
-      vBar: {
-        state: {
-          posValue: 0,
-          size: 0,
-          opacity: 0
-        }
-      },
-      hBar: {
-        state: {
-          posValue: 0,
-          size: 0,
-          opacity: 0
-        }
-      },
+      }
+      ,
       mergedOptions: {
         vuescroll: {
         },
@@ -96,13 +101,9 @@ export default  {
         },
         scrollContent: {
         },
-        vRail: {
+        rail: {
         },
-        vBar: {
-        },
-        hRail: {
-        },
-        hBar: {
+        bar: {
         }
       }
     };
@@ -246,13 +247,13 @@ export default  {
       }
       vertical["process"] = scrollTop / (scrollPanel.scrollHeight - scrollPanel.clientHeight);
       horizontal["process"] = scrollLeft / (scrollPanel.scrollWidth - scrollPanel.clientWidth);
-      vertical["barSize"] = this.vBar.state.size;
-      horizontal["barSize"] = this.hBar.state.size;
+      vertical["barSize"] = this.bar.vBar.state.size;
+      horizontal["barSize"] = this.bar.hBar.state.size;
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
     showBar() {
-      this.vBar.state.opacity =  this.mergedOptions.vBar.opacity;
-      this.hBar.state.opacity =  this.mergedOptions.hBar.opacity;
+      this.bar.vBar.state.opacity =  this.mergedOptions.bar.vBar.opacity;
+      this.bar.hBar.state.opacity =  this.mergedOptions.bar.hBar.opacity;
     },
     hideBar() {
       // when in non-native mode dragging
@@ -262,11 +263,11 @@ export default  {
       }
       // add isClickingBar condition 
       // to prevent from hiding bar while dragging the bar 
-      if(!this.mergedOptions.vBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
-        this.vBar.state.opacity = 0;
+      if(!this.mergedOptions.bar.vBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
+        this.bar.vBar.state.opacity = 0;
       }
-      if(!this.mergedOptions.hBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
-        this.hBar.state.opacity = 0;
+      if(!this.mergedOptions.bar.hBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
+        this.bar.hBar.state.opacity = 0;
       }
     },
     registryResize() {
@@ -370,10 +371,8 @@ export default  {
       [
         "mergedOptions.vuescroll.pullRefresh.tips",
         "mergedOptions.vuescroll.pushLoad.tips",
-        "mergedOptions.vRail",
-        "mergedOptions.hRail",
-        "mergedOptions.vBar",
-        "mergedOptions.hBar"
+        "mergedOptions.rail",
+        "mergedOptions.bar"
       ].forEach((opts) => {
         this.$watch(opts, () => {
         // record current position
@@ -418,33 +417,6 @@ export default  {
     scrollPanel
   },
   props: {
-    ops:{
-      default() {
-        /* istanbul ignore next */
-        return {
-          vuescroll: {
-
-          },
-          scrollPanel: {
-
-          },
-          scrollContent: {
-
-          },
-          vRail: {
-
-          },
-          vBar: {
-
-          },
-          hRail: {
-
-          },
-          hBar: {
-
-          }
-        };
-      }
-    }
+    ops: { type: Object }
   }
 };

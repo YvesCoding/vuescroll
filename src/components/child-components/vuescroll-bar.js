@@ -119,23 +119,23 @@ export default {
 */
 export function createBar(h, vm, type) {
   // hBar data
-  const barOptionType = type === "vertical"? "vBar": "hBar";
+  const barType = type === "vertical"? "vBar": "hBar";
   const axis = type === "vertical"? "Y": "X";
 
   const barData = {
     props: {
       type: type,
-      ops: vm.mergedOptions[barOptionType],
-      state: vm[barOptionType].state
+      ops: vm.mergedOptions.bar[barType],
+      state: vm.bar[barType].state
     },
     on: {
       setBarClick: vm.setBarClick
     },
     ref: `${type}Bar`
   };
-  if(!vm[barOptionType].state.size 
+  if(!vm.bar[barType].state.size 
    || !vm.mergedOptions.scrollPanel["scrolling" + axis]
-   || vm.mergedOptions[barOptionType].diabled
+   || vm.mergedOptions.bar[barType].diabled
    || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
     return null;
   }

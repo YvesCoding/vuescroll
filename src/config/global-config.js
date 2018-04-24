@@ -49,43 +49,47 @@ export default {
     attrs: {
     }
   },
-  // 
-  vRail: {
-    width: "5px",
-    pos: "right",
-    background: "#a5d6a7",
-    opacity: 0, //'0.5'
-    disabled: false
-  },
-  // 
-  hRail: {
-    height: "5px",
-    pos: "bottom",
-    background: "#a5d6a7",
-    opacity: 0, //'0.5'
-    disabled: false
-  },
-  // 
-  vBar: {
-    width: "5px",
-    pos: "right",
-    background: "#4caf50",
-    deltaY: 100,
-    keepShow: false,
-    opacity: 1,
-    hover: false,
-    disabled: false
-  },
-  // 
-  hBar: {
-    height: "5px",
-    pos: "bottom",
-    background: "#4caf50",
-    keepShow: false,
-    opacity: 1,
-    hover: false,
-    disabled: false
-  } 
+  //
+  rail: {
+    vRail: {
+      width: "5px",
+      pos: "right",
+      background: "#a5d6a7",
+      opacity: 0, //'0.5'
+      disabled: false
+    },
+    // 
+    hRail: {
+      height: "5px",
+      pos: "bottom",
+      background: "#a5d6a7",
+      opacity: 0, //'0.5'
+      disabled: false
+    }
+  }, 
+  bar: {
+    // 
+    vBar: {
+      width: "5px",
+      pos: "right",
+      background: "#4caf50",
+      deltaY: 100,
+      keepShow: false,
+      opacity: 1,
+      hover: false,
+      disabled: false
+    },
+    // 
+    hBar: {
+      height: "5px",
+      pos: "bottom",
+      background: "#4caf50",
+      keepShow: false,
+      opacity: 1,
+      hover: false,
+      disabled: false
+    } 
+  }
 };
 /**
  * validate the options

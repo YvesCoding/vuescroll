@@ -62,20 +62,20 @@ export /**
 */
 function createRail(h, vm, type) {
   // rail data
-  const railOptionType = type === "vertical"? "vRail": "hRail";
-  const barOptionType = type === "vertical"? "vBar": "hBar";
+  const railType = type === "vertical"? "vRail": "hRail";
+  const barType = type === "vertical"? "vBar": "hBar";
   const axis = type === "vertical"? "Y": "X";
 
   const railData = {
     props: {
       type: type,
-      ops: vm.mergedOptions[railOptionType],
-      state: vm[railOptionType].state
+      ops: vm.mergedOptions.rail[railType],
+      state: vm.rail[railType].state
     }
   };
-  if(!vm[barOptionType].state.size
+  if(!vm.bar[barType].state.size
    || !vm.mergedOptions.scrollPanel["scrolling" + axis]
-   || vm.mergedOptions[railOptionType].disabled
+   || vm.mergedOptions.rail[railType].disabled
    || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
     return null;
   }

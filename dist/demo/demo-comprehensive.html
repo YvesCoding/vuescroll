@@ -113,7 +113,11 @@
                     type="radio" 
                     :value="false"
                     v-model="ops.scrollPanel.scrollingY"
-                    >
+                    ><br>
+                    scrollBy:<br>
+                    dx:<input type="text" v-model="dx"><br>
+                    dy:<input type="text" v-model="dy"><br />
+                    <button @click="scrollBy">go</button>
                 </fieldset>
                 <fieldset>
                     <legend>slide-mode</legend>
@@ -209,16 +213,20 @@
                 scrollingX: true,
                 scrollingY: true
               },
-              vBar: {
+              bar: {
+                vBar: {
                   background: "#000"
-              },
-              hBar: {
-                  background: "#000"
+                },
+                hBar: {
+                    background: "#000"
+                }
               }
             },
             dataNums: 100,
             reRender: 1,
-            easings
+            easings,
+            dx: 0,
+            dy: 0
         },
         computed: {
             randomArray() {
@@ -284,6 +292,12 @@
                         this.ops.vuescroll.pushLoad.tips.beforeDeactive = "no more data!";
                     }
                 }, 2000);
+            },
+            scrollBy() {
+                this.$refs['vs'].scrollBy({
+                    dx: this.dx,
+                    dy: this.dy
+                })
             }
         }
     })
