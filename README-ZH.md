@@ -25,24 +25,52 @@
 * Vue-驱动.
 
 ## 开始上手
-### 浏览器 -> 直接下载 / CDN
+
+### 安装
+
+#### 直接下载 / CDN
 ```html
 <script src="https://unpkg.com/vue"></script>
 <script src="https://unpkg.com/vuescroll"></script>
 ```
-### node -> 用npm/yarn
+#### 用 npm 或 yarn
 ```bash
 npm install vuescroll -S
 # yarn add vuescroll
 ```
+
+### app.js
 ```javascript
+
+// 在模块系统中， 你需要手动地安装它
+// 但是在浏览器环境中不用。
 import Vue from 'vue'
 import vuescroll from 'vuescroll'
+
 Vue.use(vuescroll)
+
+// 声明Vue实例然后绑定你的配置
+const vm = new Vue({
+    el: "#app",
+    data: {
+        ops: {
+            // 写你自己的配置在ops里
+            vuescroll: {
+
+            },
+            scrollPanel: {
+                
+            }
+            // ...
+        }
+    }
+})
 ```
+
+### index.html
 ```html
 <div id="app" >
-    <!--  在 data 里绑定你的配置 -->
+    <!-- 绑定ops -->
     <vue-scroll :ops="ops">
         <!-- 你想滚动的内容 -->
         <div 
@@ -54,23 +82,6 @@ Vue.use(vuescroll)
         </div>
     </vue-scroll>
 </div>
-```
-```javascript
-var vm = new Vue({
-    el: "#app",
-    data: {
-        ops: {
-            // write your own options
-            scrollContent: {
-
-            },
-            vRail: {
-                
-            }
-            // ...
-        }
-    }
-})
 ```
 
 ### 预览

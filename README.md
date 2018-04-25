@@ -26,24 +26,52 @@
 * Vue-Powered.
 
 ## Get Started
-### Browser -> Direct Download / CDN
+
+### Installation
+
+#### Direct Download / CDN
 ```html
 <script src="https://unpkg.com/vue"></script>
 <script src="https://unpkg.com/vuescroll"></script>
 ```
-### Node-> Use npm or yarn
+#### Use npm or yarn
 ```bash
 npm install vuescroll -S
 # yarn add vuescroll
 ```
+
+### app.js
 ```javascript
+
+// In module system, you need to manully install
+// and in browser environment need not.
 import Vue from 'vue'
 import vuescroll from 'vuescroll'
+
 Vue.use(vuescroll)
+
+// declare Vue instance and bind your options.
+const vm = new Vue({
+    el: "#app",
+    data: {
+        ops: {
+            // write your own options in ops
+            vuescroll: {
+
+            },
+            scrollPanel: {
+                
+            }
+            // ...
+        }
+    }
+})
 ```
+
+### index.html
 ```html
 <div id="app" >
-    <!-- bind your own options in data -->
+    <!-- bind ops -->
     <vue-scroll :ops="ops">
         <!-- the content you want to scroll -->
         <div 
@@ -55,24 +83,6 @@ Vue.use(vuescroll)
         </div>
     </vue-scroll>
 </div>
-```
-
-```javascript
-var vm = new Vue({
-    el: "#app",
-    data: {
-        ops: {
-            // write your own options
-            scrollContent: {
-
-            },
-            vRail: {
-                
-            }
-            // ...
-        }
-    }
-})
 ```
 
 ## Preview
