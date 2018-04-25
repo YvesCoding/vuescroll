@@ -1,13 +1,10 @@
 import map from "../../config/scroll-map";
 
-function handleClickTrack(e, bar, parentRef, type, parent) {
-  const client = bar.client;
-  const barOffset = parentRef[`${type}Bar`].$el[bar.offset];
-  const percent = (e[client] - e.target.getBoundingClientRect()[bar.posName] - barOffset/2) / e.target[bar.offset];
-  const pos = parentRef["scrollPanel"].$el[bar.scrollSize] * percent; 
-  parent.scrollTo({
-    [map[type].axis.toLowerCase()]: pos
-  });
+function handleClickTrack(e, { client, offset, posName, scrollSize }, parentRef, type, parent) {
+  const barOffset = parentRef[`${type}Bar`].$el[offset];
+  const percent = (e[client] - e.target.getBoundingClientRect()[posName] - barOffset/2) / e.target[offset];
+  const pos = parentRef["scrollPanel"].$el[scrollSize] * percent; 
+  parent.scrollTo({ [map[type].axis.toLowerCase()]: pos });
 }
 
 export default {
@@ -44,10 +41,7 @@ export default {
       }
     };
     return (
-      <div
-        {...data}
-      >
-      </div>
+      <div {...data}> </div>
     );
   }
 };
@@ -80,9 +74,7 @@ function createRail(h, vm, type) {
     return null;
   }
   return (
-    <rail 
-      {...railData}
-    />
+    <rail {...railData} />
   );
 
 }

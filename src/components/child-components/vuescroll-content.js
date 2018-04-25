@@ -6,17 +6,16 @@ import {
 export default  {
   name: "scrollContent",
   functional: true,
+  props: { ops: { type: Object}, state: { type: Object, default() { return {}; } } },
   render(h, {props, slots}) {
     let style = deepMerge(props.state.style, {});
     style.position = "relative";
     style.minHeight = "100%";
     style.minWidth = "100%";
     style.display = "inline-block";
-
     if(props.ops.padding) {
       style[props.ops.paddPos] =  props.ops.paddValue;
     }
-
     return h(props.ops.tag, {
       style: style,
       ref: "scrollContent",
@@ -24,24 +23,6 @@ export default  {
       props: props.ops.props,
       attrs: props.ops.attrs
     }, slots().default);
-  },
-  props: {
-    ops: {
-      default() {
-        /* istanbul ignore next */
-        return {
-
-        };
-      }
-    },
-    state: {
-      default() {
-        /* istanbul ignore next */
-        return {
-
-        };
-      }
-    }
   }
 };
 

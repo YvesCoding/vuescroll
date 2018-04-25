@@ -1,80 +1,64 @@
-// vuescroll core component
-// refered to: https://github.com/ElemeFE/element/blob/dev/packages/scrollbar/src/main.js
-// vue-jsx: https://github.com/vuejs/babel-plugin-transform-vue-jsx/blob/master/example/example.js
-
-// begin importing
 import {
   listenResize
 } from "../util";
-
-// import mix begin.....
-// import lefrCycle
 import hackLifecycle from "../mixins/hack-lifecycle";
-// import api
 import api from "../mixins/api";
-// import native mode
 import nativeMode from "../mixins/mode/native-mode";
-// import slide mode
 import slideMode from "../mixins/mode/slide-mode";
-// import mix end......
 
-// import child components
-import bar, {createBar} from "./child-components/vuescroll-bar";
-import rail, {createRail} from "./child-components/vuescroll-rail";
+import bar, { createBar } from "./child-components/vuescroll-bar";
+import rail, { createRail } from "./child-components/vuescroll-rail";
 import scrollContent from "./child-components/vueScroll-content";
-import scrollPanel, {createPanel} from "./child-components/vueScroll-panel";
+import scrollPanel, { createPanel } from "./child-components/vueScroll-panel";
+
+const uncessaryChangeArray = [
+  "mergedOptions.vuescroll.pullRefresh.tips",
+  "mergedOptions.vuescroll.pushLoad.tips",
+  "mergedOptions.rail",
+  "mergedOptions.bar"
+];
 
 export default  {
   name: "vueScroll",
-  mixins: [hackLifecycle, 
-    api, 
-    nativeMode, 
-    slideMode],
+  components: { bar, rail, scrollContent, scrollPanel },
+  props: { ops: { type: Object } },
+  mixins: [hackLifecycle, api, nativeMode, slideMode],
   data() {
     return {
-      // vuescroll components' state
+      /**
+       * @description 
+       * In state props of each components, we store the states of each
+       * components, and in mergedOptions props, we store the options
+       * that are megred from user-defined options to default options.
+       * @author wangyi7099
+       * @returns 
+       */
       vuescroll: {
         state: {
           isDragging: false,
-          // vuescroll internal states
-          listeners: [],
-          // judge whether the mouse pointer keeps pressing
-          // the scrollbar or not, if true, we don't hide the 
-          // scrollbar when mouse leave the vuescroll.
           isClickingBar: false,
           pointerLeave: true,
           timeoutId: 0,
-          // for  recording the current states of
-          // scrollTop and scrollHeight when switching the
-          // mode
           internalScrollTop: 0,
           internalScrollLeft: 0,
-          // refresh internal state..
-          // handle for refresh state
           refreshStage : "deactive",
           loadStage: "deactive"
         }
       },
       scrollPanel: {
-        el: "",
         state: {
           left: 0,
           top: 0,
           zoom: 1
         }
       },
-      scrollContent: {
-      },
+      scrollContent: { },
       rail: {
         vRail: {
-          state: {
-  
-          }
+          state: { }
         },
         hRail: {
-          state: {
-  
-          }
+          state: { }
         }
       },
       bar: {
@@ -95,22 +79,16 @@ export default  {
       }
       ,
       mergedOptions: {
-        vuescroll: {
-        },
-        scrollPanel: {
-        },
-        scrollContent: {
-        },
-        rail: {
-        },
-        bar: {
-        }
+        vuescroll: { },
+        scrollPanel: { },
+        scrollContent: { },
+        rail: { },
+        bar: { }
       }
     };
   },
   render(h) {
     let vm = this;
-
     if(vm.shouldStopRender) {
       return (
         <div>
@@ -171,27 +149,21 @@ export default  {
     }
   },
   methods: {
-    // update function 
-    // update different modes of states of scrollbar
     update(eventType, nativeEvent = null) {
       if(this.mode == "native") {
         this.updateNativeModeBarState();   
       }
-      // else branch handle for other mode 
       else  if(this.mode == "slide") {
         this.updateSlideModeBarState();
       }       
-      // emit event
       if(eventType) {
         this.emitEvent(eventType, nativeEvent);
       }
     },
-    // when mode changes,
-    // update it
     updateMode() {
-      if(this.uncessaryChanges) {
+      if(this.shouldStop) {
         this.$nextTick(() => {
-          this.uncessaryChanges = false;
+          this.shouldStop = false;
         });
         return;
       }
@@ -209,10 +181,8 @@ export default  {
         this.scrollPanelElm.style.transform = "";
         this.scrollPanelElm.style.transformOrigin = "";
       }
-      this.scrollTo({
-        x,
-        y
-      }, false);
+      // scroll to the place after updating
+      this.scrollTo({ x, y }, false);
     },
     handleScroll(nativeEvent) {
       this.recordCurrentPos();
@@ -239,8 +209,7 @@ export default  {
         }, horizontal = {
           type: "horizontal"
         };
-      let scrollTop = scrollPanel.scrollTop;
-      let scrollLeft = scrollPanel.scrollLeft;
+      let {scrollTop, scrollLeft} = scrollPanel;
       if(this.mode == "slide") {
         scrollTop = this.scroller.__scrollTop;
         scrollLeft = this.scroller.__scrollLeft;
@@ -256,8 +225,8 @@ export default  {
       this.bar.hBar.state.opacity =  this.mergedOptions.bar.hBar.opacity;
     },
     hideBar() {
-      // when in non-native mode dragging
-      // just return
+      // when in non-native mode dragging content
+      // in slide mode, just return
       if(this.vuescroll.state.isDragging) {
         return;
       }
@@ -271,9 +240,9 @@ export default  {
       }
     },
     registryResize() {
-      if(this.uncessaryChanges) {
+      if(this.shouldStop) {
         this.$nextTick(() => {
-          this.uncessaryChanges = false;
+          this.shouldStop = false;
         });
         return;
       }
@@ -286,9 +255,7 @@ export default  {
         }
         let contentElm = null;
         if(this.mode == "slide") {
-
           contentElm = this.scrollPanelElm;
-
         } else if(this.mode == "native") {
           // because we can customize the tag
           // of the scrollContent, so, scrollContent
@@ -322,13 +289,7 @@ export default  {
           }
         ];
         // registry resize event
-        // because scrollContent is a functional component
-        // so it maybe a component or a dom element
-        this.destroyResize = listenResize(
-          contentElm
-          ,
-          funcArr
-        );
+        this.destroyResize = listenResize(contentElm, funcArr);
       }
     },
     recordCurrentPos() {
@@ -348,8 +309,7 @@ export default  {
       }
     },
     // breaking changes should registry scrollor or native 
-    // again
-    watchBreakingChanges() {
+    watchChanges() {
       // react to vuescroll's change.
       this.$watch("mergedOptions", () => {
         // record current position
@@ -366,18 +326,11 @@ export default  {
     },
     // when small changes , we don't need to
     // registry the scrollor 
-    watchUncessaryChanges() {
+    watchSmallChanges() {
       // some uncessary changes.
-      [
-        "mergedOptions.vuescroll.pullRefresh.tips",
-        "mergedOptions.vuescroll.pushLoad.tips",
-        "mergedOptions.rail",
-        "mergedOptions.bar"
-      ].forEach((opts) => {
+      uncessaryChangeArray.forEach((opts) => {
         this.$watch(opts, () => {
-        // record current position
-        // reverse: true
-          this.uncessaryChanges = true;
+          this.shouldStop = true;
         }, {
           sync: true,
           deep: true
@@ -386,17 +339,19 @@ export default  {
     }
   },
   mounted() {
-    // do something once mounted
+    // do something while mounts
     if(!this._isDestroyed && !this.shouldStopRender) {
       if(this.mode == "slide") {
         this.destroyScroller = this.registryScroller();
       }
-      // trace the mode
+      // init the last mode.
       this.lastMode = this.mode;
+
       // registry resize event
       this.registryResize();
-      this.watchBreakingChanges();
-      this.watchUncessaryChanges();
+      this.watchChanges();
+      this.watchSmallChanges();
+
       // update state
       this.update();
       this.showAndDefferedHideBar();
@@ -409,14 +364,5 @@ export default  {
         this.showAndDefferedHideBar();
       }
     }); 
-  },
-  components: {
-    bar,
-    rail,
-    scrollContent,
-    scrollPanel
-  },
-  props: {
-    ops: { type: Object }
   }
 };

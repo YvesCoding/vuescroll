@@ -7,7 +7,20 @@ import {
 
 export default {
   name: "bar",
-    
+  props: {
+    ops: {
+      type: Object,
+      required: true
+    },
+    state: {
+      type: Object,
+      required: true
+    },
+    type: {
+      type: String,
+      required: true
+    }
+  },  
   computed: {
     bar() {
       return scrollMap[this.type].bar;
@@ -49,12 +62,7 @@ export default {
         this.$el.style.background = this.ops.background;
       };   
     }
-    return (
-      <div
-        {...data}
-      >
-      </div>
-    );
+    return ( <div {...data}></div> );
   },
   methods: {
     handleMousedown(e) {
@@ -66,11 +74,6 @@ export default {
       on(document, "mouseup", this.handleMouseUp);
     },
     handleMouseMove(e) {
-    /**
-     * I really don't have an
-     * idea to test mousemove...
-     */
-            
       /* istanbul ignore next */
       if(!this.axisStartPos ) {
         return;
@@ -93,20 +96,6 @@ export default {
       this.axisStartPos = 0;
       off(document, "mousemove", this.handleMouseMove);
       off(document, "mouseup", this.handleMouseUp);
-    }
-  },
-  props: {
-    ops: {
-      type: Object,
-      required: true
-    },
-    state: {
-      type: Object,
-      required: true
-    },
-    type: {
-      type: String,
-      required: true
     }
   }
 };
@@ -139,9 +128,5 @@ export function createBar(h, vm, type) {
    || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
     return null;
   }
-  return (
-    <bar 
-      {...barData}
-    />
-  );
+  return ( <bar {...barData} /> );
 }

@@ -1,10 +1,8 @@
 import Vue from "vue";
 // import component
 import vuescroll from "./components/vuescroll";
-
 // import config
 import GCF from "./config/global-config";
-
 import {
   deepMerge
 } from "./util";
@@ -17,13 +15,10 @@ let scroll = {
     }
     //vueScroll
     Vue.component(vuescroll.name, vuescroll);
-
     // registry the globe setting
     // feat: #8
     Vue.prototype.$vuescrollConfig = deepMerge(GCF, {});
-
     scroll.isInstalled = true;
-    
     scroll.version = "__version__";
   }
 };
@@ -31,5 +26,4 @@ let scroll = {
 if(typeof Vue !== "undefined" && process.env.NODE_FORMAT === "umd") {
   Vue.use(scroll);
 }
-
 export default scroll;

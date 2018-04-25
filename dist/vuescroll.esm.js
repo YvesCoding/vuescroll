@@ -2570,7 +2570,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var bar = {
   name: "bar",
-
+  props: {
+    ops: {
+      type: Object,
+      required: true
+    },
+    state: {
+      type: Object,
+      required: true
+    },
+    type: {
+      type: String,
+      required: true
+    }
+  },
   computed: {
     bar: function bar() {
       return map[this.type].bar;
@@ -2616,11 +2629,6 @@ var bar = {
       on(document, "mouseup", this.handleMouseUp);
     },
     handleMouseMove: function handleMouseMove(e) {
-      /**
-       * I really don't have an
-       * idea to test mousemove...
-       */
-
       /* istanbul ignore next */
       if (!this.axisStartPos) {
         return;
@@ -2638,20 +2646,6 @@ var bar = {
       this.axisStartPos = 0;
       off(document, "mousemove", this.handleMouseMove);
       off(document, "mouseup", this.handleMouseUp);
-    }
-  },
-  props: {
-    ops: {
-      type: Object,
-      required: true
-    },
-    state: {
-      type: Object,
-      required: true
-    },
-    type: {
-      type: String,
-      required: true
     }
   }
 };
@@ -2686,22 +2680,26 @@ function createBar(h, vm, type) {
 
 function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function handleClickTrack(e, bar, parentRef, type, parent) {
-  var client = bar.client;
-  var barOffset = parentRef[type + "Bar"].$el[bar.offset];
-  var percent = (e[client] - e.target.getBoundingClientRect()[bar.posName] - barOffset / 2) / e.target[bar.offset];
-  var pos = parentRef["scrollPanel"].$el[bar.scrollSize] * percent;
+function handleClickTrack(e, _ref, parentRef, type, parent) {
+  var client = _ref.client,
+      offset = _ref.offset,
+      posName = _ref.posName,
+      scrollSize = _ref.scrollSize;
+
+  var barOffset = parentRef[type + "Bar"].$el[offset];
+  var percent = (e[client] - e.target.getBoundingClientRect()[posName] - barOffset / 2) / e.target[offset];
+  var pos = parentRef["scrollPanel"].$el[scrollSize] * percent;
   parent.scrollTo(_defineProperty$1({}, map[type].axis.toLowerCase(), pos));
 }
 
 var rail = {
   name: "rail",
   functional: true,
-  render: function render(h, _ref) {
+  render: function render(h, _ref2) {
     var _style;
 
-    var parent = _ref.parent,
-        props = _ref.props;
+    var parent = _ref2.parent,
+        props = _ref2.props;
 
     var bar = map[props.type].bar;
     var parentRef = parent.$refs;
@@ -2716,7 +2714,11 @@ var rail = {
         }
       }
     };
-    return h("div", data);
+    return h(
+      "div",
+      data,
+      [" "]
+    );
   }
 };
 
@@ -2743,6 +2745,10 @@ function createRail(h, vm, type) {
 var scrollContent = {
   name: "scrollContent",
   functional: true,
+  props: { ops: { type: Object }, state: { type: Object, default: function _default() {
+        return {};
+      }
+    } },
   render: function render(h, _ref) {
     var props = _ref.props,
         slots = _ref.slots;
@@ -2752,11 +2758,9 @@ var scrollContent = {
     style.minHeight = "100%";
     style.minWidth = "100%";
     style.display = "inline-block";
-
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
     }
-
     return h(props.ops.tag, {
       style: style,
       ref: "scrollContent",
@@ -2764,21 +2768,6 @@ var scrollContent = {
       props: props.ops.props,
       attrs: props.ops.attrs
     }, slots().default);
-  },
-
-  props: {
-    ops: {
-      default: function _default() {
-        /* istanbul ignore next */
-        return {};
-      }
-    },
-    state: {
-      default: function _default() {
-        /* istanbul ignore next */
-        return {};
-      }
-    }
   }
 };
 
@@ -2815,6 +2804,7 @@ function createContent$1(h, vm) {
 // vueScrollPanel
 var scrollPanel = {
   name: "scrollPanel",
+  props: { ops: { type: Object, required: true }, state: { type: Object, required: true } },
   methods: {
     // trigger scrollPanel options initialScrollX, 
     // initialScrollY
@@ -2827,10 +2817,7 @@ var scrollPanel = {
       if (this.ops.initialScrollY) {
         y = this.ops.initialScrollY;
       }
-      this.$parent.scrollTo({
-        x: x,
-        y: y
-      });
+      this.$parent.scrollTo({ x: x, y: y });
     }
   },
   mounted: function mounted() {
@@ -2852,11 +2839,6 @@ var scrollPanel = {
       data,
       [[this.$slots.default]]
     );
-  },
-
-  props: {
-    ops: {},
-    state: {}
   }
 };
 
@@ -2931,10 +2913,8 @@ function createPanel(h, vm) {
 function _createPanel(vm, h) {
 
   if (vm.mode == "native") {
-
     return [createContent$1(h, vm)];
   } else if (vm.mode == "slide") {
-
     var renderChildren = [vm.$slots.default];
     // handle for refresh
     if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
@@ -2943,6 +2923,7 @@ function _createPanel(vm, h) {
         vm.$refs["refreshDom"] = vm.$slots.refresh[0];
         renderChildren.unshift(vm.$slots.refresh[0]);
       } else {
+        // use default refresh dom
         createRefreshDomStyle();
         var refreshDom = null;
         // front or end of the process.
@@ -3006,7 +2987,6 @@ function _createPanel(vm, h) {
                 )])]
               );
             }
-        // no slot refresh elm, use default
         renderChildren.unshift(h(
           "div",
           { "class": "vuescroll-refresh", ref: "refreshDom", key: "refshDom" },
@@ -3096,49 +3076,36 @@ function _createPanel(vm, h) {
   }
 }
 
-// vuescroll core component
-// refered to: https://github.com/ElemeFE/element/blob/dev/packages/scrollbar/src/main.js
-// vue-jsx: https://github.com/vuejs/babel-plugin-transform-vue-jsx/blob/master/example/example.js
+var uncessaryChangeArray = ["mergedOptions.vuescroll.pullRefresh.tips", "mergedOptions.vuescroll.pushLoad.tips", "mergedOptions.rail", "mergedOptions.bar"];
 
-// begin importing
-// import mix begin.....
-// import lefrCycle
-// import api
-// import native mode
-// import slide mode
-// import mix end......
-
-// import child components
 var vuescroll = {
   name: "vueScroll",
+  components: { bar: bar, rail: rail, scrollContent: scrollContent, scrollPanel: scrollPanel },
+  props: { ops: { type: Object } },
   mixins: [hackLifecycle, api, nativeMode, slideMode],
   data: function data() {
     return {
-      // vuescroll components' state
+      /**
+       * @description 
+       * In state props of each components, we store the states of each
+       * components, and in mergedOptions props, we store the options
+       * that are megred from user-defined options to default options.
+       * @author wangyi7099
+       * @returns 
+       */
       vuescroll: {
         state: {
           isDragging: false,
-          // vuescroll internal states
-          listeners: [],
-          // judge whether the mouse pointer keeps pressing
-          // the scrollbar or not, if true, we don't hide the 
-          // scrollbar when mouse leave the vuescroll.
           isClickingBar: false,
           pointerLeave: true,
           timeoutId: 0,
-          // for  recording the current states of
-          // scrollTop and scrollHeight when switching the
-          // mode
           internalScrollTop: 0,
           internalScrollLeft: 0,
-          // refresh internal state..
-          // handle for refresh state
           refreshStage: "deactive",
           loadStage: "deactive"
         }
       },
       scrollPanel: {
-        el: "",
         state: {
           left: 0,
           top: 0,
@@ -3182,7 +3149,6 @@ var vuescroll = {
   },
   render: function render(h) {
     var vm = this;
-
     if (vm.shouldStopRender) {
       return h("div", [[vm.$slots["default"]]]);
     }
@@ -3236,32 +3202,24 @@ var vuescroll = {
     }
   },
   methods: {
-    // update function 
-    // update different modes of states of scrollbar
     update: function update(eventType) {
       var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
       if (this.mode == "native") {
         this.updateNativeModeBarState();
+      } else if (this.mode == "slide") {
+        this.updateSlideModeBarState();
       }
-      // else branch handle for other mode 
-      else if (this.mode == "slide") {
-          this.updateSlideModeBarState();
-        }
-      // emit event
       if (eventType) {
         this.emitEvent(eventType, nativeEvent);
       }
     },
-
-    // when mode changes,
-    // update it
     updateMode: function updateMode() {
       var _this = this;
 
-      if (this.uncessaryChanges) {
+      if (this.shouldStop) {
         this.$nextTick(function () {
-          _this.uncessaryChanges = false;
+          _this.shouldStop = false;
         });
         return;
       }
@@ -3279,10 +3237,8 @@ var vuescroll = {
         this.scrollPanelElm.style.transform = "";
         this.scrollPanelElm.style.transformOrigin = "";
       }
-      this.scrollTo({
-        x: x,
-        y: y
-      }, false);
+      // scroll to the place after updating
+      this.scrollTo({ x: x, y: y }, false);
     },
     handleScroll: function handleScroll(nativeEvent) {
       this.recordCurrentPos();
@@ -3315,8 +3271,9 @@ var vuescroll = {
           horizontal = {
         type: "horizontal"
       };
-      var scrollTop = scrollPanel$$1.scrollTop;
-      var scrollLeft = scrollPanel$$1.scrollLeft;
+      var scrollTop = scrollPanel$$1.scrollTop,
+          scrollLeft = scrollPanel$$1.scrollLeft;
+
       if (this.mode == "slide") {
         scrollTop = this.scroller.__scrollTop;
         scrollLeft = this.scroller.__scrollLeft;
@@ -3332,8 +3289,8 @@ var vuescroll = {
       this.bar.hBar.state.opacity = this.mergedOptions.bar.hBar.opacity;
     },
     hideBar: function hideBar() {
-      // when in non-native mode dragging
-      // just return
+      // when in non-native mode dragging content
+      // in slide mode, just return
       if (this.vuescroll.state.isDragging) {
         return;
       }
@@ -3349,9 +3306,9 @@ var vuescroll = {
     registryResize: function registryResize() {
       var _this3 = this;
 
-      if (this.uncessaryChanges) {
+      if (this.shouldStop) {
         this.$nextTick(function () {
-          _this3.uncessaryChanges = false;
+          _this3.shouldStop = false;
         });
         return;
       }
@@ -3364,7 +3321,6 @@ var vuescroll = {
         }
         var contentElm = null;
         if (this.mode == "slide") {
-
           contentElm = this.scrollPanelElm;
         } else if (this.mode == "native") {
           // because we can customize the tag
@@ -3398,8 +3354,6 @@ var vuescroll = {
           _this3.showAndDefferedHideBar();
         }];
         // registry resize event
-        // because scrollContent is a functional component
-        // so it maybe a component or a dom element
         this.destroyResize = listenResize(contentElm, funcArr);
       }
     },
@@ -3421,8 +3375,7 @@ var vuescroll = {
     },
 
     // breaking changes should registry scrollor or native 
-    // again
-    watchBreakingChanges: function watchBreakingChanges() {
+    watchChanges: function watchChanges() {
       var _this4 = this;
 
       // react to vuescroll's change.
@@ -3442,15 +3395,13 @@ var vuescroll = {
 
     // when small changes , we don't need to
     // registry the scrollor 
-    watchUncessaryChanges: function watchUncessaryChanges() {
+    watchSmallChanges: function watchSmallChanges() {
       var _this5 = this;
 
       // some uncessary changes.
-      ["mergedOptions.vuescroll.pullRefresh.tips", "mergedOptions.vuescroll.pushLoad.tips", "mergedOptions.rail", "mergedOptions.bar"].forEach(function (opts) {
+      uncessaryChangeArray.forEach(function (opts) {
         _this5.$watch(opts, function () {
-          // record current position
-          // reverse: true
-          _this5.uncessaryChanges = true;
+          _this5.shouldStop = true;
         }, {
           sync: true,
           deep: true
@@ -3459,17 +3410,19 @@ var vuescroll = {
     }
   },
   mounted: function mounted() {
-    // do something once mounted
+    // do something while mounts
     if (!this._isDestroyed && !this.shouldStopRender) {
       if (this.mode == "slide") {
         this.destroyScroller = this.registryScroller();
       }
-      // trace the mode
+      // init the last mode.
       this.lastMode = this.mode;
+
       // registry resize event
       this.registryResize();
-      this.watchBreakingChanges();
-      this.watchUncessaryChanges();
+      this.watchChanges();
+      this.watchSmallChanges();
+
       // update state
       this.update();
       this.showAndDefferedHideBar();
@@ -3484,16 +3437,6 @@ var vuescroll = {
         _this6.showAndDefferedHideBar();
       }
     });
-  },
-
-  components: {
-    bar: bar,
-    rail: rail,
-    scrollContent: scrollContent,
-    scrollPanel: scrollPanel
-  },
-  props: {
-    ops: { type: Object }
   }
 };
 
@@ -3507,13 +3450,10 @@ var scroll = {
     }
     //vueScroll
     Vue$$1.component(vuescroll.name, vuescroll);
-
     // registry the globe setting
     // feat: #8
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
-
     scroll.isInstalled = true;
-
     scroll.version = "4.4.9";
   }
 };

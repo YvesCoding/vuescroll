@@ -9,6 +9,7 @@ import {createContent} from "./vuescroll-content";
 // vueScrollPanel
 export default   {
   name: "scrollPanel",
+  props: { ops: { type: Object, required: true }, state: { type: Object, required: true } },
   methods: {
     // trigger scrollPanel options initialScrollX, 
     // initialScrollY
@@ -21,10 +22,7 @@ export default   {
       if(this.ops.initialScrollY) {
         y = this.ops.initialScrollY;
       }
-      this.$parent.scrollTo({
-        x,
-        y
-      });
+      this.$parent.scrollTo({ x, y });
     }
   },
   mounted() {
@@ -38,21 +36,7 @@ export default   {
     let data = {
       class: ["vuescroll-panel"]
     };
-    return (
-      <div
-        {...data}
-      >
-        {[this.$slots.default]}
-      </div>
-    );
-  },
-  props: {
-    ops: {
-            
-    },
-    state: {
-
-    }
+    return ( <div {...data}>{[this.$slots.default]}</div> );
   }
 };
 
@@ -121,9 +105,7 @@ export function createPanel(h, vm) {
     <scrollPanel
       {...scrollPanelData}
     >
-      {
-        _createPanel(vm, h)
-      }
+      { _createPanel(vm, h) }
     </scrollPanel>
   );
 }
@@ -131,11 +113,8 @@ export function createPanel(h, vm) {
 function _createPanel(vm, h) {
   
   if(vm.mode == "native") {
-
     return [createContent(h, vm)];
-
   } else if(vm.mode == "slide") {
-                
     let renderChildren = [vm.$slots.default];
     // handle for refresh
     if(vm.mergedOptions.vuescroll.pullRefresh.enable) {
@@ -144,6 +123,7 @@ function _createPanel(vm, h) {
         vm.$refs["refreshDom"] = vm.$slots.refresh[0];
         renderChildren.unshift(vm.$slots.refresh[0]);
       } else {
+        // use default refresh dom
         createRefreshDomStyle();
         let refreshDom = null;
         // front or end of the process.
@@ -172,7 +152,6 @@ function _createPanel(vm, h) {
             <metadata> Svg Vector Icons : http://www.sfont.cn </metadata><g><g transform="matrix(1 0 0 -1 0 1008)"><path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z"></path></g></g></svg>
           );
         }
-        // no slot refresh elm, use default
         renderChildren.unshift(
           <div class="vuescroll-refresh" ref="refreshDom" key="refshDom">
             {[refreshDom, vm.pullRefreshTip]}
