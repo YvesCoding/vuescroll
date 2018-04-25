@@ -21,7 +21,7 @@ function getNumericValue(distance, size) {
 
 export default {
   methods: {
-    scrollTo({x, y}, animate = true) {
+    scrollTo({x, y}, animate = true, force = false) {
       if(typeof x === "undefined") {
         x = this.vuescroll.state.internalScrollLeft;
       } else {
@@ -32,7 +32,7 @@ export default {
       } else {
         y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
       }
-      this.internalScrollTo(x, y, animate);
+      this.internalScrollTo(x, y, animate, force);
     },
     scrollBy({dx, dy}, animate = true) {
       let {internalScrollLeft, internalScrollTop} = this.vuescroll.state;
@@ -44,8 +44,8 @@ export default {
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
     },
-    internalScrollTo(destX, destY, animate) {
-      if(this.mode == "native") {
+    internalScrollTo(destX, destY, animate, force) {
+      if(this.mode == "native" || this.mode == "pure-native") {
         if(animate) {
           goScrolling(
             this.$refs["scrollPanel"].$el,
@@ -61,7 +61,7 @@ export default {
       } 
       // for non-native we use scroller's scorllTo 
       else if(this.mode == "slide"){
-        this.scroller.scrollTo(destX, destY, animate);
+        this.scroller.scrollTo(destX, destY, animate, undefined, force);
       }
     },
     forceUpdate() {

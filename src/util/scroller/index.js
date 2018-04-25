@@ -586,7 +586,7 @@ var members = {
 	 * @param animate {Boolean?false} Whether the scrolling should happen using an animation
 	 * @param zoom {Number?null} Zoom level to go to
 	 */
-  scrollTo: function(left, top, animate, zoom) {
+  scrollTo: function(left, top, animate, zoom, force) {
 
     var self = this;
 
@@ -616,7 +616,7 @@ var members = {
 
     }
 
-    if (!self.options.scrollingX) {
+    if (!self.options.scrollingX && !force) {
 
       left = self.__scrollLeft;
 
@@ -630,7 +630,7 @@ var members = {
 
     }
 
-    if (!self.options.scrollingY) {
+    if (!self.options.scrollingY  && !force) {
 
       top = self.__scrollTop;
 
@@ -777,7 +777,7 @@ var members = {
     // Dragging starts directly with two fingers, otherwise lazy with an offset
     self.__isDragging = !isSingleTouch;
 
-    // Some features are disabled in multi touch scenarios
+    // Some features are  in multi touch scenarios
     self.__isSingleTouch = isSingleTouch;
 
     // Clearing data structure

@@ -347,3 +347,13 @@ export function listenResize(element, funArr) {
     element.removeChild(object);
   };
 }
+
+export function findValuesByMode(mode, vm) {
+  let rtnValues = {};
+  switch(mode) {
+  case "native":
+  case "pure-native": rtnValues = {x: vm.scrollPanelElm.scrollLeft, y: vm.scrollPanelElm.scrollTop}; break;
+  case "slide": rtnValues = {x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop}; break;
+  }
+  return rtnValues;
+}

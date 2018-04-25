@@ -1,5 +1,6 @@
 import {
-  listenResize
+  listenResize,
+  findValuesByMode
 } from "../util";
 import hackLifecycle from "../mixins/hack-lifecycle";
 import api from "../mixins/api";
@@ -150,7 +151,7 @@ export default  {
   },
   methods: {
     update(eventType, nativeEvent = null) {
-      if(this.mode == "native") {
+      if(this.mode == "native" || this.mode == "pure-native") {
         this.updateNativeModeBarState();   
       }
       else  if(this.mode == "slide") {
@@ -176,13 +177,13 @@ export default  {
       }
       if(this.mode == "slide") {
         this.destroyScroller = this.registryScroller();
-      } else if(this.mode == "native") {
+      } else if(this.mode == "native" || this.mode == "pure-native") {
         // remove the transform style attribute
         this.scrollPanelElm.style.transform = "";
         this.scrollPanelElm.style.transformOrigin = "";
       }
       // scroll to the place after updating
-      this.scrollTo({ x, y }, false);
+      this.scrollTo({ x, y }, false, true /* force */);
     },
     handleScroll(nativeEvent) {
       this.recordCurrentPos();
@@ -254,7 +255,7 @@ export default  {
           this.destroyResize();
         }
         let contentElm = null;
-        if(this.mode == "slide") {
+        if(this.mode == "slide" || this.mode == "pure-native") {
           contentElm = this.scrollPanelElm;
         } else if(this.mode == "native") {
           // because we can customize the tag
@@ -293,19 +294,13 @@ export default  {
       }
     },
     recordCurrentPos() {
-      let reverse = false;
       if(this.mode !== this.lastMode) {
-        reverse = true;
+        this.vuescroll.state.internalScrollLeft =  findValuesByMode(this.lastMode, this).x;
+        this.vuescroll.state.internalScrollTop =  findValuesByMode(this.lastMode, this).y;  
         this.lastMode = this.mode;
-      }
-      // record the scrollLeft and scrollTop
-      // by judging the last mode
-      if(this.mode == "native") {
-        this.vuescroll.state.internalScrollLeft = reverse?this.scroller.__scrollLeft:this.scrollPanelElm.scrollLeft;
-        this.vuescroll.state.internalScrollTop = reverse?this.scroller.__scrollTop:this.scrollPanelElm.scrollTop;
-      }else if(this.mode == "slide"){
-        this.vuescroll.state.internalScrollLeft = reverse?this.scrollPanelElm.scrollLeft:this.scroller.__scrollLeft;
-        this.vuescroll.state.internalScrollTop = reverse?this.scrollPanelElm.scrollTop:this.scroller.__scrollTop;
+      } else {
+        this.vuescroll.state.internalScrollLeft =  findValuesByMode(this.mode, this).x;
+        this.vuescroll.state.internalScrollTop =  findValuesByMode(this.mode, this).y; 
       }
     },
     // breaking changes should registry scrollor or native 
@@ -351,16 +346,16 @@ export default  {
       this.registryResize();
       this.watchChanges();
       this.watchSmallChanges();
-
-      // update state
-      this.update();
-      this.showAndDefferedHideBar();
+      this.$nextTick(() => {
+        // update state
+        this.update();
+        this.showAndDefferedHideBar();
+      });
     }
   },
   updated() { 
     this.$nextTick(() => {
       if(!this._isDestroyed) {
-        this.update();
         this.showAndDefferedHideBar();
       }
     }); 

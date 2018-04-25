@@ -124,7 +124,7 @@ export function createBar(h, vm, type) {
   };
   if(!vm.bar[barType].state.size 
    || !vm.mergedOptions.scrollPanel["scrolling" + axis]
-   || vm.mergedOptions.bar[barType].diabled
+   || vm.mode == "pure-native"
    || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
     return null;
   }

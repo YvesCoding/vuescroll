@@ -1,4 +1,4 @@
-export const modes = ["slide", "native"];
+export const modes = ["slide", "native", "pure-native"];
 export default {
   // vuescroll
   vuescroll: {
@@ -55,16 +55,14 @@ export default {
       width: "5px",
       pos: "right",
       background: "#a5d6a7",
-      opacity: 0, //'0.5'
-      disabled: false
+      opacity: 0
     },
     // 
     hRail: {
       height: "5px",
       pos: "bottom",
       background: "#a5d6a7",
-      opacity: 0, //'0.5'
-      disabled: false
+      opacity: 0
     }
   }, 
   bar: {
@@ -74,16 +72,14 @@ export default {
       deltaY: 100,
       keepShow: false,
       opacity: 1,
-      hover: false,
-      disabled: false
+      hover: false
     },
     // 
     hBar: {
       background: "#4caf50",
       keepShow: false,
       opacity: 1,
-      hover: false,
-      disabled: false
+      hover: false
     } 
   }
 };

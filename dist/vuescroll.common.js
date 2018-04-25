@@ -321,7 +321,19 @@ function listenResize(element, funArr) {
   };
 }
 
-var modes = ["slide", "native"];
+function findValuesByMode(mode, vm) {
+  var rtnValues = {};
+  switch (mode) {
+    case "native":
+    case "pure-native":
+      rtnValues = { x: vm.scrollPanelElm.scrollLeft, y: vm.scrollPanelElm.scrollTop };break;
+    case "slide":
+      rtnValues = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };break;
+  }
+  return rtnValues;
+}
+
+var modes = ["slide", "native", "pure-native"];
 var GCF = {
   // vuescroll
   vuescroll: {
@@ -376,16 +388,14 @@ var GCF = {
       width: "5px",
       pos: "right",
       background: "#a5d6a7",
-      opacity: 0, //'0.5'
-      disabled: false
+      opacity: 0
     },
     // 
     hRail: {
       height: "5px",
       pos: "bottom",
       background: "#a5d6a7",
-      opacity: 0, //'0.5'
-      disabled: false
+      opacity: 0
     }
   },
   bar: {
@@ -395,16 +405,14 @@ var GCF = {
       deltaY: 100,
       keepShow: false,
       opacity: 1,
-      hover: false,
-      disabled: false
+      hover: false
     },
     // 
     hBar: {
       background: "#4caf50",
       keepShow: false,
       opacity: 1,
-      hover: false,
-      disabled: false
+      hover: false
     }
   }
 };
@@ -513,6 +521,7 @@ var api = {
       var x = _ref.x,
           y = _ref.y;
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      var force = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
       if (typeof x === "undefined") {
         x = this.vuescroll.state.internalScrollLeft;
@@ -524,7 +533,7 @@ var api = {
       } else {
         y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
       }
-      this.internalScrollTo(x, y, animate);
+      this.internalScrollTo(x, y, animate, force);
     },
     scrollBy: function scrollBy(_ref2) {
       var dx = _ref2.dx,
@@ -542,8 +551,8 @@ var api = {
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
     },
-    internalScrollTo: function internalScrollTo(destX, destY, animate) {
-      if (this.mode == "native") {
+    internalScrollTo: function internalScrollTo(destX, destY, animate, force) {
+      if (this.mode == "native" || this.mode == "pure-native") {
         if (animate) {
           goScrolling(this.$refs["scrollPanel"].$el, destX - this.$refs["scrollPanel"].$el.scrollLeft, destY - this.$refs["scrollPanel"].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing);
         } else {
@@ -553,7 +562,7 @@ var api = {
       }
       // for non-native we use scroller's scorllTo 
       else if (this.mode == "slide") {
-          this.scroller.scrollTo(destX, destY, animate);
+          this.scroller.scrollTo(destX, destY, animate, undefined, force);
         }
     },
     forceUpdate: function forceUpdate() {
@@ -574,10 +583,11 @@ var nativeMode = {
   methods: {
     updateNativeModeBarState: function updateNativeModeBarState() {
       var scrollPanel = this.scrollPanelElm;
-      var heightPercentage = scrollPanel.clientHeight * 100 / scrollPanel.scrollHeight;
-      var widthPercentage = scrollPanel.clientWidth * 100 / scrollPanel.scrollWidth;
-      this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / scrollPanel.clientHeight;
-      this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / scrollPanel.clientWidth;
+      var vuescroll = this.$el;
+      var heightPercentage = vuescroll.clientHeight * 100 / scrollPanel.scrollHeight;
+      var widthPercentage = vuescroll.clientWidth * 100 / scrollPanel.scrollWidth;
+      this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / vuescroll.clientHeight;
+      this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / vuescroll.clientWidth;
       this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + "%" : 0;
       this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + "%" : 0;
     }
@@ -1356,7 +1366,7 @@ var members = {
   * @param animate {Boolean?false} Whether the scrolling should happen using an animation
   * @param zoom {Number?null} Zoom level to go to
   */
-  scrollTo: function scrollTo(left, top, animate, zoom) {
+  scrollTo: function scrollTo(left, top, animate, zoom, force) {
 
     var self = this;
 
@@ -1384,7 +1394,7 @@ var members = {
       zoom = self.__zoomLevel;
     }
 
-    if (!self.options.scrollingX) {
+    if (!self.options.scrollingX && !force) {
 
       left = self.__scrollLeft;
     } else {
@@ -1396,7 +1406,7 @@ var members = {
       }
     }
 
-    if (!self.options.scrollingY) {
+    if (!self.options.scrollingY && !force) {
 
       top = self.__scrollTop;
     } else {
@@ -1534,7 +1544,7 @@ var members = {
     // Dragging starts directly with two fingers, otherwise lazy with an offset
     self.__isDragging = !isSingleTouch;
 
-    // Some features are disabled in multi touch scenarios
+    // Some features are  in multi touch scenarios
     self.__isSingleTouch = isSingleTouch;
 
     // Clearing data structure
@@ -2676,7 +2686,7 @@ function createBar(h, vm, type) {
     },
     ref: type + "Bar"
   };
-  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions.bar[barType].diabled || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mode == "pure-native" || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
     return null;
   }
   return h("bar", barData);
@@ -2739,7 +2749,7 @@ function createRail(h, vm, type) {
       state: vm.rail[railType].state
     }
   };
-  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mergedOptions.rail[railType].disabled || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+  if (!vm.bar[barType].state.size || vm.mode == "pure-native" || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
     return null;
   }
   return h("rail", railData);
@@ -2858,7 +2868,8 @@ function createPanel(h, vm) {
   var scrollPanelData = {
     ref: "scrollPanel",
     style: {
-      position: "relative"
+      position: "relative",
+      height: "100%"
     },
     nativeOn: {
       scroll: vm.handleScroll
@@ -2873,12 +2884,12 @@ function createPanel(h, vm) {
     // dynamic set overflow scroll
     // feat: #11
     if (vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style["overflowY"] = vm.bar.vBar.state.size ? "scroll" : "inherit";
+      scrollPanelData.style["overflowY"] = vm.bar.vBar.state.size ? "scroll" : "";
     } else {
       scrollPanelData.style["overflowY"] = "hidden";
     }
     if (vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style["overflowX"] = vm.bar.hBar.state.size ? "scroll" : "inherit";
+      scrollPanelData.style["overflowX"] = vm.bar.hBar.state.size ? "scroll" : "";
     } else {
       scrollPanelData.style["overflowX"] = "hidden";
     }
@@ -2906,15 +2917,28 @@ function createPanel(h, vm) {
     scrollPanelData.style["display"] = "inline-block";
     scrollPanelData.style["transformOrigin"] = "left top 0px";
     scrollPanelData.style["userSelect"] = "none";
+    scrollPanelData.style["height"] = "";
+  } else if (vm.mode == "pure-native") {
+    scrollPanelData.style["width"] = "100%";
+    if (vm.mergedOptions.scrollPanel.scrollingY) {
+      scrollPanelData.style["overflowY"] = "auto";
+    } else {
+      scrollPanelData.style["overflowY"] = "hidden";
+    }
+    if (vm.mergedOptions.scrollPanel.scrollingX) {
+      scrollPanelData.style["overflowX"] = "auto";
+    } else {
+      scrollPanelData.style["overflowX"] = "hidden";
+    }
   }
   return h(
     "scrollPanel",
     scrollPanelData,
-    [_createPanel(vm, h)]
+    [createPanelChildren(vm, h)]
   );
 }
 
-function _createPanel(vm, h) {
+function createPanelChildren(vm, h) {
 
   if (vm.mode == "native") {
     return [createContent$1(h, vm)];
@@ -3077,6 +3101,8 @@ function _createPanel(vm, h) {
       }
     }
     return renderChildren;
+  } else if (vm.mode == "pure-native") {
+    return [vm.$slots.default];
   }
 }
 
@@ -3209,7 +3235,7 @@ var vuescroll = {
     update: function update(eventType) {
       var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-      if (this.mode == "native") {
+      if (this.mode == "native" || this.mode == "pure-native") {
         this.updateNativeModeBarState();
       } else if (this.mode == "slide") {
         this.updateSlideModeBarState();
@@ -3236,13 +3262,13 @@ var vuescroll = {
       }
       if (this.mode == "slide") {
         this.destroyScroller = this.registryScroller();
-      } else if (this.mode == "native") {
+      } else if (this.mode == "native" || this.mode == "pure-native") {
         // remove the transform style attribute
         this.scrollPanelElm.style.transform = "";
         this.scrollPanelElm.style.transformOrigin = "";
       }
       // scroll to the place after updating
-      this.scrollTo({ x: x, y: y }, false);
+      this.scrollTo({ x: x, y: y }, false, true /* force */);
     },
     handleScroll: function handleScroll(nativeEvent) {
       this.recordCurrentPos();
@@ -3324,7 +3350,7 @@ var vuescroll = {
           this.destroyResize();
         }
         var contentElm = null;
-        if (this.mode == "slide") {
+        if (this.mode == "slide" || this.mode == "pure-native") {
           contentElm = this.scrollPanelElm;
         } else if (this.mode == "native") {
           // because we can customize the tag
@@ -3362,19 +3388,13 @@ var vuescroll = {
       }
     },
     recordCurrentPos: function recordCurrentPos() {
-      var reverse = false;
       if (this.mode !== this.lastMode) {
-        reverse = true;
+        this.vuescroll.state.internalScrollLeft = findValuesByMode(this.lastMode, this).x;
+        this.vuescroll.state.internalScrollTop = findValuesByMode(this.lastMode, this).y;
         this.lastMode = this.mode;
-      }
-      // record the scrollLeft and scrollTop
-      // by judging the last mode
-      if (this.mode == "native") {
-        this.vuescroll.state.internalScrollLeft = reverse ? this.scroller.__scrollLeft : this.scrollPanelElm.scrollLeft;
-        this.vuescroll.state.internalScrollTop = reverse ? this.scroller.__scrollTop : this.scrollPanelElm.scrollTop;
-      } else if (this.mode == "slide") {
-        this.vuescroll.state.internalScrollLeft = reverse ? this.scrollPanelElm.scrollLeft : this.scroller.__scrollLeft;
-        this.vuescroll.state.internalScrollTop = reverse ? this.scrollPanelElm.scrollTop : this.scroller.__scrollTop;
+      } else {
+        this.vuescroll.state.internalScrollLeft = findValuesByMode(this.mode, this).x;
+        this.vuescroll.state.internalScrollTop = findValuesByMode(this.mode, this).y;
       }
     },
 
@@ -3414,6 +3434,8 @@ var vuescroll = {
     }
   },
   mounted: function mounted() {
+    var _this6 = this;
+
     // do something while mounts
     if (!this._isDestroyed && !this.shouldStopRender) {
       if (this.mode == "slide") {
@@ -3426,19 +3448,19 @@ var vuescroll = {
       this.registryResize();
       this.watchChanges();
       this.watchSmallChanges();
-
-      // update state
-      this.update();
-      this.showAndDefferedHideBar();
+      this.$nextTick(function () {
+        // update state
+        _this6.update();
+        _this6.showAndDefferedHideBar();
+      });
     }
   },
   updated: function updated() {
-    var _this6 = this;
+    var _this7 = this;
 
     this.$nextTick(function () {
-      if (!_this6._isDestroyed) {
-        _this6.update();
-        _this6.showAndDefferedHideBar();
+      if (!_this7._isDestroyed) {
+        _this7.showAndDefferedHideBar();
       }
     });
   }

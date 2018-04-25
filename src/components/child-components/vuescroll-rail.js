@@ -68,8 +68,8 @@ function createRail(h, vm, type) {
     }
   };
   if(!vm.bar[barType].state.size
+   || vm.mode == "pure-native"
    || !vm.mergedOptions.scrollPanel["scrolling" + axis]
-   || vm.mergedOptions.rail[railType].disabled
    || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
     return null;
   }

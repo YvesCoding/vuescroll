@@ -52,7 +52,8 @@ export function createPanel(h, vm) {
   const scrollPanelData = {
     ref: "scrollPanel",
     style: {
-      position: "relative"
+      position: "relative",
+      height: "100%"
     },
     nativeOn: {
       scroll: vm.handleScroll
@@ -67,12 +68,12 @@ export function createPanel(h, vm) {
     // dynamic set overflow scroll
     // feat: #11
     if(vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style["overflowY"] = vm.bar.vBar.state.size?"scroll":"inherit";
+      scrollPanelData.style["overflowY"] = vm.bar.vBar.state.size?"scroll":"";
     } else {
       scrollPanelData.style["overflowY"] = "hidden";
     }
     if(vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style["overflowX"] = vm.bar.hBar.state.size?"scroll":"inherit";
+      scrollPanelData.style["overflowX"] = vm.bar.hBar.state.size?"scroll":"";
     } else  {
       scrollPanelData.style["overflowX"] = "hidden";
     }
@@ -100,17 +101,30 @@ export function createPanel(h, vm) {
     scrollPanelData.style["display"] = "inline-block";
     scrollPanelData.style["transformOrigin"] = "left top 0px";
     scrollPanelData.style["userSelect"] = "none";
+    scrollPanelData.style["height"] = "";
+  } else if(vm.mode == "pure-native") {
+    scrollPanelData.style["width"] = "100%";
+    if(vm.mergedOptions.scrollPanel.scrollingY) {
+      scrollPanelData.style["overflowY"] = "auto";
+    } else {
+      scrollPanelData.style["overflowY"] = "hidden";
+    }
+    if(vm.mergedOptions.scrollPanel.scrollingX) {
+      scrollPanelData.style["overflowX"] = "auto";
+    } else {
+      scrollPanelData.style["overflowX"] = "hidden";
+    }
   }
   return (
     <scrollPanel
       {...scrollPanelData}
     >
-      { _createPanel(vm, h) }
+      { createPanelChildren(vm, h) }
     </scrollPanel>
   );
 }
 
-function _createPanel(vm, h) {
+function createPanelChildren(vm, h) {
   
   if(vm.mode == "native") {
     return [createContent(h, vm)];
@@ -203,6 +217,8 @@ function _createPanel(vm, h) {
       }
     }
     return renderChildren;
+  } else if(vm.mode == "pure-native") {
+    return [vm.$slots.default];
   }
 
 }
