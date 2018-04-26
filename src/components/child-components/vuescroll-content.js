@@ -13,6 +13,7 @@ export default  {
     style.minHeight = "100%";
     style.minWidth = "100%";
     style.display = "inline-block";
+    style.boxSizing = "border-box";
     if(props.ops.padding) {
       style[props.ops.paddPos] =  props.ops.paddValue;
     }
