@@ -31,7 +31,13 @@ var running = {};
 var counter = 1;
 
 const core = { effect : {} };
-const global = window;
+let global = null;
+
+if(typeof window !== "undefined") {
+  global = window;
+} else {
+  global = {};
+}
 
 core.effect.Animate = {
 
