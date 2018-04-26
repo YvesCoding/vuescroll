@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.4.9
+    * @name: vuescroll 4.5.0
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -110,7 +110,6 @@ function getGutter() {
   /* istanbul ignore next */
   if (Vue.prototype.$isServer) return 0;
   if (scrollBarWidth !== undefined) return scrollBarWidth;
-
   var outer = document.createElement("div");
   outer.style.visibility = "hidden";
   outer.style.width = "100px";
@@ -120,7 +119,6 @@ function getGutter() {
 
   var widthNoScroll = outer.offsetWidth;
   outer.style.overflow = "scroll";
-
   var inner = document.createElement("div");
   inner.style.width = "100%";
   outer.appendChild(inner);
@@ -128,9 +126,7 @@ function getGutter() {
   var widthWithScroll = inner.offsetWidth;
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
-
   getGutter.isUsed = false;
-
   return scrollBarWidth;
 }
 
@@ -3480,7 +3476,7 @@ var scroll = {
     // feat: #8
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
-    scroll.version = "4.4.9";
+    scroll.version = "4.5.0";
   }
 };
 /* istanbul ignore if */

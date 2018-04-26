@@ -15,11 +15,8 @@
 
  vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) which can both support PC and mobile phone.You can customize the scrollbar how you like instead of using native in browser. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs).
  
-## Use case of virtual scrollbar
- [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) are using it. Here is the offical [website](https://wangyi7099.github.io/VuescrollDocs) of vuescroll.
-
 ## Features
-* Whole features of [scrollor](https://github.com/pbakaus/scroller).
+* Full features of [scrollor](https://github.com/pbakaus/scroller).
 * Ability to customize scrollbar by [powerful configurations](https://github.com/wangyi7099/vuescroll/blob/dev/src/config/GlobalConfig.js).
 * Ability to [detect size change](https://wangyi7099.github.io/VuescrollDocs/getStarted/en/event/handle-resize.html) of content and automatically update.
 * [smooth-scroll](https://github.com/cferdinandi/smooth-scroll) Integration.

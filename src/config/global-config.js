@@ -44,10 +44,8 @@ export default {
     // customize tag of scrollContent
     tag: "div",
     padding: true,
-    props: {
-    },
-    attrs: {
-    }
+    props: { },
+    attrs: { }
   },
   //
   rail: {

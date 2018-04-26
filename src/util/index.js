@@ -47,11 +47,7 @@ export function deepMerge(from, to) {
  */
 export function defineReactive(target, key, source, souceKey) {
   let getter = null;
-  if(
-    !source[key]
-        && typeof source !== "function"
-
-  ) {
+  if(!source[key] && typeof source !== "function") {
     return;
   }
   souceKey = souceKey || key;
@@ -72,7 +68,6 @@ export function getGutter() {
   /* istanbul ignore next */
   if (Vue.prototype.$isServer) return 0;
   if (scrollBarWidth !== undefined) return scrollBarWidth;
-
   const outer = document.createElement("div");
   outer.style.visibility = "hidden";
   outer.style.width = "100px";
@@ -82,17 +77,14 @@ export function getGutter() {
 
   const widthNoScroll = outer.offsetWidth;
   outer.style.overflow = "scroll";
-
   const inner = document.createElement("div");
   inner.style.width = "100%";
   outer.appendChild(inner);
-
+  
   const widthWithScroll = inner.offsetWidth;
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
-
   getGutter.isUsed = false;
-
   return scrollBarWidth;
 }
 

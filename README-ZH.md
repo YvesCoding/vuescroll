@@ -13,10 +13,6 @@
 
  vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue) 并且同时支持PC端和移动端的虚拟滚动条.你能够在浏览器环境中定制你喜欢的样式而不是用原生的滚动条.[这里是官方网站](https://wangyi7099.github.io/VuescrollDocs)。
 
- 
- ## 虚拟滚动条的使用例子
- [element](http://element-cn.eleme.io/#/zh-CN/component/installation),[slimScroll](https://github.com/rochal/jQuery-slimScroll) and [CodePen(Code edit box)](https://codepen.io/wangyi7099/) 正在用. 
-
 ## 特点
 * [scrollor](https://github.com/pbakaus/scroller)的完整特性.
 * [强大的配置](https://github.com/wangyi7099/vuescroll/blob/dev/src/config/GlobalConfig.js)能使你定制自己的滚动条。
