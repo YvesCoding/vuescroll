@@ -317,18 +317,16 @@ export function listenResize(element, funArr) {
   object.tabIndex = -1;
   object.type = "text/html";
   object.data = "about:blank";
-  setTimeout(() => {
-    object.onload = () => {
-      funArr.forEach(func => {
-        on(
-          object.contentDocument.defaultView,
-          "resize",
-          func
-        );
-      });
-    };
-    element.appendChild(object);
-  }, 0);
+  object.onload = () => {
+  funArr.forEach(func => {
+    on(
+      object.contentDocument.defaultView,
+      "resize",
+      func
+    );
+  });
+  };
+  element.appendChild(object);
   return function destroy() {
     if(object.contentDocument) {
       funArr.forEach(func => {
