@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.5.2
+    * @name: vuescroll 4.5.3
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -297,12 +297,15 @@ function listenResize(element, funArr) {
   object.style.cssText = OBJECT_STYLE;
   object.tabIndex = -1;
   object.type = "text/html";
-  object.onload = function () {
-    funArr.forEach(function (func) {
-      on(object.contentDocument.defaultView, "resize", func);
-    });
-  };
-  element.appendChild(object);
+  object.data = "about:blank";
+  setTimeout(function () {
+    object.onload = function () {
+      funArr.forEach(function (func) {
+        on(object.contentDocument.defaultView, "resize", func);
+      });
+    };
+    element.appendChild(object);
+  }, 0);
   return function destroy() {
     if (object.contentDocument) {
       funArr.forEach(function (func) {
@@ -3479,7 +3482,7 @@ var scroll = {
     // feat: #8
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
-    scroll.version = "4.5.2";
+    scroll.version = "4.5.3";
   }
 };
 /* istanbul ignore if */
