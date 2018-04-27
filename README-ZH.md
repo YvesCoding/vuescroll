@@ -97,4 +97,4 @@ const vm = new Vue({
 
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2013-present, wangyi7099(yi wang)
+Copyright (c) 2018-present, wangyi7099(yi wang)

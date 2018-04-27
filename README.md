@@ -100,4 +100,4 @@ BTW, [Here](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0
 
 [MIT](http://opensource.org/licenses/MIT)
 
-Copyright (c) 2013-present, wangyi7099(yi wang)
+Copyright (c) 2018-present, wangyi7099(yi wang)
