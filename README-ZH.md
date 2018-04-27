@@ -95,4 +95,6 @@ const vm = new Vue({
 
 ## 协议
 
-**MIT** 
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2013-present, wangyi7099(yi wang)
