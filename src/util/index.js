@@ -318,13 +318,13 @@ export function listenResize(element, funArr) {
   object.type = "text/html";
   object.data = "about:blank";
   object.onload = () => {
-  funArr.forEach(func => {
-    on(
-      object.contentDocument.defaultView,
-      "resize",
-      func
-    );
-  });
+    funArr.forEach(func => {
+      on(
+        object.contentDocument.defaultView,
+        "resize",
+        func
+      );
+    });
   };
   element.appendChild(object);
   return function destroy() {
