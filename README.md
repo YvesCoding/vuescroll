@@ -17,8 +17,8 @@
  
 ## Features
 * Full features of [scrollor](https://github.com/pbakaus/scroller).
-* Ability to customize scrollbar by [powerful configurations](https://github.com/wangyi7099/vuescroll/blob/dev/src/config/GlobalConfig.js).
-* Ability to [detect size change](https://wangyi7099.github.io/vuescrolljs//getStarted/en/event/handle-resize.html) of content and automatically update.
+* Ability to customize scrollbar by [powerful configurations](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#global-config).
+* Ability to [detect size change](https://wangyi7099.github.io/vuescrolljs/guide/event.html#handle-resize) of content and automatically update.
 * [smooth-scroll](https://github.com/cferdinandi/smooth-scroll) Integration.
 * Vue-Powered.
 

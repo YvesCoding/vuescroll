@@ -15,8 +15,8 @@
 
 ## 特点
 * [scrollor](https://github.com/pbakaus/scroller)的完整特性.
-* [强大的配置](https://github.com/wangyi7099/vuescroll/blob/dev/src/config/GlobalConfig.js)能使你定制自己的滚动条。
-* 能够[侦测内容尺寸发生变化](https://wangyi7099.github.io/vuescrolljs//getStarted/en/event/handle-resize.html)， 并且自动更新。
+* [强大的配置](https://wangyi7099.github.io/vuescrolljs/zh/guide/Configuration.html#%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE)能使你定制自己的滚动条。
+* 能够[侦测内容尺寸发生变化](https://wangyi7099.github.io/vuescrolljs/zh/guide/event.html#handle-resize)， 并且自动更新。
 * 整合[smooth-scroll](https://github.com/cferdinandi/smooth-scroll).
 * Vue-驱动.
 
