@@ -1,6 +1,6 @@
 
  
-  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/zh/"><img width="100" src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/logo.png?raw=true" /></a></p>
+  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/zh/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
 
 Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的虚拟滚动条，它拥有多个模式可供你选择： `slide` 模式、`native` 模式和`pure-native`模式， 并且它还支持定制滚动条的样式，检测内容尺寸变化、能够使内容分页、支持上拉-刷新，下推加载等诸多功能。
 

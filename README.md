@@ -1,6 +1,6 @@
 
  
-  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/"><img width="100" src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/logo.png?raw=true" /></a></p>
+  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
 
   [中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)<br />
   **Vuescroll** is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ，and it  has multi  modes you can choose, such as **slide** mode, **native** mode,  and **pure-native** mode. It also supports customizing styles of scrollbar，detecting size change of content、paging、pull-refresh，push-load and so on.
@@ -74,7 +74,7 @@ const vm = new Vue({
 
 ## How to contribute
 
-Firstly, thak you for you are interested in vuescroll!! Only follow some steps below to contribute code:
+Firstly, thank you for being interested in vuescroll!! And then, please only follow these steps below to contribute code:
 1. Fork this repo.
 2. Clone the repo you have just forked.
 ```base
