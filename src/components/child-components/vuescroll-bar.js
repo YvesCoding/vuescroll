@@ -67,6 +67,7 @@ export default {
   methods: {
     handleMousedown(e) {
       e.stopPropagation();
+      document.onselectstart = () => false;
       this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
       // tell parent that the mouse has been down.
       this.$emit("setBarClick", true);
@@ -80,6 +81,7 @@ export default {
       }
       /* istanbul ignore next */
       {
+        // https://github.com/ElemeFE/element/blob/27a8c1556e30ae38423ebc4bb100486e59b8601f/packages/scrollbar/src/bar.js#L72
         const delta = e[this.bar.client] - this.parent[`${this.type}Rail`].getBoundingClientRect()[this.bar.posName];
         const percent = (delta-this.axisStartPos) / this.parent[`${this.type}Rail`][this.bar.offset];
         this.$parent.scrollTo(
@@ -92,6 +94,7 @@ export default {
     },
     handleMouseUp() {
       this.$emit("setBarClick", false);
+      document.onselectstart = null;
       this.$parent.hideBar();
       this.axisStartPos = 0;
       off(document, "mousemove", this.handleMouseMove);

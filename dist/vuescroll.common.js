@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.5.4
+    * @name: vuescroll 4.5.5
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -2639,6 +2639,9 @@ var bar = {
   methods: {
     handleMousedown: function handleMousedown(e) {
       e.stopPropagation();
+      document.onselectstart = function () {
+        return false;
+      };
       this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
       // tell parent that the mouse has been down.
       this.$emit("setBarClick", true);
@@ -2652,6 +2655,7 @@ var bar = {
       }
       /* istanbul ignore next */
       {
+        // https://github.com/ElemeFE/element/blob/27a8c1556e30ae38423ebc4bb100486e59b8601f/packages/scrollbar/src/bar.js#L72
         var delta = e[this.bar.client] - this.parent[this.type + "Rail"].getBoundingClientRect()[this.bar.posName];
         var percent = (delta - this.axisStartPos) / this.parent[this.type + "Rail"][this.bar.offset];
         this.$parent.scrollTo(_defineProperty({}, this.axis.toLowerCase(), this.parent["scrollPanel"].$el[this.bar.scrollSize] * percent), false);
@@ -2659,6 +2663,7 @@ var bar = {
     },
     handleMouseUp: function handleMouseUp() {
       this.$emit("setBarClick", false);
+      document.onselectstart = null;
       this.$parent.hideBar();
       this.axisStartPos = 0;
       off(document, "mousemove", this.handleMouseMove);
@@ -3484,7 +3489,7 @@ var scroll = {
     // feat: #8
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
-    scroll.version = "4.5.4";
+    scroll.version = "4.5.5";
   }
 };
 /* istanbul ignore if */
