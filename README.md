@@ -1,7 +1,7 @@
 
  
   # Vuescroll
-Vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue)， it supports customizing styles of scrollbar，detect size change of content、paging、pull-refresh，push-load and so on.
+Vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue)， it supports customizing styles of scrollbar，detecting size change of content、paging、pull-refresh，push-load and so on. [中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
@@ -76,12 +76,13 @@ If you are interested in vuescroll，only need to follow the steps below:
    git clone git@github.com:<Your Usernmae>/vuescroll.git
 ```
 3. Modify the code in your local and push the code to your repo.
-3. Click `New pull request` in vuescroll repo and that's all, like the picture below:<img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
-## 受以下的项目启发
+3. Click `New pull request` in vuescroll repo and that's all, like the picture below:<br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
+
+## Inspired
 
 [slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
 
-## 协议
+## License
 
 **MIT** 
 

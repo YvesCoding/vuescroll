@@ -76,7 +76,7 @@ const vm = new Vue({
    git clone git@github.com:<Your Usernmae>/vuescroll.git
 ```
 3. 在你的本地修改代码然后push到你的仓库
-3. 在vuescroll项目地址点击`New pull request`即可，如下图所示:<img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
+3. 在vuescroll项目地址点击`New pull request`即可，如下图所示:<br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
 ## 受以下的项目启发
 
 [slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
