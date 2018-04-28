@@ -23,6 +23,7 @@ export default {
       }
     },
     paging: false,
+    zooming: true,
     snapping: {
       enable: false,
       width: 100,

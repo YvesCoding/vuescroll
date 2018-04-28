@@ -351,6 +351,7 @@ var GCF = {
       }
     },
     paging: false,
+    zooming: true,
     snapping: {
       enable: false,
       width: 100,
@@ -2429,7 +2430,7 @@ var slideMode = {
       var paging = this.mergedOptions.vuescroll.paging;
       var snapping = this.mergedOptions.vuescroll.snapping.enable;
       // disale zooming when refresh or load enabled
-      var zooming = !this.refreshLoad && !paging && !snapping;
+      var zooming = !this.refreshLoad && !paging && !snapping && this.mergedOptions.vuescroll.zooming;
       var _mergedOptions$scroll = this.mergedOptions.scrollPanel,
           scrollingY = _mergedOptions$scroll.scrollingY,
           scrollingX = _mergedOptions$scroll.scrollingX;

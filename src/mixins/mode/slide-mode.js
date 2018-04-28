@@ -96,7 +96,7 @@ export default {
       const paging = this.mergedOptions.vuescroll.paging;
       const snapping = this.mergedOptions.vuescroll.snapping.enable;
       // disale zooming when refresh or load enabled
-      let zooming = !this.refreshLoad && !paging && !snapping;
+      let zooming = !this.refreshLoad && !paging && !snapping && this.mergedOptions.vuescroll.zooming;
       const {scrollingY, scrollingX} = this.mergedOptions.scrollPanel;
       // Initialize Scroller
       this.scroller = new Scroller(render(this.scrollPanelElm, window), {

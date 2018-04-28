@@ -118,10 +118,22 @@
                     type="radio" 
                     :value="false"
                     v-model="ops.scrollPanel.scrollingY"
+                    >
+                    <br>zooming: <br>
+                    true: <input 
+                    type="radio" 
+                    :value="true"
+                    v-model="ops.vuescroll.zooming"
+                    >
+                    false: <input 
+                    type="radio" 
+                    :value="false"
+                    v-model="ops.vuescroll.zooming"
                     ><br>
                     scrollBy:<br>
                     dx:<input type="text" v-model="dx"><br>
                     dy:<input type="text" v-model="dy"><br />
+                   
                     <button @click="scrollBy">go</button>
                 </fieldset>
                 <fieldset>
@@ -201,16 +213,17 @@
                     tips: {
                         beforeDeactive: "Refresh Successfully!"
                     },
-                    enable: true
+                    enable: false
                 },
                 pushLoad: {
                     tips: {
                         beforeDeactive: "Load Successfully!"
                     },
-                    enable: true
+                    enable: false
                 },
                 snapping: false,
-                paging: false
+                paging: false,
+                zooming: false
               },
               scrollPanel: {
                 easing: "easeInQuad",
