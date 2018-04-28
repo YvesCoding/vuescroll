@@ -85,4 +85,4 @@ const vm = new Vue({
 
 **MIT** 
 
-by wangyi7099(王毅)
+by wangyi7099

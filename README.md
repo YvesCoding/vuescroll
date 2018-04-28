@@ -86,4 +86,4 @@ If you are interested in vuescroll，only need to follow the steps below:
 
 **MIT** 
 
-by wangyi7099(王毅)
+by wangyi7099
