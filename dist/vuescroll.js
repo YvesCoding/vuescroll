@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.5.5
+    * @name: vuescroll 4.5.6
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -2349,7 +2349,7 @@ function listenContainer(container, scroller, eventCallback, zooming) {
 
 // import scroller
 /**
- * @description refresh callback
+ * @description refresh and load callback
  */
 var refreshActivateCallback = function refreshActivateCallback() {
   this.vuescroll.state.refreshStage = "active";
@@ -2375,9 +2375,6 @@ var refreshDeactivateCallback = function refreshDeactivateCallback() {
   this.vuescroll.state.refreshStage = "deactive";
 };
 
-/**
- * @description load callback
- */
 var loadActivateCallback = function loadActivateCallback() {
   this.vuescroll.state.loadStage = "active";
 };
@@ -2404,6 +2401,7 @@ var loadDeactivateCallback = function loadDeactivateCallback() {
 
 var slideMode = {
   methods: {
+    // update scrollbar's size and pos  while in slide mode.
     updateScroller: function updateScroller() {
       var clientWidth = this.$el.clientWidth;
       var clientHeight = this.$el.clientHeight;
@@ -2474,64 +2472,11 @@ var slideMode = {
       }, zooming);
       // registry refresh
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
-        var refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
-        if (this.$listeners["refresh-activate"]) {
-          refreshActivateCallback = function refreshActivateCallback() {
-            _this.vuescroll.state.refreshStage = "active";
-            _this.$emit("refresh-activate", _this, refreshDom);
-          };
-        }
-        if (this.$listeners["refresh-before-deactivate"]) {
-          refreshBeforeDeactivateCallback = function refreshBeforeDeactivateCallback(done) {
-            _this.vuescroll.state.refreshStage = "beforeDeactive";
-            _this.$emit("refresh-before-deactivate", _this, refreshDom, done.bind(_this.scroller));
-          };
-        }
-        if (this.$listeners["refresh-deactivate"]) {
-          refreshDeactivateCallback = function refreshDeactivateCallback() {
-            _this.vuescroll.state.refreshStage = "deactive";
-            _this.$emit("refresh-deactivate", _this, refreshDom);
-          };
-        }
-        if (this.$listeners["refresh-start"]) {
-          refreshStartCallback = function refreshStartCallback() {
-            _this.vuescroll.state.refreshStage = "start";
-            _this.$emit("refresh-start", _this, refreshDom, _this.scroller.finishRefreshOrLoad.bind(_this.scroller));
-          };
-        }
-        var refreshHeight = refreshDom.scrollHeight;
-        this.scroller.activatePullToRefresh(refreshHeight, refreshActivateCallback.bind(this), refreshDeactivateCallback.bind(this), refreshStartCallback.bind(this), refreshBeforeDeactivateCallback.bind(this));
+        this.registryRefreshEvent();
       }
       // registry load
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        var loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
-        if (this.$listeners["load-activate"]) {
-          loadActivateCallback = function loadActivateCallback() {
-            _this.vuescroll.state.loadStage = "active";
-            _this.$emit("load-activate", _this, loadDom);
-          };
-        }
-        if (this.$listeners["load-before-deactivate"]) {
-          loadBeforeDeactivateCallback = function loadBeforeDeactivateCallback(done) {
-            _this.vuescroll.state.loadStage = "beforeDeactive";
-            _this.$emit("load-before-deactivate", _this, loadDom, done.bind(_this.scroller));
-          };
-        }
-        if (this.$listeners["load-deactivate"]) {
-          loadDeactivateCallback = function loadDeactivateCallback() {
-            _this.vuescroll.state.loadStage = "deactive";
-            _this.$emit("load-deactivate", _this, loadDom);
-          };
-        }
-        if (this.$listeners["load-start"]) {
-          loadStartCallback = function loadStartCallback() {
-            _this.vuescroll.state.loadStage = "start";
-            _this.$emit("load-start", _this, loadDom, _this.scroller.finishRefreshOrLoad.bind(_this.scroller));
-          };
-        }
-
-        var loadHeight = loadDom.scrollHeight;
-        this.scroller.activatePushToLoad(loadHeight, loadActivateCallback.bind(this), loadDeactivateCallback.bind(this), loadStartCallback.bind(this), loadBeforeDeactivateCallback.bind(this));
+        this.registryLoadEvent();
       }
       this.updateScroller();
       return cb;
@@ -2580,6 +2525,68 @@ var slideMode = {
       }
       this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + "%" : 0;
       this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + "%" : 0;
+    },
+    registryRefreshEvent: function registryRefreshEvent() {
+      var _this2 = this;
+
+      var refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
+      if (this.$listeners["refresh-activate"]) {
+        refreshActivateCallback = function refreshActivateCallback() {
+          _this2.vuescroll.state.refreshStage = "active";
+          _this2.$emit("refresh-activate", _this2, refreshDom);
+        };
+      }
+      if (this.$listeners["refresh-before-deactivate"]) {
+        refreshBeforeDeactivateCallback = function refreshBeforeDeactivateCallback(done) {
+          _this2.vuescroll.state.refreshStage = "beforeDeactive";
+          _this2.$emit("refresh-before-deactivate", _this2, refreshDom, done.bind(_this2.scroller));
+        };
+      }
+      if (this.$listeners["refresh-deactivate"]) {
+        refreshDeactivateCallback = function refreshDeactivateCallback() {
+          _this2.vuescroll.state.refreshStage = "deactive";
+          _this2.$emit("refresh-deactivate", _this2, refreshDom);
+        };
+      }
+      if (this.$listeners["refresh-start"]) {
+        refreshStartCallback = function refreshStartCallback() {
+          _this2.vuescroll.state.refreshStage = "start";
+          _this2.$emit("refresh-start", _this2, refreshDom, _this2.scroller.finishRefreshOrLoad.bind(_this2.scroller));
+        };
+      }
+      var refreshHeight = refreshDom.scrollHeight;
+      this.scroller.activatePullToRefresh(refreshHeight, refreshActivateCallback.bind(this), refreshDeactivateCallback.bind(this), refreshStartCallback.bind(this), refreshBeforeDeactivateCallback.bind(this));
+    },
+    registryLoadEvent: function registryLoadEvent() {
+      var _this3 = this;
+
+      var loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
+      if (this.$listeners["load-activate"]) {
+        loadActivateCallback = function loadActivateCallback() {
+          _this3.vuescroll.state.loadStage = "active";
+          _this3.$emit("load-activate", _this3, loadDom);
+        };
+      }
+      if (this.$listeners["load-before-deactivate"]) {
+        loadBeforeDeactivateCallback = function loadBeforeDeactivateCallback(done) {
+          _this3.vuescroll.state.loadStage = "beforeDeactive";
+          _this3.$emit("load-before-deactivate", _this3, loadDom, done.bind(_this3.scroller));
+        };
+      }
+      if (this.$listeners["load-deactivate"]) {
+        loadDeactivateCallback = function loadDeactivateCallback() {
+          _this3.vuescroll.state.loadStage = "deactive";
+          _this3.$emit("load-deactivate", _this3, loadDom);
+        };
+      }
+      if (this.$listeners["load-start"]) {
+        loadStartCallback = function loadStartCallback() {
+          _this3.vuescroll.state.loadStage = "start";
+          _this3.$emit("load-start", _this3, loadDom, _this3.scroller.finishRefreshOrLoad.bind(_this3.scroller));
+        };
+      }
+      var loadHeight = loadDom.scrollHeight;
+      this.scroller.activatePushToLoad(loadHeight, loadActivateCallback.bind(this), loadDeactivateCallback.bind(this), loadStartCallback.bind(this), loadBeforeDeactivateCallback.bind(this));
     }
   }
 };
@@ -2930,6 +2937,9 @@ function createPanel(h, vm) {
     scrollPanelData.style["transformOrigin"] = "left top 0px";
     scrollPanelData.style["userSelect"] = "none";
     scrollPanelData.style["height"] = "";
+    // add box-sizing for sile mode because 
+    // let's use scrollPanel intead of scrollContent to wrap content
+    scrollPanelData.style["box-sizing"] = "border-box";
   } else if (vm.mode == "pure-native") {
     scrollPanelData.style["width"] = "100%";
     if (vm.mergedOptions.scrollPanel.scrollingY) {
@@ -3288,7 +3298,7 @@ var vuescroll = {
       this.showAndDefferedHideBar();
     },
     setBarClick: function setBarClick(val) {
-      this.isClickingBar = val;
+      this.vuescroll.state.isClickingBar = val;
     },
     showAndDefferedHideBar: function showAndDefferedHideBar() {
       var _this2 = this;
@@ -3492,7 +3502,7 @@ var scroll = {
     // feat: #8
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
-    scroll.version = "4.5.5";
+    scroll.version = "4.5.6";
   }
 };
 /* istanbul ignore if */

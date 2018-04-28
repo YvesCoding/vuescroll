@@ -6,9 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="./vue.js"></script>
-    <script src="../vuescroll.js"></script>
+    <script src="../dits/vuescroll.js"></script>
     <style>
-    html, body {
+        html, body {
         height: 90%;
         }
         #app {
@@ -28,15 +28,18 @@
         .content {
             display: inline-block;
             margin-right: -5px;
-            width: 100px;
-            height: 100px;
-            line-height: 100px;
+            width: 400px;
+            height: 400px;
+            line-height: 400px;
             text-align: center;
             transition:all 2s;
-            opacity: 0.8;
+            opacity: 0.5;
+            box-sizing: border-box;
+            border: 1px solid red;
         }
         .content span {
             vertical-align: middle;
+            font-size: 20px;
         }
         .vuescroll-panel {
             white-space: nowrap;
@@ -44,48 +47,61 @@
     </style>
 </head>
 <body>
-    <div id="app" >
-           
+    <div id="app" >   
         <div id="parent">
-          <!-- bind your own options in data -->
-          <vue-scroll 
-          :ops="ops"
-           ref="vs"
-           
-           >
-           <template
-           v-for= "(item, index) in randomArray"
-           >
+            <!-- bind your own options in data -->
+            <vue-scroll 
+            :ops="ops"
+            ref="vs"
+            >
+            <template
+            v-for= "(item, index) in randomArray"
+            >
             <div 
             class="content"
             :key="index"
             :style="{backgroundColor: item}"
             >
-            <span>{{index+1 + '.' + item}}</span>
+            <span>{{index+1}}</span>
             </div>
             <br 
             v-if="(index+1) % 8 == 0"
             />
-           </template>
-          </vue-scroll>
+            </template>
+            </vue-scroll>
         </div>
         <div id="operateArea">
             <fieldset>
                 <legend>operation</legend>
-
+                <fieldset>
+                    <legend>common</legend>
+                    paging: <br />
+                    pagingX:<input type="radio" value="x" v-model="paging" />
+                    pagingY:<input type="radio" value="y" v-model="paging" />
+                </fieldset>
+                 
             </fieldset>
         </div>
-      </div>
+    </div>
     <script>
-    var vm = new Vue({
+        var vm = new Vue({
         el: "#app",
+        watch: {
+            paging(newVal) {
+                this.ops.scrollPanel.scrollingX = newVal === 'x';
+                this.ops.scrollPanel.scrollingY = newVal === 'y';
+            }
+        },
         data: {
+            paging: "x",
             ops: {
               vuescroll: {
                 mode: "slide",
-                snapping: {
-                    enable: true 
-                }
+                paging: true
+              },
+              scrollPanel: {
+                scrollingX: true,
+                scrollingY: false
               },
               bar: {
                 vBar: {
@@ -97,7 +113,7 @@
               }
             },
             dataNums: 100,
-            reRender: 1
+            reRender: 1        
         },
         computed: {
             randomArray() {
@@ -111,9 +127,12 @@
                 return this.reRender && Array.apply(null, {
                     length: this.dataNums
                 }).map(item => {
-                    return getRandom();
+                    return "#cecece"; // getRandom();
                 })
             }
+        },
+        methods: {
+            
         }
     })
     </script>

@@ -1,58 +1,45 @@
 
-<p align="center"><a href="https://wangyi7099.github.io/vuescrollDemo/" target="_blank" rel="noopener noreferrer"><img width="100" src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/logo.png?raw=true" alt="vuescroll logo"></a></p>
-<p align="center">
-    <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a>
-               <a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a>
-  <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage Status"></a>
-           <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
-            <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
-</p>
-<p align="center">A reactive virtual scrollbar based on vue.js 2.X</p>
-
-[中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
-
-## Introduction
-
- vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) which can both support PC and mobile phone.You can customize the scrollbar how you like instead of using native in browser. Here is the offical [website](https://wangyi7099.github.io/vuescrolljs/).
  
+  # Vuescroll
+Vuescroll is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue)， it supports customizing styles of scrollbar，detect size change of content、paging、pull-refresh，push-load and so on.
+
+  <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
+<a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
+
 ## Features
-* Full features of [scrollor](https://github.com/pbakaus/scroller).
-* Ability to customize scrollbar by [powerful configurations](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#global-config).
-* Ability to [detect size change](https://wangyi7099.github.io/vuescrolljs/guide/event.html#handle-resize) of content and automatically update.
-* [smooth-scroll](https://github.com/cferdinandi/smooth-scroll) Integration.
-* Vue-Powered.
+* Has the behavior of the native.
+* Be able to customize styles of scrollbar(includes color, size, position, opacity, keep showing or not and so on).
+* Switch among modes.
+* Be able to smooth-scroll by setting the scroll animations.
+* Support pull-refresh and push-load.
+* Support paging(Slide a pull page each time).
+* Support snapping(Slide a user-defined distance each time).
+* Be able to detect the size change of the content.
 
-## Get Started
+## Demo
+There are two ways to view demo:
+1. Open the `demo` folder in repo root to view.
+2. Go to [Offical Website](https://wangyi7099.github.io/vuescrolljs/guide/)to view.
 
-### Installation
-
-#### Direct Download / CDN
-```html
-<script src="https://unpkg.com/vue"></script>
-<script src="https://unpkg.com/vuescroll"></script>
-```
-#### Use npm or yarn
+## Usage
+1. Install by npm or yarn
+> Recommend yarn, why? Yarn will cache every modules you have installed, and won't download again next time when you use it.
 ```bash
 npm install vuescroll -S
 # yarn add vuescroll
 ```
+2. Configure in your entry file.
 
-### app.js
 ```javascript
-
-// In module system, you need to manully install
-// and in browser environment need not.
 import Vue from 'vue'
 import vuescroll from 'vuescroll'
 
 Vue.use(vuescroll)
 
-// declare Vue instance and bind your options.
 const vm = new Vue({
     el: "#app",
     data: {
         ops: {
-            // write your own options in ops
             vuescroll: {
 
             },
@@ -64,13 +51,10 @@ const vm = new Vue({
     }
 })
 ```
-
-### index.html
+3. Wrap the content you want to scroll by vuescroll.
 ```html
 <div id="app" >
-    <!-- bind ops -->
     <vue-scroll :ops="ops">
-        <!-- the content you want to scroll -->
         <div 
         class="content"
         v-for= "item in 100"
@@ -80,24 +64,25 @@ const vm = new Vue({
         </div>
     </vue-scroll>
 </div>
+``` 
+For the full apis、events、configurations, please go to [Offiacl Website](https://wangyi7099.github.io/vuescrolljs/).
+
+## How to contribute
+
+If you are interested in vuescroll，only need to follow the steps below:
+1. Fork this repo.
+2. Clone the repo you have just forked.
+```base
+   git clone git@github.com:<Your Usernmae>/vuescroll.git
 ```
-
-## Preview
-### Toggle between two modes
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-toggle-mode.gif?raw=true)
-### Smooth scroll
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-smooth-scroll.gif?raw=true)
-BTW, [Here](https://github.com/wangyi7099/vuescroll/blob/5f81713b5a741684cdaded0e647390d61a14fa46/src/util/index.js#L182) are many scroll animations you can choose. 
-### Pull-Refresh and Push-Load
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/vuescroll-refresh-load.gif?raw=true)
-
-## Inspiration
+3. Modify the code in your local and push the code to your repo.
+3. Click `New pull request` in vuescroll repo and that's all, like the picture below:<img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
+## 受以下的项目启发
 
 [slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
 
-## License
+## 协议
 
+**MIT** 
 
-[MIT](http://opensource.org/licenses/MIT)
-
-Copyright (c) 2018-present, wangyi7099(yi wang)
+by wangyi7099(王毅)

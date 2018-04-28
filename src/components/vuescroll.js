@@ -191,7 +191,7 @@ export default  {
       this.showAndDefferedHideBar();
     },
     setBarClick(val) {
-      this.isClickingBar = val;
+      this.vuescroll.state.isClickingBar = val;
     },
     showAndDefferedHideBar() {
       this.showBar();

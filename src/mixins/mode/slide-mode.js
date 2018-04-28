@@ -8,7 +8,7 @@ import {
 }from "../../util/scroller/listener";
 
 /**
- * @description refresh callback
+ * @description refresh and load callback
  */
 let refreshActivateCallback = function() {
   this.vuescroll.state.refreshStage = "active";
@@ -35,9 +35,6 @@ let refreshDeactivateCallback = function() {
 };
 
 
-/**
- * @description load callback
- */
 let loadActivateCallback = function() {
   this.vuescroll.state.loadStage = "active";
 };
@@ -62,10 +59,9 @@ let loadDeactivateCallback = function() {
   this.vuescroll.state.loadStage = "deactive";
 };
 
-
-
 export default {
   methods: {
+    // update scrollbar's size and pos  while in slide mode.
     updateScroller() {
       const clientWidth = this.$el.clientWidth;
       const clientHeight = this.$el.clientHeight;
@@ -134,76 +130,11 @@ export default {
       }, zooming);
       // registry refresh
       if(this.mergedOptions.vuescroll.pullRefresh.enable) {
-        const refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
-        if(this.$listeners["refresh-activate"]) {
-          refreshActivateCallback = () => {
-            this.vuescroll.state.refreshStage = "active";
-            this.$emit("refresh-activate", this, refreshDom);
-          };
-        }
-        if(this.$listeners["refresh-before-deactivate"]) {
-          refreshBeforeDeactivateCallback = (done) => {
-            this.vuescroll.state.refreshStage = "beforeDeactive";
-            this.$emit("refresh-before-deactivate", this, refreshDom, done.bind(this.scroller));
-          };
-        }
-        if(this.$listeners["refresh-deactivate"]) {
-          refreshDeactivateCallback = () => {
-            this.vuescroll.state.refreshStage = "deactive";
-            this.$emit("refresh-deactivate", this, refreshDom);
-          };
-        }
-        if(this.$listeners["refresh-start"]) {
-          refreshStartCallback = () => {
-            this.vuescroll.state.refreshStage = "start";
-            this.$emit("refresh-start", this, refreshDom, this.scroller.finishRefreshOrLoad.bind(this.scroller));
-          };
-        }
-        const refreshHeight = refreshDom.scrollHeight;
-        this.scroller.activatePullToRefresh(
-          refreshHeight,
-          refreshActivateCallback.bind(this),
-          refreshDeactivateCallback.bind(this),
-          refreshStartCallback.bind(this),
-          refreshBeforeDeactivateCallback.bind(this)
-        );
+        this.registryRefreshEvent();
       }
       // registry load
       if(this.mergedOptions.vuescroll.pushLoad.enable) {
-        const loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
-        if(this.$listeners["load-activate"]) {
-          loadActivateCallback = () => {
-            this.vuescroll.state.loadStage = "active";
-            this.$emit("load-activate", this, loadDom);
-          };
-        }
-        if(this.$listeners["load-before-deactivate"]) {
-          loadBeforeDeactivateCallback = (done) => {
-            this.vuescroll.state.loadStage = "beforeDeactive";
-            this.$emit("load-before-deactivate", this, loadDom, done.bind(this.scroller));
-          };
-        }
-        if(this.$listeners["load-deactivate"]) {
-          loadDeactivateCallback = () => {
-            this.vuescroll.state.loadStage = "deactive";
-            this.$emit("load-deactivate", this, loadDom);
-          };
-        }
-        if(this.$listeners["load-start"]) {
-          loadStartCallback = () => {
-            this.vuescroll.state.loadStage = "start";
-            this.$emit("load-start", this, loadDom, this.scroller.finishRefreshOrLoad.bind(this.scroller));
-          };
-        }
-                
-        let loadHeight = loadDom.scrollHeight;
-        this.scroller.activatePushToLoad(
-          loadHeight,
-          loadActivateCallback.bind(this),
-          loadDeactivateCallback.bind(this),
-          loadStartCallback.bind(this),
-          loadBeforeDeactivateCallback.bind(this)
-        );
+        this.registryLoadEvent();
       }
       this.updateScroller();
       return cb;
@@ -251,6 +182,76 @@ export default {
       }
       this.bar.vBar.state.size = (heightPercentage < 100) ? (heightPercentage + "%") : 0;
       this.bar.hBar.state.size = (widthPercentage < 100) ? (widthPercentage + "%") : 0;
+    },
+    registryRefreshEvent() {
+      const refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
+      if(this.$listeners["refresh-activate"]) {
+        refreshActivateCallback = () => {
+          this.vuescroll.state.refreshStage = "active";
+          this.$emit("refresh-activate", this, refreshDom);
+        };
+      }
+      if(this.$listeners["refresh-before-deactivate"]) {
+        refreshBeforeDeactivateCallback = (done) => {
+          this.vuescroll.state.refreshStage = "beforeDeactive";
+          this.$emit("refresh-before-deactivate", this, refreshDom, done.bind(this.scroller));
+        };
+      }
+      if(this.$listeners["refresh-deactivate"]) {
+        refreshDeactivateCallback = () => {
+          this.vuescroll.state.refreshStage = "deactive";
+          this.$emit("refresh-deactivate", this, refreshDom);
+        };
+      }
+      if(this.$listeners["refresh-start"]) {
+        refreshStartCallback = () => {
+          this.vuescroll.state.refreshStage = "start";
+          this.$emit("refresh-start", this, refreshDom, this.scroller.finishRefreshOrLoad.bind(this.scroller));
+        };
+      }
+      const refreshHeight = refreshDom.scrollHeight;
+      this.scroller.activatePullToRefresh(
+        refreshHeight,
+        refreshActivateCallback.bind(this),
+        refreshDeactivateCallback.bind(this),
+        refreshStartCallback.bind(this),
+        refreshBeforeDeactivateCallback.bind(this)
+      );
+    },
+    registryLoadEvent() {
+      const loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
+      if(this.$listeners["load-activate"]) {
+        loadActivateCallback = () => {
+          this.vuescroll.state.loadStage = "active";
+          this.$emit("load-activate", this, loadDom);
+        };
+      }
+      if(this.$listeners["load-before-deactivate"]) {
+        loadBeforeDeactivateCallback = (done) => {
+          this.vuescroll.state.loadStage = "beforeDeactive";
+          this.$emit("load-before-deactivate", this, loadDom, done.bind(this.scroller));
+        };
+      }
+      if(this.$listeners["load-deactivate"]) {
+        loadDeactivateCallback = () => {
+          this.vuescroll.state.loadStage = "deactive";
+          this.$emit("load-deactivate", this, loadDom);
+        };
+      }
+      if(this.$listeners["load-start"]) {
+        loadStartCallback = () => {
+          this.vuescroll.state.loadStage = "start";
+          this.$emit("load-start", this, loadDom, this.scroller.finishRefreshOrLoad.bind(this.scroller));
+        };
+      }
+      let loadHeight = loadDom.scrollHeight;
+      this.scroller.activatePushToLoad(
+        loadHeight,
+        loadActivateCallback.bind(this),
+        loadDeactivateCallback.bind(this),
+        loadStartCallback.bind(this),
+        loadBeforeDeactivateCallback.bind(this)
+      );
     }
   }
 };

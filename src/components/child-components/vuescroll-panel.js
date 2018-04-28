@@ -102,6 +102,9 @@ export function createPanel(h, vm) {
     scrollPanelData.style["transformOrigin"] = "left top 0px";
     scrollPanelData.style["userSelect"] = "none";
     scrollPanelData.style["height"] = "";
+    // add box-sizing for sile mode because 
+    // let's use scrollPanel intead of scrollContent to wrap content
+    scrollPanelData.style["box-sizing"] = "border-box";  
   } else if(vm.mode == "pure-native") {
     scrollPanelData.style["width"] = "100%";
     if(vm.mergedOptions.scrollPanel.scrollingY) {

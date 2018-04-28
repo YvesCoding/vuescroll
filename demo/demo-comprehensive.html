@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="./vue.js"></script>
-    <script src="../vuescroll.js"></script>
+    <script src="../dist/vuescroll.js"></script>
     <style>
     html, body {
         height: 90%;
@@ -65,7 +65,7 @@
             <span>{{index+1 + '.' + item}}</span>
             </div>
             <br 
-            v-if="(index+1) % 4 == 0"
+            v-if="(index+1) % 8 == 0"
             />
            </template>
           </vue-scroll>
