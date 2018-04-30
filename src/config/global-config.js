@@ -42,10 +42,6 @@ export default {
       maxZoom: 3,
       /** Multiply or decrease scrolling speed **/
       speedMultiplier: 1,
-      /** Callback that is fired on the later of touch end or deceleration end,
-				provided that another scrolling action has not begun. Used to know
-				when to fade out a scrollbar. */
-      scrollingComplete: NOOP,
       /** This configures the amount of change applied to deceleration when reaching boundaries  **/
       penetrationDeceleration : 0.03,
       /** This configures the amount of change applied to acceleration when reaching boundaries  **/

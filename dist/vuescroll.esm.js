@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.5.9
+    * @name: vuescroll 4.5.10
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -184,10 +184,6 @@ var GCF = {
       maxZoom: 3,
       /** Multiply or decrease scrolling speed **/
       speedMultiplier: 1,
-      /** Callback that is fired on the later of touch end or deceleration end,
-      provided that another scrolling action has not begun. Used to know
-      when to fade out a scrollbar. */
-      scrollingComplete: NOOP,
       /** This configures the amount of change applied to deceleration when reaching boundaries  **/
       penetrationDeceleration: 0.03,
       /** This configures the amount of change applied to acceleration when reaching boundaries  **/
@@ -3444,7 +3440,7 @@ var scroll = {
     // feat: #8
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
-    scroll.version = "4.5.9";
+    scroll.version = "4.5.10";
   }
 };
 /* istanbul ignore if */
