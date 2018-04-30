@@ -1,13 +1,6 @@
-import {
-  goScrolling
-}from "../util";
-/**
- * extract an exact number from given params
- * @param {any} distance 
- * @param {any} scroll 
- * @param {any} el 
- * @returns 
- */
+import { createEasingFunction,  easingPattern} from "../easingPattern";
+import { core } from "../scroller/animate";
+
 function getNumericValue(distance, size) {
   let number;
   if(!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
@@ -17,6 +10,55 @@ function getNumericValue(distance, size) {
     number = size * number / 100;
   }
   return number;
+}
+
+export function goScrolling(
+  elm,
+  deltaX,
+  deltaY,
+  speed, 
+  easing,
+  scrollingComplete
+) {
+  const startLocationY = elm["scrollTop"];
+  const startLocationX = elm["scrollLeft"];
+  let positionX = startLocationX;
+  let positionY = startLocationY;
+  /**
+     * keep the limit of scroll delta.
+     */
+  /* istanbul ignore next */
+  if(startLocationY + deltaY < 0) {
+    deltaY = -startLocationY;
+  }
+  if(startLocationY + deltaY > elm["scrollHeight"]) {
+    deltaY = elm["scrollHeight"] - startLocationY;
+  }
+  if(startLocationX + deltaX < 0) {
+    deltaX = -startLocationX;
+  }
+  if(startLocationX + deltaX > elm["scrollWidth"]) {
+    deltaX = elm["scrollWidth"] - startLocationX;
+  }
+
+  const easingMethod = createEasingFunction(easing, easingPattern);
+  const stepCallback = (percentage) => {
+    positionX = startLocationX + (deltaX * percentage);
+    positionY = startLocationY + (deltaY * percentage);
+    elm["scrollTop"] = Math.floor(positionY);
+    elm["scrollLeft"] = Math.floor(positionX);
+    return verifyCallback();
+  };
+  const verifyCallback = () => {
+    return  Math.abs(positionY - startLocationY) < Math.abs(deltaY) || Math.abs(positionX - startLocationX) < Math.abs(deltaX);
+  };
+  core.effect.Animate.start(
+    stepCallback, 
+    verifyCallback, 
+    scrollingComplete, 
+    speed, 
+    easingMethod
+  );
 }
 
 export default {
@@ -47,12 +89,17 @@ export default {
     internalScrollTo(destX, destY, animate, force) {
       if(this.mode == "native" || this.mode == "pure-native") {
         if(animate) {
+          // hadnle for scroll complete
+          const scrollingComplete = () => {
+            this.update("handle-scroll-complete");
+          };
           goScrolling(
             this.$refs["scrollPanel"].$el,
             destX - this.$refs["scrollPanel"].$el.scrollLeft,
             destY - this.$refs["scrollPanel"].$el.scrollTop,
             this.mergedOptions.scrollPanel.speed,
-            this.mergedOptions.scrollPanel.easing
+            this.mergedOptions.scrollPanel.easing,
+            scrollingComplete
           );
         } else {
           this.$refs["scrollPanel"].$el.scrollTop = destY;

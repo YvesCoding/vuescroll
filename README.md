@@ -1,9 +1,23 @@
 
  
-  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
+<p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
 
-  [中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)<br />
-  **Vuescroll** is a virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ，and it  has multi  modes you can choose, such as **slide** mode, **native** mode,  and **pure-native** mode. It also supports customizing styles of scrollbar，detecting size change of content、paging、pull-refresh，push-load and so on.
+[中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)<br />
+**Vuescroll** is a reactive, muli-modes, virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ，and it  currently has 3  modes you can choose:
+
+`slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry. It is suitable for mobile phone.
+
+`native` mode:  Seem to be native scrollbar, but can costumize styles of scrollbars. It is suitable for PC.
+
+`pure-native`mode: Use native scrollbars. It is suitable for the users who like native scrollbar.
+
+It also supports customizing styles of scrollbar，detecting size change of content、paging、pull-refresh，push-load and so on.
+
+> For those who use 3.X and want to upgrade to 4.X, please use the following usage ,or might be upgrade fail:
+```bash
+   npm i vuescroll@latest
+   # yarn add vuescroll@latest
+```
 
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>

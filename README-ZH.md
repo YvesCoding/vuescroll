@@ -2,7 +2,21 @@
  
   <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/zh/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
 
-Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的虚拟滚动条，它拥有多个模式可供你选择： `slide` 模式、`native` 模式和`pure-native`模式， 并且它还支持定制滚动条的样式，检测内容尺寸变化、能够使内容分页、支持上拉-刷新，下推加载等诸多功能。
+Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的虚拟滚动条，它当前拥有3个模式可供你选择： 
+
+`slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围。适用于移动端端用户。
+
+`native` 模式:  有点想原生的滚动，可以自定义滚动条样式。使用于PC端用户。
+
+`pure-native`模式: 滚动条使用原生的滚动条。适用于喜欢原生滚动条的用户。
+
+并且它还支持定制滚动条的样式，检测内容尺寸变化、能够使内容分页、支持上拉-刷新，下推加载等诸多功能。
+
+> 对于那些使用3.X的用户想升级到4.X 请使用如下命令,否则可能会导致升级失败！:
+```bash
+   npm i vuescroll@latest
+   # yarn add vuescroll@latest
+```
 
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>

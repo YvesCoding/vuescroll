@@ -2,8 +2,7 @@
 import {
   getGutter,
   hideSystemBar,
-  createRefreshDomStyle,
-  createLoadDomStyle
+  createDomStyle
 } from "../../util";
 import {createContent} from "./vuescroll-content";
 // vueScrollPanel
@@ -141,7 +140,7 @@ function createPanelChildren(vm, h) {
         renderChildren.unshift(vm.$slots.refresh[0]);
       } else {
         // use default refresh dom
-        createRefreshDomStyle();
+        createDomStyle("refreshDomStyle");
         let refreshDom = null;
         // front or end of the process.
         if(vm.vuescroll.state.refreshStage == "deactive") {
@@ -183,7 +182,7 @@ function createPanelChildren(vm, h) {
         vm.$refs["loadDom"] = vm.$slots.load[0];
         renderChildren.push(vm.$slots.load[0]);
       } else {
-        createLoadDomStyle();
+        createDomStyle("loadDomStyle");
         let loadDom = null;
         // front or end of the process.
         if(vm.vuescroll.state.loadStage == "deactive") {

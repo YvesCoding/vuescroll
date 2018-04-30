@@ -1,7 +1,4 @@
-import {
-  listenResize,
-  findValuesByMode
-} from "../util";
+import { listenResize } from "../resize-detector";
 import hackLifecycle from "../mixins/hack-lifecycle";
 import api from "../mixins/api";
 import nativeMode from "../mixins/mode/native-mode";
@@ -18,6 +15,16 @@ const uncessaryChangeArray = [
   "mergedOptions.rail",
   "mergedOptions.bar"
 ];
+
+function findValuesByMode(mode, vm) {
+  let axis = {};
+  switch(mode) {
+  case "native":
+  case "pure-native": axis = {x: vm.scrollPanelElm.scrollLeft, y: vm.scrollPanelElm.scrollTop}; break;
+  case "slide": axis = {x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop}; break;
+  }
+  return axis;
+}
 
 export default  {
   name: "vueScroll",
@@ -76,21 +83,14 @@ export default  {
             size: 0,
             opacity: 0
           }
-        }
-      }
-      ,
-      mergedOptions: {
-        vuescroll: { },
-        scrollPanel: { },
-        scrollContent: { },
-        rail: { },
-        bar: { }
+        },
+        renderError: false
       }
     };
   },
   render(h) {
     let vm = this;
-    if(vm.shouldStopRender) {
+    if(vm.renderError) {
       return (
         <div>
           {[vm.$slots["default"]]}
@@ -203,9 +203,12 @@ export default  {
         this.hideBar();
       }, 500);
     },
+    /**
+     *  emit user registry event
+     */
     emitEvent(eventType, nativeEvent = null) {
       const scrollPanel = this.scrollPanelElm;
-      let vertical = {
+      const vertical = {
           type: "vertical"
         }, horizontal = {
           type: "horizontal"
@@ -248,64 +251,61 @@ export default  {
         return;
       }
       /* istanbul ignore next */
-      {
-        if(this.destroyResize) {
-          // when toggling the mode
-          // we should clean the flag  object.
-          this.destroyResize();
-        }
-        let contentElm = null;
-        if(this.mode == "slide" || this.mode == "pure-native") {
-          contentElm = this.scrollPanelElm;
-        } else if(this.mode == "native") {
-          // because we can customize the tag
-          // of the scrollContent, so, scrollContent
-          // maybe a dom or a component
-          if(this.$refs["scrollContent"]._isVue) {
-            contentElm = this.$refs["scrollContent"].$el;
-          }else {
-            contentElm = this.$refs["scrollContent"];
-          }
-        }                
-        window.addEventListener("resize", () => { //eslint-disable-line
-          this.update();
-          this.showAndDefferedHideBar();
-          if(this.mode == "slide") {
-            this.updateScroller();
-          }
-        }, false);
-        let funcArr = [
-          () => {
-            let currentSize = {};    
-            if(this.mode == "slide") {
-              this.updateScroller();
-              currentSize["width"] = this.scroller.__contentWidth;
-              currentSize["height"] = this.scroller.__contentHeight;
-            } else if(this.mode == "native") {
-              currentSize["width"] = this.scrollPanelElm.scrollWidth;
-              currentSize["height"] = this.scrollPanelElm.scrollHeight;
-            }
-            this.update("handle-resize", currentSize);
-            this.showAndDefferedHideBar();
-          }
-        ];
-        // registry resize event
-        this.destroyResize = listenResize(contentElm, funcArr);
+      if(this.destroyResize) {
+        // when toggling the mode
+        // we should clean the flag  object.
+        this.destroyResize();
       }
+      let contentElm = null;
+      if(this.mode == "slide" || this.mode == "pure-native") {
+        contentElm = this.scrollPanelElm;
+      } else if(this.mode == "native") {
+        // scrollContent maybe a component or a pure-dom
+        if(this.$refs["scrollContent"]._isVue) {
+          contentElm = this.$refs["scrollContent"].$el;
+        }else {
+          contentElm = this.$refs["scrollContent"];
+        }
+      }
+      const handleWindowResize = () => {
+        this.update();
+        this.showAndDefferedHideBar();
+        if(this.mode == "slide") {
+          this.updateScroller();
+        }
+      };
+      const handleDomResize = () => {
+        let currentSize = {};    
+        if(this.mode == "slide") {
+          this.updateScroller();
+          currentSize["width"] = this.scroller.__contentWidth;
+          currentSize["height"] = this.scroller.__contentHeight;
+        } else if(this.mode == "native") {
+          currentSize["width"] = this.scrollPanelElm.scrollWidth;
+          currentSize["height"] = this.scrollPanelElm.scrollHeight;
+        }
+        this.update("handle-resize", currentSize);
+        this.showAndDefferedHideBar();
+      };                
+      window.addEventListener("resize", handleWindowResize, false);
+      const destroyDomResize = listenResize(contentElm, handleDomResize);
+      // registry resize event
+      this.destroyResize = () => {
+        window.removeEventListener("resize", handleWindowResize, false);
+        destroyDomResize();
+      };
     },
     recordCurrentPos() {
+      let mode = this.mode;
       if(this.mode !== this.lastMode) {
-        this.vuescroll.state.internalScrollLeft =  findValuesByMode(this.lastMode, this).x;
-        this.vuescroll.state.internalScrollTop =  findValuesByMode(this.lastMode, this).y;  
+        mode = this.lastMode;
         this.lastMode = this.mode;
-      } else {
-        this.vuescroll.state.internalScrollLeft =  findValuesByMode(this.mode, this).x;
-        this.vuescroll.state.internalScrollTop =  findValuesByMode(this.mode, this).y; 
       }
+      let axis = findValuesByMode(mode, this);
+      this.vuescroll.state.internalScrollLeft = axis.x;
+      this.vuescroll.state.internalScrollTop = axis.y;  
     },
-    // breaking changes should registry scrollor or native 
     watchChanges() {
-      // react to vuescroll's change.
       this.$watch("mergedOptions", () => {
         // record current position
         this.recordCurrentPos();
@@ -319,11 +319,8 @@ export default  {
         sync: true
       });
     },
-    // when small changes , we don't need to
-    // registry the scrollor 
     watchSmallChanges() {
-      // some uncessary changes.
-      uncessaryChangeArray.forEach((opts) => {
+      uncessaryChangeArray.forEach(opts => {
         this.$watch(opts, () => {
           this.shouldStop = true;
         }, {
@@ -334,15 +331,12 @@ export default  {
     }
   },
   mounted() {
-    // do something while mounts
-    if(!this._isDestroyed && !this.shouldStopRender) {
+    if(!this._isDestroyed && !this.renderError) {
       if(this.mode == "slide") {
         this.destroyScroller = this.registryScroller();
       }
-      // init the last mode.
       this.lastMode = this.mode;
 
-      // registry resize event
       this.registryResize();
       this.watchChanges();
       this.watchSmallChanges();

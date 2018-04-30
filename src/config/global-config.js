@@ -1,4 +1,5 @@
 export const modes = ["slide", "native", "pure-native"];
+export const NOOP = () => {};
 export default {
   // vuescroll
   vuescroll: {
@@ -28,6 +29,27 @@ export default {
       enable: false,
       width: 100,
       height: 100
+    },
+    // some scroller options
+    scroller: {
+      /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
+      bouncing: true,
+      /** Enable locking to the main axis if user moves only slightly on one of them at start */
+      locking: true,
+      /** Minimum zoom level */
+      minZoom: 0.5,
+      /** Maximum zoom level */
+      maxZoom: 3,
+      /** Multiply or decrease scrolling speed **/
+      speedMultiplier: 1,
+      /** Callback that is fired on the later of touch end or deceleration end,
+				provided that another scrolling action has not begun. Used to know
+				when to fade out a scrollbar. */
+      scrollingComplete: NOOP,
+      /** This configures the amount of change applied to deceleration when reaching boundaries  **/
+      penetrationDeceleration : 0.03,
+      /** This configures the amount of change applied to acceleration when reaching boundaries  **/
+      penetrationAcceleration : 0.08
     }
   },
   scrollPanel: {

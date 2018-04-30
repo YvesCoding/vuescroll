@@ -53,6 +53,7 @@
             @load-before-deactivate="loadBeforeDeactivate"
            @load-deactivate="loadDeactivate"
             @load-start="loadStart"
+            @handle-scroll-complete="handleComplete"
            >
            <template
            v-for= "(item, index) in randomArray"
@@ -221,7 +222,6 @@
                     },
                     enable: false
                 },
-                snapping: false,
                 paging: false,
                 zooming: false
               },
@@ -240,7 +240,7 @@
                 }
               }
             },
-            dataNums: 40,
+            dataNums: 120,
             reRender: 1,
             easings,
             dx: 0,
@@ -263,6 +263,9 @@
             }
         },
         methods: {
+            handleComplete(v, h) {
+                console.log(v, h);
+            },
             refresh() {
                 this.reRender ++;
             },

@@ -8,10 +8,10 @@
   "bundleDependencies": false,
   "dependencies": {
     "vue": "^2.0",
-    "vuescroll": "^4.5.1"
+    "vuescroll": "^4.5.8"
   },
   "deprecated": false,
-  "description": "A reactive virtual scrollbar based on vue.js 2.X",
+  "description": "A reactive, muli-modes, virtual scrollbar based on vue.js2.X",
   "homepage": "https://github.com/wangyi7099/vuescroll#readme",
   "keywords": [
     "vuescroll",
@@ -34,7 +34,7 @@
     "test:cover": "karma start test/karma.conf.js",
     "report-coverage": "codecov"
   },
-  "version": "4.5.8",
+  "version": "4.5.9",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",

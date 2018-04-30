@@ -1,11 +1,7 @@
 // import scroller
-import Scroller from "../../util/scroller";
-import {
-  render 
-} from "../../util/scroller/render";
-import {
-  listenContainer
-}from "../../util/scroller/listener";
+import Scroller from "../../scroller";
+import { render } from "../../scroller/render";
+import { listenContainer }from "../../scroller/listener";
 
 /**
  * @description refresh and load callback
@@ -94,14 +90,20 @@ export default {
       // disale zooming when refresh or load enabled
       let zooming = !this.refreshLoad && !paging && !snapping && this.mergedOptions.vuescroll.zooming;
       const {scrollingY, scrollingX} = this.mergedOptions.scrollPanel;
+      // hadnle for scroll complete
+      const scrollingComplete = () => {
+        this.update("handle-scroll-complete");
+      };
       // Initialize Scroller
-      this.scroller = new Scroller(render(this.scrollPanelElm, window), {
+      this.scroller = new Scroller(render(this.scrollPanelElm, window, "px"), {
+        ...this.mergedOptions.vuescroll.scroller,
         zooming,
         scrollingY,
         scrollingX: scrollingX && !this.refreshLoad,
         animationDuration: this.mergedOptions.scrollPanel.speed,
         paging,
-        snapping
+        snapping,
+        scrollingComplete
       });
       // if snapping enabled
       // we should set snap size

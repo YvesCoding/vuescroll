@@ -1,10 +1,6 @@
 import scrollMap from "../../config/scroll-map";
-import {
-  renderTransform,
-  on,
-  off
-} from "../../util";
-
+import { eventCenter } from "../../util";
+import { render } from "../../scroller/render";
 export default {
   name: "bar",
   props: {
@@ -45,7 +41,7 @@ export default {
       borderRadius: "4px",
       transition: "opacity .5s",
       userSelect: "none",
-      ...renderTransform(this.type, this.state.posValue)
+      ...render(this.type, window, "%", this.state.posValue)
     };
     const data = {
       style: style,
@@ -71,8 +67,8 @@ export default {
       this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
       // tell parent that the mouse has been down.
       this.$emit("setBarClick", true);
-      on(document, "mousemove", this.handleMouseMove);
-      on(document, "mouseup", this.handleMouseUp);
+      eventCenter(document, "mousemove", this.handleMouseMove);
+      eventCenter(document, "mouseup", this.handleMouseUp);
     },
     handleMouseMove(e) {
       /* istanbul ignore next */
@@ -97,8 +93,8 @@ export default {
       document.onselectstart = null;
       this.$parent.hideBar();
       this.axisStartPos = 0;
-      off(document, "mousemove", this.handleMouseMove);
-      off(document, "mouseup", this.handleMouseUp);
+      eventCenter(document, "mousemove", this.handleMouseMove, "off");
+      eventCenter(document, "mouseup", this.handleMouseUp, "off");
     }
   }
 };

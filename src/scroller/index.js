@@ -13,21 +13,9 @@
  * Copyright 2011, Deutsche Telekom AG
  * License: MIT + Apache (V2)
  */
-import {
-  easingPattern
-}from "../index";
-
-import {
-  core
-} from "./animate";
-
-var NOOP = function(){};
-
-function createEasingFunction(easing) {
-  return function (pos) {
-    return easingPattern(easing, pos);
-  };
-}
+import { easingPattern, createEasingFunction }from "../easingPattern";
+import { core } from "./animate";
+import { NOOP } from "../config/global-config";
 
 var animatingMethod = null;
 
@@ -100,8 +88,8 @@ export default function Scroller(callback, options) {
     this.options[key] = options[key];
   }
 
-  animatingMethod = createEasingFunction(this.options.animatingEasing);
-  noAnimatingMethod =  createEasingFunction(this.options.noAnimatingEasing);
+  animatingMethod = createEasingFunction(this.options.animatingEasing, easingPattern);
+  noAnimatingMethod =  createEasingFunction(this.options.noAnimatingEasing, easingPattern);
 }
 
 var members = {

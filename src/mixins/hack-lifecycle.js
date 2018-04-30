@@ -49,7 +49,14 @@ function hackPropsData() {
 export default {
   data() {
     return {
-      shouldStopRender: false
+      shouldStopRender: false,
+      mergedOptions: {
+        vuescroll: {},
+        scrollPanel: {},
+        scrollContent: {},
+        rail: {},
+        bar: {}
+      }
     };
   },
   created() {
