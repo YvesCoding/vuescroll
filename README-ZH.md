@@ -2,13 +2,10 @@
  
   <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/zh/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
 
-Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的虚拟滚动条，它当前拥有3个模式可供你选择： 
-
-`slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围。适用于移动端端用户。
-
-`native` 模式:  有点想原生的滚动，可以自定义滚动条样式。使用于PC端用户。
-
-`pure-native`模式: 滚动条使用原生的滚动条。适用于喜欢原生滚动条的用户。
+Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的虚拟滚动条，它当前拥有3个模式： 
+* `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围。适用于移动端端用户。
+* `native` 模式:  有点想原生的滚动，可以自定义滚动条样式。使用于PC端用户。
+* `pure-native`模式: 滚动条使用原生的滚动条。适用于喜欢原生滚动条的用户。
 
 并且它还支持定制滚动条的样式，检测内容尺寸变化、能够使内容分页、支持上拉-刷新，下推加载等诸多功能。
 
@@ -34,7 +31,7 @@ Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的虚拟滚
 ## Demo
 有两种方式查看Demo:
 1. 打开项目根目录下的demo文件夹进行查看
-2. 去在线的demo-[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)进行查看
+2. 去[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)进行查看
 
 ## 开始上手
 ### 安装
@@ -96,7 +93,9 @@ const vm = new Vue({
 3. 在vuescroll项目地址点击`New pull request`即可，如下图所示:<br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
 ## 受以下的项目启发
 
-[slimscroll](https://github.com/rochal/jQuery-slimScroll)    [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src) [scroller](https://github.com/pbakaus/scroller)
+* [slimscroll](https://github.com/rochal/jQuery-slimScroll)
+* [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src)
+* [scroller](https://github.com/pbakaus/scroller)
 
 ## 协议
 
