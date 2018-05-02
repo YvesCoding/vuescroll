@@ -62,7 +62,7 @@ export default {
   scrollContent: {
     // customize tag of scrollContent
     tag: "div",
-    padding: true,
+    padding: false,
     props: { },
     attrs: { }
   },
