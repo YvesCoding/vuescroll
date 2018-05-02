@@ -3271,21 +3271,28 @@ var vuescroll = {
       var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
       var scrollPanel$$1 = this.scrollPanelElm;
+      var _scrollPanelElm = this.scrollPanelElm,
+          scrollHeight = _scrollPanelElm.scrollHeight,
+          scrollWidth = _scrollPanelElm.scrollWidth,
+          clientHeight = _scrollPanelElm.clientHeight,
+          clientWidth = _scrollPanelElm.clientWidth,
+          scrollTop = _scrollPanelElm.scrollTop,
+          scrollLeft = _scrollPanelElm.scrollLeft;
+
       var vertical = {
         type: "vertical"
       },
           horizontal = {
         type: "horizontal"
       };
-      var scrollTop = scrollPanel$$1.scrollTop,
-          scrollLeft = scrollPanel$$1.scrollLeft;
-
       if (this.mode == "slide") {
         scrollTop = this.scroller.__scrollTop;
         scrollLeft = this.scroller.__scrollLeft;
+        clientHeight = this.$el.clientHeight;
+        clientWidth = this.$el.clientWidth;
       }
-      vertical["process"] = scrollTop / (scrollPanel$$1.scrollHeight - scrollPanel$$1.clientHeight);
-      horizontal["process"] = scrollLeft / (scrollPanel$$1.scrollWidth - scrollPanel$$1.clientWidth);
+      vertical["process"] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
+      horizontal["process"] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
       vertical["barSize"] = this.bar.vBar.state.size;
       horizontal["barSize"] = this.bar.hBar.state.size;
       this.$emit(eventType, vertical, horizontal, nativeEvent);

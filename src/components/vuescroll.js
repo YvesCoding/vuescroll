@@ -208,18 +208,27 @@ export default  {
      */
     emitEvent(eventType, nativeEvent = null) {
       const scrollPanel = this.scrollPanelElm;
+      let { 
+        scrollHeight, 
+        scrollWidth, 
+        clientHeight, 
+        clientWidth,
+        scrollTop,
+        scrollLeft 
+      } = this.scrollPanelElm;
       const vertical = {
           type: "vertical"
         }, horizontal = {
           type: "horizontal"
         };
-      let {scrollTop, scrollLeft} = scrollPanel;
       if(this.mode == "slide") {
         scrollTop = this.scroller.__scrollTop;
         scrollLeft = this.scroller.__scrollLeft;
+        clientHeight = this.$el.clientHeight;
+        clientWidth = this.$el.clientWidth;
       }
-      vertical["process"] = scrollTop / (scrollPanel.scrollHeight - scrollPanel.clientHeight);
-      horizontal["process"] = scrollLeft / (scrollPanel.scrollWidth - scrollPanel.clientWidth);
+      vertical["process"] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
+      horizontal["process"] =Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
       vertical["barSize"] = this.bar.vBar.state.size;
       horizontal["barSize"] = this.bar.hBar.state.size;
       this.$emit(eventType, vertical, horizontal, nativeEvent);
