@@ -2,7 +2,8 @@
  
 <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
 
-[中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)<br />
+[中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
+
 **Vuescroll** is a reactive, muli-modes, virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ，and it  currently has 3  modes:
 * `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry. It is suitable for mobile phone.
 * `native` mode:  Seem to be native scrollbar, but can costumize styles of scrollbars. It is suitable for PC.
