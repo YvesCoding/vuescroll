@@ -136,6 +136,9 @@ export default  {
     scrollPanelElm() {
       return this.$refs.scrollPanel.$el;
     },
+    scrollContentElm() {
+      return this.$refs["scrollContent"]._isVue ?  this.$refs["scrollContent"].$el : this.$refs["scrollContent"];
+    },
     mode() {
       return this.mergedOptions.vuescroll.mode;
     },
@@ -231,6 +234,8 @@ export default  {
       horizontal["process"] =Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
       vertical["barSize"] = this.bar.vBar.state.size;
       horizontal["barSize"] = this.bar.hBar.state.size;
+      vertical["scrollTop"] = scrollTop;
+      horizontal["scrollLeft"] = scrollLeft;
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
     showBar() {
@@ -270,11 +275,7 @@ export default  {
         contentElm = this.scrollPanelElm;
       } else if(this.mode == "native") {
         // scrollContent maybe a component or a pure-dom
-        if(this.$refs["scrollContent"]._isVue) {
-          contentElm = this.$refs["scrollContent"].$el;
-        }else {
-          contentElm = this.$refs["scrollContent"];
-        }
+        contentElm = this.scrollContentElm;
       }
       const handleWindowResize = () => {
         this.update();
@@ -314,28 +315,27 @@ export default  {
       this.vuescroll.state.internalScrollLeft = axis.x;
       this.vuescroll.state.internalScrollTop = axis.y;  
     },
-    watchChanges() {
-      this.$watch("mergedOptions", () => {
-        // record current position
-        this.recordCurrentPos();
-        this.$nextTick(() => {
-          // update scroll..
-          this.registryResize();
-          this.updateMode();
-        });
-      }, {
+    initWatch() {
+      const watchOpts = {
         deep: true,
         sync: true
+      };
+      this.$watch("mergedOptions", () => {
+      // record current position
+      this.recordCurrentPos();
+      this.$nextTick(() => {
+        // update scroll..
+        this.registryResize();
+        this.updateMode();
       });
-    },
-    watchSmallChanges() {
+      }, watchOpts);
+
       uncessaryChangeArray.forEach(opts => {
         this.$watch(opts, () => {
+          // when small changes changed, 
+          // we need not to updateMode or registryResize
           this.shouldStop = true;
-        }, {
-          sync: true,
-          deep: true
-        });
+        }, watchOpts);
       });
     }
   },
@@ -347,8 +347,7 @@ export default  {
       this.lastMode = this.mode;
 
       this.registryResize();
-      this.watchChanges();
-      this.watchSmallChanges();
+      this.initWatch();
       this.$nextTick(() => {
         // update state
         this.update();

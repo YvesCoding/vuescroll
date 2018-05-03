@@ -654,6 +654,7 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
 
 var api = {
   methods: {
+    // public api
     scrollTo: function scrollTo(_ref) {
       var x = _ref.x,
           y = _ref.y;
@@ -688,14 +689,67 @@ var api = {
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
     },
-    internalScrollTo: function internalScrollTo(destX, destY, animate, force) {
+    zoomBy: function zoomBy(factor, animate, originLeft, originTop, callback) {
+      if (this.mode != "slide") {
+        console.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+        return;
+      }
+      this.scroller.zoomBy(factor, animate, originLeft, originTop, callback);
+    },
+    zoomTo: function zoomTo(level) {
+      var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var originLeft = arguments[2];
+      var originTop = arguments[3];
+      var callback = arguments[4];
+
+      if (this.mode != "slide") {
+        console.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+        return;
+      }
+      this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
+    },
+    getCurrentviewDom: function getCurrentviewDom() {
       var _this = this;
+
+      var parent = this.mode == 'slide' || this.mode == 'pure-native' ? this.scrollPanelElm : this.scrollContentElm;
+      var children = parent.children;
+      var domFragment = [];
+      var isCurrentview = function isCurrentview(dom) {
+        var _dom$getBoundingClien = dom.getBoundingClientRect(),
+            left = _dom$getBoundingClien.left,
+            top = _dom$getBoundingClien.top,
+            width = _dom$getBoundingClien.width,
+            height = _dom$getBoundingClien.height;
+
+        var _$el$getBoundingClien = _this.$el.getBoundingClientRect(),
+            parentLeft = _$el$getBoundingClien.left,
+            parentTop = _$el$getBoundingClien.top,
+            parentHeight = _$el$getBoundingClien.height,
+            parentWidth = _$el$getBoundingClien.width;
+
+        if (left - parentLeft + width > 0 && left - parentLeft < parentWidth && top - parentTop + height > 0 && top - parentTop < parentHeight) {
+          return true;
+        }
+        return false;
+      };
+      for (var i = 0; i < children.length; i++) {
+        var dom = children.item(i);
+        if (isCurrentview(dom)) {
+          domFragment.push(dom);
+        }
+      }
+      return domFragment.pop() && domFragment;
+    },
+
+    // private api
+    internalScrollTo: function internalScrollTo(destX, destY, animate, force) {
+      var _this2 = this;
 
       if (this.mode == "native" || this.mode == "pure-native") {
         if (animate) {
           // hadnle for scroll complete
           var scrollingComplete = function scrollingComplete() {
-            _this.update("handle-scroll-complete");
+            _this2.update("handle-scroll-complete");
           };
           goScrolling(this.$refs["scrollPanel"].$el, destX - this.$refs["scrollPanel"].$el.scrollLeft, destY - this.$refs["scrollPanel"].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing, scrollingComplete);
         } else {
@@ -709,11 +763,11 @@ var api = {
         }
     },
     forceUpdate: function forceUpdate() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.$forceUpdate();
       Object.keys(this.$refs).forEach(function (ref) {
-        var $ref = _this2.$refs[ref];
+        var $ref = _this3.$refs[ref];
         if ($ref._isVue) {
           $ref.$forceUpdate();
         }
@@ -3190,6 +3244,9 @@ var vuescroll = {
     scrollPanelElm: function scrollPanelElm() {
       return this.$refs.scrollPanel.$el;
     },
+    scrollContentElm: function scrollContentElm() {
+      return this.$refs["scrollContent"]._isVue ? this.$refs["scrollContent"].$el : this.$refs["scrollContent"];
+    },
     mode: function mode() {
       return this.mergedOptions.vuescroll.mode;
     },
@@ -3295,6 +3352,8 @@ var vuescroll = {
       horizontal["process"] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
       vertical["barSize"] = this.bar.vBar.state.size;
       horizontal["barSize"] = this.bar.hBar.state.size;
+      vertical["scrollTop"] = scrollTop;
+      horizontal["scrollLeft"] = scrollLeft;
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
     showBar: function showBar() {
@@ -3336,11 +3395,7 @@ var vuescroll = {
         contentElm = this.scrollPanelElm;
       } else if (this.mode == "native") {
         // scrollContent maybe a component or a pure-dom
-        if (this.$refs["scrollContent"]._isVue) {
-          contentElm = this.$refs["scrollContent"].$el;
-        } else {
-          contentElm = this.$refs["scrollContent"];
-        }
+        contentElm = this.scrollContentElm;
       }
       var handleWindowResize = function handleWindowResize() {
         _this3.update();
@@ -3380,9 +3435,13 @@ var vuescroll = {
       this.vuescroll.state.internalScrollLeft = axis.x;
       this.vuescroll.state.internalScrollTop = axis.y;
     },
-    watchChanges: function watchChanges() {
+    initWatch: function initWatch() {
       var _this4 = this;
 
+      var watchOpts = {
+        deep: true,
+        sync: true
+      };
       this.$watch("mergedOptions", function () {
         // record current position
         _this4.recordCurrentPos();
@@ -3391,26 +3450,19 @@ var vuescroll = {
           _this4.registryResize();
           _this4.updateMode();
         });
-      }, {
-        deep: true,
-        sync: true
-      });
-    },
-    watchSmallChanges: function watchSmallChanges() {
-      var _this5 = this;
+      }, watchOpts);
 
       uncessaryChangeArray.forEach(function (opts) {
-        _this5.$watch(opts, function () {
-          _this5.shouldStop = true;
-        }, {
-          sync: true,
-          deep: true
-        });
+        _this4.$watch(opts, function () {
+          // when small changes changed, 
+          // we need not to updateMode or registryResize
+          _this4.shouldStop = true;
+        }, watchOpts);
       });
     }
   },
   mounted: function mounted() {
-    var _this6 = this;
+    var _this5 = this;
 
     if (!this._isDestroyed && !this.renderError) {
       if (this.mode == "slide") {
@@ -3419,21 +3471,20 @@ var vuescroll = {
       this.lastMode = this.mode;
 
       this.registryResize();
-      this.watchChanges();
-      this.watchSmallChanges();
+      this.initWatch();
       this.$nextTick(function () {
         // update state
-        _this6.update();
-        _this6.showAndDefferedHideBar();
+        _this5.update();
+        _this5.showAndDefferedHideBar();
       });
     }
   },
   updated: function updated() {
-    var _this7 = this;
+    var _this6 = this;
 
     this.$nextTick(function () {
-      if (!_this7._isDestroyed) {
-        _this7.showAndDefferedHideBar();
+      if (!_this6._isDestroyed) {
+        _this6.showAndDefferedHideBar();
       }
     });
   }

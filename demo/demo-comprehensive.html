@@ -39,7 +39,7 @@
 </head>
 <body>
     <div id="app" >
-           
+ 
         <div id="parent">
           <!-- bind your own options in data -->
           <vue-scroll 
@@ -62,6 +62,7 @@
             class="content"
             :key="index"
             :style="{backgroundColor: item}"
+            :id="'d' + (index + 1)"
             >
             <span>{{index+1 + '.' + item}}</span>
             </div>
@@ -263,6 +264,9 @@
             }
         },
         methods: {
+            getCurrentviewDom() {
+                console.log(this.$refs['vs'].getCurrentviewDom());
+            },
             handleComplete(v, h) {
                 console.log(v, h);
             },

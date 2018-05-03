@@ -63,6 +63,7 @@ export function goScrolling(
 
 export default {
   methods: {
+    // public api
     scrollTo({x, y}, animate = true, force = false) {
       if(typeof x === "undefined") {
         x = this.vuescroll.state.internalScrollLeft;
@@ -86,6 +87,46 @@ export default {
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
     },
+    zoomBy(factor, animate, originLeft, originTop, callback) {
+      if(this.mode != "slide") {
+        console.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+        return;
+      }
+      this.scroller.zoomBy(factor, animate, originLeft, originTop, callback);
+    },
+    zoomTo(level, animate = false, originLeft, originTop, callback) {
+      if(this.mode != "slide") {
+        console.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+        return;
+      }
+      this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
+    },
+    getCurrentviewDom() {
+      const parent = (this.mode == 'slide' ||this.mode == 'pure-native') ? this.scrollPanelElm : this.scrollContentElm;
+      const children = parent.children;
+      const domFragment = [];
+      const isCurrentview = dom => {
+        const {left, top, width, height} = dom.getBoundingClientRect();
+        const {left: parentLeft, top: parentTop , height: parentHeight, width: parentWidth} = this.$el.getBoundingClientRect();
+        if(
+          left - parentLeft + width > 0 &&
+          left - parentLeft < parentWidth &&
+          top - parentTop + height > 0 &&
+          top - parentTop < parentHeight
+        ) {
+          return true;
+        }
+        return false;
+      }
+      for(let i = 0; i < children.length; i++) {
+        let dom = children.item(i);
+        if(isCurrentview(dom)) {
+          domFragment.push(dom);
+        }
+      }
+      return domFragment.pop() && domFragment;
+    },
+    // private api
     internalScrollTo(destX, destY, animate, force) {
       if(this.mode == "native" || this.mode == "pure-native") {
         if(animate) {
