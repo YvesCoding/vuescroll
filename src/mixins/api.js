@@ -101,6 +101,20 @@ export default {
       }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
+    getCurrentPage() {
+      if(this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
+        console.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+        return;
+      }
+      return this.scroller.getCurrentPage();
+    },
+    goToPage(dest, animate = false) {
+      if(this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
+        console.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+        return;
+      }
+      this.scroller.goToPage(dest, animate);
+    },
     getCurrentviewDom() {
       const parent = (this.mode == 'slide' ||this.mode == 'pure-native') ? this.scrollPanelElm : this.scrollContentElm;
       const children = parent.children;
@@ -119,12 +133,12 @@ export default {
         return false;
       }
       for(let i = 0; i < children.length; i++) {
-        let dom = children.item(i);
-        if(isCurrentview(dom)) {
+        const dom = children.item(i);
+        if(isCurrentview(dom) && !dom.isResizeElm) {
           domFragment.push(dom);
         }
       }
-      return domFragment.pop() && domFragment;
+      return domFragment;
     },
     // private api
     internalScrollTo(destX, destY, animate, force) {

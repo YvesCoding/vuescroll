@@ -67,11 +67,6 @@ export default function Scroller(callback, options) {
 				when to fade out a scrollbar. */
     scrollingComplete: NOOP,
 
-    /**
-			 * easing mode..
-			 * @description 
-			 * @author wangyi
-			 */
     animatingEasing: "easeOutCubic",
 
     noAnimatingEasing: "easeInOutCubic",
@@ -132,8 +127,7 @@ var members = {
 	 * {Boolean} Smoothly animating the currently configured change
 	 */
   __isAnimating: false,
-
-
+  
 
   /*
 	---------------------------------------------------------------------------
@@ -216,8 +210,19 @@ var members = {
   /* {Number} Scheduled zoom level (final scale when animating) */
   __scheduledZoom: 0,
 
+  /**
+	 * current page
+	 */
+  __currentPageX: null,
 
+  __currentPageY: null,
 
+  /**
+	 * total page
+	 */
+  __totalXPage: null,
+
+  __totalYPage: null,
   /*
 	---------------------------------------------------------------------------
 		INTERNAL FIELDS :: LAST POSITIONS
@@ -666,8 +671,17 @@ var members = {
     self.scrollTo(startLeft + (left || 0), startTop + (top || 0), animate);
 
   },
+  getCurrentPage() {
+    this.__computePage();
+    return {
+      x: this.__currentPageX,
+      y: this.__currentPageY
+    }
+  },
 
-
+  goToPage(dest, animate) {
+    this.scrollTo((dest.x - 1) * this.__clientWidth, (dest.y - 1) * this.__clientHeight, animate);
+  },
 
   /*
 	---------------------------------------------------------------------------
@@ -1046,13 +1060,13 @@ var members = {
               self.__startDeceleration(timeStamp);
             }  
           } else {
-            self.options.scrollingComplete();
+            self.__scrollComplete();
           }
         } else {
-          self.options.scrollingComplete();
+          self.__scrollComplete();
         }
       } else if ((timeStamp - self.__lastTouchMove) > 100) {
-        self.options.scrollingComplete();
+        self.__scrollComplete();
       }
     }
 
@@ -1086,7 +1100,7 @@ var members = {
       } else {
 
         if (self.__interruptedAnimation || self.__isDragging) {
-          self.options.scrollingComplete();
+          self.__scrollComplete();
         }
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true, self.__zoomLevel);
 
@@ -1192,7 +1206,7 @@ var members = {
           self.__isAnimating = false;
         }
         if (self.__didDecelerationComplete || wasFinished) {
-          self.options.scrollingComplete();
+          self.__scrollComplete();
         }
 
         if (self.options.zooming) {
@@ -1245,9 +1259,23 @@ var members = {
     self.__maxScrollLeft = Math.max((self.__contentWidth * zoomLevel) - self.__clientWidth, 0);
     self.__maxScrollTop = Math.max((self.__contentHeight * zoomLevel) - self.__clientHeight, 0);
   },
-
-
-
+  /** compute current page total page */
+  __computePage: function() {
+    var self = this;
+    var clientWidth = self.__clientWidth;
+    var clientHeight = self.__clientHeight;
+    var left = self.__scrollLeft;
+    var top = self.__scrollTop;
+    self.__totalXPage = Math.ceil(self.__contentWidth / clientWidth);
+    self.__currentPageX = Math.ceil(left / clientWidth + 1);
+    self.__totalYPage = Math.ceil(self.__contentHeight / clientHeight);
+    self.__currentPageY = Math.ceil(top / clientHeight + 1);
+  },
+  /** complete scroll*/
+  __scrollComplete: function() {
+    var self = this;
+    self.options.scrollingComplete();
+  },
   /*
 	---------------------------------------------------------------------------
 		ANIMATION (DECELERATION) SUPPORT
@@ -1306,7 +1334,7 @@ var members = {
     var completed = function() {
       self.__isDecelerating = false;
       if (self.__didDecelerationComplete) {
-        self.options.scrollingComplete();
+        self.__scrollComplete()
       }
 
       // Animate to grid when snapping is active, otherwise just fix out-of-boundary positions

@@ -9,6 +9,7 @@ export function listenResize(element, func) {
   object.tabIndex = -1;
   object.type = "text/html";
   object.data = "about:blank";
+  object.isResizeElm = true;
   object.onload = () => {
     eventCenter(
       object.contentDocument.defaultView,

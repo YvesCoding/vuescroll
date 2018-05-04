@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.5.11
+    * @name: vuescroll 4.5.12
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -128,6 +128,7 @@ function listenResize(element, func) {
   object.tabIndex = -1;
   object.type = "text/html";
   object.data = "about:blank";
+  object.isResizeElm = true;
   object.onload = function () {
     eventCenter(object.contentDocument.defaultView, "resize", func);
   };
@@ -702,6 +703,22 @@ var api = {
       }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
+    getCurrentPage: function getCurrentPage() {
+      if (this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
+        console.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+        return;
+      }
+      return this.scroller.getCurrentPage();
+    },
+    goToPage: function goToPage(dest) {
+      var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
+        console.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+        return;
+      }
+      this.scroller.goToPage(dest, animate);
+    },
     getCurrentviewDom: function getCurrentviewDom() {
       var _this = this;
 
@@ -728,11 +745,11 @@ var api = {
       };
       for (var i = 0; i < children.length; i++) {
         var dom = children.item(i);
-        if (isCurrentview(dom)) {
+        if (isCurrentview(dom) && !dom.isResizeElm) {
           domFragment.push(dom);
         }
       }
-      return domFragment.pop() && domFragment;
+      return domFragment;
     },
 
     // private api
@@ -850,11 +867,6 @@ function Scroller(callback, options) {
     when to fade out a scrollbar. */
     scrollingComplete: NOOP,
 
-    /**
-    * easing mode..
-    * @description 
-    * @author wangyi
-    */
     animatingEasing: "easeOutCubic",
 
     noAnimatingEasing: "easeInOutCubic",
@@ -997,6 +1009,19 @@ var members = {
   /* {Number} Scheduled zoom level (final scale when animating) */
   __scheduledZoom: 0,
 
+  /**
+  * current page
+  */
+  __currentPageX: null,
+
+  __currentPageY: null,
+
+  /**
+  * total page
+  */
+  __totalXPage: null,
+
+  __totalYPage: null,
   /*
   ---------------------------------------------------------------------------
   INTERNAL FIELDS :: LAST POSITIONS
@@ -1408,6 +1433,17 @@ var members = {
 
     self.scrollTo(startLeft + (left || 0), startTop + (top || 0), animate);
   },
+  getCurrentPage: function getCurrentPage() {
+    this.__computePage();
+    return {
+      x: this.__currentPageX,
+      y: this.__currentPageY
+    };
+  },
+  goToPage: function goToPage(dest, animate) {
+    this.scrollTo((dest.x - 1) * this.__clientWidth, (dest.y - 1) * this.__clientHeight, animate);
+  },
+
 
   /*
   ---------------------------------------------------------------------------
@@ -1767,13 +1803,13 @@ var members = {
               self.__startDeceleration(timeStamp);
             }
           } else {
-            self.options.scrollingComplete();
+            self.__scrollComplete();
           }
         } else {
-          self.options.scrollingComplete();
+          self.__scrollComplete();
         }
       } else if (timeStamp - self.__lastTouchMove > 100) {
-        self.options.scrollingComplete();
+        self.__scrollComplete();
       }
     }
 
@@ -1805,7 +1841,7 @@ var members = {
       } else {
 
         if (self.__interruptedAnimation || self.__isDragging) {
-          self.options.scrollingComplete();
+          self.__scrollComplete();
         }
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true, self.__zoomLevel);
 
@@ -1907,7 +1943,7 @@ var members = {
           self.__isAnimating = false;
         }
         if (self.__didDecelerationComplete || wasFinished) {
-          self.options.scrollingComplete();
+          self.__scrollComplete();
         }
 
         if (self.options.zooming) {
@@ -1958,7 +1994,23 @@ var members = {
     self.__maxScrollLeft = Math.max(self.__contentWidth * zoomLevel - self.__clientWidth, 0);
     self.__maxScrollTop = Math.max(self.__contentHeight * zoomLevel - self.__clientHeight, 0);
   },
-
+  /** compute current page total page */
+  __computePage: function __computePage() {
+    var self = this;
+    var clientWidth = self.__clientWidth;
+    var clientHeight = self.__clientHeight;
+    var left = self.__scrollLeft;
+    var top = self.__scrollTop;
+    self.__totalXPage = Math.ceil(self.__contentWidth / clientWidth);
+    self.__currentPageX = Math.ceil(left / clientWidth + 1);
+    self.__totalYPage = Math.ceil(self.__contentHeight / clientHeight);
+    self.__currentPageY = Math.ceil(top / clientHeight + 1);
+  },
+  /** complete scroll*/
+  __scrollComplete: function __scrollComplete() {
+    var self = this;
+    self.options.scrollingComplete();
+  },
   /*
   ---------------------------------------------------------------------------
   ANIMATION (DECELERATION) SUPPORT
@@ -2015,7 +2067,7 @@ var members = {
     var completed = function completed() {
       self.__isDecelerating = false;
       if (self.__didDecelerationComplete) {
-        self.options.scrollingComplete();
+        self.__scrollComplete();
       }
 
       // Animate to grid when snapping is active, otherwise just fix out-of-boundary positions
@@ -3498,7 +3550,7 @@ var scroll = {
     // feat: #8
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
-    scroll.version = "4.5.11";
+    scroll.version = "4.5.12";
   }
 };
 /* istanbul ignore if */

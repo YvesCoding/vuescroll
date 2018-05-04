@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="./vue.js"></script>
-    <script src="../dits/vuescroll.js"></script>
+    <script src="../dist/vuescroll.js"></script>
     <style>
         html, body {
         height: 90%;
@@ -78,6 +78,8 @@
                     paging: <br />
                     pagingX:<input type="radio" value="x" v-model="paging" />
                     pagingY:<input type="radio" value="y" v-model="paging" />
+                    <button @click="getCurrentPage">getCurrentPage</button>
+                    <button @click="goToPage">goToPage</button>
                 </fieldset>
                  
             </fieldset>
@@ -132,7 +134,12 @@
             }
         },
         methods: {
-            
+            getCurrentPage() {
+                console.log(this.$refs['vs'].getCurrentPage());
+            },
+            goToPage() {
+                this.$refs['vs'].goToPage({x: 2});
+            }
         }
     })
     </script>
