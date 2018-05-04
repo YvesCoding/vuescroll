@@ -3,6 +3,7 @@ export const NOOP = () => {};
 export default {
   // vuescroll
   vuescroll: {
+    preventDefault: true,
     mode: "native",
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
