@@ -676,7 +676,7 @@ var members = {
     return {
       x: this.__currentPageX,
       y: this.__currentPageY
-    }
+    };
   },
 
   goToPage(dest, animate) {
@@ -1334,7 +1334,7 @@ var members = {
     var completed = function() {
       self.__isDecelerating = false;
       if (self.__didDecelerationComplete) {
-        self.__scrollComplete()
+        self.__scrollComplete();
       }
 
       // Animate to grid when snapping is active, otherwise just fix out-of-boundary positions

@@ -146,6 +146,7 @@ var NOOP = function NOOP() {};
 var GCF = {
   // vuescroll
   vuescroll: {
+    preventDefault: true,
     mode: "native",
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
@@ -2247,7 +2248,7 @@ function render(content, global, suffix, value) {
   }
 }
 
-function listenContainer(container, scroller, eventCallback, zooming) {
+function listenContainer(container, scroller, eventCallback, zooming, preventDefault) {
   var destroy = null;
   // for touch
   function touchstart(e) {
@@ -2257,7 +2258,10 @@ function listenContainer(container, scroller, eventCallback, zooming) {
     }
     eventCallback("mousedown");
     scroller.doTouchStart(e.touches, e.timeStamp);
-    e.preventDefault();
+
+    if (preventDefault) {
+      e.preventDefault();
+    }
   }
   function touchmove(e) {
     eventCallback("mousemove");
@@ -2442,6 +2446,7 @@ var slideMode = {
     registryScroller: function registryScroller() {
       var _this = this;
 
+      var preventDefault = this.mergedOptions.vuescroll.preventDefault;
       var paging = this.mergedOptions.vuescroll.paging;
       var snapping = this.mergedOptions.vuescroll.snapping.enable;
       // disale zooming when refresh or load enabled
@@ -2485,7 +2490,7 @@ var slideMode = {
             _this.vuescroll.state.isDragging = false;
             break;
         }
-      }, zooming);
+      }, zooming, preventDefault);
       // registry refresh
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
         this.registryRefreshEvent();

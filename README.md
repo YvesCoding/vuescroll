@@ -1,26 +1,36 @@
 
  
-<p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
+  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/zh/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
+<p align="center">
+  <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
+<a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
+</p>
+<p align="center">Vuescroll.js</p>
 
-[中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
+Vuescroll is a virtual, multi function scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue),  it is suitable for both PC and mobile, it implements from [scroller](https://github.com/pbakaus/scroller)，besides scroller's features, it has more features：
+- Specially design for Vue, is suitable to Vue.
+- Multi Modes
+    - `native` mode:  Seem to be native scrollbar, but can costumize styles of scrollbars, it is suitable for PC. 
+    - `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry, it is suitable for mobile.
+    - `pure-native`mode: Use native scrollbars， it is suitable for PC and the users who like native scrollbar.
+- Automatically detect size change of the content and update scrollbar.
+- Expanded `scroller`
+    - Support push-load.
+    - Add `beforeDeactivate` stage in the 3 stages of pullrefresh/pushload to tell user the result of refreshing/loading.  
+    - Add `goToPage`， `getCurrentPage` api to manipulate page when `paging` is enable.
 
-**Vuescroll** is a multi-function, virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ，and it  currently has 3  modes, each modes is suitable for differert users:
-* `native` mode:  Seem to be native scrollbar, but can costumize styles of scrollbars. It is suitable for PC.
-* `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry. It is suitable for mobile phone.
-* `pure-native`mode: Use native scrollbars. It is suitable for PC and the users who like native scrollbar.
+In a word, Vuescroll is not only a scrollbar, but you can make a carousel, time picker, a plugin that can automatically detect the size change of content and soon.
 
-It also supports customizing styles of scrollbar，detecting size change of content,paging,pull-refresh，push-load and so on.
-
-> For those who use 3.X and want to upgrade to 4.X, please use the following usage ,or might upgrade fail:
+> Important Tip! For the users who use 3.X and want to upgrade to 4.X, please use the following command ,or may upgrade fail::
 ```bash
    npm i vuescroll@latest
    # yarn add vuescroll@latest
 ```
+## Demo
+All the features above you can find in Demo. There are two ways to view Demo:
+1. Open the `Demo` folder in the root of repo.
+2. Go to [Offical Website](https://wangyi7099.github.io/vuescrolljs/zh/guide/) and view at `Demo` page.
 
-  <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
-<a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
-
-## Get Started
 ### Install
 ### Install by npm or yarn
 > Recommend yarn, why? Yarn will cache every modules you have installed, and won't download again next time when you use it.
@@ -66,38 +76,26 @@ const vm = new Vue({
     </vue-scroll>
 </div>
 ``` 
+3. That's all! So easy! Isn't it?
 
-> For the detailed apis、events、configurations, please go to our [Offiacl Website](https://wangyi7099.github.io/vuescrolljs/).
-
-## Features
-* Has the basic behaviors of the native scrollbar and is able to customize styles of scrollbar(includes color, size, position, opacity, keep showing or not and so on).
-* Be able to Smooth scroll.
-* Support pull-refresh and push-load.
-* Support paging(Slide a pull page each time).
-* Support snapping(Slide a user-defined distance each time).
-* Be able to detect the size change of the content.
-
-What more feature? please raise an issue or pull request!
-## Demo
-There are two ways to view demo:
-1. Open the `demo` folder in the root of repo.
-2. Go to [Offical Website](https://wangyi7099.github.io/vuescrolljs/guide/).
+> For the detailed apis, events, configurations, please go to our [Offiacl Website](https://wangyi7099.github.io/vuescrolljs/).
 
 
 ## How to contribute
 
-Firstly, thank you for being interested in vuescroll!! And then, please only follow these steps below to contribute code:
+Hmmm, thank you very much for wanting to contribute to vuescroll！What you need are some steps bellow：
 1. Fork this repo.
 2. Clone the repo you have just forked.
 ```base
    git clone git@github.com:<Your Usernmae>/vuescroll.git
 ```
-3. Modify the code in your local and push the code to your repo.
+3. Modify the code in your local and push the code to your remote repo.
 3. Click `New pull request` in vuescroll repo and that's all, like the picture below:<br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
+4. Wait for my agreement, and your code will be merged into the `dev` branch !
 
 ## Inspired
 
-* [slimscroll](https://github.com/rochal/jQuery-slimScroll)    
+* [slimscroll](https://github.com/rochal/jQuery-slimScroll)
 * [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src)
 * [scroller](https://github.com/pbakaus/scroller)
 

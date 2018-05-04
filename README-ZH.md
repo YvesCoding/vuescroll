@@ -1,22 +1,35 @@
 
  
   <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/zh/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
+<p align="center">
+  <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
+<a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
+</p>
+<p align="center">Vuescroll.js</p>
 
-Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的多功能虚拟滚动条，它当前拥有3个模式：
-* `native` 模式:  有点想原生的滚动，可以自定义滚动条样式。使用于PC端用户。 
-* `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围。适用于移动端端用户。
-* `pure-native`模式: 滚动条使用原生的滚动条。适用于喜欢原生滚动条的用户。
+Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的多功能虚拟滚动条, 同时适用于PC端he移动端！它继承自 [scroller](https://github.com/pbakaus/scroller)，除了scroller本身的特性外， 还拥有更多的特性：
+- 与`Vue`契合度100%
+- 多种模式
+    - `native` 模式:  有点想原生的滚动，可以自定义滚动条样式，使用于PC端用户。 
+    - `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围，适用于移动端端用户。
+    - `pure-native`模式: 滚动条使用原生的滚动条，适用于喜欢原生滚动条的用户。
+- 自动检测滚动内容发生变化并自动更新滚动条。
+- 扩展了scroller
+    - 支持上推-加载功能
+    - 在上推加载/下拉刷新的3个阶段中增加一个`beforeDeactivate`阶段用于告诉用户上推加载/下拉结果。
+    - 新增`goToPage`， `getCurrentPage` 等函数用于在分页情况下操作页面。
 
-并且它还支持定制滚动条的样式，检测内容尺寸变化、能够使内容分页、支持上拉-刷新，下推加载等诸多功能。
+总的来说，Vuescroll不仅仅只一个滚动条， 你可以用它制作一个轮播图、时间选择器、能够自动侦测内容发生变化的一个插件。
 
-> 对于那些使用3.X的用户想升级到4.X 请使用如下命令,否则可能会导致升级失败！:
+> 重要提示！ 对于那些使用3.X的用户想升级到4.X 请使用如下命令,否则可能会导致升级失败！:
 ```bash
    npm i vuescroll@latest
    # yarn add vuescroll@latest
 ```
-
-  <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
-<a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
+## Demo
+所有的上述特性都可以在Demo里查看。有两种方式查看Demo:
+1. 打开项目根目录下的demo文件夹进行查看
+2. 去[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)进行查看
 
 ## 开始上手
 ### 安装
@@ -64,33 +77,22 @@ const vm = new Vue({
     </vue-scroll>
 </div>
 ``` 
+3. 这就完了！ 如此简单！ 是不是？
 完整的api、事件、配置请到[官网](https://wangyi7099.github.io/vuescrolljs/zh)进行查看。
 
-## 特点
-* 拥有原生滚动条的滚动行为， 并且可以定制滚动条的样式(包括颜色、尺寸、位置、透明度、是否保持显示等)
-* 能够通过平滑地滚动
-* 拉取刷新和推动加载
-* 支持分页模式(每次滑动整个页面)
-* 支持快照模式(每次滑动滚动一个用户定义的距离)
-* 可以检测内容尺寸发生变化
-
-想要更多的feature？ 那就赶快提一个issue或者一个pr吧~~
-## Demo
-有两种方式查看Demo:
-1. 打开项目根目录下的demo文件夹进行查看
-2. 去[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)进行查看
 
 ## 如何贡献
 
-首先感谢你对vuescroll感兴趣！只需要做到以下几步即可贡献代码。
+哈哈， 非常感谢你想对vuescroll贡献！只需要做到以下几步即可：
 1. 把这个项目fork下来。
 2. 把你的fork的项目克隆下来
 ```base
    git clone git@github.com:<Your Usernmae>/vuescroll.git
 ```
-3. 在你的本地修改代码然后push到你的仓库
-3. 在vuescroll项目地址点击`New pull request`即可，如下图所示:<br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
-## 受以下的项目启发
+3. 在你的本地修改代码然后push到你的远程仓库
+3. 在vuescroll项目地址点击`New pull request`，如下图所示:<br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
+4. 等我点击同意， 你的代码就会被merge到`dev`分支了！
+## 启发
 
 * [slimscroll](https://github.com/rochal/jQuery-slimScroll)
 * [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src)

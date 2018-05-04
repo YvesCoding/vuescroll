@@ -11,7 +11,7 @@
     "vuescroll": "^4.5.8"
   },
   "deprecated": false,
-  "description": "A reactive, muli-modes, virtual scrollbar based on vue.js2.X",
+  "description": "A reactive, muli-function, virtual scrollbar based on vue.js2.X",
   "homepage": "https://github.com/wangyi7099/vuescroll#readme",
   "keywords": [
     "vuescroll",
