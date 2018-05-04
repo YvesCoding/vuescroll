@@ -1,4 +1,4 @@
-export function listenContainer(container, scroller, eventCallback, zooming) {
+export function listenContainer(container, scroller, eventCallback, zooming, preventDefault) {
   let destroy = null;
   // for touch
   function touchstart(e) {
@@ -8,7 +8,10 @@ export function listenContainer(container, scroller, eventCallback, zooming) {
     }
     eventCallback("mousedown");
     scroller.doTouchStart(e.touches, e.timeStamp);
-    e.preventDefault();
+
+    if (preventDefault) {
+	    e.preventDefault();
+    }
   }
   function touchmove(e) {
     eventCallback("mousemove");
