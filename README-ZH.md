@@ -28,8 +28,8 @@ Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的多功能
 ```
 ## Demo
 所有的上述特性都可以在Demo里查看。有两种方式查看Demo:
-1. 打开项目根目录下的demo文件夹进行查看
-2. 去[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)进行查看
+1. 打开项目根目录下的[demo](https://github.com/wangyi7099/vuescroll/tree/dev/demo)文件夹进行查看
+2. 去[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)的[Demo](https://wangyi7099.github.io/vuescrolljs/zh/Demo/)页面进行查看
 
 ## 开始上手
 ### 安装
