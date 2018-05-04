@@ -4,12 +4,12 @@
 
 [中文README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 
-**Vuescroll** is a reactive, multi-modes, virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ，and it  currently has 3  modes:
-* `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry. It is suitable for mobile phone.
+**Vuescroll** is a multi-function, virtual scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue) ，and it  currently has 3  modes, each modes is suitable for differert users:
 * `native` mode:  Seem to be native scrollbar, but can costumize styles of scrollbars. It is suitable for PC.
-* `pure-native`mode: Use native scrollbars. It is suitable for the users who like native scrollbar.
+* `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry. It is suitable for mobile phone.
+* `pure-native`mode: Use native scrollbars. It is suitable for PC and the users who like native scrollbar.
 
-It also supports customizing styles of scrollbar，detecting size change of content、paging、pull-refresh，push-load and so on.
+It also supports customizing styles of scrollbar，detecting size change of content,paging,pull-refresh，push-load and so on.
 
 > For those who use 3.X and want to upgrade to 4.X, please use the following usage ,or might upgrade fail:
 ```bash
@@ -70,19 +70,18 @@ const vm = new Vue({
 > For the detailed apis、events、configurations, please go to our [Offiacl Website](https://wangyi7099.github.io/vuescrolljs/).
 
 ## Features
-* Has the basic behavior of the native scrollbar.
-* Be able to customize styles of scrollbar(includes color, size, position, opacity, keep showing or not and so on).
-* Switch among modes in runtime.
-* Be able to smooth-scroll by setting the scroll animations, see [easing](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#explanation-2).
+* Has the basic behaviors of the native scrollbar and is able to customize styles of scrollbar(includes color, size, position, opacity, keep showing or not and so on).
+* Be able to Smooth scroll.
 * Support pull-refresh and push-load.
 * Support paging(Slide a pull page each time).
 * Support snapping(Slide a user-defined distance each time).
 * Be able to detect the size change of the content.
 
+What more feature? please raise an issue or pull request!
 ## Demo
 There are two ways to view demo:
-1. Open the `demo` folder in the root of repo and go to view.
-2. Go to - [Offical Website](https://wangyi7099.github.io/vuescrolljs/guide/) to view.
+1. Open the `demo` folder in the root of repo.
+2. Go to [Offical Website](https://wangyi7099.github.io/vuescrolljs/guide/).
 
 
 ## How to contribute
@@ -105,5 +104,3 @@ Firstly, thank you for being interested in vuescroll!! And then, please only fol
 ## License
 
 **MIT** 
-
-by wangyi7099

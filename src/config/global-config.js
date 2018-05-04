@@ -71,21 +71,21 @@ export default {
     vRail: {
       width: "5px",
       pos: "right",
-      background: "#a5d6a7",
+      background: "#01a99a",
       opacity: 0
     },
     // 
     hRail: {
       height: "5px",
       pos: "bottom",
-      background: "#a5d6a7",
+      background: "#01a99a",
       opacity: 0
     }
   }, 
   bar: {
     // 
     vBar: {
-      background: "#4caf50",
+      background: "#00a650",
       deltaY: 100,
       keepShow: false,
       opacity: 1,
@@ -93,7 +93,7 @@ export default {
     },
     // 
     hBar: {
-      background: "#4caf50",
+      background: "#00a650",
       keepShow: false,
       opacity: 1,
       hover: false

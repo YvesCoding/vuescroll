@@ -220,21 +220,21 @@ var GCF = {
     vRail: {
       width: "5px",
       pos: "right",
-      background: "#a5d6a7",
+      background: "#01a99a",
       opacity: 0
     },
     // 
     hRail: {
       height: "5px",
       pos: "bottom",
-      background: "#a5d6a7",
+      background: "#01a99a",
       opacity: 0
     }
   },
   bar: {
     // 
     vBar: {
-      background: "#4caf50",
+      background: "#00a650",
       deltaY: 100,
       keepShow: false,
       opacity: 1,
@@ -242,7 +242,7 @@ var GCF = {
     },
     // 
     hBar: {
-      background: "#4caf50",
+      background: "#00a650",
       keepShow: false,
       opacity: 1,
       hover: false
@@ -3378,8 +3378,6 @@ var vuescroll = {
      */
     emitEvent: function emitEvent(eventType) {
       var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-      var scrollPanel$$1 = this.scrollPanelElm;
       var _scrollPanelElm = this.scrollPanelElm,
           scrollHeight = _scrollPanelElm.scrollHeight,
           scrollWidth = _scrollPanelElm.scrollWidth,

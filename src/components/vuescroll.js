@@ -210,7 +210,6 @@ export default  {
      *  emit user registry event
      */
     emitEvent(eventType, nativeEvent = null) {
-      const scrollPanel = this.scrollPanelElm;
       let { 
         scrollHeight, 
         scrollWidth, 
@@ -322,12 +321,12 @@ export default  {
       };
       this.$watch("mergedOptions", () => {
       // record current position
-      this.recordCurrentPos();
-      this.$nextTick(() => {
+        this.recordCurrentPos();
+        this.$nextTick(() => {
         // update scroll..
-        this.registryResize();
-        this.updateMode();
-      });
+          this.registryResize();
+          this.updateMode();
+        });
       }, watchOpts);
 
       uncessaryChangeArray.forEach(opts => {

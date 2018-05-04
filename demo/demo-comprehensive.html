@@ -9,7 +9,8 @@
     <script src="../dist/vuescroll.js"></script>
     <style>
     html, body {
-        height: 90%;
+        height: 100%;
+        overflow: hidden;
     }
     #app {
         width: 100%;
@@ -22,7 +23,7 @@
     #parent {
         float: left;
         width: 800px;
-        height: 100%;
+        height: 500px;
     }
     .content {
         display: inline-block;
@@ -39,146 +40,165 @@
 </head>
 <body>
     <div id="app" >
- 
-        <div id="parent">
-          <!-- bind your own options in data -->
-          <vue-scroll 
-          :ops="ops"
-           ref="vs"
-           @refresh-activate="refreshActivate"
-           @refresh-before-deactivate="refreshBeforeDeactivate"
-           @refresh-deactivate="refreshDeactivate"
-            @refresh-start="refreshStart"
-            @load-activate="loadActivate"
-            @load-before-deactivate="loadBeforeDeactivate"
-           @load-deactivate="loadDeactivate"
-            @load-start="loadStart"
-            @handle-scroll-complete="handleComplete"
-           >
-           <template
-           v-for= "(item, index) in randomArray"
-           >
-            <div 
-            class="content"
-            :key="index"
-            :style="{backgroundColor: item}"
-            :id="'d' + (index + 1)"
-            >
-            <span>{{index+1 + '.' + item}}</span>
-            </div>
-            <br 
-            v-if="(index+1) % 8 == 0"
-            />
-           </template>
-          </vue-scroll>
-        </div>
-        <div id="operateArea">
-            <fieldset>
-                <legend>operation</legend>
-                <fieldset>
-                    <legend>common</legend>
-                    mode: <br>
-                    native: <input 
-                    type="radio" 
-                    value="native"
-                    v-model="ops.vuescroll.mode"
-                    >
-                    slide: <input 
-                    type="radio" 
-                    value="slide"
-                    v-model="ops.vuescroll.mode"
-                    >
-                    pure-native: <input 
-                    type="radio" 
-                    value="pure-native"
-                    v-model="ops.vuescroll.mode"
-                    >
-                    <br>speed: <br>
-                    <input type="number"
-                    v-model="ops.scrollPanel.speed"
-                    min="100"
-                    max="5000"
-                    >
-                    <br>scrollingX: <br>
-                    true: <input 
-                    type="radio" 
-                    :value="true"
-                    v-model="ops.scrollPanel.scrollingX"
-                    >
-                    false: <input 
-                    type="radio" 
-                    :value="false"
-                    v-model="ops.scrollPanel.scrollingX"
-                    >
-                    <br>scrollingY: <br>
-                    true: <input 
-                    type="radio" 
-                    :value="true"
-                    v-model="ops.scrollPanel.scrollingY"
-                    >
-                    false: <input 
-                    type="radio" 
-                    :value="false"
-                    v-model="ops.scrollPanel.scrollingY"
-                    >
-                    <br>zooming: <br>
-                    true: <input 
-                    type="radio" 
-                    :value="true"
-                    v-model="ops.vuescroll.zooming"
-                    >
-                    false: <input 
-                    type="radio" 
-                    :value="false"
-                    v-model="ops.vuescroll.zooming"
-                    ><br>
-                    scrollBy:<br>
-                    dx:<input type="text" v-model="dx"><br>
-                    dy:<input type="text" v-model="dy"><br />
-                   
-                    <button @click="scrollBy">go</button>
-                </fieldset>
-                <fieldset>
-                    <legend>slide-mode</legend>
-                    refresh: <br>
-                    enable: <input 
-                    type="radio" 
-                    :value="true"
-                    v-model="ops.vuescroll.pullRefresh.enable"
-                    >
-                    disable: <input 
-                    type="radio" 
-                    :value="false"
-                    v-model="ops.vuescroll.pullRefresh.enable"
-                    >
-                    <br>load: <br>
-                    enable: <input 
-                    type="radio" 
-                    :value="true"
-                    v-model="ops.vuescroll.pushLoad.enable"
-                    >
-                    disable: <input 
-                    type="radio" 
-                    :value="false"
-                    v-model="ops.vuescroll.pushLoad.enable"
-                    >
-                </fieldset>
-                <fieldset>
-                    <legend>native-mode</legend>
-                    animate: <br>
-                    <select 
-                    v-model="ops.scrollPanel.easing"
-                    >
-                        <option
-                        v-for="easing in easings"
-                        :value="easing"
-                        >
-                            {{easing}}
-                        </option>
-                    </select>
-                </fieldset>
-            </fieldset>
-        </div>
+        <vue-scroll>
+            <div id="parent">
+                <!-- bind your own options in data -->
+                <vue-scroll 
+                :ops="ops"
+                 ref="vs"
+                 @refresh-activate="refreshActivate"
+                 @refresh-before-deactivate="refreshBeforeDeactivate"
+                 @refresh-deactivate="refreshDeactivate"
+                  @refresh-start="refreshStart"
+                  @load-activate="loadActivate"
+                  @load-before-deactivate="loadBeforeDeactivate"
+                 @load-deactivate="loadDeactivate"
+                  @load-start="loadStart"
+                  @handle-scroll-complete="handleComplete"
+                 >
+                 <template
+                 v-for= "(item, index) in randomArray"
+                 >
+                  <div 
+                  class="content"
+                  :key="index"
+                  :style="{backgroundColor: item}"
+                  :id="'d' + (index + 1)"
+                  >
+                  <span>{{index+1 + '.' + item}}</span>
+                  </div>
+                  <br 
+                  v-if="(index+1) % 8 == 0"
+                  />
+                 </template>
+                </vue-scroll>
+              </div>
+              <div id="operateArea">
+                  <fieldset>
+                      <legend>operation panel</legend>
+                      <fieldset>
+                          <legend>common</legend>
+                          mode: <br>
+                          native: <input 
+                          type="radio" 
+                          value="native"
+                          v-model="ops.vuescroll.mode"
+                          >
+                          slide: <input 
+                          type="radio" 
+                          value="slide"
+                          v-model="ops.vuescroll.mode"
+                          >
+                          pure-native: <input 
+                          type="radio" 
+                          value="pure-native"
+                          v-model="ops.vuescroll.mode"
+                          >
+                          <br>bar-background:</br>
+                          vBar: <input type="text" v-model="ops.bar.vBar.background">
+                          hBar: <input type="text" v-model="ops.bar.hBar.background">
+                          <br>rail-background:</br>
+                          vRail: <input type="text" v-model="ops.rail.vRail.background">
+                          hRail: <input type="text" v-model="ops.rail.hRail.background">
+                          <br>keepShow:</br>
+                          vBar: yes:<input type="radio" v-model="ops.bar.vBar.keepShow" :value="true">no:<input type="radio" :value="false" v-model="ops.bar.vBar.keepShow"> 
+                          hBar:  yes:<input type="radio" v-model="ops.bar.hBar.keepShow" :value="true">no:<input type="radio" :value="false" v-model="ops.bar.hBar.keepShow">
+                          <br>width/height(Only For Rail):</br>
+                          vRail: <input type="text" v-model="ops.rail.vRail.height">
+                          hRail: <input type="text" v-model="ops.rail.hRail.width">
+                          <br>opacity(Both For Rail And Bar):</br>
+                          vRail: <input type="number" v-model="ops.rail.vRail.opacity" step="0.1" min="0">
+                          hRail: <input type="number" step="0.1" min="0" v-model="ops.rail.hRail.opacity">
+                          <br> vBar: <input type="number" step="0.1" min="0" v-model="ops.bar.vBar.opacity">
+                          hBar: <input type="number" step="0.1" min="0" v-model="ops.bar.hBar.opacity">
+                          
+                          <br>speed: <br>
+                          <input type="number"
+                          v-model="ops.scrollPanel.speed"
+                          min="100"
+                          max="5000"
+                          >
+                          <br>scrollingX: <br>
+                          true: <input 
+                          type="radio" 
+                          :value="true"
+                          v-model="ops.scrollPanel.scrollingX"
+                          >
+                          false: <input 
+                          type="radio" 
+                          :value="false"
+                          v-model="ops.scrollPanel.scrollingX"
+                          >
+                          <br>scrollingY: <br>
+                          true: <input 
+                          type="radio" 
+                          :value="true"
+                          v-model="ops.scrollPanel.scrollingY"
+                          >
+                          false: <input 
+                          type="radio" 
+                          :value="false"
+                          v-model="ops.scrollPanel.scrollingY"
+                          >
+                          <br>zooming: <br>
+                          true: <input 
+                          type="radio" 
+                          :value="true"
+                          v-model="ops.vuescroll.zooming"
+                          >
+                          false: <input 
+                          type="radio" 
+                          :value="false"
+                          v-model="ops.vuescroll.zooming"
+                          ><br>
+                          scrollBy:<br>
+                          dx:<input type="text" v-model="dx"><br>
+                          dy:<input type="text" v-model="dy"><br />
+                         
+                          <button @click="scrollBy">go</button>
+                      </fieldset>
+                      <fieldset>
+                          <legend>slide-mode</legend>
+                          refresh: <br>
+                          enable: <input 
+                          type="radio" 
+                          :value="true"
+                          v-model="ops.vuescroll.pullRefresh.enable"
+                          >
+                          disable: <input 
+                          type="radio" 
+                          :value="false"
+                          v-model="ops.vuescroll.pullRefresh.enable"
+                          >
+                          <br>load: <br>
+                          enable: <input 
+                          type="radio" 
+                          :value="true"
+                          v-model="ops.vuescroll.pushLoad.enable"
+                          >
+                          disable: <input 
+                          type="radio" 
+                          :value="false"
+                          v-model="ops.vuescroll.pushLoad.enable"
+                          >
+                      </fieldset>
+                      <fieldset>
+                          <legend>native-mode</legend>
+                          animate: <br>
+                          <select 
+                          v-model="ops.scrollPanel.easing"
+                          >
+                              <option
+                              v-for="easing in easings"
+                              :value="easing"
+                              >
+                                  {{easing}}
+                              </option>
+                          </select>
+                      </fieldset>
+                  </fieldset>
+              </div>
+        </vue-scroll>
       </div>
     <script>
         Vue.prototype.$vuescrollConfig = {
@@ -234,11 +254,27 @@
               },
               bar: {
                 vBar: {
-                  background: "#000"
+                  background: undefined,
+                  keepShow: false,
+                  opacity: 1
                 },
                 hBar: {
-                    background: "#000"
+                    background: undefined,
+                    keepShow: false,
+                    opacity: 1
                 }
+              },
+              rail: {
+                  vRail: {
+                    background: undefined,
+                    height: "5px",
+                    opacity: 0.5
+                  },
+                  hRail: {
+                    background: undefined,
+                    height: "5px",
+                    opacity: 0.5
+                  }
               }
             },
             dataNums: 120,
