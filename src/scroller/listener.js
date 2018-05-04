@@ -10,7 +10,7 @@ export function listenContainer(container, scroller, eventCallback, zooming, pre
     scroller.doTouchStart(e.touches, e.timeStamp);
 
     if (preventDefault) {
-	    e.preventDefault();
+      e.preventDefault();
     }
   }
   function touchmove(e) {
