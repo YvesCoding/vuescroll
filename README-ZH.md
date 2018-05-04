@@ -18,21 +18,6 @@ Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的虚拟滚
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
 
-## 特点
-* 拥有原生滚动条的滚动行为
-* 可以定制滚动条的样式(包括颜色、尺寸、位置、透明度、是否保持显示等)
-* 可以在运行期间在模式之间自由切换
-* 能够通过设置滚动动画来平滑地滚动， 请查看[easing](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#explanation-2) 
-* 拉取刷新和推动加载
-* 支持分页模式(每次滑动整个页面)
-* 支持快照模式(每次滑动滚动一个用户定义的距离)
-* 可以检测内容尺寸发生变化
-
-## Demo
-有两种方式查看Demo:
-1. 打开项目根目录下的demo文件夹进行查看
-2. 去[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)进行查看
-
 ## 开始上手
 ### 安装
   用npm或者是yarn安装
@@ -80,6 +65,21 @@ const vm = new Vue({
 </div>
 ``` 
 完整的api、事件、配置请到[官网](https://wangyi7099.github.io/vuescrolljs/zh)进行查看。
+
+## 特点
+* 拥有原生滚动条的滚动行为
+* 可以定制滚动条的样式(包括颜色、尺寸、位置、透明度、是否保持显示等)
+* 可以在运行期间在模式之间自由切换
+* 能够通过设置滚动动画来平滑地滚动， 请查看[easing](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#explanation-2) 
+* 拉取刷新和推动加载
+* 支持分页模式(每次滑动整个页面)
+* 支持快照模式(每次滑动滚动一个用户定义的距离)
+* 可以检测内容尺寸发生变化
+
+## Demo
+有两种方式查看Demo:
+1. 打开项目根目录下的demo文件夹进行查看
+2. 去[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)进行查看
 
 ## 如何贡献
 

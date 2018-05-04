@@ -20,21 +20,6 @@ It also supports customizing styles of scrollbar，detecting size change of cont
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
 
-## Features
-* Has the basic behavior of the native scrollbar.
-* Be able to customize styles of scrollbar(includes color, size, position, opacity, keep showing or not and so on).
-* Switch among modes in runtime.
-* Be able to smooth-scroll by setting the scroll animations, see [easing](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#explanation-2).
-* Support pull-refresh and push-load.
-* Support paging(Slide a pull page each time).
-* Support snapping(Slide a user-defined distance each time).
-* Be able to detect the size change of the content.
-
-## Demo
-There are two ways to view demo:
-1. Open the `demo` folder in the root of repo and go to view.
-2. Go to - [Offical Website](https://wangyi7099.github.io/vuescrolljs/guide/) to view.
-
 ## Get Started
 ### Install
 ### Install by npm or yarn
@@ -83,6 +68,22 @@ const vm = new Vue({
 ``` 
 
 > For the detailed apis、events、configurations, please go to our [Offiacl Website](https://wangyi7099.github.io/vuescrolljs/).
+
+## Features
+* Has the basic behavior of the native scrollbar.
+* Be able to customize styles of scrollbar(includes color, size, position, opacity, keep showing or not and so on).
+* Switch among modes in runtime.
+* Be able to smooth-scroll by setting the scroll animations, see [easing](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#explanation-2).
+* Support pull-refresh and push-load.
+* Support paging(Slide a pull page each time).
+* Support snapping(Slide a user-defined distance each time).
+* Be able to detect the size change of the content.
+
+## Demo
+There are two ways to view demo:
+1. Open the `demo` folder in the root of repo and go to view.
+2. Go to - [Offical Website](https://wangyi7099.github.io/vuescrolljs/guide/) to view.
+
 
 ## How to contribute
 
