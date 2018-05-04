@@ -7,6 +7,8 @@
 </p>
 <p align="center">Vuescroll.js</p>
 
+[中文版README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
+
 Vuescroll is a virtual, multi function scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue),  it is suitable for both PC and mobile, it implements from [scroller](https://github.com/pbakaus/scroller)，besides scroller's features, it has more features：
 - Specially design for Vue, is suitable to Vue.
 - Multi Modes
