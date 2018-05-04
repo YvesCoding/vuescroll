@@ -31,9 +31,8 @@ In a word, Vuescroll is not only a scrollbar, but you can make a carousel, time 
 ## Demo
 All the features above you can find in Demo. There are two ways to view Demo:
 1. Open the `Demo` folder in the root of repo.
-2. Go to [Offical Website](https://wangyi7099.github.io/vuescrolljs/zh/guide/) and view at `Demo` page.
-
-### Install
+2. Go to `Demo` page of [Offical Website](https://wangyi7099.github.io/vuescrolljs/Demo/).
+### Installation
 ### Install by npm or yarn
 > Recommend yarn, why? Yarn will cache every modules you have installed, and won't download again next time when you use it.
 ```bash
