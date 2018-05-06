@@ -1,5 +1,5 @@
-export const modes = ["slide", "native", "pure-native"];
-export const NOOP = () => {};
+
+import { modes } from "./constants";
 export default {
   // vuescroll
   vuescroll: {

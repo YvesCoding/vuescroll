@@ -1,4 +1,4 @@
-import map from "../../config/scroll-map";
+import map from "../../shared/scroll-map";
 
 function handleClickTrack(e, { client, offset, posName, scrollSize }, parentRef, type, parent) {
   const barOffset = parentRef[`${type}Bar`].$el[offset];

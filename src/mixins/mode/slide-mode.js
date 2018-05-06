@@ -6,54 +6,63 @@ import { listenContainer }from "../../scroller/listener";
 /**
  * @description refresh and load callback
  */
-let refreshActivateCallback = function() {
-  this.vuescroll.state.refreshStage = "active";
-};
+function createStateCallbacks(type, stageName, vm, tipDom) {
+  const listeners = vm.$listeners;
 
-let refreshStartCallback = function() {
-  const vm = this;
-  vm.vuescroll.state.refreshStage = "start";
-  setTimeout(function() {
-    vm.scroller.finishRefreshOrLoad();
-  }, 2000);
-};
+  let activateCallback = () => {
+    vm.vuescroll.state[stageName] = "active";
+  };
 
-let refreshBeforeDeactivateCallback = function(done) {
-  const vm = this;
-  vm.vuescroll.state.refreshStage = "beforeDeactive";
-  setTimeout(function() {
-    done();
-  }, 500);
-};
+  let deactivateCallback = () => {
+    vm.vuescroll.state[stageName] = "deactive";
+  };
 
-let refreshDeactivateCallback = function() {
-  this.vuescroll.state.refreshStage = "deactive";
-};
+  let startCallback = () => {
+    vm.vuescroll.state[stageName] = "start";
+    setTimeout(() => {
+      vm.scroller.finishRefreshOrLoad();
+    }, 2000);
+  };
 
+  let beforeDeactivateCallback = done => {
+    vm.vuescroll.state[stageName] = "beforeDeactive";
+    setTimeout(function() {
+      done();
+    }, 500);
+  };
 
-let loadActivateCallback = function() {
-  this.vuescroll.state.loadStage = "active";
-};
+  if(listeners[type + "-activate"]) {
+    activateCallback = () => {
+      vm.vuescroll.state[stageName] = "active";
+      vm.$emit(type + "-activate", vm, tipDom);
+    };
+  }
+  if(listeners[type + "-before-deactivate"]) {
+    beforeDeactivateCallback = (done) => {
+      vm.vuescroll.state[stageName] = "beforeDeactive";
+      vm.$emit(type + "-before-deactivate", vm, tipDom, done.bind(vm.scroller));
+    };
+  }
+  if(listeners[type + "-deactivate"]) {
+    deactivateCallback = () => {
+      vm.vuescroll.state[stageName] = "deactive";
+      vm.$emit(type + "-deactivate", vm, tipDom);
+    };
+  }
+  if(listeners[type + "-start"]) {
+    startCallback = () => {
+      vm.vuescroll.state[stageName] = "start";
+      vm.$emit(type + "-start", vm, tipDom, vm.scroller.finishRefreshOrLoad.bind(vm.scroller));
+    };
+  }
 
-let loadStartCallback = function() {
-  const vm = this;
-  vm.vuescroll.state.loadStage = "start";
-  setTimeout(function() {
-    vm.scroller.finishRefreshOrLoad();
-  }, 2000);
-};
-
-let loadBeforeDeactivateCallback = function(done) {
-  const vm = this;
-  vm.vuescroll.state.loadStage = "beforeDeactive";
-  setTimeout(function() {
-    done();
-  }, 500);
-};
-
-let loadDeactivateCallback = function() {
-  this.vuescroll.state.loadStage = "deactive";
-};
+  return {
+    activateCallback,
+    deactivateCallback,
+    startCallback,
+    beforeDeactivateCallback,
+  };
+}
 
 export default {
   methods: {
@@ -70,7 +79,7 @@ export default {
       // refresh.
       if(this.mergedOptions.vuescroll.pullRefresh.enable) {
         const refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
-        refreshHeight = refreshDom.scrollHeight;
+        refreshHeight = refreshDom.offsetHeight;
         if(!refreshDom.style.marginTop) {
           refreshDom.style.marginTop = -refreshHeight + "px";
           contentHeight -= refreshHeight; 
@@ -78,7 +87,7 @@ export default {
       }
       if(this.mergedOptions.vuescroll.pushLoad.enable) {
         const loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
-        loadHeight = loadDom.scrollHeight;
+        loadHeight = loadDom.offsetHeight;
         //  hide the trailing load dom..
         contentHeight -= loadHeight; 
       }
@@ -133,11 +142,11 @@ export default {
       }, zooming, preventDefault);
       // registry refresh
       if(this.mergedOptions.vuescroll.pullRefresh.enable) {
-        this.registryRefreshEvent();
+        this.registryEvent("refresh");
       }
       // registry load
       if(this.mergedOptions.vuescroll.pushLoad.enable) {
-        this.registryLoadEvent();
+        this.registryEvent("load");
       }
       this.updateScroller();
       return cb;
@@ -186,74 +195,18 @@ export default {
       this.bar.vBar.state.size = (heightPercentage < 100) ? (heightPercentage + "%") : 0;
       this.bar.hBar.state.size = (widthPercentage < 100) ? (widthPercentage + "%") : 0;
     },
-    registryRefreshEvent() {
-      const refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
-      if(this.$listeners["refresh-activate"]) {
-        refreshActivateCallback = () => {
-          this.vuescroll.state.refreshStage = "active";
-          this.$emit("refresh-activate", this, refreshDom);
-        };
-      }
-      if(this.$listeners["refresh-before-deactivate"]) {
-        refreshBeforeDeactivateCallback = (done) => {
-          this.vuescroll.state.refreshStage = "beforeDeactive";
-          this.$emit("refresh-before-deactivate", this, refreshDom, done.bind(this.scroller));
-        };
-      }
-      if(this.$listeners["refresh-deactivate"]) {
-        refreshDeactivateCallback = () => {
-          this.vuescroll.state.refreshStage = "deactive";
-          this.$emit("refresh-deactivate", this, refreshDom);
-        };
-      }
-      if(this.$listeners["refresh-start"]) {
-        refreshStartCallback = () => {
-          this.vuescroll.state.refreshStage = "start";
-          this.$emit("refresh-start", this, refreshDom, this.scroller.finishRefreshOrLoad.bind(this.scroller));
-        };
-      }
-      const refreshHeight = refreshDom.scrollHeight;
-      this.scroller.activatePullToRefresh(
-        refreshHeight,
-        refreshActivateCallback.bind(this),
-        refreshDeactivateCallback.bind(this),
-        refreshStartCallback.bind(this),
-        refreshBeforeDeactivateCallback.bind(this)
-      );
-    },
-    registryLoadEvent() {
-      const loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
-      if(this.$listeners["load-activate"]) {
-        loadActivateCallback = () => {
-          this.vuescroll.state.loadStage = "active";
-          this.$emit("load-activate", this, loadDom);
-        };
-      }
-      if(this.$listeners["load-before-deactivate"]) {
-        loadBeforeDeactivateCallback = (done) => {
-          this.vuescroll.state.loadStage = "beforeDeactive";
-          this.$emit("load-before-deactivate", this, loadDom, done.bind(this.scroller));
-        };
-      }
-      if(this.$listeners["load-deactivate"]) {
-        loadDeactivateCallback = () => {
-          this.vuescroll.state.loadStage = "deactive";
-          this.$emit("load-deactivate", this, loadDom);
-        };
-      }
-      if(this.$listeners["load-start"]) {
-        loadStartCallback = () => {
-          this.vuescroll.state.loadStage = "start";
-          this.$emit("load-start", this, loadDom, this.scroller.finishRefreshOrLoad.bind(this.scroller));
-        };
-      }
-      let loadHeight = loadDom.scrollHeight;
-      this.scroller.activatePushToLoad(
-        loadHeight,
-        loadActivateCallback.bind(this),
-        loadDeactivateCallback.bind(this),
-        loadStartCallback.bind(this),
-        loadBeforeDeactivateCallback.bind(this)
+    registryEvent(type) {
+      const domName = type == "refresh" ? "refreshDom" : "loadDom";
+      const activateFunc = type == "refresh" ? 
+        this.scroller.activatePullToRefresh : 
+        this.scroller.activatePushToLoad;
+      const stageName = type == "refresh" ? "refreshStage" : "loadStage";
+      const tipDom = this.$refs[domName].elm || this.$refs[domName];
+      const cbs = createStateCallbacks(type, stageName, this, tipDom);
+      const height = tipDom.offsetHeight;
+      activateFunc.bind(this.scroller)(
+        height,
+        cbs
       );
     }
   }

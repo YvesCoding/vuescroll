@@ -154,3 +154,5 @@ export function eventCenter(dom,
   );
 }
 
+// native console
+export const log = console;

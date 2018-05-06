@@ -1,22 +1,17 @@
 import Vue from "vue";
-// import component
 import vuescroll from "./components/vuescroll";
-// import config
-import GCF from "./config/global-config";
-import {
-  deepMerge
-} from "./util";
+import GCF from "./shared/global-config";
+import { deepMerge, log } from "./util";
 
 let scroll = {
   install(Vue) {
     if(scroll.isInstalled) {
-      console.warn("You should not install the vuescroll again!"); //eslint-disable-line
+      log.warn("You should not install the vuescroll again!");
       return;
     }
-    //vueScroll
+    // registry vuescroll
     Vue.component(vuescroll.name, vuescroll);
-    // registry the globe setting
-    // feat: #8
+    
     Vue.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
     scroll.version = "__version__";

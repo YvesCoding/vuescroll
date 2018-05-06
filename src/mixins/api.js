@@ -1,5 +1,6 @@
 import { createEasingFunction,  easingPattern} from "../easingPattern";
 import { core } from "../scroller/animate";
+import { log } from "../util";
 
 function getNumericValue(distance, size) {
   let number;
@@ -42,6 +43,7 @@ export function goScrolling(
   }
 
   const easingMethod = createEasingFunction(easing, easingPattern);
+
   const stepCallback = (percentage) => {
     positionX = startLocationX + (deltaX * percentage);
     positionY = startLocationY + (deltaY * percentage);
@@ -49,9 +51,11 @@ export function goScrolling(
     elm["scrollLeft"] = Math.floor(positionX);
     return verifyCallback();
   };
+
   const verifyCallback = () => {
     return  Math.abs(positionY - startLocationY) < Math.abs(deltaY) || Math.abs(positionX - startLocationX) < Math.abs(deltaX);
   };
+
   core.effect.Animate.start(
     stepCallback, 
     verifyCallback, 
@@ -89,34 +93,34 @@ export default {
     },
     zoomBy(factor, animate, originLeft, originTop, callback) {
       if(this.mode != "slide") {
-        console.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+        log.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!"); 
         return;
       }
       this.scroller.zoomBy(factor, animate, originLeft, originTop, callback);
     },
     zoomTo(level, animate = false, originLeft, originTop, callback) {
       if(this.mode != "slide") {
-        console.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+        log.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!"); 
         return;
       }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
     getCurrentPage() {
       if(this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
-        console.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+        log.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!"); 
         return;
       }
       return this.scroller.getCurrentPage();
     },
     goToPage(dest, animate = false) {
       if(this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
-        console.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+        log.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!"); 
         return;
       }
       this.scroller.goToPage(dest, animate);
     },
     getCurrentviewDom() {
-      const parent = (this.mode == 'slide' ||this.mode == 'pure-native') ? this.scrollPanelElm : this.scrollContentElm;
+      const parent = (this.mode == "slide" ||this.mode == "pure-native") ? this.scrollPanelElm : this.scrollContentElm;
       const children = parent.children;
       const domFragment = [];
       const isCurrentview = dom => {
@@ -131,13 +135,15 @@ export default {
           return true;
         }
         return false;
-      }
+      };
+
       for(let i = 0; i < children.length; i++) {
         const dom = children.item(i);
         if(isCurrentview(dom) && !dom.isResizeElm) {
           domFragment.push(dom);
         }
       }
+      
       return domFragment;
     },
     // private api
@@ -165,15 +171,6 @@ export default {
       else if(this.mode == "slide"){
         this.scroller.scrollTo(destX, destY, animate, undefined, force);
       }
-    },
-    forceUpdate() {
-      this.$forceUpdate();
-      Object.keys(this.$refs).forEach(ref => {
-        const $ref = this.$refs[ref];
-        if($ref._isVue) {
-          $ref.$forceUpdate();
-        }
-      });
     }
   }
 };

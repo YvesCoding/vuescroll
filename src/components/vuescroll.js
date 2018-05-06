@@ -9,12 +9,7 @@ import rail, { createRail } from "./child-components/vuescroll-rail";
 import scrollContent from "./child-components/vueScroll-content";
 import scrollPanel, { createPanel } from "./child-components/vueScroll-panel";
 
-const uncessaryChangeArray = [
-  "mergedOptions.vuescroll.pullRefresh.tips",
-  "mergedOptions.vuescroll.pushLoad.tips",
-  "mergedOptions.rail",
-  "mergedOptions.bar"
-];
+import { uncessaryChangeArray } from "../shared/constants";
 
 function findValuesByMode(mode, vm) {
   let axis = {};
@@ -53,13 +48,7 @@ export default  {
           loadStage: "deactive"
         }
       },
-      scrollPanel: {
-        state: {
-          left: 0,
-          top: 0,
-          zoom: 1
-        }
-      },
+      scrollPanel: { },
       scrollContent: { },
       rail: {
         vRail: {
@@ -92,9 +81,7 @@ export default  {
     let vm = this;
     if(vm.renderError) {
       return (
-        <div>
-          {[vm.$slots["default"]]}
-        </div>
+        [vm.$slots["default"]]
       );
     }
     // vuescroll data
@@ -181,11 +168,11 @@ export default  {
       if(this.mode == "slide") {
         this.destroyScroller = this.registryScroller();
       } else if(this.mode == "native" || this.mode == "pure-native") {
-        // remove the transform style attribute
+        // remove the legacy transform style attribute
         this.scrollPanelElm.style.transform = "";
         this.scrollPanelElm.style.transformOrigin = "";
       }
-      // scroll to the place after updating
+      // keep the last-mode's position.
       this.scrollTo({ x, y }, false, true /* force */);
     },
     handleScroll(nativeEvent) {
@@ -266,7 +253,7 @@ export default  {
       /* istanbul ignore next */
       if(this.destroyResize) {
         // when toggling the mode
-        // we should clean the flag  object.
+        // we should clean the flag-object.
         this.destroyResize();
       }
       let contentElm = null;
@@ -298,9 +285,10 @@ export default  {
       };                
       window.addEventListener("resize", handleWindowResize, false);
       const destroyDomResize = listenResize(contentElm, handleDomResize);
-      // registry resize event
+      const destroyWindowResize = () => { window.removeEventListener("resize", handleWindowResize, false); };
+
       this.destroyResize = () => {
-        window.removeEventListener("resize", handleWindowResize, false);
+        destroyWindowResize();
         destroyDomResize();
       };
     },
@@ -347,6 +335,7 @@ export default  {
 
       this.registryResize();
       this.initWatch();
+      
       this.$nextTick(() => {
         // update state
         this.update();

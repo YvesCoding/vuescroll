@@ -1,4 +1,4 @@
-import scrollMap from "../../config/scroll-map";
+import scrollMap from "../../shared/scroll-map";
 import { eventCenter } from "../../util";
 import { render } from "../../scroller/render";
 export default {

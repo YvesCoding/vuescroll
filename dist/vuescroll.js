@@ -124,6 +124,9 @@ function eventCenter(dom, eventName, hander) {
   type == "on" ? dom.addEventListener(eventName, hander, capture) : dom.removeEventListener(eventName, hander, capture);
 }
 
+// native console
+var log = console;
+
 // detect content size change 
 // https://github.com/wnr/element-resize-detector/blob/465fe68efbea85bb9fe22db2f68ebc7fde8bbcf5/src/detection-strategy/object.js
 // modified by wangyi7099
@@ -147,8 +150,13 @@ function listenResize(element, func) {
   };
 }
 
+// all modes
 var modes = ["slide", "native", "pure-native"];
+// do nothing
 var NOOP = function NOOP() {};
+// some small changes.
+var uncessaryChangeArray = ["mergedOptions.vuescroll.pullRefresh.tips", "mergedOptions.vuescroll.pushLoad.tips", "mergedOptions.rail", "mergedOptions.bar"];
+
 var GCF = {
   // vuescroll
   vuescroll: {
@@ -641,6 +649,7 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
   }
 
   var easingMethod = createEasingFunction(easing, easingPattern);
+
   var stepCallback = function stepCallback(percentage) {
     positionX = startLocationX + deltaX * percentage;
     positionY = startLocationY + deltaY * percentage;
@@ -648,9 +657,11 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
     elm["scrollLeft"] = Math.floor(positionX);
     return verifyCallback();
   };
+
   var verifyCallback = function verifyCallback() {
     return Math.abs(positionY - startLocationY) < Math.abs(deltaY) || Math.abs(positionX - startLocationX) < Math.abs(deltaX);
   };
+
   core.effect.Animate.start(stepCallback, verifyCallback, scrollingComplete, speed, easingMethod);
 }
 
@@ -693,7 +704,7 @@ var api = {
     },
     zoomBy: function zoomBy(factor, animate, originLeft, originTop, callback) {
       if (this.mode != "slide") {
-        console.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+        log.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
         return;
       }
       this.scroller.zoomBy(factor, animate, originLeft, originTop, callback);
@@ -705,14 +716,14 @@ var api = {
       var callback = arguments[4];
 
       if (this.mode != "slide") {
-        console.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+        log.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
         return;
       }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
     getCurrentPage: function getCurrentPage() {
       if (this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
-        console.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+        log.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
         return;
       }
       return this.scroller.getCurrentPage();
@@ -721,7 +732,7 @@ var api = {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
       if (this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
-        console.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+        log.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
         return;
       }
       this.scroller.goToPage(dest, animate);
@@ -729,7 +740,7 @@ var api = {
     getCurrentviewDom: function getCurrentviewDom() {
       var _this = this;
 
-      var parent = this.mode == 'slide' || this.mode == 'pure-native' ? this.scrollPanelElm : this.scrollContentElm;
+      var parent = this.mode == "slide" || this.mode == "pure-native" ? this.scrollPanelElm : this.scrollContentElm;
       var children = parent.children;
       var domFragment = [];
       var isCurrentview = function isCurrentview(dom) {
@@ -750,12 +761,14 @@ var api = {
         }
         return false;
       };
+
       for (var i = 0; i < children.length; i++) {
         var dom = children.item(i);
         if (isCurrentview(dom) && !dom.isResizeElm) {
           domFragment.push(dom);
         }
       }
+
       return domFragment;
     },
 
@@ -779,17 +792,6 @@ var api = {
       else if (this.mode == "slide") {
           this.scroller.scrollTo(destX, destY, animate, undefined, force);
         }
-    },
-    forceUpdate: function forceUpdate() {
-      var _this3 = this;
-
-      this.$forceUpdate();
-      Object.keys(this.$refs).forEach(function (ref) {
-        var $ref = _this3.$refs[ref];
-        if ($ref._isVue) {
-          $ref.$forceUpdate();
-        }
-      });
     }
   }
 };
@@ -1154,7 +1156,12 @@ var members = {
   * @param deactivateCallback {Function} Callback to execute on deactivation. This is for signalling the user about the refresh being cancelled.
   * @param startCallback {Function} Callback to execute to start the real async refresh action. Call {@link #finishPullToRefresh} after finish of refresh.
   */
-  activatePullToRefresh: function activatePullToRefresh(height, activateCallback, deactivateCallback, startCallback, beforeDeactivateCallback) {
+  activatePullToRefresh: function activatePullToRefresh(height, _ref) {
+    var activateCallback = _ref.activateCallback,
+        deactivateCallback = _ref.deactivateCallback,
+        startCallback = _ref.startCallback,
+        beforeDeactivateCallback = _ref.beforeDeactivateCallback;
+
 
     var self = this;
 
@@ -1164,7 +1171,12 @@ var members = {
     self.__refreshDeactivate = deactivateCallback;
     self.__refreshStart = startCallback;
   },
-  activatePushToLoad: function activatePushToLoad(height, activateCallback, deactivateCallback, startCallback, beforeDeactivateCallback) {
+  activatePushToLoad: function activatePushToLoad(height, _ref2) {
+    var activateCallback = _ref2.activateCallback,
+        deactivateCallback = _ref2.deactivateCallback,
+        startCallback = _ref2.startCallback,
+        beforeDeactivateCallback = _ref2.beforeDeactivateCallback;
+
 
     var self = this;
 
@@ -2372,53 +2384,63 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /**
  * @description refresh and load callback
  */
-var refreshActivateCallback = function refreshActivateCallback() {
-  this.vuescroll.state.refreshStage = "active";
-};
+function createStateCallbacks(type, stageName, vm, tipDom) {
+  var listeners = vm.$listeners;
 
-var refreshStartCallback = function refreshStartCallback() {
-  var vm = this;
-  vm.vuescroll.state.refreshStage = "start";
-  setTimeout(function () {
-    vm.scroller.finishRefreshOrLoad();
-  }, 2000);
-};
+  var activateCallback = function activateCallback() {
+    vm.vuescroll.state[stageName] = "active";
+  };
 
-var refreshBeforeDeactivateCallback = function refreshBeforeDeactivateCallback(done) {
-  var vm = this;
-  vm.vuescroll.state.refreshStage = "beforeDeactive";
-  setTimeout(function () {
-    done();
-  }, 500);
-};
+  var deactivateCallback = function deactivateCallback() {
+    vm.vuescroll.state[stageName] = "deactive";
+  };
 
-var refreshDeactivateCallback = function refreshDeactivateCallback() {
-  this.vuescroll.state.refreshStage = "deactive";
-};
+  var startCallback = function startCallback() {
+    vm.vuescroll.state[stageName] = "start";
+    setTimeout(function () {
+      vm.scroller.finishRefreshOrLoad();
+    }, 2000);
+  };
 
-var loadActivateCallback = function loadActivateCallback() {
-  this.vuescroll.state.loadStage = "active";
-};
+  var beforeDeactivateCallback = function beforeDeactivateCallback(done) {
+    vm.vuescroll.state[stageName] = "beforeDeactive";
+    setTimeout(function () {
+      done();
+    }, 500);
+  };
 
-var loadStartCallback = function loadStartCallback() {
-  var vm = this;
-  vm.vuescroll.state.loadStage = "start";
-  setTimeout(function () {
-    vm.scroller.finishRefreshOrLoad();
-  }, 2000);
-};
+  if (listeners[type + "-activate"]) {
+    activateCallback = function activateCallback() {
+      vm.vuescroll.state[stageName] = "active";
+      vm.$emit(type + "-activate", vm, tipDom);
+    };
+  }
+  if (listeners[type + "-before-deactivate"]) {
+    beforeDeactivateCallback = function beforeDeactivateCallback(done) {
+      vm.vuescroll.state[stageName] = "beforeDeactive";
+      vm.$emit(type + "-before-deactivate", vm, tipDom, done.bind(vm.scroller));
+    };
+  }
+  if (listeners[type + "-deactivate"]) {
+    deactivateCallback = function deactivateCallback() {
+      vm.vuescroll.state[stageName] = "deactive";
+      vm.$emit(type + "-deactivate", vm, tipDom);
+    };
+  }
+  if (listeners[type + "-start"]) {
+    startCallback = function startCallback() {
+      vm.vuescroll.state[stageName] = "start";
+      vm.$emit(type + "-start", vm, tipDom, vm.scroller.finishRefreshOrLoad.bind(vm.scroller));
+    };
+  }
 
-var loadBeforeDeactivateCallback = function loadBeforeDeactivateCallback(done) {
-  var vm = this;
-  vm.vuescroll.state.loadStage = "beforeDeactive";
-  setTimeout(function () {
-    done();
-  }, 500);
-};
-
-var loadDeactivateCallback = function loadDeactivateCallback() {
-  this.vuescroll.state.loadStage = "deactive";
-};
+  return {
+    activateCallback: activateCallback,
+    deactivateCallback: deactivateCallback,
+    startCallback: startCallback,
+    beforeDeactivateCallback: beforeDeactivateCallback
+  };
+}
 
 var slideMode = {
   methods: {
@@ -2435,7 +2457,7 @@ var slideMode = {
       // refresh.
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
         var refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
-        refreshHeight = refreshDom.scrollHeight;
+        refreshHeight = refreshDom.offsetHeight;
         if (!refreshDom.style.marginTop) {
           refreshDom.style.marginTop = -refreshHeight + "px";
           contentHeight -= refreshHeight;
@@ -2443,7 +2465,7 @@ var slideMode = {
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
         var loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
-        loadHeight = loadDom.scrollHeight;
+        loadHeight = loadDom.offsetHeight;
         //  hide the trailing load dom..
         contentHeight -= loadHeight;
       }
@@ -2499,11 +2521,11 @@ var slideMode = {
       }, zooming, preventDefault);
       // registry refresh
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
-        this.registryRefreshEvent();
+        this.registryEvent("refresh");
       }
       // registry load
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        this.registryLoadEvent();
+        this.registryEvent("load");
       }
       this.updateScroller();
       return cb;
@@ -2553,67 +2575,14 @@ var slideMode = {
       this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + "%" : 0;
       this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + "%" : 0;
     },
-    registryRefreshEvent: function registryRefreshEvent() {
-      var _this2 = this;
-
-      var refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
-      if (this.$listeners["refresh-activate"]) {
-        refreshActivateCallback = function refreshActivateCallback() {
-          _this2.vuescroll.state.refreshStage = "active";
-          _this2.$emit("refresh-activate", _this2, refreshDom);
-        };
-      }
-      if (this.$listeners["refresh-before-deactivate"]) {
-        refreshBeforeDeactivateCallback = function refreshBeforeDeactivateCallback(done) {
-          _this2.vuescroll.state.refreshStage = "beforeDeactive";
-          _this2.$emit("refresh-before-deactivate", _this2, refreshDom, done.bind(_this2.scroller));
-        };
-      }
-      if (this.$listeners["refresh-deactivate"]) {
-        refreshDeactivateCallback = function refreshDeactivateCallback() {
-          _this2.vuescroll.state.refreshStage = "deactive";
-          _this2.$emit("refresh-deactivate", _this2, refreshDom);
-        };
-      }
-      if (this.$listeners["refresh-start"]) {
-        refreshStartCallback = function refreshStartCallback() {
-          _this2.vuescroll.state.refreshStage = "start";
-          _this2.$emit("refresh-start", _this2, refreshDom, _this2.scroller.finishRefreshOrLoad.bind(_this2.scroller));
-        };
-      }
-      var refreshHeight = refreshDom.scrollHeight;
-      this.scroller.activatePullToRefresh(refreshHeight, refreshActivateCallback.bind(this), refreshDeactivateCallback.bind(this), refreshStartCallback.bind(this), refreshBeforeDeactivateCallback.bind(this));
-    },
-    registryLoadEvent: function registryLoadEvent() {
-      var _this3 = this;
-
-      var loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
-      if (this.$listeners["load-activate"]) {
-        loadActivateCallback = function loadActivateCallback() {
-          _this3.vuescroll.state.loadStage = "active";
-          _this3.$emit("load-activate", _this3, loadDom);
-        };
-      }
-      if (this.$listeners["load-before-deactivate"]) {
-        loadBeforeDeactivateCallback = function loadBeforeDeactivateCallback(done) {
-          _this3.vuescroll.state.loadStage = "beforeDeactive";
-          _this3.$emit("load-before-deactivate", _this3, loadDom, done.bind(_this3.scroller));
-        };
-      }
-      if (this.$listeners["load-deactivate"]) {
-        loadDeactivateCallback = function loadDeactivateCallback() {
-          _this3.vuescroll.state.loadStage = "deactive";
-          _this3.$emit("load-deactivate", _this3, loadDom);
-        };
-      }
-      if (this.$listeners["load-start"]) {
-        loadStartCallback = function loadStartCallback() {
-          _this3.vuescroll.state.loadStage = "start";
-          _this3.$emit("load-start", _this3, loadDom, _this3.scroller.finishRefreshOrLoad.bind(_this3.scroller));
-        };
-      }
-      var loadHeight = loadDom.scrollHeight;
-      this.scroller.activatePushToLoad(loadHeight, loadActivateCallback.bind(this), loadDeactivateCallback.bind(this), loadStartCallback.bind(this), loadBeforeDeactivateCallback.bind(this));
+    registryEvent: function registryEvent(type) {
+      var domName = type == "refresh" ? "refreshDom" : "loadDom";
+      var activateFunc = type == "refresh" ? this.scroller.activatePullToRefresh : this.scroller.activatePushToLoad;
+      var stageName = type == "refresh" ? "refreshStage" : "loadStage";
+      var tipDom = this.$refs[domName].elm || this.$refs[domName];
+      var cbs = createStateCallbacks(type, stageName, this, tipDom);
+      var height = tipDom.offsetHeight;
+      activateFunc.bind(this.scroller)(height, cbs);
     }
   }
 };
@@ -2893,7 +2862,7 @@ function createContent$1(h, vm) {
 // vueScrollPanel
 var scrollPanel = {
   name: "scrollPanel",
-  props: { ops: { type: Object, required: true }, state: { type: Object, required: true } },
+  props: { ops: { type: Object, required: true } },
   methods: {
     // trigger scrollPanel options initialScrollX, 
     // initialScrollY
@@ -3017,7 +2986,6 @@ function createPanel(h, vm) {
 }
 
 function createPanelChildren(vm, h) {
-
   if (vm.mode == "native") {
     return [createContent$1(h, vm)];
   } else if (vm.mode == "slide") {
@@ -3032,67 +3000,7 @@ function createPanelChildren(vm, h) {
         // use default refresh dom
         createDomStyle("refreshDomStyle");
         var refreshDom = null;
-        // front or end of the process.
-        if (vm.vuescroll.state.refreshStage == "deactive") {
-          refreshDom = h(
-            "svg",
-            {
-              attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
-            },
-            [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
-              "g",
-              {
-                attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
-              },
-              [h("path", {
-                attrs: { d: "M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" }
-              })]
-            )])]
-          );
-        }
-        // refreshing
-        else if (vm.vuescroll.state.refreshStage == "start") {
-            refreshDom = h(
-              "svg",
-              {
-                attrs: { version: "1.1", id: "loader-1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px",
-                  viewBox: "0 0 50 50", xmlSpace: "preserve" },
-                style: "enable-background:new 0 0 50 50;" },
-              [h(
-                "path",
-                {
-                  attrs: { fill: "#000", d: "M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" }
-                },
-                [h("animateTransform", {
-                  attrs: { attributeType: "xml",
-                    attributeName: "transform",
-                    type: "rotate",
-                    from: "0 25 25",
-                    to: "360 25 25",
-                    dur: "0.6s",
-                    repeatCount: "indefinite" }
-                })]
-              )]
-            );
-          }
-          // release to refresh, active
-          else if (vm.vuescroll.state.refreshStage == "active") {
-              refreshDom = h(
-                "svg",
-                {
-                  attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
-                },
-                [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
-                  "g",
-                  {
-                    attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
-                  },
-                  [h("path", {
-                    attrs: { d: "M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" }
-                  })]
-                )])]
-              );
-            }
+        refreshDom = createTipDom(h, vm.vuescroll.state.refreshStage);
         renderChildren.unshift(h(
           "div",
           { "class": "vuescroll-refresh", ref: "refreshDom", key: "refshDom" },
@@ -3100,7 +3008,6 @@ function createPanelChildren(vm, h) {
         ));
       }
     }
-
     // handle for load
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
       if (vm.$slots.load) {
@@ -3109,67 +3016,7 @@ function createPanelChildren(vm, h) {
       } else {
         createDomStyle("loadDomStyle");
         var loadDom = null;
-        // front or end of the process.
-        if (vm.vuescroll.state.loadStage == "deactive") {
-          loadDom = h(
-            "svg",
-            {
-              attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
-            },
-            [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
-              "g",
-              {
-                attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
-              },
-              [h("path", {
-                attrs: { d: "M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" }
-              })]
-            )])]
-          );
-        }
-        // loading
-        else if (vm.vuescroll.state.loadStage == "start") {
-            loadDom = h(
-              "svg",
-              {
-                attrs: { version: "1.1", id: "loader-1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px",
-                  viewBox: "0 0 50 50", xmlSpace: "preserve" },
-                style: "enable-background:new 0 0 50 50;" },
-              [h(
-                "path",
-                {
-                  attrs: { fill: "#000", d: "M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" }
-                },
-                [h("animateTransform", {
-                  attrs: { attributeType: "xml",
-                    attributeName: "transform",
-                    type: "rotate",
-                    from: "0 25 25",
-                    to: "360 25 25",
-                    dur: "0.6s",
-                    repeatCount: "indefinite" }
-                })]
-              )]
-            );
-          }
-          // release to load, active
-          else if (vm.vuescroll.state.loadStage == "active") {
-              loadDom = h(
-                "svg",
-                {
-                  attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
-                },
-                [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
-                  "g",
-                  {
-                    attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
-                  },
-                  [h("path", {
-                    attrs: { d: "M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" }
-                  })]
-                )])]
-              );
-            }
+        loadDom = createTipDom(h, vm.vuescroll.state.loadStage);
         // no slot load elm, use default
         renderChildren.push(h(
           "div",
@@ -3183,8 +3030,71 @@ function createPanelChildren(vm, h) {
     return [vm.$slots.default];
   }
 }
-
-var uncessaryChangeArray = ["mergedOptions.vuescroll.pullRefresh.tips", "mergedOptions.vuescroll.pushLoad.tips", "mergedOptions.rail", "mergedOptions.bar"];
+// create load or refresh tip dom
+function createTipDom(h, stage) {
+  var dom = null;
+  switch (stage) {
+    case "deactive":
+      dom = h(
+        "svg",
+        {
+          attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
+        },
+        [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
+          "g",
+          {
+            attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
+          },
+          [h("path", {
+            attrs: { d: "M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" }
+          })]
+        )])]
+      );
+      break;
+    case "start":
+      dom = h(
+        "svg",
+        {
+          attrs: { version: "1.1", id: "loader-1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px",
+            viewBox: "0 0 50 50", xmlSpace: "preserve" },
+          style: "enable-background:new 0 0 50 50;" },
+        [h(
+          "path",
+          {
+            attrs: { fill: "#000", d: "M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" }
+          },
+          [h("animateTransform", {
+            attrs: { attributeType: "xml",
+              attributeName: "transform",
+              type: "rotate",
+              from: "0 25 25",
+              to: "360 25 25",
+              dur: "0.6s",
+              repeatCount: "indefinite" }
+          })]
+        )]
+      );
+      break;
+    case "active":
+      dom = h(
+        "svg",
+        {
+          attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
+        },
+        [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
+          "g",
+          {
+            attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
+          },
+          [h("path", {
+            attrs: { d: "M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" }
+          })]
+        )])]
+      );
+      break;
+  }
+  return dom;
+}
 
 function findValuesByMode(mode, vm) {
   var axis = {};
@@ -3225,13 +3135,7 @@ var vuescroll = {
           loadStage: "deactive"
         }
       },
-      scrollPanel: {
-        state: {
-          left: 0,
-          top: 0,
-          zoom: 1
-        }
-      },
+      scrollPanel: {},
       scrollContent: {},
       rail: {
         vRail: {
@@ -3263,7 +3167,7 @@ var vuescroll = {
   render: function render(h) {
     var vm = this;
     if (vm.renderError) {
-      return h("div", [[vm.$slots["default"]]]);
+      return [vm.$slots["default"]];
     }
     // vuescroll data
     var vuescrollData = {
@@ -3349,11 +3253,11 @@ var vuescroll = {
       if (this.mode == "slide") {
         this.destroyScroller = this.registryScroller();
       } else if (this.mode == "native" || this.mode == "pure-native") {
-        // remove the transform style attribute
+        // remove the legacy transform style attribute
         this.scrollPanelElm.style.transform = "";
         this.scrollPanelElm.style.transformOrigin = "";
       }
-      // scroll to the place after updating
+      // keep the last-mode's position.
       this.scrollTo({ x: x, y: y }, false, true /* force */);
     },
     handleScroll: function handleScroll(nativeEvent) {
@@ -3442,7 +3346,7 @@ var vuescroll = {
       /* istanbul ignore next */
       if (this.destroyResize) {
         // when toggling the mode
-        // we should clean the flag  object.
+        // we should clean the flag-object.
         this.destroyResize();
       }
       var contentElm = null;
@@ -3474,9 +3378,12 @@ var vuescroll = {
       };
       window.addEventListener("resize", handleWindowResize, false);
       var destroyDomResize = listenResize(contentElm, handleDomResize);
-      // registry resize event
-      this.destroyResize = function () {
+      var destroyWindowResize = function destroyWindowResize() {
         window.removeEventListener("resize", handleWindowResize, false);
+      };
+
+      this.destroyResize = function () {
+        destroyWindowResize();
         destroyDomResize();
       };
     },
@@ -3527,6 +3434,7 @@ var vuescroll = {
 
       this.registryResize();
       this.initWatch();
+
       this.$nextTick(function () {
         // update state
         _this5.update();
@@ -3545,18 +3453,15 @@ var vuescroll = {
   }
 };
 
-// import component
-// import config
 var scroll = {
   install: function install(Vue$$1) {
     if (scroll.isInstalled) {
-      console.warn("You should not install the vuescroll again!"); //eslint-disable-line
+      log.warn("You should not install the vuescroll again!");
       return;
     }
-    //vueScroll
+    // registry vuescroll
     Vue$$1.component(vuescroll.name, vuescroll);
-    // registry the globe setting
-    // feat: #8
+
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
     scroll.version = "4.5.12";

@@ -15,7 +15,7 @@
  */
 import { easingPattern, createEasingFunction }from "../easingPattern";
 import { core } from "./animate";
-import { NOOP } from "../config/global-config";
+import { NOOP } from "../shared/constants";
 
 var animatingMethod = null;
 
@@ -358,7 +358,7 @@ var members = {
 	 * @param deactivateCallback {Function} Callback to execute on deactivation. This is for signalling the user about the refresh being cancelled.
 	 * @param startCallback {Function} Callback to execute to start the real async refresh action. Call {@link #finishPullToRefresh} after finish of refresh.
 	 */
-  activatePullToRefresh: function(height, activateCallback, deactivateCallback, startCallback, beforeDeactivateCallback) {
+  activatePullToRefresh: function(height, {activateCallback, deactivateCallback, startCallback, beforeDeactivateCallback}) {
 
     var self = this;
 
@@ -369,7 +369,7 @@ var members = {
     self.__refreshStart = startCallback;
 
   },
-  activatePushToLoad: function(height, activateCallback, deactivateCallback, startCallback, beforeDeactivateCallback) {
+  activatePushToLoad: function(height, {activateCallback, deactivateCallback, startCallback, beforeDeactivateCallback}) {
 
     var self = this;
 
