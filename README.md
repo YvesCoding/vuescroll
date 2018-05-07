@@ -5,7 +5,7 @@
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
 </p>
-<p align="center"><font size="4">Vuescroll.js - Beautify and enhance your scrollbar</font></p>
+<h4 align="center">Vuescroll - Beautify and enhance your scrollbar</h4>
 
 [中文版README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 

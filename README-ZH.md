@@ -5,7 +5,7 @@
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a><a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
 </p>
-<p align="center"><font size="4">Vuescroll.js - 美化和加强你的滚动条</font></p>
+<h4 align="center">Vuescroll - 美化和加强你的滚动条</h4>
 
 Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的多功能虚拟滚动条, 同时适用于PC端he移动端！它不仅实现了 [scroller](https://github.com/pbakaus/scroller)的所有特性，还拥有更多的特性：
 - 与`Vue`契合度100%
