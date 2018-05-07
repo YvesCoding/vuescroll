@@ -89,11 +89,11 @@ Hmmm, thank you very much for wanting to contribute to vuescroll！What you need
 1. Fork this repo.
 2. Clone the repo you have just forked.
 ```base
-   git clone git@github.com:<Your Usernmae>/vuescroll.git
+   git clone git@github.com:<Your Username>/vuescroll.git
 ```
 3. Modify the code in your local and push the code to your remote repo.
 3. Click `New pull request` in vuescroll repo and that's all, like the picture below:<br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" /> 
-4. Wait for my agreement, and your code will be merged into the `dev` branch !
+4. Wait for my agreement, and then your code will be merged into the `dev` branch !
 
 ## Inspired
 

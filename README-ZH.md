@@ -79,7 +79,7 @@ const vm = new Vue({
 </div>
 ``` 
 3. 这就完了！ 如此简单！ 是不是？
-详细的文档，请访问[官网](https://wangyi7099.github.io/vuescrolljs/zh)。
+**详细的文档，请访问[官网](https://wangyi7099.github.io/vuescrolljs/zh)。**
 
 
 ## 如何贡献
