@@ -32,7 +32,7 @@ Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的多功能
 1. 打开项目根目录下的[demo](https://github.com/wangyi7099/vuescroll/tree/dev/demo)文件夹进行查看
 2. 去[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)的[Demo](https://wangyi7099.github.io/vuescrolljs/zh/Demo/)页面进行查看
 
-## 开始上手
+## 快速入门
 ### 安装
   用npm或者是yarn安装
 > 推荐用yarn, 为什么？ Yarn会对下载的每一个模块进行缓存， 当你下次再用的时候就不会重新下载了。
@@ -79,7 +79,7 @@ const vm = new Vue({
 </div>
 ``` 
 3. 这就完了！ 如此简单！ 是不是？
-完整的api、事件、配置请到[官网](https://wangyi7099.github.io/vuescrolljs/zh)进行查看。
+详细的文档，请访问[官网](https://wangyi7099.github.io/vuescrolljs/zh)。
 
 
 ## 如何贡献
