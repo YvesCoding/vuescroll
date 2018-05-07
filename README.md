@@ -80,7 +80,7 @@ const vm = new Vue({
 ``` 
 3. That's all! So easy! Isn't it?
 
-> To checkout the detailed docs, please visit [Offiacl Website](https://wangyi7099.github.io/vuescrolljs/).
+**To checkout the detailed docs, please visit [Offcial Website](https://wangyi7099.github.io/vuescrolljs/).**
 
 
 ## How to contribute
