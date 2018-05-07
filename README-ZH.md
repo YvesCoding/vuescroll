@@ -7,7 +7,8 @@
 </p>
 <h4 align="center">Vuescroll - 美化和加强你的滚动条</h4>
 
-Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的多功能虚拟滚动条, 同时适用于PC端he移动端！它不仅实现了 [scroller](https://github.com/pbakaus/scroller)的所有特性，还拥有更多的特性：
+## 介绍 
+Vuescroll 是一个基于 [vue.js 2.X](https://github.com/vuejs/vue)的多功能虚拟滚动条,可以美化和加强你的滚动条, 同时适用于PC端he移动端！它不仅实现了 [scroller](https://github.com/pbakaus/scroller)的所有特性，还拥有更多的特性：
 - 与`Vue`契合度100%
 - 多种模式
     - `native` 模式:  有点想原生的滚动，可以自定义滚动条样式，使用于PC端用户。 

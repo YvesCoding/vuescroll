@@ -8,8 +8,8 @@
 <h4 align="center">Vuescroll - Beautify and enhance your scrollbar</h4>
 
 [中文版README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
-
-Vuescroll is a virtual, multi function scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue),  it is suitable for both PC and mobile, and it not only implements all features of[scroller](https://github.com/pbakaus/scroller) , but also has more features：
+## Introduction
+Vuescroll is a virtual, multi function scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue),can beautify and enhance your scrollbar, it is suitable for both PC and mobile, and it not only implements all features of[scroller](https://github.com/pbakaus/scroller) , but also has more features：
 - Specially design for Vue, is suitable to Vue.
 - Multi Modes
     - `native` mode:  Seem to be native scrollbar, but can costumize styles of scrollbars, it is suitable for PC. 
