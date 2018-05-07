@@ -9,36 +9,30 @@
 
 [中文版README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 ## Introduction
-Vuescroll is a virtual, multi function scrollbar based on [vue.js 2.X](https://github.com/vuejs/vue),can beautify and enhance your scrollbar, it is suitable for both PC and mobile, and it not only implements all features of[scroller](https://github.com/pbakaus/scroller) , but also has more features：
-- Specially design for Vue, is suitable to Vue.
-- Multi Modes
-    - `native` mode:  Seem to be native scrollbar, but can costumize styles of scrollbars, it is suitable for PC. 
+Vuescroll is a virtual scrollbar based on Vue.js which is designed for beautifying and enhancing your native scrollbar. 
+
+## Features 
+- Specially design for Vue. Has the reactive feature of Vue.
+- Ability to run in PC or mobile by choosing different modes:
+    - `native` mode:  Like thr native scrollbar, but can costumize styles of scrollbars, it is suitable for PC. 
     - `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry, it is suitable for mobile.
-    - `pure-native`mode: Use native scrollbars， it is suitable for PC and the users who like native scrollbar.
-- Automatically detect size change of the content and update scrollbar.
-- Extended `scroller`
-    - Support push-load.
-    - Add `beforeDeactivate` stage in the 3 stages of pullrefresh/pushload to tell user the result of refreshing/loading.  
-    - Add `goToPage`， `getCurrentPage` api to manipulate page when `paging` is enable.
+    - `pure-native` mode: Use native scrollbars， it is suitable for PC and the users who like native scrollbar.
+- Ability to detect the size change of the content and automatically update scrollbar.
+- Ability to scroll smoothly by using [different animations](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#scrollpanel).
 
-In a word, Vuescroll is not only a scrollbar, but you can make a carousel, time picker, a plugin that can automatically detect the size change of content and so on.
+In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel, time picker, a plugin that can automatically detect the size change of content and so on.
 
-> Important Tip! For the users who use 3.X and want to upgrade to 4.X, please use the following command ,or may upgrade fail::
-```bash
-   npm i vuescroll@latest
-   # yarn add vuescroll@latest
-```
-## Demo
-All the features above you can find in Demo. There are two ways to view Demo:
-1. Open the [demo](https://github.com/wangyi7099/vuescroll/tree/dev/demo) folder under the root of repo.
-2. Go to [Demo](https://wangyi7099.github.io/vuescrolljs/Demo/) page of the [Offical Website](https://wangyi7099.github.io/vuescrolljs/).
 ## Quick Start
 ### Installation
 #### Install by npm or yarn
-> Recommend yarn, why? Yarn will cache every modules you have installed, and won't download again next time when you use it.
 ```bash
 npm install vuescroll -S
 # yarn add vuescroll
+```
+### Upgrade
+```bash
+   npm i vuescroll@latest
+   # yarn add vuescroll@latest
 ```
 ### Usage
 1. Configure in your entry file
@@ -78,14 +72,16 @@ const vm = new Vue({
     </vue-scroll>
 </div>
 ``` 
-3. That's all! So easy! Isn't it?
+3. That's all, just so easy.
 
-**To checkout the detailed docs, please visit [Offcial Website](https://wangyi7099.github.io/vuescrolljs/).**
+## Demo
+There are two ways to checkout Demo:
+1. Download this repo, and open the [Demo](https://github.com/wangyi7099/vuescroll/tree/dev/demo) folder under the root.
+2. Go to [Demo](https://wangyi7099.github.io/vuescrolljs/Demo/) page of the [Offical Website](https://wangyi7099.github.io/vuescrolljs/).
 
 
-## How to contribute
+## Contribution
 
-Hmmm, thank you very much for wanting to contribute to vuescroll！What you need are some steps bellow：
 1. Fork this repo.
 2. Clone the repo you have just forked.
 ```base
