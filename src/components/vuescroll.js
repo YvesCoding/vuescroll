@@ -1,4 +1,4 @@
-import { listenResize } from "../resize-detector";
+import { listenResize } from "../third-party/resize-detector";
 import hackLifecycle from "../mixins/hack-lifecycle";
 import api from "../mixins/api";
 import nativeMode from "../mixins/mode/native-mode";

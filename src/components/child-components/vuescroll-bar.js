@@ -1,6 +1,6 @@
 import scrollMap from "../../shared/scroll-map";
 import { eventCenter } from "../../util";
-import { render } from "../../scroller/render";
+import { render } from "../../third-party/scroller/render";
 export default {
   name: "bar",
   props: {
