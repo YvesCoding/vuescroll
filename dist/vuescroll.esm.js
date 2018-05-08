@@ -2646,7 +2646,7 @@ var bar = {
         _this = this;
 
     //eslint-disable-line
-    var style = _extends$1((_extends2 = {}, _defineProperty$1(_extends2, this.bar.posName, 0), _defineProperty$1(_extends2, this.ops.pos, 0), _defineProperty$1(_extends2, this.bar.size, this.state.size), _defineProperty$1(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty$1(_extends2, "background", this.ops.background), _defineProperty$1(_extends2, "opacity", this.state.opacity), _defineProperty$1(_extends2, "cursor", "pointer"), _defineProperty$1(_extends2, "position", "absolute"), _defineProperty$1(_extends2, "borderRadius", "4px"), _defineProperty$1(_extends2, "transition", "opacity .5s"), _defineProperty$1(_extends2, "userSelect", "none"), _extends2), render(this.type, window, "%", this.state.posValue));
+    var style = _extends$1((_extends2 = {}, _defineProperty$1(_extends2, this.bar.posName, 0), _defineProperty$1(_extends2, this.ops.pos, 0), _defineProperty$1(_extends2, this.bar.size, this.state.size), _defineProperty$1(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty$1(_extends2, "borderRadius", this.ops[this.bar.opsSize]), _defineProperty$1(_extends2, "background", this.ops.background), _defineProperty$1(_extends2, "opacity", this.state.opacity), _defineProperty$1(_extends2, "cursor", "pointer"), _defineProperty$1(_extends2, "position", "absolute"), _defineProperty$1(_extends2, "transition", "opacity .5s"), _defineProperty$1(_extends2, "userSelect", "none"), _extends2), render(this.type, window, "%", this.state.posValue));
     var data = {
       style: style,
       class: "vuescroll-" + this.type + "-scrollbar",
@@ -2754,7 +2754,7 @@ var rail = {
 
     var bar = map[props.type].bar;
     var parentRef = parent.$refs;
-    var style = (_style = {}, _defineProperty$2(_style, bar.posName, 0), _defineProperty$2(_style, props.ops.pos, 0), _defineProperty$2(_style, bar.size, "100%"), _defineProperty$2(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$2(_style, "background", props.ops.background), _defineProperty$2(_style, "opacity", props.ops.opacity), _defineProperty$2(_style, "position", "absolute"), _defineProperty$2(_style, "cursor", "pointer"), _defineProperty$2(_style, "borderRadius", "4px"), _style);
+    var style = (_style = {}, _defineProperty$2(_style, bar.posName, 0), _defineProperty$2(_style, props.ops.pos, 0), _defineProperty$2(_style, bar.size, "100%"), _defineProperty$2(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$2(_style, "borderRadius", props.ops[bar.opsSize]), _defineProperty$2(_style, "background", props.ops.background), _defineProperty$2(_style, "opacity", props.ops.opacity), _defineProperty$2(_style, "position", "absolute"), _defineProperty$2(_style, "cursor", "pointer"), _style);
     var data = {
       style: style,
       class: "vuescroll-" + props.type + "-rail",

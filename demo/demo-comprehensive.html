@@ -104,8 +104,8 @@
                           vBar: yes:<input type="radio" v-model="ops.bar.vBar.keepShow" :value="true">no:<input type="radio" :value="false" v-model="ops.bar.vBar.keepShow"> 
                           hBar:  yes:<input type="radio" v-model="ops.bar.hBar.keepShow" :value="true">no:<input type="radio" :value="false" v-model="ops.bar.hBar.keepShow">
                           <br>width/height(Only For Rail):</br>
-                          vRail: <input type="text" v-model="ops.rail.vRail.height">
-                          hRail: <input type="text" v-model="ops.rail.hRail.width">
+                          vRail: <input type="text" v-model="ops.rail.vRail.width">
+                          hRail: <input type="text" v-model="ops.rail.hRail.height">
                           <br>opacity(Both For Rail And Bar):</br>
                           vRail: <input type="number" v-model="ops.rail.vRail.opacity" step="0.1" min="0">
                           hRail: <input type="number" step="0.1" min="0" v-model="ops.rail.hRail.opacity">
@@ -267,7 +267,7 @@
               rail: {
                   vRail: {
                     background: undefined,
-                    height: "5px",
+                    width: "5px",
                     opacity: 0.5
                   },
                   hRail: {

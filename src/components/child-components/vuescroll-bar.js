@@ -34,11 +34,11 @@ export default {
       [this.ops.pos]: 0,
       [this.bar.size]: this.state.size,
       [this.bar.opsSize]: this.ops[this.bar.opsSize],
+      borderRadius: this.ops[this.bar.opsSize],
       background: this.ops.background,
       opacity: this.state.opacity,
       cursor: "pointer",
       position: "absolute",
-      borderRadius: "4px",
       transition: "opacity .5s",
       userSelect: "none",
       ...render(this.type, window, "%", this.state.posValue)

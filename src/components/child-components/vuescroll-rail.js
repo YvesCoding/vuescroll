@@ -18,11 +18,11 @@ export default {
       [props.ops.pos]: 0,
       [bar.size]: "100%",
       [bar.opsSize]: props.ops[bar.opsSize],
+      borderRadius: props.ops[bar.opsSize],
       background: props.ops.background,
       opacity: props.ops.opacity,
       position: "absolute",
-      cursor: "pointer",
-      borderRadius: "4px"
+      cursor: "pointer"
     };
     let data = {
       style: style,
