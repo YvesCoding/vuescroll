@@ -19,6 +19,16 @@ Vuescroll is a virtual scrollbar based on Vue.js which is designed for beautifyi
     - `pure-native` mode: Use native scrollbars， it is suitable for PC and the users who like native scrollbar.
 - Ability to detect the size change of the content and automatically update scrollbar.
 - Ability to scroll smoothly by using [different animations](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#scrollpanel).
+- Pull-to-Refresh (Pull top out of the boundaries to start refreshing list)
+- Push-to-Load (Push bottom out of the boundaries to start loading list)
+- Ability to zoom in or zoom out the scroll content.
+- Paging (Slide a whole page each time)
+- Snapping (Slide a user-defined distance each time)
+- Ability to disable scrollingX or scrollingY
+- Keep Bar showing or not.
+- Set bar/rail opacity or background.
+- Set bar/rail's position.
+- Customize the tag of content. (That is you can set the tag of content to a component tag)
 
 In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel, time picker, a plugin that can automatically detect the size change of content and so on.
 

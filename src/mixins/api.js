@@ -1,5 +1,5 @@
-import { createEasingFunction,  easingPattern} from "../easingPattern";
-import { core } from "../scroller/animate";
+import { createEasingFunction,  easingPattern} from "../third-party/easingPattern";
+import { core } from "../third-party/scroller/animate";
 import { log } from "../util";
 
 function getNumericValue(distance, size) {
