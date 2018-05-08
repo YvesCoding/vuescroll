@@ -70,19 +70,19 @@ export default {
     // public api
     scrollTo({x, y}, animate = true, force = false) {
       if(typeof x === "undefined") {
-        x = this.vuescroll.state.internalScrollLeft;
+        x = this.vuescroll.state.internalScrollLeft || 0;
       } else {
         x = getNumericValue(x, this.scrollPanelElm.scrollWidth);
       }
       if(typeof y === "undefined") {
-        y = this.vuescroll.state.internalScrollTop;
+        y = this.vuescroll.state.internalScrollTop || 0;
       } else {
         y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
       }
       this.internalScrollTo(x, y, animate, force);
     },
     scrollBy({dx, dy}, animate = true) {
-      let {internalScrollLeft, internalScrollTop} = this.vuescroll.state;
+      let {internalScrollLeft = 0, internalScrollTop = 0} = this.vuescroll.state;
       if(dx) {
         internalScrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth);
       }

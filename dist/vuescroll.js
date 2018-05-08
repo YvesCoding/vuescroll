@@ -674,12 +674,12 @@ var api = {
       var force = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
       if (typeof x === "undefined") {
-        x = this.vuescroll.state.internalScrollLeft;
+        x = this.vuescroll.state.internalScrollLeft || 0;
       } else {
         x = getNumericValue(x, this.scrollPanelElm.scrollWidth);
       }
       if (typeof y === "undefined") {
-        y = this.vuescroll.state.internalScrollTop;
+        y = this.vuescroll.state.internalScrollTop || 0;
       } else {
         y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
       }
@@ -690,8 +690,10 @@ var api = {
           dy = _ref2.dy;
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       var _vuescroll$state = this.vuescroll.state,
-          internalScrollLeft = _vuescroll$state.internalScrollLeft,
-          internalScrollTop = _vuescroll$state.internalScrollTop;
+          _vuescroll$state$inte = _vuescroll$state.internalScrollLeft,
+          internalScrollLeft = _vuescroll$state$inte === undefined ? 0 : _vuescroll$state$inte,
+          _vuescroll$state$inte2 = _vuescroll$state.internalScrollTop,
+          internalScrollTop = _vuescroll$state$inte2 === undefined ? 0 : _vuescroll$state$inte2;
 
       if (dx) {
         internalScrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth);
