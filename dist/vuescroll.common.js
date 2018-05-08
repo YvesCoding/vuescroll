@@ -157,7 +157,6 @@ var uncessaryChangeArray = ["mergedOptions.vuescroll.pullRefresh.tips", "mergedO
 var GCF = {
   // vuescroll
   vuescroll: {
-    preventDefault: true,
     mode: "native",
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
@@ -200,7 +199,9 @@ var GCF = {
       /** This configures the amount of change applied to deceleration when reaching boundaries  **/
       penetrationDeceleration: 0.03,
       /** This configures the amount of change applied to acceleration when reaching boundaries  **/
-      penetrationAcceleration: 0.08
+      penetrationAcceleration: 0.08,
+      /** Whether call e.preventDefault event when sliding the content or not */
+      preventDefault: true
     }
   },
   scrollPanel: {
@@ -2303,6 +2304,10 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
       pageY: e.pageY
     }], e.timeStamp);
 
+    if (preventDefault) {
+      e.preventDefault();
+    }
+
     mousedown = true;
   }
   function mousemove(e) {
@@ -2473,7 +2478,7 @@ var slideMode = {
     registryScroller: function registryScroller() {
       var _this = this;
 
-      var preventDefault = this.mergedOptions.vuescroll.preventDefault;
+      var preventDefault = this.mergedOptions.vuescroll.scroller.preventDefault;
       var paging = this.mergedOptions.vuescroll.paging;
       var snapping = this.mergedOptions.vuescroll.snapping.enable;
       // disale zooming when refresh or load enabled

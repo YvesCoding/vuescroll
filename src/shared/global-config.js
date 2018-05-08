@@ -3,7 +3,6 @@ import { modes } from "./constants";
 export default {
   // vuescroll
   vuescroll: {
-    preventDefault: true,
     mode: "native",
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
@@ -46,7 +45,9 @@ export default {
       /** This configures the amount of change applied to deceleration when reaching boundaries  **/
       penetrationDeceleration : 0.03,
       /** This configures the amount of change applied to acceleration when reaching boundaries  **/
-      penetrationAcceleration : 0.08
+      penetrationAcceleration : 0.08,
+      /** Whether call e.preventDefault event when sliding the content or not */
+      preventDefault: true
     }
   },
   scrollPanel: {

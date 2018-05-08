@@ -35,7 +35,11 @@ export function listenContainer(container, scroller, eventCallback, zooming, pre
       pageX: e.pageX,
       pageY: e.pageY
     }], e.timeStamp);
-  
+    
+    if (preventDefault) {
+      e.preventDefault();
+    }
+
     mousedown = true;
   }
   function mousemove(e) {

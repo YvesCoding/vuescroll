@@ -94,7 +94,7 @@ export default {
       this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
     },
     registryScroller() {
-      const preventDefault = this.mergedOptions.vuescroll.preventDefault;
+      const preventDefault = this.mergedOptions.vuescroll.scroller.preventDefault;
       const paging = this.mergedOptions.vuescroll.paging;
       const snapping = this.mergedOptions.vuescroll.snapping.enable;
       // disale zooming when refresh or load enabled
