@@ -8,13 +8,17 @@
     <script src="./vue.js"></script>
     <script src="../dist/vuescroll.js"></script>
     <style>
+    * {
+        box-sizing: border-box;
+    }
     html, body {
         height: 100%;
         overflow: hidden;
     }
     #app {
         width: 100%;
-        height: 100%;
+        height: 90%;
+        padding-bottom: 10px;
     }
     #operateArea {
         float: left;
@@ -40,12 +44,13 @@
 </head>
 <body>
     <div id="app" >
-        <vue-scroll>
+        <vue-scroll :ops="{scrollPanel: {scrollingX: false}}">
             <div id="parent">
                 <!-- bind your own options in data -->
                 <vue-scroll 
                 :ops="ops"
                  ref="vs"
+                 @handle-scroll="handleScroll"
                  @refresh-activate="refreshActivate"
                  @refresh-before-deactivate="refreshBeforeDeactivate"
                  @refresh-deactivate="refreshDeactivate"
@@ -74,6 +79,9 @@
                 </vue-scroll>
               </div>
               <div id="operateArea">
+                  <p align="center">
+                    <img src="https://wangyi7099.github.io/vuescrolljs/logo.png" width="90" height="58">
+                  </p>
                   <fieldset>
                       <legend>operation panel</legend>
                       <fieldset>
@@ -300,6 +308,11 @@
             }
         },
         methods: {
+            handleScroll(v) {
+                if(v.process == 1 && !this.ops.vuescroll.pushLoad.enable) {
+                    this.dataNums += 20;
+                }
+            },
             getCurrentviewDom() {
                 console.log(this.$refs['vs'].getCurrentviewDom());
             },

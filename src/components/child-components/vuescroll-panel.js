@@ -77,9 +77,6 @@ export function createPanel(h, vm) {
       scrollPanelData.style["overflowX"] = "hidden";
     }
     let gutter = getGutter();
-    if(!getGutter.isUsed) {
-      getGutter.isUsed = true;
-    }
     if(!gutter) {
       hideSystemBar();
       scrollPanelData.style.height = "100%";

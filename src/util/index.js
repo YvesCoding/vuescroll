@@ -64,7 +64,6 @@ export function getGutter() {
   const widthWithScroll = inner.offsetWidth;
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
-  getGutter.isUsed = false;
   return scrollBarWidth;
 }
 

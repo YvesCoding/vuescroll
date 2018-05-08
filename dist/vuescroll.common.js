@@ -78,7 +78,6 @@ function getGutter() {
   var widthWithScroll = inner.offsetWidth;
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
-  getGutter.isUsed = false;
   return scrollBarWidth;
 }
 
@@ -2936,9 +2935,6 @@ function createPanel(h, vm) {
       scrollPanelData.style["overflowX"] = "hidden";
     }
     var gutter = getGutter();
-    if (!getGutter.isUsed) {
-      getGutter.isUsed = true;
-    }
     if (!gutter) {
       hideSystemBar();
       scrollPanelData.style.height = "100%";
