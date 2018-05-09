@@ -1,10 +1,18 @@
 export function requestAnimationFrame(global) {
-
   // Check for request animation Frame support
-  var requestFrame = global.requestAnimationFrame || global.webkitRequestAnimationFrame || global.mozRequestAnimationFrame || global.oRequestAnimationFrame;
+  var requestFrame =
+    global.requestAnimationFrame ||
+    global.webkitRequestAnimationFrame ||
+    global.mozRequestAnimationFrame ||
+    global.oRequestAnimationFrame;
   var isNative = !!requestFrame;
 
-  if (requestFrame && !/requestAnimationFrame\(\)\s*\{\s*\[native code\]\s*\}/i.test(requestFrame.toString())) {
+  if (
+    requestFrame &&
+    !/requestAnimationFrame\(\)\s*\{\s*\[native code\]\s*\}/i.test(
+      requestFrame.toString()
+    )
+  ) {
     isNative = false;
   }
 
@@ -29,9 +37,7 @@ export function requestAnimationFrame(global) {
 
     // Create timeout at first request
     if (intervalHandle === null) {
-
       intervalHandle = setInterval(function() {
-
         var time = +new Date();
         var currentRequests = requests;
 
@@ -39,7 +45,7 @@ export function requestAnimationFrame(global) {
         requests = {};
         requestCount = 0;
 
-        for(var key in currentRequests) {
+        for (var key in currentRequests) {
           if (currentRequests.hasOwnProperty(key)) {
             currentRequests[key](time);
             lastActive = time;
@@ -52,11 +58,9 @@ export function requestAnimationFrame(global) {
           clearInterval(intervalHandle);
           intervalHandle = null;
         }
-
       }, 1000 / TARGET_FPS);
     }
 
     return callbackHandle;
   };
-
 }

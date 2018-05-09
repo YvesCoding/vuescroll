@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,23 +9,29 @@
     <script src="./vue.js"></script>
     <script src="../dist/vuescroll.js"></script>
     <style>
-        html, body {
-        height: 90%;
+        html,
+        body {
+            height: 90%;
         }
+
         #app {
             width: 100%;
             height: 100%;
         }
+
         #operateArea {
             float: left;
-            margin-left: 10px;;
+            margin-left: 10px;
+            ;
         }
+
         #parent {
             float: left;
             width: 400px;
             height: 400px;
             white-space: nowrap;
         }
+
         .content {
             display: inline-block;
             margin-right: -5px;
@@ -32,42 +39,34 @@
             height: 400px;
             line-height: 400px;
             text-align: center;
-            transition:all 2s;
+            transition: all 2s;
             opacity: 0.5;
             box-sizing: border-box;
             border: 1px solid red;
         }
+
         .content span {
             vertical-align: middle;
             font-size: 20px;
         }
+
         .vuescroll-panel {
             white-space: nowrap;
         }
     </style>
 </head>
+
 <body>
-    <div id="app" >   
+    <div id="app">
         <div id="parent">
             <!-- bind your own options in data -->
-            <vue-scroll 
-            :ops="ops"
-            ref="vs"
-            >
-            <template
-            v-for= "(item, index) in randomArray"
-            >
-            <div 
-            class="content"
-            :key="index"
-            :style="{backgroundColor: item}"
-            >
-            <span>{{index+1}}</span>
-            </div>
-            <br 
-            v-if="(index+1) % 8 == 0"
-            />
-            </template>
+            <vue-scroll :ops="ops" ref="vs">
+                <template v-for="(item, index) in randomArray">
+                    <div class="content" :key="index" :style="{backgroundColor: item}">
+                        <span>{{index+1}}</span>
+                    </div>
+                    <br v-if="(index+1) % 8 == 0" />
+                </template>
             </vue-scroll>
         </div>
         <div id="operateArea">
@@ -75,73 +74,75 @@
                 <legend>operation panel</legend>
                 <fieldset>
                     <legend>common</legend>
-                    paging: <br />
-                    pagingX:<input type="radio" value="x" v-model="paging" />
-                    pagingY:<input type="radio" value="y" v-model="paging" />
+                    paging:
+                    <br /> pagingX:
+                    <input type="radio" value="x" v-model="paging" /> pagingY:
+                    <input type="radio" value="y" v-model="paging" />
                     <button @click="getCurrentPage">getCurrentPage</button>
                     <button @click="goToPage">goToPage</button>
                 </fieldset>
-                 
+
             </fieldset>
         </div>
     </div>
     <script>
         var vm = new Vue({
-        el: "#app",
-        watch: {
-            paging(newVal) {
-                this.ops.scrollPanel.scrollingX = newVal === 'x';
-                this.ops.scrollPanel.scrollingY = newVal === 'y';
-            }
-        },
-        data: {
-            paging: "x",
-            ops: {
-              vuescroll: {
-                mode: "slide",
-                paging: true
-              },
-              scrollPanel: {
-                scrollingX: true,
-                scrollingY: false
-              },
-              bar: {
-                vBar: {
-                  background: "#000"
-                },
-                hBar: {
-                    background: "#000"
+            el: "#app",
+            watch: {
+                paging(newVal) {
+                    this.ops.scrollPanel.scrollingX = newVal === 'x';
+                    this.ops.scrollPanel.scrollingY = newVal === 'y';
                 }
-              }
             },
-            dataNums: 100,
-            reRender: 1        
-        },
-        computed: {
-            randomArray() {
-                function getRandom() {
-                    let str = "#";
-                    for(let i = 0; i < 6; i++) {
-                        str += Math.floor(Math.random() * 16).toString(16);
+            data: {
+                paging: "x",
+                ops: {
+                    vuescroll: {
+                        mode: "slide",
+                        paging: true
+                    },
+                    scrollPanel: {
+                        scrollingX: true,
+                        scrollingY: false
+                    },
+                    bar: {
+                        vBar: {
+                            background: "#000"
+                        },
+                        hBar: {
+                            background: "#000"
+                        }
                     }
-                    return str;
-                }
-                return this.reRender && Array.apply(null, {
-                    length: this.dataNums
-                }).map(item => {
-                    return "#cecece"; // getRandom();
-                })
-            }
-        },
-        methods: {
-            getCurrentPage() {
-                console.log(this.$refs['vs'].getCurrentPage());
+                },
+                dataNums: 100,
+                reRender: 1
             },
-            goToPage() {
-                this.$refs['vs'].goToPage({x: 2});
+            computed: {
+                randomArray() {
+                    function getRandom() {
+                        let str = "#";
+                        for (let i = 0; i < 6; i++) {
+                            str += Math.floor(Math.random() * 16).toString(16);
+                        }
+                        return str;
+                    }
+                    return this.reRender && Array.apply(null, {
+                        length: this.dataNums
+                    }).map(item => {
+                        return "#cecece"; // getRandom();
+                    })
+                }
+            },
+            methods: {
+                getCurrentPage() {
+                    console.log(this.$refs['vs'].getCurrentPage());
+                },
+                goToPage() {
+                    this.$refs['vs'].goToPage({ x: 2 });
+                }
             }
-        }
-    })
+        })
     </script>
 </body>
+
 </html>

@@ -1,10 +1,13 @@
-import { createEasingFunction,  easingPattern} from "../third-party/easingPattern";
-import { core } from "../third-party/scroller/animate";
-import { log } from "../util";
+import {
+  createEasingFunction,
+  easingPattern
+} from '../third-party/easingPattern';
+import { core } from '../third-party/scroller/animate';
+import { log } from '../util';
 
 function getNumericValue(distance, size) {
   let number;
-  if(!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
+  if (!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
     number = distance - 0;
   } else {
     number = number[1] - 0;
@@ -17,50 +20,53 @@ export function goScrolling(
   elm,
   deltaX,
   deltaY,
-  speed, 
+  speed,
   easing,
   scrollingComplete
 ) {
-  const startLocationY = elm["scrollTop"];
-  const startLocationX = elm["scrollLeft"];
+  const startLocationY = elm['scrollTop'];
+  const startLocationX = elm['scrollLeft'];
   let positionX = startLocationX;
   let positionY = startLocationY;
   /**
-     * keep the limit of scroll delta.
-     */
+   * keep the limit of scroll delta.
+   */
   /* istanbul ignore next */
-  if(startLocationY + deltaY < 0) {
+  if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  if(startLocationY + deltaY > elm["scrollHeight"]) {
-    deltaY = elm["scrollHeight"] - startLocationY;
+  if (startLocationY + deltaY > elm['scrollHeight']) {
+    deltaY = elm['scrollHeight'] - startLocationY;
   }
-  if(startLocationX + deltaX < 0) {
+  if (startLocationX + deltaX < 0) {
     deltaX = -startLocationX;
   }
-  if(startLocationX + deltaX > elm["scrollWidth"]) {
-    deltaX = elm["scrollWidth"] - startLocationX;
+  if (startLocationX + deltaX > elm['scrollWidth']) {
+    deltaX = elm['scrollWidth'] - startLocationX;
   }
 
   const easingMethod = createEasingFunction(easing, easingPattern);
 
-  const stepCallback = (percentage) => {
-    positionX = startLocationX + (deltaX * percentage);
-    positionY = startLocationY + (deltaY * percentage);
-    elm["scrollTop"] = Math.floor(positionY);
-    elm["scrollLeft"] = Math.floor(positionX);
+  const stepCallback = percentage => {
+    positionX = startLocationX + deltaX * percentage;
+    positionY = startLocationY + deltaY * percentage;
+    elm['scrollTop'] = Math.floor(positionY);
+    elm['scrollLeft'] = Math.floor(positionX);
     return verifyCallback();
   };
 
   const verifyCallback = () => {
-    return  Math.abs(positionY - startLocationY) < Math.abs(deltaY) || Math.abs(positionX - startLocationX) < Math.abs(deltaX);
+    return (
+      Math.abs(positionY - startLocationY) < Math.abs(deltaY) ||
+      Math.abs(positionX - startLocationX) < Math.abs(deltaX)
+    );
   };
 
   core.effect.Animate.start(
-    stepCallback, 
-    verifyCallback, 
-    scrollingComplete, 
-    speed, 
+    stepCallback,
+    verifyCallback,
+    scrollingComplete,
+    speed,
     easingMethod
   );
 }
@@ -68,65 +74,86 @@ export function goScrolling(
 export default {
   methods: {
     // public api
-    scrollTo({x, y}, animate = true, force = false) {
-      if(typeof x === "undefined") {
+    scrollTo({ x, y }, animate = true, force = false) {
+      if (typeof x === 'undefined') {
         x = this.vuescroll.state.internalScrollLeft || 0;
       } else {
         x = getNumericValue(x, this.scrollPanelElm.scrollWidth);
       }
-      if(typeof y === "undefined") {
+      if (typeof y === 'undefined') {
         y = this.vuescroll.state.internalScrollTop || 0;
       } else {
         y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
       }
       this.internalScrollTo(x, y, animate, force);
     },
-    scrollBy({dx, dy}, animate = true) {
-      let {internalScrollLeft = 0, internalScrollTop = 0} = this.vuescroll.state;
-      if(dx) {
-        internalScrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth);
+    scrollBy({ dx, dy }, animate = true) {
+      let {
+        internalScrollLeft = 0,
+        internalScrollTop = 0
+      } = this.vuescroll.state;
+      if (dx) {
+        internalScrollLeft += getNumericValue(
+          dx,
+          this.scrollPanelElm.scrollWidth
+        );
       }
-      if(dy) {
-        internalScrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight);
+      if (dy) {
+        internalScrollTop += getNumericValue(
+          dy,
+          this.scrollPanelElm.scrollHeight
+        );
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
     },
     zoomBy(factor, animate, originLeft, originTop, callback) {
-      if(this.mode != "slide") {
-        log.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!"); 
+      if (this.mode != 'slide') {
+        log.warn('[vuescroll]: zoomBy and zoomTo are only for slide mode!');
         return;
       }
       this.scroller.zoomBy(factor, animate, originLeft, originTop, callback);
     },
     zoomTo(level, animate = false, originLeft, originTop, callback) {
-      if(this.mode != "slide") {
-        log.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!"); 
+      if (this.mode != 'slide') {
+        log.warn('[vuescroll]: zoomBy and zoomTo are only for slide mode!');
         return;
       }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
     getCurrentPage() {
-      if(this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
-        log.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!"); 
+      if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
+        log.warn(
+          '[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!'
+        );
         return;
       }
       return this.scroller.getCurrentPage();
     },
     goToPage(dest, animate = false) {
-      if(this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
-        log.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!"); 
+      if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
+        log.warn(
+          '[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!'
+        );
         return;
       }
       this.scroller.goToPage(dest, animate);
     },
     getCurrentviewDom() {
-      const parent = (this.mode == "slide" ||this.mode == "pure-native") ? this.scrollPanelElm : this.scrollContentElm;
+      const parent =
+        this.mode == 'slide' || this.mode == 'pure-native'
+          ? this.scrollPanelElm
+          : this.scrollContentElm;
       const children = parent.children;
       const domFragment = [];
       const isCurrentview = dom => {
-        const {left, top, width, height} = dom.getBoundingClientRect();
-        const {left: parentLeft, top: parentTop , height: parentHeight, width: parentWidth} = this.$el.getBoundingClientRect();
-        if(
+        const { left, top, width, height } = dom.getBoundingClientRect();
+        const {
+          left: parentLeft,
+          top: parentTop,
+          height: parentHeight,
+          width: parentWidth
+        } = this.$el.getBoundingClientRect();
+        if (
           left - parentLeft + width > 0 &&
           left - parentLeft < parentWidth &&
           top - parentTop + height > 0 &&
@@ -137,38 +164,38 @@ export default {
         return false;
       };
 
-      for(let i = 0; i < children.length; i++) {
+      for (let i = 0; i < children.length; i++) {
         const dom = children.item(i);
-        if(isCurrentview(dom) && !dom.isResizeElm) {
+        if (isCurrentview(dom) && !dom.isResizeElm) {
           domFragment.push(dom);
         }
       }
-      
+
       return domFragment;
     },
     // private api
     internalScrollTo(destX, destY, animate, force) {
-      if(this.mode == "native" || this.mode == "pure-native") {
-        if(animate) {
+      if (this.mode == 'native' || this.mode == 'pure-native') {
+        if (animate) {
           // hadnle for scroll complete
           const scrollingComplete = () => {
-            this.update("handle-scroll-complete");
+            this.update('handle-scroll-complete');
           };
           goScrolling(
-            this.$refs["scrollPanel"].$el,
-            destX - this.$refs["scrollPanel"].$el.scrollLeft,
-            destY - this.$refs["scrollPanel"].$el.scrollTop,
+            this.$refs['scrollPanel'].$el,
+            destX - this.$refs['scrollPanel'].$el.scrollLeft,
+            destY - this.$refs['scrollPanel'].$el.scrollTop,
             this.mergedOptions.scrollPanel.speed,
             this.mergedOptions.scrollPanel.easing,
             scrollingComplete
           );
         } else {
-          this.$refs["scrollPanel"].$el.scrollTop = destY;
-          this.$refs["scrollPanel"].$el.scrollLeft = destX;
+          this.$refs['scrollPanel'].$el.scrollTop = destY;
+          this.$refs['scrollPanel'].$el.scrollLeft = destX;
         }
-      } 
-      // for non-native we use scroller's scorllTo 
-      else if(this.mode == "slide"){
+      }
+      // for non-native we use scroller's scorllTo
+      else if (this.mode == 'slide') {
         this.scroller.scrollTo(destX, destY, animate, undefined, force);
       }
     }

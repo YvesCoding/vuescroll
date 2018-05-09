@@ -1,24 +1,20 @@
 // begin importing
-import {
-  getGutter,
-  hideSystemBar,
-  createDomStyle
-} from "../../util";
-import { createContent } from "./vuescroll-content";
+import { getGutter, hideSystemBar, createDomStyle } from '../../util';
+import { createContent } from './vuescroll-content';
 // vueScrollPanel
-export default   {
-  name: "scrollPanel",
-  props: { ops: { type: Object, required: true }},
+export default {
+  name: 'scrollPanel',
+  props: { ops: { type: Object, required: true } },
   methods: {
-    // trigger scrollPanel options initialScrollX, 
+    // trigger scrollPanel options initialScrollX,
     // initialScrollY
     updateInitialScroll() {
       let x = 0;
       let y = 0;
-      if(this.ops.initialScrollX) {
+      if (this.ops.initialScrollX) {
         x = this.ops.initialScrollX;
       }
-      if(this.ops.initialScrollY) {
+      if (this.ops.initialScrollY) {
         y = this.ops.initialScrollY;
       }
       this.$parent.scrollTo({ x, y });
@@ -26,33 +22,34 @@ export default   {
   },
   mounted() {
     this.$nextTick(() => {
-      if(!this._isDestroyed) {
+      if (!this._isDestroyed) {
         this.updateInitialScroll();
       }
     });
   },
-  render(h) { // eslint-disable-line
+  render(h) {
+    // eslint-disable-line
     let data = {
-      class: ["vuescroll-panel"]
+      class: ['vuescroll-panel']
     };
-    return ( <div {...data}>{[this.$slots.default]}</div> );
+    return <div {...data}>{[this.$slots.default]}</div>;
   }
 };
 
 /**
  * create a scrollPanel
- * 
- * @param {any} size 
- * @param {any} vm 
- * @returns 
+ *
+ * @param {any} size
+ * @param {any} vm
+ * @returns
  */
 export function createPanel(h, vm) {
   // scrollPanel data start
   const scrollPanelData = {
-    ref: "scrollPanel",
+    ref: 'scrollPanel',
     style: {
-      position: "relative",
-      height: "100%"
+      position: 'relative',
+      height: '100%'
     },
     nativeOn: {
       scroll: vm.handleScroll
@@ -63,80 +60,80 @@ export function createPanel(h, vm) {
     }
   };
   // set overflow only if the in native mode
-  if(vm.mode == "native") {
+  if (vm.mode == 'native') {
     // dynamic set overflow scroll
     // feat: #11
-    if(vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style["overflowY"] = vm.bar.vBar.state.size?"scroll":"";
+    if (vm.mergedOptions.scrollPanel.scrollingY) {
+      scrollPanelData.style['overflowY'] = vm.bar.vBar.state.size
+        ? 'scroll'
+        : '';
     } else {
-      scrollPanelData.style["overflowY"] = "hidden";
+      scrollPanelData.style['overflowY'] = 'hidden';
     }
-    if(vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style["overflowX"] = vm.bar.hBar.state.size?"scroll":"";
-    } else  {
-      scrollPanelData.style["overflowX"] = "hidden";
+    if (vm.mergedOptions.scrollPanel.scrollingX) {
+      scrollPanelData.style['overflowX'] = vm.bar.hBar.state.size
+        ? 'scroll'
+        : '';
+    } else {
+      scrollPanelData.style['overflowX'] = 'hidden';
     }
     let gutter = getGutter();
-    if(!gutter) {
+    if (!gutter) {
       hideSystemBar();
-      scrollPanelData.style.height = "100%";
+      scrollPanelData.style.height = '100%';
     } else {
       // hide system bar by use a negative value px
       // gutter should be 0 when manually disable scrollingX #14
-      if(vm.bar.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
+      if (vm.bar.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
         scrollPanelData.style.marginRight = `-${gutter}px`;
       }
-      if(vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
+      if (vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
         scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
-      } 
+      }
     }
     // clear legency styles of slide mode...
-    scrollPanelData.style.transformOrigin = "";
-    scrollPanelData.style.transform = "";
-  } else if(vm.mode == "slide") {
-    scrollPanelData.style["display"] = "inline-block";
-    scrollPanelData.style["transformOrigin"] = "left top 0px";
-    scrollPanelData.style["userSelect"] = "none";
-    scrollPanelData.style["height"] = "";
-    // add box-sizing for sile mode because 
+    scrollPanelData.style.transformOrigin = '';
+    scrollPanelData.style.transform = '';
+  } else if (vm.mode == 'slide') {
+    scrollPanelData.style['display'] = 'inline-block';
+    scrollPanelData.style['transformOrigin'] = 'left top 0px';
+    scrollPanelData.style['userSelect'] = 'none';
+    scrollPanelData.style['height'] = '';
+    // add box-sizing for sile mode because
     // let's use scrollPanel intead of scrollContent to wrap content
-    scrollPanelData.style["box-sizing"] = "border-box";  
-  } else if(vm.mode == "pure-native") {
-    scrollPanelData.style["width"] = "100%";
-    if(vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style["overflowY"] = "auto";
+    scrollPanelData.style['box-sizing'] = 'border-box';
+  } else if (vm.mode == 'pure-native') {
+    scrollPanelData.style['width'] = '100%';
+    if (vm.mergedOptions.scrollPanel.scrollingY) {
+      scrollPanelData.style['overflowY'] = 'auto';
     } else {
-      scrollPanelData.style["overflowY"] = "hidden";
+      scrollPanelData.style['overflowY'] = 'hidden';
     }
-    if(vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style["overflowX"] = "auto";
+    if (vm.mergedOptions.scrollPanel.scrollingX) {
+      scrollPanelData.style['overflowX'] = 'auto';
     } else {
-      scrollPanelData.style["overflowX"] = "hidden";
+      scrollPanelData.style['overflowX'] = 'hidden';
     }
   }
   return (
-    <scrollPanel
-      {...scrollPanelData}
-    >
-      { createPanelChildren(vm, h) }
-    </scrollPanel>
+    <scrollPanel {...scrollPanelData}>{createPanelChildren(vm, h)}</scrollPanel>
   );
 }
 
 function createPanelChildren(vm, h) {
-  if(vm.mode == "native") {
+  if (vm.mode == 'native') {
     return [createContent(h, vm)];
-  } else if(vm.mode == "slide") {
+  } else if (vm.mode == 'slide') {
     let renderChildren = [vm.$slots.default];
     // handle for refresh
-    if(vm.mergedOptions.vuescroll.pullRefresh.enable) {
+    if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
       // just use user-defined refresh dom instead of default
-      if(vm.$slots.refresh) {
-        vm.$refs["refreshDom"] = vm.$slots.refresh[0];
+      if (vm.$slots.refresh) {
+        vm.$refs['refreshDom'] = vm.$slots.refresh[0];
         renderChildren.unshift(vm.$slots.refresh[0]);
       } else {
         // use default refresh dom
-        createDomStyle("refreshDomStyle");
+        createDomStyle('refreshDomStyle');
         let refreshDom = null;
         refreshDom = createTipDom(h, vm.vuescroll.state.refreshStage);
         renderChildren.unshift(
@@ -147,12 +144,12 @@ function createPanelChildren(vm, h) {
       }
     }
     // handle for load
-    if(vm.mergedOptions.vuescroll.pushLoad.enable) {
-      if(vm.$slots.load) {
-        vm.$refs["loadDom"] = vm.$slots.load[0];
+    if (vm.mergedOptions.vuescroll.pushLoad.enable) {
+      if (vm.$slots.load) {
+        vm.$refs['loadDom'] = vm.$slots.load[0];
         renderChildren.push(vm.$slots.load[0]);
       } else {
-        createDomStyle("loadDomStyle");
+        createDomStyle('loadDomStyle');
         let loadDom = null;
         loadDom = createTipDom(h, vm.vuescroll.state.loadStage);
         // no slot load elm, use default
@@ -164,7 +161,7 @@ function createPanelChildren(vm, h) {
       }
     }
     return renderChildren;
-  } else if(vm.mode == "pure-native") {
+  } else if (vm.mode == 'pure-native') {
     return [vm.$slots.default];
   }
 }
@@ -172,29 +169,78 @@ function createPanelChildren(vm, h) {
 function createTipDom(h, stage) {
   let dom = null;
   switch (stage) {
-  case "deactive":
-    dom = (<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xmlSpace="preserve">
-      <metadata> Svg Vector Icons : http://www.sfont.cn </metadata><g><g transform="matrix(1 0 0 -1 0 1008)"><path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z"></path></g></g></svg>
-    );  
-    break;
-  case "start":
-    dom = (<svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-      viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xmlSpace="preserve">
-      <path fill="#000" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z">
-        <animateTransform attributeType="xml"
-          attributeName="transform"
-          type="rotate"
-          from="0 25 25"
-          to="360 25 25"
-          dur="0.6s"
-          repeatCount="indefinite"/>
-      </path>
-    </svg>);
-    break;
-  case "active":
-    dom = (<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xmlSpace="preserve">
-      <metadata> Svg Vector Icons : http://www.sfont.cn </metadata><g><g transform="matrix(1 0 0 -1 0 1008)"><path d="M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z"></path></g></g></svg>);
-    break;
+    case 'deactive':
+      dom = (
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 1000 1000"
+          enable-background="new 0 0 1000 1000"
+          xmlSpace="preserve"
+        >
+          <metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
+          <g>
+            <g transform="matrix(1 0 0 -1 0 1008)">
+              <path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" />
+            </g>
+          </g>
+        </svg>
+      );
+      break;
+    case 'start':
+      dom = (
+        <svg
+          version="1.1"
+          id="loader-1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 50 50"
+          style="enable-background:new 0 0 50 50;"
+          xmlSpace="preserve"
+        >
+          <path
+            fill="#000"
+            d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
+          >
+            <animateTransform
+              attributeType="xml"
+              attributeName="transform"
+              type="rotate"
+              from="0 25 25"
+              to="360 25 25"
+              dur="0.6s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </svg>
+      );
+      break;
+    case 'active':
+      dom = (
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 1000 1000"
+          enable-background="new 0 0 1000 1000"
+          xmlSpace="preserve"
+        >
+          <metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
+          <g>
+            <g transform="matrix(1 0 0 -1 0 1008)">
+              <path d="M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" />
+            </g>
+          </g>
+        </svg>
+      );
+      break;
   }
   return dom;
 }

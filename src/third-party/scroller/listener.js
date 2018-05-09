@@ -1,31 +1,41 @@
-export function listenContainer(container, scroller, eventCallback, zooming, preventDefault) {
+export function listenContainer(
+  container,
+  scroller,
+  eventCallback,
+  zooming,
+  preventDefault
+) {
   let destroy = null;
   let timeoutId = null;
   // for touch
   function touchstart(e) {
     // Don't react if initial down happens on a form element
-    if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
+    if (
+      e.touches[0] &&
+      e.touches[0].target &&
+      e.touches[0].target.tagName.match(/input|textarea|select/i)
+    ) {
       return;
     }
-    eventCallback("mousedown");
+    eventCallback('mousedown');
     scroller.doTouchStart(e.touches, e.timeStamp);
     if (preventDefault) {
       e.preventDefault();
     }
-    // here , we want to manully prevent default, so we 
+    // here , we want to manully prevent default, so we
     // set passive to false
-    // see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener    
-    document.addEventListener("touchmove", touchmove, { passive: false });
+    // see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
+    document.addEventListener('touchmove', touchmove, { passive: false });
   }
   function touchmove(e) {
-    eventCallback("mousemove");
+    eventCallback('mousemove');
     scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
     e.preventDefault();
   }
   function touchend(e) {
-    eventCallback("mouseup");
+    eventCallback('mouseup');
     scroller.doTouchEnd(e.timeStamp);
-    document.removeEventListener("touchmove", touchmove);
+    document.removeEventListener('touchmove', touchmove);
   }
   function touchcancel(e) {
     scroller.doTouchEnd(e.timeStamp);
@@ -36,12 +46,17 @@ export function listenContainer(container, scroller, eventCallback, zooming, pre
     if (e.target.tagName.match(/input|textarea|select/i)) {
       return;
     }
-    eventCallback("mousedown");
-    scroller.doTouchStart([{
-      pageX: e.pageX,
-      pageY: e.pageY
-    }], e.timeStamp);
-    
+    eventCallback('mousedown');
+    scroller.doTouchStart(
+      [
+        {
+          pageX: e.pageX,
+          pageY: e.pageY
+        }
+      ],
+      e.timeStamp
+    );
+
     if (preventDefault) {
       e.preventDefault();
     }
@@ -52,66 +67,86 @@ export function listenContainer(container, scroller, eventCallback, zooming, pre
     if (!mousedown) {
       return;
     }
-    eventCallback("mousemove");
-    scroller.doTouchMove([{
-      pageX: e.pageX,
-      pageY: e.pageY
-    }], e.timeStamp);
-  
+    eventCallback('mousemove');
+    scroller.doTouchMove(
+      [
+        {
+          pageX: e.pageX,
+          pageY: e.pageY
+        }
+      ],
+      e.timeStamp
+    );
+
     mousedown = true;
   }
   function mouseup(e) {
     if (!mousedown) {
       return;
     }
-    eventCallback("mouseup");
+    eventCallback('mouseup');
     scroller.doTouchEnd(e.timeStamp);
-  
+
     mousedown = false;
   }
   function zoomHandle(e) {
-    scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
+    scroller.doMouseZoom(
+      e.detail ? e.detail * -120 : e.wheelDelta,
+      e.timeStamp,
+      e.pageX,
+      e.pageY
+    );
   }
-  if ("ontouchstart" in window) {
-    
-    container.addEventListener("touchstart", touchstart, false);
-        
-    document.addEventListener("touchend", touchend, false);
-    
-    document.addEventListener("touchcancel",touchcancel , false);
-        
+  if ('ontouchstart' in window) {
+    container.addEventListener('touchstart', touchstart, false);
+
+    document.addEventListener('touchend', touchend, false);
+
+    document.addEventListener('touchcancel', touchcancel, false);
+
     destroy = function() {
-      container.removeEventListener("touchstart", touchstart, false);
-                    
-      document.removeEventListener("touchend", touchend, false);
-        
-      document.removeEventListener("touchcancel",touchcancel , false);
+      container.removeEventListener('touchstart', touchstart, false);
+
+      document.removeEventListener('touchend', touchend, false);
+
+      document.removeEventListener('touchcancel', touchcancel, false);
     };
   } else {
-    
     var mousedown = false;
-    
-    container.addEventListener("mousedown", mousedownEvent, false);
-    
-    document.addEventListener("mousemove", mousemove, false);
-    
-    document.addEventListener("mouseup", mouseup, false);
-    if(zooming) {
-      container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", zoomHandle, false);
+
+    container.addEventListener('mousedown', mousedownEvent, false);
+
+    document.addEventListener('mousemove', mousemove, false);
+
+    document.addEventListener('mouseup', mouseup, false);
+    if (zooming) {
+      container.addEventListener(
+        navigator.userAgent.indexOf('Firefox') > -1
+          ? 'DOMMouseScroll'
+          : 'mousewheel',
+        zoomHandle,
+        false
+      );
     }
     // container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", function(e) {
     //     scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
     // }, false);
     destroy = function() {
-      container.removeEventListener("mousedown", mousedownEvent, false);
-      document.removeEventListener("mousemove", mousemove, false);
-      document.removeEventListener("mouseup", mouseup, false);
-      container.removeEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", zoomHandle, false);
+      container.removeEventListener('mousedown', mousedownEvent, false);
+      document.removeEventListener('mousemove', mousemove, false);
+      document.removeEventListener('mouseup', mouseup, false);
+      container.removeEventListener(
+        navigator.userAgent.indexOf('Firefox') > -1
+          ? 'DOMMouseScroll'
+          : 'mousewheel',
+        zoomHandle,
+        false
+      );
     };
   }
   // handle __publish event
   scroller.onScroll = () => {
-    eventCallback("onscroll");
+    eventCallback('onscroll');
   };
   return destroy;
 }

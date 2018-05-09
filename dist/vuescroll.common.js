@@ -15,9 +15,9 @@ var Vue = _interopDefault(require('vue'));
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function deepCopy(source, target) {
-  target = (typeof target === "undefined" ? "undefined" : _typeof(target)) === "object" && target || {};
+  target = (typeof target === 'undefined' ? 'undefined' : _typeof(target)) === 'object' && target || {};
   for (var key in source) {
-    target[key] = _typeof(source[key]) === "object" ? deepCopy(source[key], target[key] = {}) : source[key];
+    target[key] = _typeof(source[key]) === 'object' ? deepCopy(source[key], target[key] = {}) : source[key];
   }
   return target;
 }
@@ -25,15 +25,15 @@ function deepCopy(source, target) {
 function deepMerge(from, to) {
   to = to || {};
   for (var key in from) {
-    if (_typeof(from[key]) === "object") {
-      if (typeof to[key] === "undefined") {
+    if (_typeof(from[key]) === 'object') {
+      if (typeof to[key] === 'undefined') {
         to[key] = {};
         deepCopy(from[key], to[key]);
       } else {
         deepMerge(from[key], to[key]);
       }
     } else {
-      if (typeof to[key] === "undefined") to[key] = from[key];
+      if (typeof to[key] === 'undefined') to[key] = from[key];
     }
   }
   return to;
@@ -41,11 +41,11 @@ function deepMerge(from, to) {
 
 function defineReactive(target, key, source, souceKey) {
   var getter = null;
-  if (!source[key] && typeof source !== "function") {
+  if (!source[key] && typeof source !== 'function') {
     return;
   }
   souceKey = souceKey || key;
-  if (typeof source === "function") {
+  if (typeof source === 'function') {
     getter = source;
   }
   Object.defineProperty(target, key, {
@@ -62,17 +62,17 @@ function getGutter() {
   /* istanbul ignore next */
   if (Vue.prototype.$isServer) return 0;
   if (scrollBarWidth !== undefined) return scrollBarWidth;
-  var outer = document.createElement("div");
-  outer.style.visibility = "hidden";
-  outer.style.width = "100px";
-  outer.style.position = "absolute";
-  outer.style.top = "-9999px";
+  var outer = document.createElement('div');
+  outer.style.visibility = 'hidden';
+  outer.style.width = '100px';
+  outer.style.position = 'absolute';
+  outer.style.top = '-9999px';
   document.body.appendChild(outer);
 
   var widthNoScroll = outer.offsetWidth;
-  outer.style.overflow = "scroll";
-  var inner = document.createElement("div");
-  inner.style.width = "100%";
+  outer.style.overflow = 'scroll';
+  var inner = document.createElement('div');
+  inner.style.width = '100%';
   outer.appendChild(inner);
 
   var widthWithScroll = inner.offsetWidth;
@@ -87,94 +87,94 @@ var doneUtil = {
   hide: false
 };
 function hideSystemBar() {
-  if (doneUtil["hide"]) {
+  if (doneUtil['hide']) {
     return;
   }
-  doneUtil["hide"] = true;
-  var styleDom = document.createElement("style");
-  styleDom.type = "text/css";
-  styleDom.innerHTML = ".vuescroll-panel::-webkit-scrollbar{width:0;height:0}";
-  document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
+  doneUtil['hide'] = true;
+  var styleDom = document.createElement('style');
+  styleDom.type = 'text/css';
+  styleDom.innerHTML = '.vuescroll-panel::-webkit-scrollbar{width:0;height:0}';
+  document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
 }
 
 var styleMap = {};
 
-styleMap["refreshDomStyle"] = "\n.vuescroll-refresh {\n    color: black;\n    height: 50px;\n    text-align: center;\n    font-size: 16px;\n    line-height: 50px;\n}\n.vuescroll-refresh svg {\n    margin-right: 10px;\n    width: 25px;\n    height: 25px;\n    vertical-align: sub;\n}\n.vuescroll-refresh svg path,\n.vuescroll-refresh svg rect{\nfill: #FF6700;\n}\n";
+styleMap['refreshDomStyle'] = '\n.vuescroll-refresh {\n    color: black;\n    height: 50px;\n    text-align: center;\n    font-size: 16px;\n    line-height: 50px;\n}\n.vuescroll-refresh svg {\n    margin-right: 10px;\n    width: 25px;\n    height: 25px;\n    vertical-align: sub;\n}\n.vuescroll-refresh svg path,\n.vuescroll-refresh svg rect{\nfill: #FF6700;\n}\n';
 
-styleMap["loadDomStyle"] = "\n.vuescroll-load {\n    color: black;\n    height: 50px;\n    text-align: center;\n    font-size: 16px;\n    line-height: 50px;\n}\n.vuescroll-load svg {\n    margin-right: 10px;\n    width: 25px;\n    height: 25px;\n    vertical-align: sub;\n}\n.vuescroll-load svg path,\n.vuescroll-load svg rect{\nfill: #FF6700;\n}\n";
+styleMap['loadDomStyle'] = '\n.vuescroll-load {\n    color: black;\n    height: 50px;\n    text-align: center;\n    font-size: 16px;\n    line-height: 50px;\n}\n.vuescroll-load svg {\n    margin-right: 10px;\n    width: 25px;\n    height: 25px;\n    vertical-align: sub;\n}\n.vuescroll-load svg path,\n.vuescroll-load svg rect{\nfill: #FF6700;\n}\n';
 
 function createDomStyle(styleType) {
   if (doneUtil[styleType]) {
     return;
   }
   doneUtil[styleType] = true;
-  var styleDom = document.createElement("style");
-  styleDom.type = "text/css";
+  var styleDom = document.createElement('style');
+  styleDom.type = 'text/css';
   styleDom.innerHTML = styleMap[styleType];
-  document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
+  document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
 }
 
 function eventCenter(dom, eventName, hander) {
   var capture = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-  var type = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "on";
+  var type = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'on';
 
-  type == "on" ? dom.addEventListener(eventName, hander, capture) : dom.removeEventListener(eventName, hander, capture);
+  type == 'on' ? dom.addEventListener(eventName, hander, capture) : dom.removeEventListener(eventName, hander, capture);
 }
 
 // native console
 var log = console;
 
-// detect content size change 
+// detect content size change
 // https://github.com/wnr/element-resize-detector/blob/465fe68efbea85bb9fe22db2f68ebc7fde8bbcf5/src/detection-strategy/object.js
 // modified by wangyi7099
 function listenResize(element, func) {
-  var OBJECT_STYLE = "display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;";
-  var object = document.createElement("object");
+  var OBJECT_STYLE = 'display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;';
+  var object = document.createElement('object');
   object.style.cssText = OBJECT_STYLE;
   object.tabIndex = -1;
-  object.type = "text/html";
-  object.data = "about:blank";
+  object.type = 'text/html';
+  object.data = 'about:blank';
   object.isResizeElm = true;
   object.onload = function () {
-    eventCenter(object.contentDocument.defaultView, "resize", func);
+    eventCenter(object.contentDocument.defaultView, 'resize', func);
   };
   element.appendChild(object);
   return function destroy() {
     if (object.contentDocument) {
-      eventCenter(object.contentDocument.defaultView, "resize", func, "off");
+      eventCenter(object.contentDocument.defaultView, 'resize', func, 'off');
     }
     element.removeChild(object);
   };
 }
 
 // all modes
-var modes = ["slide", "native", "pure-native"];
+var modes = ['slide', 'native', 'pure-native'];
 // do nothing
 var NOOP = function NOOP() {};
 // some small changes.
-var uncessaryChangeArray = ["mergedOptions.vuescroll.pullRefresh.tips", "mergedOptions.vuescroll.pushLoad.tips", "mergedOptions.rail", "mergedOptions.bar"];
+var uncessaryChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
 
 var GCF = {
   // vuescroll
   vuescroll: {
-    mode: "native",
+    mode: 'native',
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
       enable: false,
       tips: {
-        deactive: "Pull to Refresh",
-        active: "Release to Refresh",
-        start: "Refreshing...",
-        beforeDeactive: "Refresh Successfully!"
+        deactive: 'Pull to Refresh',
+        active: 'Release to Refresh',
+        start: 'Refreshing...',
+        beforeDeactive: 'Refresh Successfully!'
       }
     },
     pushLoad: {
       enable: false,
       tips: {
-        deactive: "Push to Load",
-        active: "Release to Load",
-        start: "Loading...",
-        beforeDeactive: "Load Successfully!"
+        deactive: 'Push to Load',
+        active: 'Release to Load',
+        start: 'Loading...',
+        beforeDeactive: 'Load Successfully!'
       }
     },
     paging: false,
@@ -214,10 +214,10 @@ var GCF = {
     speed: 300,
     easing: undefined
   },
-  // 
+  //
   scrollContent: {
     // customize tag of scrollContent
-    tag: "div",
+    tag: 'div',
     padding: false,
     props: {},
     attrs: {}
@@ -225,31 +225,31 @@ var GCF = {
   //
   rail: {
     vRail: {
-      width: "5px",
-      pos: "right",
-      background: "#01a99a",
+      width: '5px',
+      pos: 'right',
+      background: '#01a99a',
       opacity: 0
     },
-    // 
+    //
     hRail: {
-      height: "5px",
-      pos: "bottom",
-      background: "#01a99a",
+      height: '5px',
+      pos: 'bottom',
+      background: '#01a99a',
       opacity: 0
     }
   },
   bar: {
-    // 
+    //
     vBar: {
-      background: "#00a650",
+      background: '#00a650',
       deltaY: 100,
       keepShow: false,
       opacity: 1,
       hover: false
     },
-    // 
+    //
     hBar: {
-      background: "#00a650",
+      background: '#00a650',
       keepShow: false,
       opacity: 1,
       hover: false
@@ -258,9 +258,9 @@ var GCF = {
 };
 /**
  * validate the options
- * 
+ *
  * @export
- * @param {any} ops 
+ * @param {any} ops
  */
 function validateOptions(ops) {
   var shouldStopRender = false;
@@ -270,36 +270,36 @@ function validateOptions(ops) {
   // validate vuescroll
 
   if (!~modes.indexOf(vuescroll.mode)) {
-    console.error("[vuescroll][ops]: The vuescroll's option \"mode\" should be one of the " + modes); //eslint-disable-line 
+    console.error('[vuescroll][ops]: The vuescroll\'s option "mode" should be one of the ' + modes); //eslint-disable-line
     shouldStopRender = true;
   }
 
   if (vuescroll.paging == vuescroll.snapping.enable && vuescroll.paging && (vuescroll.pullRefresh || vuescroll.pushLoad)) {
-    console.error("[vuescroll][ops]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true."); //eslint-disable-line 
+    console.error('[vuescroll][ops]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.'); //eslint-disable-line
   }
   // validate scrollPanel
-  var initialScrollY = scrollPanel["initialScrollY"];
-  var initialScrollX = scrollPanel["initialScrollX"];
+  var initialScrollY = scrollPanel['initialScrollY'];
+  var initialScrollX = scrollPanel['initialScrollX'];
 
   if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error("[vuescroll][ops]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
+    console.error('[vuescroll][ops]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'); // eslint-disable-line
   }
 
   if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error("[vuescroll][ops]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100."); // eslint-disable-line 
+    console.error('[vuescroll][ops]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'); // eslint-disable-line
   }
 
   return shouldStopRender;
 }
 
 /**
- * hack the lifeCycle 
- * 
+ * hack the lifeCycle
+ *
  * to merge the global data into user-define data
  */
 function hackPropsData() {
   var vm = this;
-  if (vm.$options.name === "vueScroll") {
+  if (vm.$options.name === 'vueScroll') {
     var _gfc = deepMerge(vm.$vuescrollConfig, {});
     var ops = deepMerge(GCF, _gfc);
     vm.$options.propsData.ops = vm.$options.propsData.ops || {};
@@ -311,16 +311,16 @@ function hackPropsData() {
     // from ops to mergedOptions
     deepMerge(ops, vm.mergedOptions);
     // to sync the rail and bar
-    defineReactive(vm.mergedOptions.bar.vBar, "pos", vm.mergedOptions.rail.vRail);
-    defineReactive(vm.mergedOptions.bar.vBar, "width", vm.mergedOptions.rail.vRail);
-    defineReactive(vm.mergedOptions.bar.hBar, "pos", vm.mergedOptions.rail.hRail);
-    defineReactive(vm.mergedOptions.bar.hBar, "height", vm.mergedOptions.rail.hRail);
+    defineReactive(vm.mergedOptions.bar.vBar, 'pos', vm.mergedOptions.rail.vRail);
+    defineReactive(vm.mergedOptions.bar.vBar, 'width', vm.mergedOptions.rail.vRail);
+    defineReactive(vm.mergedOptions.bar.hBar, 'pos', vm.mergedOptions.rail.hRail);
+    defineReactive(vm.mergedOptions.bar.hBar, 'height', vm.mergedOptions.rail.hRail);
 
-    var prefix = "padding-";
-    defineReactive(vm.mergedOptions.scrollContent, "paddPos", function () {
+    var prefix = 'padding-';
+    defineReactive(vm.mergedOptions.scrollContent, 'paddPos', function () {
       return prefix + vm.mergedOptions.rail.vRail.pos;
     });
-    defineReactive(vm.mergedOptions.scrollContent, "paddValue", function () {
+    defineReactive(vm.mergedOptions.scrollContent, 'paddValue', function () {
       return vm.mergedOptions.rail.vRail.width;
     });
   }
@@ -366,24 +366,23 @@ function easingPattern(easing, time) {
   /* istanbul ignore next */
   {
     // Default Easing Patterns
-    if (easing === "easeInQuad") pattern = time * time; // accelerating from zero velocity
-    if (easing === "easeOutQuad") pattern = time * (2 - time); // decelerating to zero velocity
-    if (easing === "easeInOutQuad") pattern = time < 0.5 ? 2 * time * time : -1 + (4 - 2 * time) * time; // acceleration until halfway, then deceleration
-    if (easing === "easeInCubic") pattern = time * time * time; // accelerating from zero velocity
-    if (easing === "easeOutCubic") pattern = --time * time * time + 1; // decelerating to zero velocity
-    if (easing === "easeInOutCubic") pattern = time < 0.5 ? 4 * time * time * time : (time - 1) * (2 * time - 2) * (2 * time - 2) + 1; // acceleration until halfway, then deceleration
-    if (easing === "easeInQuart") pattern = time * time * time * time; // accelerating from zero velocity
-    if (easing === "easeOutQuart") pattern = 1 - --time * time * time * time; // decelerating to zero velocity
-    if (easing === "easeInOutQuart") pattern = time < 0.5 ? 8 * time * time * time * time : 1 - 8 * --time * time * time * time; // acceleration until halfway, then deceleration
-    if (easing === "easeInQuint") pattern = time * time * time * time * time; // accelerating from zero velocity
-    if (easing === "easeOutQuint") pattern = 1 + --time * time * time * time * time; // decelerating to zero velocity
-    if (easing === "easeInOutQuint") pattern = time < 0.5 ? 16 * time * time * time * time * time : 1 + 16 * --time * time * time * time * time; // acceleration until halfway, then deceleration
+    if (easing === 'easeInQuad') pattern = time * time; // accelerating from zero velocity
+    if (easing === 'easeOutQuad') pattern = time * (2 - time); // decelerating to zero velocity
+    if (easing === 'easeInOutQuad') pattern = time < 0.5 ? 2 * time * time : -1 + (4 - 2 * time) * time; // acceleration until halfway, then deceleration
+    if (easing === 'easeInCubic') pattern = time * time * time; // accelerating from zero velocity
+    if (easing === 'easeOutCubic') pattern = --time * time * time + 1; // decelerating to zero velocity
+    if (easing === 'easeInOutCubic') pattern = time < 0.5 ? 4 * time * time * time : (time - 1) * (2 * time - 2) * (2 * time - 2) + 1; // acceleration until halfway, then deceleration
+    if (easing === 'easeInQuart') pattern = time * time * time * time; // accelerating from zero velocity
+    if (easing === 'easeOutQuart') pattern = 1 - --time * time * time * time; // decelerating to zero velocity
+    if (easing === 'easeInOutQuart') pattern = time < 0.5 ? 8 * time * time * time * time : 1 - 8 * --time * time * time * time; // acceleration until halfway, then deceleration
+    if (easing === 'easeInQuint') pattern = time * time * time * time * time; // accelerating from zero velocity
+    if (easing === 'easeOutQuint') pattern = 1 + --time * time * time * time * time; // decelerating to zero velocity
+    if (easing === 'easeInOutQuint') pattern = time < 0.5 ? 16 * time * time * time * time * time : 1 + 16 * --time * time * time * time * time; // acceleration until halfway, then deceleration
   }
   return pattern || time; // no easing, no acceleration
 }
 
 function requestAnimationFrame(global) {
-
   // Check for request animation Frame support
   var requestFrame = global.requestAnimationFrame || global.webkitRequestAnimationFrame || global.mozRequestAnimationFrame || global.oRequestAnimationFrame;
   var isNative = !!requestFrame;
@@ -413,9 +412,7 @@ function requestAnimationFrame(global) {
 
     // Create timeout at first request
     if (intervalHandle === null) {
-
       intervalHandle = setInterval(function () {
-
         var time = +new Date();
         var currentRequests = requests;
 
@@ -478,27 +475,26 @@ var counter = 1;
 var core = { effect: {} };
 var global = null;
 
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   global = window;
 } else {
   global = {};
 }
 
 core.effect.Animate = {
-
   /**
-     * A requestAnimationFrame wrapper / polyfill.
-     *
-     * @param callback {Function} The callback to be invoked before the next repaint.
-     * @param root {HTMLElement} The root element for the repaint
-     */
+   * A requestAnimationFrame wrapper / polyfill.
+   *
+   * @param callback {Function} The callback to be invoked before the next repaint.
+   * @param root {HTMLElement} The root element for the repaint
+   */
   requestAnimationFrame: requestAnimationFrame(global),
   /**
-     * Stops the given animation.
-     *
-     * @param id {Integer} Unique animation ID
-     * @return {Boolean} Whether the animation was stopped (aka, was running before)
-     */
+   * Stops the given animation.
+   *
+   * @param id {Integer} Unique animation ID
+   * @return {Boolean} Whether the animation was stopped (aka, was running before)
+   */
   stop: function stop(id) {
     var cleared = running[id] != null;
     if (cleared) {
@@ -509,33 +505,32 @@ core.effect.Animate = {
   },
 
   /**
-     * Whether the given animation is still running.
-     *
-     * @param id {Integer} Unique animation ID
-     * @return {Boolean} Whether the animation is still running
-     */
+   * Whether the given animation is still running.
+   *
+   * @param id {Integer} Unique animation ID
+   * @return {Boolean} Whether the animation is still running
+   */
   isRunning: function isRunning(id) {
     return running[id] != null;
   },
 
   /**
-     * Start the animation.
-     *
-     * @param stepCallback {Function} Pointer to function which is executed on every step.
-     *   Signature of the method should be `function(percent, now, virtual) { return continueWithAnimation; }`
-     * @param verifyCallback {Function} Executed before every animation step.
-     *   Signature of the method should be `function() { return continueWithAnimation; }`
-     * @param completedCallback {Function}
-     *   Signature of the method should be `function(droppedFrames, finishedAnimation) {}`
-     * @param duration {Integer} Milliseconds to run the animation
-     * @param easingMethod {Function} Pointer to easing function
-     *   Signature of the method should be `function(percent) { return modifiedValue; }`
-     * @param root {Element ? document.body} Render root, when available. Used for internal
-     *   usage of requestAnimationFrame.
-     * @return {Integer} Identifier of animation. Can be used to stop it any time.
-     */
+   * Start the animation.
+   *
+   * @param stepCallback {Function} Pointer to function which is executed on every step.
+   *   Signature of the method should be `function(percent, now, virtual) { return continueWithAnimation; }`
+   * @param verifyCallback {Function} Executed before every animation step.
+   *   Signature of the method should be `function() { return continueWithAnimation; }`
+   * @param completedCallback {Function}
+   *   Signature of the method should be `function(droppedFrames, finishedAnimation) {}`
+   * @param duration {Integer} Milliseconds to run the animation
+   * @param easingMethod {Function} Pointer to easing function
+   *   Signature of the method should be `function(percent) { return modifiedValue; }`
+   * @param root {Element ? document.body} Render root, when available. Used for internal
+   *   usage of requestAnimationFrame.
+   * @return {Integer} Identifier of animation. Can be used to stop it any time.
+   */
   start: function start(stepCallback, verifyCallback, completedCallback, duration, easingMethod, root) {
-
     var start = time();
     var lastFrame = start;
     var percent = 0;
@@ -557,7 +552,6 @@ core.effect.Animate = {
 
     // This is the internal step method which is called every few milliseconds
     var step = function step(virtual) {
-
       // Normalize virtual value
       var render = virtual !== true;
 
@@ -566,7 +560,6 @@ core.effect.Animate = {
 
       // Verification is executed before next animation step
       if (!running[id] || verifyCallback && !verifyCallback(id)) {
-
         running[id] = null;
         completedCallback && completedCallback(desiredFrames - dropCounter / ((now - start) / millisecondsPerSecond), id, false);
         return;
@@ -575,7 +568,6 @@ core.effect.Animate = {
       // For the current rendering to apply let's update omitted steps in memory.
       // This is important to bring internal state variables up-to-date with progress in time.
       if (render) {
-
         var droppedFrames = Math.round((now - lastFrame) / (millisecondsPerSecond / desiredFrames)) - 1;
         for (var j = 0; j < Math.min(droppedFrames, 4); j++) {
           step(true);
@@ -625,25 +617,25 @@ function getNumericValue(distance, size) {
 }
 
 function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
-  var startLocationY = elm["scrollTop"];
-  var startLocationX = elm["scrollLeft"];
+  var startLocationY = elm['scrollTop'];
+  var startLocationX = elm['scrollLeft'];
   var positionX = startLocationX;
   var positionY = startLocationY;
   /**
-     * keep the limit of scroll delta.
-     */
+   * keep the limit of scroll delta.
+   */
   /* istanbul ignore next */
   if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  if (startLocationY + deltaY > elm["scrollHeight"]) {
-    deltaY = elm["scrollHeight"] - startLocationY;
+  if (startLocationY + deltaY > elm['scrollHeight']) {
+    deltaY = elm['scrollHeight'] - startLocationY;
   }
   if (startLocationX + deltaX < 0) {
     deltaX = -startLocationX;
   }
-  if (startLocationX + deltaX > elm["scrollWidth"]) {
-    deltaX = elm["scrollWidth"] - startLocationX;
+  if (startLocationX + deltaX > elm['scrollWidth']) {
+    deltaX = elm['scrollWidth'] - startLocationX;
   }
 
   var easingMethod = createEasingFunction(easing, easingPattern);
@@ -651,8 +643,8 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
   var stepCallback = function stepCallback(percentage) {
     positionX = startLocationX + deltaX * percentage;
     positionY = startLocationY + deltaY * percentage;
-    elm["scrollTop"] = Math.floor(positionY);
-    elm["scrollLeft"] = Math.floor(positionX);
+    elm['scrollTop'] = Math.floor(positionY);
+    elm['scrollLeft'] = Math.floor(positionX);
     return verifyCallback();
   };
 
@@ -672,12 +664,12 @@ var api = {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       var force = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-      if (typeof x === "undefined") {
+      if (typeof x === 'undefined') {
         x = this.vuescroll.state.internalScrollLeft || 0;
       } else {
         x = getNumericValue(x, this.scrollPanelElm.scrollWidth);
       }
-      if (typeof y === "undefined") {
+      if (typeof y === 'undefined') {
         y = this.vuescroll.state.internalScrollTop || 0;
       } else {
         y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
@@ -703,8 +695,8 @@ var api = {
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
     },
     zoomBy: function zoomBy(factor, animate, originLeft, originTop, callback) {
-      if (this.mode != "slide") {
-        log.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+      if (this.mode != 'slide') {
+        log.warn('[vuescroll]: zoomBy and zoomTo are only for slide mode!');
         return;
       }
       this.scroller.zoomBy(factor, animate, originLeft, originTop, callback);
@@ -715,15 +707,15 @@ var api = {
       var originTop = arguments[3];
       var callback = arguments[4];
 
-      if (this.mode != "slide") {
-        log.warn("[vuescroll]: zoomBy and zoomTo are only for slide mode!");
+      if (this.mode != 'slide') {
+        log.warn('[vuescroll]: zoomBy and zoomTo are only for slide mode!');
         return;
       }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
     getCurrentPage: function getCurrentPage() {
-      if (this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
-        log.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+      if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
+        log.warn('[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!');
         return;
       }
       return this.scroller.getCurrentPage();
@@ -731,8 +723,8 @@ var api = {
     goToPage: function goToPage(dest) {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      if (this.mode != "slide" || !this.mergedOptions.vuescroll.paging) {
-        log.warn("[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!");
+      if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
+        log.warn('[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!');
         return;
       }
       this.scroller.goToPage(dest, animate);
@@ -740,7 +732,7 @@ var api = {
     getCurrentviewDom: function getCurrentviewDom() {
       var _this = this;
 
-      var parent = this.mode == "slide" || this.mode == "pure-native" ? this.scrollPanelElm : this.scrollContentElm;
+      var parent = this.mode == 'slide' || this.mode == 'pure-native' ? this.scrollPanelElm : this.scrollContentElm;
       var children = parent.children;
       var domFragment = [];
       var isCurrentview = function isCurrentview(dom) {
@@ -776,20 +768,20 @@ var api = {
     internalScrollTo: function internalScrollTo(destX, destY, animate, force) {
       var _this2 = this;
 
-      if (this.mode == "native" || this.mode == "pure-native") {
+      if (this.mode == 'native' || this.mode == 'pure-native') {
         if (animate) {
           // hadnle for scroll complete
           var scrollingComplete = function scrollingComplete() {
-            _this2.update("handle-scroll-complete");
+            _this2.update('handle-scroll-complete');
           };
-          goScrolling(this.$refs["scrollPanel"].$el, destX - this.$refs["scrollPanel"].$el.scrollLeft, destY - this.$refs["scrollPanel"].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing, scrollingComplete);
+          goScrolling(this.$refs['scrollPanel'].$el, destX - this.$refs['scrollPanel'].$el.scrollLeft, destY - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing, scrollingComplete);
         } else {
-          this.$refs["scrollPanel"].$el.scrollTop = destY;
-          this.$refs["scrollPanel"].$el.scrollLeft = destX;
+          this.$refs['scrollPanel'].$el.scrollTop = destY;
+          this.$refs['scrollPanel'].$el.scrollLeft = destX;
         }
       }
-      // for non-native we use scroller's scorllTo 
-      else if (this.mode == "slide") {
+      // for non-native we use scroller's scorllTo
+      else if (this.mode == 'slide') {
           this.scroller.scrollTo(destX, destY, animate, undefined, force);
         }
     }
@@ -805,8 +797,8 @@ var nativeMode = {
       var widthPercentage = vuescroll.clientWidth * 100 / scrollPanel.scrollWidth;
       this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / vuescroll.clientHeight;
       this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / vuescroll.clientWidth;
-      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + "%" : 0;
-      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + "%" : 0;
+      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
+      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
     }
   }
 };
@@ -834,7 +826,6 @@ function Scroller(callback, options) {
   this.__callback = callback;
 
   this.options = {
-
     /** Enable scrolling on x-axis */
     scrollingX: true,
 
@@ -876,16 +867,15 @@ function Scroller(callback, options) {
     when to fade out a scrollbar. */
     scrollingComplete: NOOP,
 
-    animatingEasing: "easeOutCubic",
+    animatingEasing: 'easeOutCubic',
 
-    noAnimatingEasing: "easeInOutCubic",
+    noAnimatingEasing: 'easeInOutCubic',
 
     /** This configures the amount of change applied to deceleration when reaching boundaries  **/
     penetrationDeceleration: 0.03,
 
     /** This configures the amount of change applied to acceleration when reaching boundaries  **/
     penetrationAcceleration: 0.08
-
   };
 
   for (var key in options) {
@@ -897,7 +887,6 @@ function Scroller(callback, options) {
 }
 
 var members = {
-
   /*
   ---------------------------------------------------------------------------
   INTERNAL FIELDS :: STATUS
@@ -914,27 +903,27 @@ var members = {
   __didDecelerationComplete: false,
 
   /**
-  * {Boolean} Whether a gesture zoom/rotate event is in progress. Activates when
-  * a gesturestart event happens. This has higher priority than dragging.
-  */
+   * {Boolean} Whether a gesture zoom/rotate event is in progress. Activates when
+   * a gesturestart event happens. This has higher priority than dragging.
+   */
   __isGesturing: false,
 
   /**
-  * {Boolean} Whether the user has moved by such a distance that we have enabled
-  * dragging mode. Hint: It's only enabled after some pixels of movement to
-  * not interrupt with clicks etc.
-  */
+   * {Boolean} Whether the user has moved by such a distance that we have enabled
+   * dragging mode. Hint: It's only enabled after some pixels of movement to
+   * not interrupt with clicks etc.
+   */
   __isDragging: false,
 
   /**
-  * {Boolean} Not touching and dragging anymore, and smoothly animating the
-  * touch sequence using deceleration.
-  */
+   * {Boolean} Not touching and dragging anymore, and smoothly animating the
+   * touch sequence using deceleration.
+   */
   __isDecelerating: false,
 
   /**
-  * {Boolean} Smoothly animating the currently configured change
-  */
+   * {Boolean} Smoothly animating the currently configured change
+   */
   __isAnimating: false,
 
   /*
@@ -1019,15 +1008,15 @@ var members = {
   __scheduledZoom: 0,
 
   /**
-  * current page
-  */
+   * current page
+   */
   __currentPageX: null,
 
   __currentPageY: null,
 
   /**
-  * total page
-  */
+   * total page
+   */
   __totalXPage: null,
 
   __totalYPage: null,
@@ -1081,17 +1070,16 @@ var members = {
   */
 
   /**
-  * Configures the dimensions of the client (outer) and content (inner) elements.
-  * Requires the available space for the outer element and the outer size of the inner element.
-  * All values which are falsy (null or zero etc.) are ignored and the old value is kept.
-  *
-  * @param clientWidth {Integer ? null} Inner width of outer element
-  * @param clientHeight {Integer ? null} Inner height of outer element
-  * @param contentWidth {Integer ? null} Outer width of inner element
-  * @param contentHeight {Integer ? null} Outer height of inner element
-  */
+   * Configures the dimensions of the client (outer) and content (inner) elements.
+   * Requires the available space for the outer element and the outer size of the inner element.
+   * All values which are falsy (null or zero etc.) are ignored and the old value is kept.
+   *
+   * @param clientWidth {Integer ? null} Inner width of outer element
+   * @param clientHeight {Integer ? null} Inner height of outer element
+   * @param contentWidth {Integer ? null} Outer width of inner element
+   * @param contentHeight {Integer ? null} Outer height of inner element
+   */
   setDimensions: function setDimensions(clientWidth, clientHeight, contentWidth, contentHeight) {
-
     var self = this;
 
     // Only update values which are defined
@@ -1119,13 +1107,12 @@ var members = {
   },
 
   /**
-  * Sets the client coordinates in relation to the document.
-  *
-  * @param left {Integer ? 0} Left position of outer element
-  * @param top {Integer ? 0} Top position of outer element
-  */
+   * Sets the client coordinates in relation to the document.
+   *
+   * @param left {Integer ? 0} Left position of outer element
+   * @param top {Integer ? 0} Top position of outer element
+   */
   setPosition: function setPosition(left, top) {
-
     var self = this;
 
     self.__clientLeft = left || 0;
@@ -1133,13 +1120,12 @@ var members = {
   },
 
   /**
-  * Configures the snapping (when snapping is active)
-  *
-  * @param width {Integer} Snapping width
-  * @param height {Integer} Snapping height
-  */
+   * Configures the snapping (when snapping is active)
+   *
+   * @param width {Integer} Snapping width
+   * @param height {Integer} Snapping height
+   */
   setSnapSize: function setSnapSize(width, height) {
-
     var self = this;
 
     self.__snapWidth = width;
@@ -1147,21 +1133,20 @@ var members = {
   },
 
   /**
-  * Activates pull-to-refresh. A special zone on the top of the list to start a list refresh whenever
-  * the user event is released during visibility of this zone. This was introduced by some apps on iOS like
-  * the official Twitter client.
-  *
-  * @param height {Integer} Height of pull-to-refresh zone on top of rendered list
-  * @param activateCallback {Function} Callback to execute on activation. This is for signalling the user about a refresh is about to happen when he release.
-  * @param deactivateCallback {Function} Callback to execute on deactivation. This is for signalling the user about the refresh being cancelled.
-  * @param startCallback {Function} Callback to execute to start the real async refresh action. Call {@link #finishPullToRefresh} after finish of refresh.
-  */
+   * Activates pull-to-refresh. A special zone on the top of the list to start a list refresh whenever
+   * the user event is released during visibility of this zone. This was introduced by some apps on iOS like
+   * the official Twitter client.
+   *
+   * @param height {Integer} Height of pull-to-refresh zone on top of rendered list
+   * @param activateCallback {Function} Callback to execute on activation. This is for signalling the user about a refresh is about to happen when he release.
+   * @param deactivateCallback {Function} Callback to execute on deactivation. This is for signalling the user about the refresh being cancelled.
+   * @param startCallback {Function} Callback to execute to start the real async refresh action. Call {@link #finishPullToRefresh} after finish of refresh.
+   */
   activatePullToRefresh: function activatePullToRefresh(height, _ref) {
     var activateCallback = _ref.activateCallback,
         deactivateCallback = _ref.deactivateCallback,
         startCallback = _ref.startCallback,
         beforeDeactivateCallback = _ref.beforeDeactivateCallback;
-
 
     var self = this;
 
@@ -1177,7 +1162,6 @@ var members = {
         startCallback = _ref2.startCallback,
         beforeDeactivateCallback = _ref2.beforeDeactivateCallback;
 
-
     var self = this;
 
     self.__loadHeight = height;
@@ -1188,14 +1172,14 @@ var members = {
   },
 
   /**
-  * Starts pull-to-refresh manually.
-  */
+   * Starts pull-to-refresh manually.
+   */
   triggerRefreshOrLoad: function triggerRefreshOrLoad() {
-    var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "refresh";
+    var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'refresh';
 
     // Use publish instead of scrollTo to allow scrolling to out of boundary position
     // We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
-    if (type == "refresh") {
+    if (type == 'refresh') {
       this.__publish(this.__scrollLeft, -this.__refreshHeight, this.__zoomLevel, true);
       if (this.__refreshStart) {
         this.__refreshStart();
@@ -1209,14 +1193,12 @@ var members = {
   },
 
   /**
-  * Signalizes that pull-to-refresh is finished.
-  */
+   * Signalizes that pull-to-refresh is finished.
+   */
   finishRefreshOrLoad: function finishRefreshOrLoad() {
-
     var self = this;
 
     if (self.__refreshBeforeDeactivate && self.__refreshActive) {
-
       self.__refreshActive = false;
       self.__refreshBeforeDeactivate(function () {
         if (self.__refreshDeactivate) {
@@ -1231,7 +1213,6 @@ var members = {
     }
 
     if (self.__loadBeforeDeactivate && self.__loadActive) {
-
       self.__loadActive = false;
       self.__loadBeforeDeactivate(function () {
         if (self.__loadDeactivate) {
@@ -1247,12 +1228,11 @@ var members = {
   },
 
   /**
-  * Returns the scroll position and zooming values
-  *
-  * @return {Map} `left` and `top` scroll position and `zoom` level
-  */
+   * Returns the scroll position and zooming values
+   *
+   * @return {Map} `left` and `top` scroll position and `zoom` level
+   */
   getValues: function getValues() {
-
     var self = this;
 
     return {
@@ -1263,12 +1243,11 @@ var members = {
   },
 
   /**
-  * Returns the maximum scroll values
-  *
-  * @return {Map} `left` and `top` maximum scroll values
-  */
+   * Returns the maximum scroll values
+   *
+   * @return {Map} `left` and `top` maximum scroll values
+   */
   getScrollMax: function getScrollMax() {
-
     var self = this;
 
     return {
@@ -1278,21 +1257,20 @@ var members = {
   },
 
   /**
-  * Zooms to the given level. Supports optional animation. Zooms
-  * the center when no coordinates are given.
-  *
-  * @param level {Number} Level to zoom to
-  * @param animate {Boolean ? false} Whether to use animation
-  * @param originLeft {Number ? null} Zoom in at given left coordinate
-  * @param originTop {Number ? null} Zoom in at given top coordinate
-  * @param callback {Function ? null} A callback that gets fired when the zoom is complete.
-  */
+   * Zooms to the given level. Supports optional animation. Zooms
+   * the center when no coordinates are given.
+   *
+   * @param level {Number} Level to zoom to
+   * @param animate {Boolean ? false} Whether to use animation
+   * @param originLeft {Number ? null} Zoom in at given left coordinate
+   * @param originTop {Number ? null} Zoom in at given top coordinate
+   * @param callback {Function ? null} A callback that gets fired when the zoom is complete.
+   */
   zoomTo: function zoomTo(level, animate, originLeft, originTop, callback) {
-
     var self = this;
 
     if (!self.options.zooming) {
-      throw new Error("Zooming is not enabled!");
+      throw new Error('Zooming is not enabled!');
     }
 
     // Add callback if exists
@@ -1346,31 +1324,29 @@ var members = {
   },
 
   /**
-  * Zooms the content by the given factor.
-  *
-  * @param factor {Number} Zoom by given factor
-  * @param animate {Boolean ? false} Whether to use animation
-  * @param originLeft {Number ? 0} Zoom in at given left coordinate
-  * @param originTop {Number ? 0} Zoom in at given top coordinate
-  * @param callback {Function ? null} A callback that gets fired when the zoom is complete.
-  */
+   * Zooms the content by the given factor.
+   *
+   * @param factor {Number} Zoom by given factor
+   * @param animate {Boolean ? false} Whether to use animation
+   * @param originLeft {Number ? 0} Zoom in at given left coordinate
+   * @param originTop {Number ? 0} Zoom in at given top coordinate
+   * @param callback {Function ? null} A callback that gets fired when the zoom is complete.
+   */
   zoomBy: function zoomBy(factor, animate, originLeft, originTop, callback) {
-
     var self = this;
 
     self.zoomTo(self.__zoomLevel * factor, animate, originLeft, originTop, callback);
   },
 
   /**
-  * Scrolls to the given position. Respect limitations and snapping automatically.
-  *
-  * @param left {Number?null} Horizontal scroll position, keeps current if value is <code>null</code>
-  * @param top {Number?null} Vertical scroll position, keeps current if value is <code>null</code>
-  * @param animate {Boolean?false} Whether the scrolling should happen using an animation
-  * @param zoom {Number?null} Zoom level to go to
-  */
+   * Scrolls to the given position. Respect limitations and snapping automatically.
+   *
+   * @param left {Number?null} Horizontal scroll position, keeps current if value is <code>null</code>
+   * @param top {Number?null} Vertical scroll position, keeps current if value is <code>null</code>
+   * @param animate {Boolean?false} Whether the scrolling should happen using an animation
+   * @param zoom {Number?null} Zoom level to go to
+   */
   scrollTo: function scrollTo(left, top, animate, zoom, force) {
-
     var self = this;
 
     // Stop deceleration
@@ -1381,9 +1357,8 @@ var members = {
 
     // Correct coordinates based on new zoom level
     if (zoom != null && zoom !== self.__zoomLevel) {
-
       if (!self.options.zooming) {
-        throw new Error("Zooming is not enabled!");
+        throw new Error('Zooming is not enabled!');
       }
 
       left *= zoom;
@@ -1392,16 +1367,13 @@ var members = {
       // Recompute maximum values while temporary tweaking maximum scroll ranges
       self.__computeScrollMax(zoom);
     } else {
-
       // Keep zoom when not defined
       zoom = self.__zoomLevel;
     }
 
     if (!self.options.scrollingX && !force) {
-
       left = self.__scrollLeft;
     } else {
-
       if (self.options.paging) {
         left = Math.round(left / self.__clientWidth) * self.__clientWidth;
       } else if (self.options.snapping) {
@@ -1410,10 +1382,8 @@ var members = {
     }
 
     if (!self.options.scrollingY && !force) {
-
       top = self.__scrollTop;
     } else {
-
       if (self.options.paging) {
         top = Math.round(top / self.__clientHeight) * self.__clientHeight;
       } else if (self.options.snapping) {
@@ -1437,14 +1407,13 @@ var members = {
   },
 
   /**
-  * Scroll by the given offset
-  *
-  * @param left {Number ? 0} Scroll x-axis by given offset
-  * @param top {Number ? 0} Scroll x-axis by given offset
-  * @param animate {Boolean ? false} Whether to animate the given change
-  */
+   * Scroll by the given offset
+   *
+   * @param left {Number ? 0} Scroll x-axis by given offset
+   * @param top {Number ? 0} Scroll x-axis by given offset
+   * @param animate {Boolean ? false} Whether to animate the given change
+   */
   scrollBy: function scrollBy(left, top, animate) {
-
     var self = this;
 
     var startLeft = self.__isAnimating ? self.__scheduledLeft : self.__scrollLeft;
@@ -1471,10 +1440,9 @@ var members = {
   */
 
   /**
-  * Mouse wheel handler for zooming support
-  */
+   * Mouse wheel handler for zooming support
+   */
   doMouseZoom: function doMouseZoom(wheelDelta, timeStamp, pageX, pageY) {
-
     var self = this;
     var change = wheelDelta > 0 ? 0.97 : 1.03;
 
@@ -1482,20 +1450,19 @@ var members = {
   },
 
   /**
-  * Touch start handler for scrolling support
-  */
+   * Touch start handler for scrolling support
+   */
   doTouchStart: function doTouchStart(touches, timeStamp) {
-
     // Array-like check is enough here
     if (touches.length == null) {
-      throw new Error("Invalid touch list: " + touches);
+      throw new Error('Invalid touch list: ' + touches);
     }
 
     if (timeStamp instanceof Date) {
       timeStamp = timeStamp.valueOf();
     }
-    if (typeof timeStamp !== "number") {
-      throw new Error("Invalid timestamp value: " + timeStamp);
+    if (typeof timeStamp !== 'number') {
+      throw new Error('Invalid timestamp value: ' + timeStamp);
     }
 
     var self = this;
@@ -1566,20 +1533,19 @@ var members = {
   },
 
   /**
-  * Touch move handler for scrolling support
-  */
+   * Touch move handler for scrolling support
+   */
   doTouchMove: function doTouchMove(touches, timeStamp, scale) {
-
     // Array-like check is enough here
     if (touches.length == null) {
-      throw new Error("Invalid touch list: " + touches);
+      throw new Error('Invalid touch list: ' + touches);
     }
 
     if (timeStamp instanceof Date) {
       timeStamp = timeStamp.valueOf();
     }
-    if (typeof timeStamp !== "number") {
-      throw new Error("Invalid timestamp value: " + timeStamp);
+    if (typeof timeStamp !== 'number') {
+      throw new Error('Invalid timestamp value: ' + timeStamp);
     }
 
     var self = this;
@@ -1604,7 +1570,6 @@ var members = {
 
     // Are we already is dragging mode?
     if (self.__isDragging) {
-
       // Compute move distance
       var moveX = currentTouchLeft - self.__lastTouchLeft;
       var moveY = currentTouchTop - self.__lastTouchTop;
@@ -1616,7 +1581,6 @@ var members = {
 
       // Work with scaling
       if (scale != null && self.options.zooming) {
-
         var oldLevel = level;
 
         // Recompute level based on previous scale and new scale
@@ -1627,7 +1591,6 @@ var members = {
 
         // Only do further compution when change happened
         if (oldLevel !== level) {
-
           // Compute relative event position to container
           var currentTouchLeftRel = currentTouchLeft - self.__clientLeft;
           var currentTouchTopRel = currentTouchTop - self.__clientTop;
@@ -1642,21 +1605,16 @@ var members = {
       }
 
       if (self.__enableScrollX) {
-
         scrollLeft -= moveX * this.options.speedMultiplier;
         var maxScrollLeft = self.__maxScrollLeft;
 
         if (scrollLeft > maxScrollLeft || scrollLeft < 0) {
-
           // Slow down on the edges
           if (self.options.bouncing) {
-
             scrollLeft += moveX / 2 * this.options.speedMultiplier;
           } else if (scrollLeft > maxScrollLeft) {
-
             scrollLeft = maxScrollLeft;
           } else {
-
             scrollLeft = 0;
           }
         }
@@ -1664,28 +1622,22 @@ var members = {
 
       // Compute new vertical scroll position
       if (self.__enableScrollY) {
-
         scrollTop -= moveY * this.options.speedMultiplier;
         var maxScrollTop = self.__maxScrollTop;
 
         if (scrollTop > maxScrollTop || scrollTop < 0) {
-
           // Slow down on the edges
           if (self.options.bouncing) {
-
             scrollTop += moveY / 2 * this.options.speedMultiplier;
 
             // Support pull-to-refresh (only when only y is scrollable)
             if (!self.__enableScrollX && (self.__refreshHeight != null || self.__loadHeight != null)) {
-
               if (!self.__refreshActive && scrollTop <= -self.__refreshHeight) {
-
                 self.__refreshActive = true;
                 if (self.__refreshActivate) {
                   self.__refreshActivate();
                 }
               } else if (self.__refreshActive && scrollTop > -self.__refreshHeight) {
-
                 self.__refreshActive = false;
                 if (self.__refreshDeactivate) {
                   self.__refreshDeactivate();
@@ -1693,13 +1645,11 @@ var members = {
               }
               // handle for push-load
               else if (!self.__loadActive && scrollTop >= self.__maxScrollTop + self.__loadHeight) {
-
                   self.__loadActive = true;
                   if (self.__loadActivate) {
                     self.__loadActivate();
                   }
                 } else if (self.__refreshActive && scrollTop < self.__maxScrollTop + self.__loadHeight) {
-
                   self.__loadActive = false;
                   if (self.__loadDeactivate) {
                     self.__loadDeactivate();
@@ -1707,10 +1657,8 @@ var members = {
                 }
             }
           } else if (scrollTop > maxScrollTop) {
-
             scrollTop = maxScrollTop;
           } else {
-
             scrollTop = 0;
           }
         }
@@ -1729,7 +1677,6 @@ var members = {
 
       // Otherwise figure out whether we are switching into dragging mode now.
     } else {
-
       var minimumTrackingForScroll = self.options.locking ? 3 : 0;
       var minimumTrackingForDrag = 5;
 
@@ -1755,15 +1702,14 @@ var members = {
   },
 
   /**
-  * Touch end handler for scrolling support
-  */
+   * Touch end handler for scrolling support
+   */
   doTouchEnd: function doTouchEnd(timeStamp) {
-
     if (timeStamp instanceof Date) {
       timeStamp = timeStamp.valueOf();
     }
-    if (typeof timeStamp !== "number") {
-      throw new Error("Invalid timestamp value: " + timeStamp);
+    if (typeof timeStamp !== 'number') {
+      throw new Error('Invalid timestamp value: ' + timeStamp);
     }
 
     var self = this;
@@ -1780,14 +1726,12 @@ var members = {
     // Be sure to reset the dragging flag now. Here we also detect whether
     // the finger has moved fast enough to switch into a deceleration animation.
     if (self.__isDragging) {
-
       // Reset dragging flag
       self.__isDragging = false;
 
       // Start deceleration
       // Verify that the last move detected was in some relevant time frame
       if (self.__isSingleTouch && self.options.animating && timeStamp - self.__lastTouchMove <= 100) {
-
         // Then figure out what the scroll position was about 100ms ago
         var positions = self.__positions;
         var endPos = positions.length - 1;
@@ -1801,7 +1745,6 @@ var members = {
         // If start and stop position is identical in a 100ms timeframe,
         // we cannot compute any useful deceleration.
         if (startPos !== endPos) {
-
           // Compute relative movement between these two points
           var timeOffset = positions[endPos] - positions[startPos];
           var movedLeft = self.__scrollLeft - positions[startPos - 2];
@@ -1816,7 +1759,6 @@ var members = {
 
           // Verify that we have enough velocity to start deceleration
           if (Math.abs(self.__decelerationVelocityX) > minVelocityToStartDeceleration || Math.abs(self.__decelerationVelocityY) > minVelocityToStartDeceleration) {
-
             // Deactivate pull-to-refresh when decelerating
             if (!self.__refreshActive && !self.__loadActive) {
               self.__startDeceleration(timeStamp);
@@ -1838,9 +1780,7 @@ var members = {
     // e.g. touchend fired without enabled dragging. This should normally do not
     // have modified the scroll positions or even showed the scrollbars though.
     if (!self.__isDecelerating) {
-
       if (self.__refreshActive && self.__refreshStart) {
-
         // Use publish instead of scrollTo to allow scrolling to out of boundary position
         // We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
         self.__publish(self.__scrollLeft, -self.__refreshHeight, self.__zoomLevel, true);
@@ -1849,7 +1789,6 @@ var members = {
           self.__refreshStart();
         }
       } else if (self.__loadActive && self.__loadStart) {
-
         // Use publish instead of scrollTo to allow scrolling to out of boundary position
         // We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
         self.__publish(self.__scrollLeft, self.__maxScrollTop + self.__loadHeight, self.__zoomLevel, true);
@@ -1858,7 +1797,6 @@ var members = {
           self.__loadStart();
         }
       } else {
-
         if (self.__interruptedAnimation || self.__isDragging) {
           self.__scrollComplete();
         }
@@ -1866,13 +1804,11 @@ var members = {
 
         // Directly signalize deactivation (nothing todo on refresh?)
         if (self.__refreshActive) {
-
           self.__refreshActive = false;
           if (self.__refreshDeactivate) {
             self.__refreshDeactivate();
           }
         } else if (self.__loadActive) {
-
           self.__loadActive = false;
           if (self.__loadDeactivate) {
             self.__loadDeactivate();
@@ -1903,14 +1839,13 @@ var members = {
   */
 
   /**
-  * Applies the scroll position to the content element
-  *
-  * @param left {Number} Left scroll position
-  * @param top {Number} Top scroll position
-  * @param animate {Boolean?false} Whether animation should be used to move to the new coordinates
-  */
+   * Applies the scroll position to the content element
+   *
+   * @param left {Number} Left scroll position
+   * @param top {Number} Top scroll position
+   * @param animate {Boolean?false} Whether animation should be used to move to the new coordinates
+   */
   __publish: function __publish(left, top, zoom, animate) {
-
     var self = this;
     if (self.__disable) {
       return;
@@ -1923,7 +1858,6 @@ var members = {
     }
 
     if (animate && self.options.animating) {
-
       // Keep scheduled positions for scrollBy/zoomBy functionality
       self.__scheduledLeft = left;
       self.__scheduledTop = top;
@@ -1938,9 +1872,7 @@ var members = {
       var diffZoom = zoom - oldZoom;
 
       var step = function step(percent, now, render) {
-
         if (render) {
-
           self.__scrollLeft = oldLeft + diffLeft * percent;
           self.__scrollTop = oldTop + diffTop * percent;
           self.__zoomLevel = oldZoom + diffZoom * percent;
@@ -1977,7 +1909,6 @@ var members = {
       // When continuing based on previous animation we choose an ease-out animation instead of ease-in-out
       self.__isAnimating = core.effect.Animate.start(step, verify, completed, self.options.animationDuration, wasAnimating ? animatingMethod : noAnimatingMethod);
     } else {
-
       self.__scheduledLeft = self.__scrollLeft = left;
       self.__scheduledTop = self.__scrollTop = top;
       self.__scheduledZoom = self.__zoomLevel = zoom;
@@ -2000,10 +1931,9 @@ var members = {
   },
 
   /**
-  * Recomputes scroll minimum values based on client dimensions and content dimensions.
-  */
+   * Recomputes scroll minimum values based on client dimensions and content dimensions.
+   */
   __computeScrollMax: function __computeScrollMax(zoomLevel) {
-
     var self = this;
 
     if (zoomLevel == null) {
@@ -2037,15 +1967,13 @@ var members = {
   */
 
   /**
-  * Called when a touch sequence end and the speed of the finger was high enough
-  * to switch into deceleration mode.
-  */
+   * Called when a touch sequence end and the speed of the finger was high enough
+   * to switch into deceleration mode.
+   */
   __startDeceleration: function __startDeceleration() {
-
     var self = this;
 
     if (self.options.paging) {
-
       var scrollLeft = Math.max(Math.min(self.__scrollLeft, self.__maxScrollLeft), 0);
       var scrollTop = Math.max(Math.min(self.__scrollTop, self.__maxScrollTop), 0);
       var clientWidth = self.__clientWidth;
@@ -2058,7 +1986,6 @@ var members = {
       self.__maxDecelerationScrollLeft = Math.ceil(scrollLeft / clientWidth) * clientWidth;
       self.__maxDecelerationScrollTop = Math.ceil(scrollTop / clientHeight) * clientHeight;
     } else {
-
       self.__minDecelerationScrollLeft = 0;
       self.__minDecelerationScrollTop = 0;
       self.__maxDecelerationScrollLeft = self.__maxScrollLeft;
@@ -2098,12 +2025,11 @@ var members = {
   },
 
   /**
-  * Called on every step of the animation
-  *
-  * @param inMemory {Boolean?false} Whether to not render the current step, but keep it in memory only. Used internally only!
-  */
+   * Called on every step of the animation
+   *
+   * @param inMemory {Boolean?false} Whether to not render the current step, but keep it in memory only. Used internally only!
+   */
   __stepThroughDeceleration: function __stepThroughDeceleration(render) {
-
     var self = this;
 
     //
@@ -2119,7 +2045,6 @@ var members = {
     //
 
     if (!self.options.bouncing) {
-
       var scrollLeftFixed = Math.max(Math.min(self.__maxDecelerationScrollLeft, scrollLeft), self.__minDecelerationScrollLeft);
       if (scrollLeftFixed !== scrollLeft) {
         scrollLeft = scrollLeftFixed;
@@ -2138,10 +2063,8 @@ var members = {
     //
 
     if (render) {
-
       self.__publish(scrollLeft, scrollTop, self.__zoomLevel);
     } else {
-
       self.__scrollLeft = scrollLeft;
       self.__scrollTop = scrollTop;
     }
@@ -2152,7 +2075,6 @@ var members = {
 
     // Slow down velocity on every iteration
     if (!self.options.paging) {
-
       // This is the factor applied to every iteration of the animation
       // to slow down the process. This should emulate natural behavior where
       // objects slow down when the initiator of the movement is removed
@@ -2167,7 +2089,6 @@ var members = {
     //
 
     if (self.options.bouncing) {
-
       var scrollOutsideX = 0;
       var scrollOutsideY = 0;
 
@@ -2217,51 +2138,50 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
 function render(content, global, suffix, value) {
-
   var docStyle = document.documentElement.style;
   var x = null;
   var y = null;
   var engine;
-  if (global.opera && Object.prototype.toString.call(opera) === "[object Opera]") {
-    engine = "presto";
-  } else if ("MozAppearance" in docStyle) {
-    engine = "gecko";
-  } else if ("WebkitAppearance" in docStyle) {
-    engine = "webkit";
-  } else if (typeof navigator.cpuClass === "string") {
-    engine = "trident";
+  if (global.opera && Object.prototype.toString.call(opera) === '[object Opera]') {
+    engine = 'presto';
+  } else if ('MozAppearance' in docStyle) {
+    engine = 'gecko';
+  } else if ('WebkitAppearance' in docStyle) {
+    engine = 'webkit';
+  } else if (typeof navigator.cpuClass === 'string') {
+    engine = 'trident';
   }
 
-  if (typeof content == "string") {
-    y = content == "vertical" ? (x = 0) || value : (x = value) && 0;
+  if (typeof content == 'string') {
+    y = content == 'vertical' ? (x = 0) || value : (x = value) && 0;
   }
 
   var vendorPrefix = {
-    trident: "ms",
-    gecko: "Moz",
-    webkit: "Webkit",
-    presto: "O"
+    trident: 'ms',
+    gecko: 'Moz',
+    webkit: 'Webkit',
+    presto: 'O'
   }[engine];
 
-  var helperElem = document.createElement("div");
+  var helperElem = document.createElement('div');
   var undef;
 
-  var perspectiveProperty = vendorPrefix + "Perspective";
-  var transformProperty = vendorPrefix + "Transform";
+  var perspectiveProperty = vendorPrefix + 'Perspective';
+  var transformProperty = vendorPrefix + 'Transform';
 
   if (helperElem.style[perspectiveProperty] !== undef) {
-    if (typeof content == "string") {
-      return _defineProperty({}, transformProperty, "translate3d(" + x + suffix + "," + y + suffix + ",0)");
+    if (typeof content == 'string') {
+      return _defineProperty({}, transformProperty, 'translate3d(' + x + suffix + ',' + y + suffix + ',0)');
     }
     return function (left, top, zoom) {
-      content.style[transformProperty] = "translate3d(" + -left + suffix + "," + -top + suffix + ",0) scale(" + zoom + ")";
+      content.style[transformProperty] = 'translate3d(' + -left + suffix + ',' + -top + suffix + ',0) scale(' + zoom + ')';
     };
   } else if (helperElem.style[transformProperty] !== undef) {
-    if (typeof content == "string") {
-      return _defineProperty({}, transformProperty, "translate(" + x + suffix + "," + y + suffix + ")");
+    if (typeof content == 'string') {
+      return _defineProperty({}, transformProperty, 'translate(' + x + suffix + ',' + y + suffix + ')');
     }
     return function (left, top, zoom) {
-      content.style[transformProperty] = "translate(" + -left + suffix + "," + -top + suffix + ") scale(" + zoom + ")";
+      content.style[transformProperty] = 'translate(' + -left + suffix + ',' + -top + suffix + ') scale(' + zoom + ')';
     };
   }
 }
@@ -2273,25 +2193,25 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
     if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
       return;
     }
-    eventCallback("mousedown");
+    eventCallback('mousedown');
     scroller.doTouchStart(e.touches, e.timeStamp);
     if (preventDefault) {
       e.preventDefault();
     }
-    // here , we want to manully prevent default, so we 
+    // here , we want to manully prevent default, so we
     // set passive to false
-    // see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener    
-    document.addEventListener("touchmove", touchmove, { passive: false });
+    // see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
+    document.addEventListener('touchmove', touchmove, { passive: false });
   }
   function touchmove(e) {
-    eventCallback("mousemove");
+    eventCallback('mousemove');
     scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
     e.preventDefault();
   }
   function touchend(e) {
-    eventCallback("mouseup");
+    eventCallback('mouseup');
     scroller.doTouchEnd(e.timeStamp);
-    document.removeEventListener("touchmove", touchmove);
+    document.removeEventListener('touchmove', touchmove);
   }
   function touchcancel(e) {
     scroller.doTouchEnd(e.timeStamp);
@@ -2302,7 +2222,7 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
     if (e.target.tagName.match(/input|textarea|select/i)) {
       return;
     }
-    eventCallback("mousedown");
+    eventCallback('mousedown');
     scroller.doTouchStart([{
       pageX: e.pageX,
       pageY: e.pageY
@@ -2318,7 +2238,7 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
     if (!mousedown) {
       return;
     }
-    eventCallback("mousemove");
+    eventCallback('mousemove');
     scroller.doTouchMove([{
       pageX: e.pageX,
       pageY: e.pageY
@@ -2330,7 +2250,7 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
     if (!mousedown) {
       return;
     }
-    eventCallback("mouseup");
+    eventCallback('mouseup');
     scroller.doTouchEnd(e.timeStamp);
 
     mousedown = false;
@@ -2338,46 +2258,44 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
   function zoomHandle(e) {
     scroller.doMouseZoom(e.detail ? e.detail * -120 : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
   }
-  if ("ontouchstart" in window) {
+  if ('ontouchstart' in window) {
+    container.addEventListener('touchstart', touchstart, false);
 
-    container.addEventListener("touchstart", touchstart, false);
+    document.addEventListener('touchend', touchend, false);
 
-    document.addEventListener("touchend", touchend, false);
-
-    document.addEventListener("touchcancel", touchcancel, false);
+    document.addEventListener('touchcancel', touchcancel, false);
 
     destroy = function destroy() {
-      container.removeEventListener("touchstart", touchstart, false);
+      container.removeEventListener('touchstart', touchstart, false);
 
-      document.removeEventListener("touchend", touchend, false);
+      document.removeEventListener('touchend', touchend, false);
 
-      document.removeEventListener("touchcancel", touchcancel, false);
+      document.removeEventListener('touchcancel', touchcancel, false);
     };
   } else {
-
     var mousedown = false;
 
-    container.addEventListener("mousedown", mousedownEvent, false);
+    container.addEventListener('mousedown', mousedownEvent, false);
 
-    document.addEventListener("mousemove", mousemove, false);
+    document.addEventListener('mousemove', mousemove, false);
 
-    document.addEventListener("mouseup", mouseup, false);
+    document.addEventListener('mouseup', mouseup, false);
     if (zooming) {
-      container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" : "mousewheel", zoomHandle, false);
+      container.addEventListener(navigator.userAgent.indexOf('Firefox') > -1 ? 'DOMMouseScroll' : 'mousewheel', zoomHandle, false);
     }
     // container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", function(e) {
     //     scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
     // }, false);
     destroy = function destroy() {
-      container.removeEventListener("mousedown", mousedownEvent, false);
-      document.removeEventListener("mousemove", mousemove, false);
-      document.removeEventListener("mouseup", mouseup, false);
-      container.removeEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" : "mousewheel", zoomHandle, false);
+      container.removeEventListener('mousedown', mousedownEvent, false);
+      document.removeEventListener('mousemove', mousemove, false);
+      document.removeEventListener('mouseup', mouseup, false);
+      container.removeEventListener(navigator.userAgent.indexOf('Firefox') > -1 ? 'DOMMouseScroll' : 'mousewheel', zoomHandle, false);
     };
   }
   // handle __publish event
   scroller.onScroll = function () {
-    eventCallback("onscroll");
+    eventCallback('onscroll');
   };
   return destroy;
 }
@@ -2392,49 +2310,49 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
   var listeners = vm.$listeners;
 
   var activateCallback = function activateCallback() {
-    vm.vuescroll.state[stageName] = "active";
+    vm.vuescroll.state[stageName] = 'active';
   };
 
   var deactivateCallback = function deactivateCallback() {
-    vm.vuescroll.state[stageName] = "deactive";
+    vm.vuescroll.state[stageName] = 'deactive';
   };
 
   var startCallback = function startCallback() {
-    vm.vuescroll.state[stageName] = "start";
+    vm.vuescroll.state[stageName] = 'start';
     setTimeout(function () {
       vm.scroller.finishRefreshOrLoad();
     }, 2000);
   };
 
   var beforeDeactivateCallback = function beforeDeactivateCallback(done) {
-    vm.vuescroll.state[stageName] = "beforeDeactive";
+    vm.vuescroll.state[stageName] = 'beforeDeactive';
     setTimeout(function () {
       done();
     }, 500);
   };
 
-  if (listeners[type + "-activate"]) {
+  if (listeners[type + '-activate']) {
     activateCallback = function activateCallback() {
-      vm.vuescroll.state[stageName] = "active";
-      vm.$emit(type + "-activate", vm, tipDom);
+      vm.vuescroll.state[stageName] = 'active';
+      vm.$emit(type + '-activate', vm, tipDom);
     };
   }
-  if (listeners[type + "-before-deactivate"]) {
+  if (listeners[type + '-before-deactivate']) {
     beforeDeactivateCallback = function beforeDeactivateCallback(done) {
-      vm.vuescroll.state[stageName] = "beforeDeactive";
-      vm.$emit(type + "-before-deactivate", vm, tipDom, done.bind(vm.scroller));
+      vm.vuescroll.state[stageName] = 'beforeDeactive';
+      vm.$emit(type + '-before-deactivate', vm, tipDom, done.bind(vm.scroller));
     };
   }
-  if (listeners[type + "-deactivate"]) {
+  if (listeners[type + '-deactivate']) {
     deactivateCallback = function deactivateCallback() {
-      vm.vuescroll.state[stageName] = "deactive";
-      vm.$emit(type + "-deactivate", vm, tipDom);
+      vm.vuescroll.state[stageName] = 'deactive';
+      vm.$emit(type + '-deactivate', vm, tipDom);
     };
   }
-  if (listeners[type + "-start"]) {
+  if (listeners[type + '-start']) {
     startCallback = function startCallback() {
-      vm.vuescroll.state[stageName] = "start";
-      vm.$emit(type + "-start", vm, tipDom, vm.scroller.finishRefreshOrLoad.bind(vm.scroller));
+      vm.vuescroll.state[stageName] = 'start';
+      vm.$emit(type + '-start', vm, tipDom, vm.scroller.finishRefreshOrLoad.bind(vm.scroller));
     };
   }
 
@@ -2456,19 +2374,19 @@ var slideMode = {
       var contentHeight = this.scrollPanelElm.scrollHeight;
       var refreshHeight = 0;
       var loadHeight = 0;
-      // If the refresh option is true,let's  give a "margin-top" style to 
+      // If the refresh option is true,let's  give a "margin-top" style to
       // the refresh-tip dom. let it to be invisible when doesn't trigger
       // refresh.
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
-        var refreshDom = this.$refs["refreshDom"].elm || this.$refs["refreshDom"];
+        var refreshDom = this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
         refreshHeight = refreshDom.offsetHeight;
         if (!refreshDom.style.marginTop) {
-          refreshDom.style.marginTop = -refreshHeight + "px";
+          refreshDom.style.marginTop = -refreshHeight + 'px';
           contentHeight -= refreshHeight;
         }
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        var loadDom = this.$refs["loadDom"].elm || this.$refs["loadDom"];
+        var loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
         loadHeight = loadDom.offsetHeight;
         //  hide the trailing load dom..
         contentHeight -= loadHeight;
@@ -2489,10 +2407,10 @@ var slideMode = {
       // hadnle for scroll complete
 
       var scrollingComplete = function scrollingComplete() {
-        _this.update("handle-scroll-complete");
+        _this.update('handle-scroll-complete');
       };
       // Initialize Scroller
-      this.scroller = new Scroller(render(this.scrollPanelElm, window, "px"), _extends({}, this.mergedOptions.vuescroll.scroller, {
+      this.scroller = new Scroller(render(this.scrollPanelElm, window, 'px'), _extends({}, this.mergedOptions.vuescroll.scroller, {
         zooming: zooming,
         scrollingY: scrollingY,
         scrollingX: scrollingX && !this.refreshLoad,
@@ -2512,24 +2430,24 @@ var slideMode = {
         // Thie is to dispatch the event from the scroller.
         // to let vuescroll refresh the dom
         switch (eventType) {
-          case "mousedown":
+          case 'mousedown':
             _this.vuescroll.state.isDragging = true;
             break;
-          case "onscroll":
+          case 'onscroll':
             _this.handleScroll(false);
             break;
-          case "mouseup":
+          case 'mouseup':
             _this.vuescroll.state.isDragging = false;
             break;
         }
       }, zooming, preventDefault);
       // registry refresh
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
-        this.registryEvent("refresh");
+        this.registryEvent('refresh');
       }
       // registry load
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        this.registryEvent("load");
+        this.registryEvent('load');
       }
       this.updateScroller();
       return cb;
@@ -2548,7 +2466,7 @@ var slideMode = {
       var contentHeight = clientHeight + this.scroller.__maxScrollTop;
       var __enableScrollX = clientWidth < contentWidth && this.mergedOptions.scrollPanel.scrollingX;
       var __enableScrollY = clientHeight < contentHeight && this.mergedOptions.scrollPanel.scrollingY;
-      // out of horizontal bountry 
+      // out of horizontal bountry
       if (__enableScrollX) {
         if (scroller.__scrollLeft < 0) {
           outerLeft = -scroller.__scrollLeft;
@@ -2576,13 +2494,13 @@ var slideMode = {
       if (scroller.__scrollTop < 0) {
         this.bar.vBar.state.posValue = 0;
       }
-      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + "%" : 0;
-      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + "%" : 0;
+      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
+      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
     },
     registryEvent: function registryEvent(type) {
-      var domName = type == "refresh" ? "refreshDom" : "loadDom";
-      var activateFunc = type == "refresh" ? this.scroller.activatePullToRefresh : this.scroller.activatePushToLoad;
-      var stageName = type == "refresh" ? "refreshStage" : "loadStage";
+      var domName = type == 'refresh' ? 'refreshDom' : 'loadDom';
+      var activateFunc = type == 'refresh' ? this.scroller.activatePullToRefresh : this.scroller.activatePushToLoad;
+      var stageName = type == 'refresh' ? 'refreshStage' : 'loadStage';
       var tipDom = this.$refs[domName].elm || this.$refs[domName];
       var cbs = createStateCallbacks(type, stageName, this, tipDom);
       var height = tipDom.offsetHeight;
@@ -2594,29 +2512,29 @@ var slideMode = {
 var map = {
   vertical: {
     bar: {
-      size: "height",
-      opsSize: "width",
-      posName: "top",
-      page: "pageY",
-      scroll: "scrollTop",
-      scrollSize: "scrollHeight",
-      offset: "offsetHeight",
-      client: "clientY"
+      size: 'height',
+      opsSize: 'width',
+      posName: 'top',
+      page: 'pageY',
+      scroll: 'scrollTop',
+      scrollSize: 'scrollHeight',
+      offset: 'offsetHeight',
+      client: 'clientY'
     },
-    axis: "Y"
+    axis: 'Y'
   },
   horizontal: {
     bar: {
-      size: "width",
-      opsSize: "height",
-      posName: "left",
-      page: "pageX",
-      scroll: "scrollLeft",
-      scrollSize: "scrollWidth",
-      offset: "offsetWidth",
-      client: "clientX"
+      size: 'width',
+      opsSize: 'height',
+      posName: 'left',
+      page: 'pageX',
+      scroll: 'scrollLeft',
+      scrollSize: 'scrollWidth',
+      offset: 'offsetWidth',
+      client: 'clientX'
     },
-    axis: "X"
+    axis: 'X'
   }
 };
 
@@ -2625,7 +2543,7 @@ var _extends$1 = Object.assign || function (target) { for (var i = 1; i < argume
 function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var bar = {
-  name: "bar",
+  name: 'bar',
   props: {
     ops: {
       type: Object,
@@ -2655,24 +2573,24 @@ var bar = {
     var _extends2,
         _this = this;
 
-    //eslint-disable-line
-    var style = _extends$1((_extends2 = {}, _defineProperty$1(_extends2, this.bar.posName, 0), _defineProperty$1(_extends2, this.ops.pos, 0), _defineProperty$1(_extends2, this.bar.size, this.state.size), _defineProperty$1(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty$1(_extends2, "borderRadius", this.ops[this.bar.opsSize]), _defineProperty$1(_extends2, "background", this.ops.background), _defineProperty$1(_extends2, "opacity", this.state.opacity), _defineProperty$1(_extends2, "cursor", "pointer"), _defineProperty$1(_extends2, "position", "absolute"), _defineProperty$1(_extends2, "transition", "opacity .5s"), _defineProperty$1(_extends2, "userSelect", "none"), _extends2), render(this.type, window, "%", this.state.posValue));
+    // eslint-disable-line
+    var style = _extends$1((_extends2 = {}, _defineProperty$1(_extends2, this.bar.posName, 0), _defineProperty$1(_extends2, this.ops.pos, 0), _defineProperty$1(_extends2, this.bar.size, this.state.size), _defineProperty$1(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty$1(_extends2, 'borderRadius', this.ops[this.bar.opsSize]), _defineProperty$1(_extends2, 'background', this.ops.background), _defineProperty$1(_extends2, 'opacity', this.state.opacity), _defineProperty$1(_extends2, 'cursor', 'pointer'), _defineProperty$1(_extends2, 'position', 'absolute'), _defineProperty$1(_extends2, 'transition', 'opacity .5s'), _defineProperty$1(_extends2, 'userSelect', 'none'), _extends2), render(this.type, window, '%', this.state.posValue));
     var data = {
       style: style,
-      class: "vuescroll-" + this.type + "-scrollbar",
+      class: 'vuescroll-' + this.type + '-scrollbar',
       on: {
         mousedown: this.handleMousedown
       }
     };
     if (this.ops.hover) {
-      data.on["mouseenter"] = function () {
+      data.on['mouseenter'] = function () {
         _this.$el.style.background = _this.ops.hover;
       };
-      data.on["mouseleave"] = function () {
+      data.on['mouseleave'] = function () {
         _this.$el.style.background = _this.ops.background;
       };
     }
-    return h("div", data);
+    return h('div', data);
   },
 
   methods: {
@@ -2683,9 +2601,9 @@ var bar = {
       };
       this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
       // tell parent that the mouse has been down.
-      this.$emit("setBarClick", true);
-      eventCenter(document, "mousemove", this.handleMouseMove);
-      eventCenter(document, "mouseup", this.handleMouseUp);
+      this.$emit('setBarClick', true);
+      eventCenter(document, 'mousemove', this.handleMouseMove);
+      eventCenter(document, 'mouseup', this.handleMouseUp);
     },
     handleMouseMove: function handleMouseMove(e) {
       /* istanbul ignore next */
@@ -2695,32 +2613,32 @@ var bar = {
       /* istanbul ignore next */
       {
         // https://github.com/ElemeFE/element/blob/27a8c1556e30ae38423ebc4bb100486e59b8601f/packages/scrollbar/src/bar.js#L72
-        var delta = e[this.bar.client] - this.parent[this.type + "Rail"].getBoundingClientRect()[this.bar.posName];
-        var percent = (delta - this.axisStartPos) / this.parent[this.type + "Rail"][this.bar.offset];
-        this.$parent.scrollTo(_defineProperty$1({}, this.axis.toLowerCase(), this.parent["scrollPanel"].$el[this.bar.scrollSize] * percent), false);
+        var delta = e[this.bar.client] - this.parent[this.type + 'Rail'].getBoundingClientRect()[this.bar.posName];
+        var percent = (delta - this.axisStartPos) / this.parent[this.type + 'Rail'][this.bar.offset];
+        this.$parent.scrollTo(_defineProperty$1({}, this.axis.toLowerCase(), this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent), false);
       }
     },
     handleMouseUp: function handleMouseUp() {
-      this.$emit("setBarClick", false);
+      this.$emit('setBarClick', false);
       document.onselectstart = null;
       this.$parent.hideBar();
       this.axisStartPos = 0;
-      eventCenter(document, "mousemove", this.handleMouseMove, "off");
-      eventCenter(document, "mouseup", this.handleMouseUp, "off");
+      eventCenter(document, 'mousemove', this.handleMouseMove, 'off');
+      eventCenter(document, 'mouseup', this.handleMouseUp, 'off');
     }
   }
 };
 
 /**
-* create bars
-* 
-* @param {any} size 
-* @param {any} type 
-*/
+ * create bars
+ *
+ * @param {any} size
+ * @param {any} type
+ */
 function createBar(h, vm, type) {
   // hBar data
-  var barType = type === "vertical" ? "vBar" : "hBar";
-  var axis = type === "vertical" ? "Y" : "X";
+  var barType = type === 'vertical' ? 'vBar' : 'hBar';
+  var axis = type === 'vertical' ? 'Y' : 'X';
 
   var barData = {
     props: {
@@ -2731,12 +2649,12 @@ function createBar(h, vm, type) {
     on: {
       setBarClick: vm.setBarClick
     },
-    ref: type + "Bar"
+    ref: type + 'Bar'
   };
-  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.mode == "pure-native" || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel['scrolling' + axis] || vm.mode == 'pure-native' || vm.refreshLoad && type !== 'vertical' && vm.mode === 'slide') {
     return null;
   }
-  return h("bar", barData);
+  return h('bar', barData);
 }
 
 function _defineProperty$2(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -2747,14 +2665,14 @@ function handleClickTrack(e, _ref, parentRef, type, parent) {
       posName = _ref.posName,
       scrollSize = _ref.scrollSize;
 
-  var barOffset = parentRef[type + "Bar"].$el[offset];
+  var barOffset = parentRef[type + 'Bar'].$el[offset];
   var percent = (e[client] - e.target.getBoundingClientRect()[posName] - barOffset / 2) / e.target[offset];
-  var pos = parentRef["scrollPanel"].$el[scrollSize] * percent;
+  var pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
   parent.scrollTo(_defineProperty$2({}, map[type].axis.toLowerCase(), pos));
 }
 
 var rail = {
-  name: "rail",
+  name: 'rail',
   functional: true,
   render: function render(h, _ref2) {
     var _style;
@@ -2764,11 +2682,11 @@ var rail = {
 
     var bar = map[props.type].bar;
     var parentRef = parent.$refs;
-    var style = (_style = {}, _defineProperty$2(_style, bar.posName, 0), _defineProperty$2(_style, props.ops.pos, 0), _defineProperty$2(_style, bar.size, "100%"), _defineProperty$2(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$2(_style, "borderRadius", props.ops[bar.opsSize]), _defineProperty$2(_style, "background", props.ops.background), _defineProperty$2(_style, "opacity", props.ops.opacity), _defineProperty$2(_style, "position", "absolute"), _defineProperty$2(_style, "cursor", "pointer"), _style);
+    var style = (_style = {}, _defineProperty$2(_style, bar.posName, 0), _defineProperty$2(_style, props.ops.pos, 0), _defineProperty$2(_style, bar.size, '100%'), _defineProperty$2(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$2(_style, 'borderRadius', props.ops[bar.opsSize]), _defineProperty$2(_style, 'background', props.ops.background), _defineProperty$2(_style, 'opacity', props.ops.opacity), _defineProperty$2(_style, 'position', 'absolute'), _defineProperty$2(_style, 'cursor', 'pointer'), _style);
     var data = {
       style: style,
-      class: "vuescroll-" + props.type + "-rail",
-      ref: props.type + "Rail",
+      class: 'vuescroll-' + props.type + '-rail',
+      ref: props.type + 'Rail',
       on: {
         click: function click(e) {
           handleClickTrack(e, bar, parentRef, props.type, parent);
@@ -2776,18 +2694,18 @@ var rail = {
       }
     };
     return h(
-      "div",
+      'div',
       data,
-      [" "]
+      [' ']
     );
   }
 };
 
 function createRail(h, vm, type) {
   // rail data
-  var railType = type === "vertical" ? "vRail" : "hRail";
-  var barType = type === "vertical" ? "vBar" : "hBar";
-  var axis = type === "vertical" ? "Y" : "X";
+  var railType = type === 'vertical' ? 'vRail' : 'hRail';
+  var barType = type === 'vertical' ? 'vBar' : 'hBar';
+  var axis = type === 'vertical' ? 'Y' : 'X';
 
   var railData = {
     props: {
@@ -2796,37 +2714,42 @@ function createRail(h, vm, type) {
       state: vm.rail[railType].state
     }
   };
-  if (!vm.bar[barType].state.size || vm.mode == "pure-native" || !vm.mergedOptions.scrollPanel["scrolling" + axis] || vm.refreshLoad && type !== "vertical" && vm.mode === "slide") {
+  if (!vm.bar[barType].state.size || vm.mode == 'pure-native' || !vm.mergedOptions.scrollPanel['scrolling' + axis] || vm.refreshLoad && type !== 'vertical' && vm.mode === 'slide') {
     return null;
   }
-  return h("rail", railData);
+  return h('rail', railData);
 }
 
 // scrollContent
 var scrollContent = {
-  name: "scrollContent",
+  name: 'scrollContent',
   functional: true,
-  props: { ops: { type: Object }, state: { type: Object, default: function _default() {
+  props: {
+    ops: { type: Object },
+    state: {
+      type: Object,
+      default: function _default() {
         return {};
       }
-    } },
+    }
+  },
   render: function render(h, _ref) {
     var props = _ref.props,
         slots = _ref.slots;
 
     var style = deepMerge(props.state.style, {});
-    style.position = "relative";
-    style.minHeight = "100%";
-    style.minWidth = "100%";
-    style.display = "inline-block";
-    style.boxSizing = "border-box";
+    style.position = 'relative';
+    style.minHeight = '100%';
+    style.minWidth = '100%';
+    style.display = 'inline-block';
+    style.boxSizing = 'border-box';
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
     }
     return h(props.ops.tag, {
       style: style,
-      ref: "scrollContent",
-      class: "vuescroll-content",
+      ref: 'scrollContent',
+      class: 'vuescroll-content',
       props: props.ops.props,
       attrs: props.ops.attrs
     }, slots().default);
@@ -2835,18 +2758,18 @@ var scrollContent = {
 
 /**
  * create scroll content
- * 
- * @param {any} size 
- * @param {any} vm 
- * @returns 
+ *
+ * @param {any} size
+ * @param {any} vm
+ * @returns
  */
 
 /**
  * create scroll content
- * 
- * @param {any} size 
- * @param {any} vm 
- * @returns 
+ *
+ * @param {any} size
+ * @param {any} vm
+ * @returns
  */
 function createContent$1(h, vm) {
   // scrollContent data
@@ -2856,7 +2779,7 @@ function createContent$1(h, vm) {
     }
   };
   return h(
-    "scrollContent",
+    'scrollContent',
     scrollContentData,
     [[vm.$slots.default]]
   );
@@ -2865,10 +2788,10 @@ function createContent$1(h, vm) {
 // begin importing
 // vueScrollPanel
 var scrollPanel = {
-  name: "scrollPanel",
+  name: 'scrollPanel',
   props: { ops: { type: Object, required: true } },
   methods: {
-    // trigger scrollPanel options initialScrollX, 
+    // trigger scrollPanel options initialScrollX,
     // initialScrollY
     updateInitialScroll: function updateInitialScroll() {
       var x = 0;
@@ -2894,10 +2817,10 @@ var scrollPanel = {
   render: function render(h) {
     // eslint-disable-line
     var data = {
-      class: ["vuescroll-panel"]
+      class: ['vuescroll-panel']
     };
     return h(
-      "div",
+      'div',
       data,
       [[this.$slots.default]]
     );
@@ -2906,18 +2829,18 @@ var scrollPanel = {
 
 /**
  * create a scrollPanel
- * 
- * @param {any} size 
- * @param {any} vm 
- * @returns 
+ *
+ * @param {any} size
+ * @param {any} vm
+ * @returns
  */
 function createPanel(h, vm) {
   // scrollPanel data start
   var scrollPanelData = {
-    ref: "scrollPanel",
+    ref: 'scrollPanel',
     style: {
-      position: "relative",
-      height: "100%"
+      position: 'relative',
+      height: '100%'
     },
     nativeOn: {
       scroll: vm.handleScroll
@@ -2928,83 +2851,83 @@ function createPanel(h, vm) {
     }
   };
   // set overflow only if the in native mode
-  if (vm.mode == "native") {
+  if (vm.mode == 'native') {
     // dynamic set overflow scroll
     // feat: #11
     if (vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style["overflowY"] = vm.bar.vBar.state.size ? "scroll" : "";
+      scrollPanelData.style['overflowY'] = vm.bar.vBar.state.size ? 'scroll' : '';
     } else {
-      scrollPanelData.style["overflowY"] = "hidden";
+      scrollPanelData.style['overflowY'] = 'hidden';
     }
     if (vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style["overflowX"] = vm.bar.hBar.state.size ? "scroll" : "";
+      scrollPanelData.style['overflowX'] = vm.bar.hBar.state.size ? 'scroll' : '';
     } else {
-      scrollPanelData.style["overflowX"] = "hidden";
+      scrollPanelData.style['overflowX'] = 'hidden';
     }
     var gutter = getGutter();
     if (!gutter) {
       hideSystemBar();
-      scrollPanelData.style.height = "100%";
+      scrollPanelData.style.height = '100%';
     } else {
       // hide system bar by use a negative value px
       // gutter should be 0 when manually disable scrollingX #14
       if (vm.bar.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
-        scrollPanelData.style.marginRight = "-" + gutter + "px";
+        scrollPanelData.style.marginRight = '-' + gutter + 'px';
       }
       if (vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
-        scrollPanelData.style.height = "calc(100% + " + gutter + "px)";
+        scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
       }
     }
     // clear legency styles of slide mode...
-    scrollPanelData.style.transformOrigin = "";
-    scrollPanelData.style.transform = "";
-  } else if (vm.mode == "slide") {
-    scrollPanelData.style["display"] = "inline-block";
-    scrollPanelData.style["transformOrigin"] = "left top 0px";
-    scrollPanelData.style["userSelect"] = "none";
-    scrollPanelData.style["height"] = "";
-    // add box-sizing for sile mode because 
+    scrollPanelData.style.transformOrigin = '';
+    scrollPanelData.style.transform = '';
+  } else if (vm.mode == 'slide') {
+    scrollPanelData.style['display'] = 'inline-block';
+    scrollPanelData.style['transformOrigin'] = 'left top 0px';
+    scrollPanelData.style['userSelect'] = 'none';
+    scrollPanelData.style['height'] = '';
+    // add box-sizing for sile mode because
     // let's use scrollPanel intead of scrollContent to wrap content
-    scrollPanelData.style["box-sizing"] = "border-box";
-  } else if (vm.mode == "pure-native") {
-    scrollPanelData.style["width"] = "100%";
+    scrollPanelData.style['box-sizing'] = 'border-box';
+  } else if (vm.mode == 'pure-native') {
+    scrollPanelData.style['width'] = '100%';
     if (vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style["overflowY"] = "auto";
+      scrollPanelData.style['overflowY'] = 'auto';
     } else {
-      scrollPanelData.style["overflowY"] = "hidden";
+      scrollPanelData.style['overflowY'] = 'hidden';
     }
     if (vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style["overflowX"] = "auto";
+      scrollPanelData.style['overflowX'] = 'auto';
     } else {
-      scrollPanelData.style["overflowX"] = "hidden";
+      scrollPanelData.style['overflowX'] = 'hidden';
     }
   }
   return h(
-    "scrollPanel",
+    'scrollPanel',
     scrollPanelData,
     [createPanelChildren(vm, h)]
   );
 }
 
 function createPanelChildren(vm, h) {
-  if (vm.mode == "native") {
+  if (vm.mode == 'native') {
     return [createContent$1(h, vm)];
-  } else if (vm.mode == "slide") {
+  } else if (vm.mode == 'slide') {
     var renderChildren = [vm.$slots.default];
     // handle for refresh
     if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
       // just use user-defined refresh dom instead of default
       if (vm.$slots.refresh) {
-        vm.$refs["refreshDom"] = vm.$slots.refresh[0];
+        vm.$refs['refreshDom'] = vm.$slots.refresh[0];
         renderChildren.unshift(vm.$slots.refresh[0]);
       } else {
         // use default refresh dom
-        createDomStyle("refreshDomStyle");
+        createDomStyle('refreshDomStyle');
         var refreshDom = null;
         refreshDom = createTipDom(h, vm.vuescroll.state.refreshStage);
         renderChildren.unshift(h(
-          "div",
-          { "class": "vuescroll-refresh", ref: "refreshDom", key: "refshDom" },
+          'div',
+          { 'class': 'vuescroll-refresh', ref: 'refreshDom', key: 'refshDom' },
           [[refreshDom, vm.pullRefreshTip]]
         ));
       }
@@ -3012,22 +2935,22 @@ function createPanelChildren(vm, h) {
     // handle for load
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
       if (vm.$slots.load) {
-        vm.$refs["loadDom"] = vm.$slots.load[0];
+        vm.$refs['loadDom'] = vm.$slots.load[0];
         renderChildren.push(vm.$slots.load[0]);
       } else {
-        createDomStyle("loadDomStyle");
+        createDomStyle('loadDomStyle');
         var loadDom = null;
         loadDom = createTipDom(h, vm.vuescroll.state.loadStage);
         // no slot load elm, use default
         renderChildren.push(h(
-          "div",
-          { "class": "vuescroll-load", ref: "loadDom", key: "loadDom" },
+          'div',
+          { 'class': 'vuescroll-load', ref: 'loadDom', key: 'loadDom' },
           [[loadDom, vm.pushLoadTip]]
         ));
       }
     }
     return renderChildren;
-  } else if (vm.mode == "pure-native") {
+  } else if (vm.mode == 'pure-native') {
     return [vm.$slots.default];
   }
 }
@@ -3035,60 +2958,92 @@ function createPanelChildren(vm, h) {
 function createTipDom(h, stage) {
   var dom = null;
   switch (stage) {
-    case "deactive":
+    case 'deactive':
       dom = h(
-        "svg",
+        'svg',
         {
-          attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
+          attrs: {
+            version: '1.1',
+            xmlns: 'http://www.w3.org/2000/svg',
+            xmlnsXlink: 'http://www.w3.org/1999/xlink',
+            x: '0px',
+            y: '0px',
+            viewBox: '0 0 1000 1000',
+            'enable-background': 'new 0 0 1000 1000',
+            xmlSpace: 'preserve'
+          }
         },
-        [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
-          "g",
+        [h('metadata', [' Svg Vector Icons : http://www.sfont.cn ']), h('g', [h(
+          'g',
           {
-            attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
+            attrs: { transform: 'matrix(1 0 0 -1 0 1008)' }
           },
-          [h("path", {
-            attrs: { d: "M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" }
+          [h('path', {
+            attrs: { d: 'M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z' }
           })]
         )])]
       );
       break;
-    case "start":
+    case 'start':
       dom = h(
-        "svg",
+        'svg',
         {
-          attrs: { version: "1.1", id: "loader-1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px",
-            viewBox: "0 0 50 50", xmlSpace: "preserve" },
-          style: "enable-background:new 0 0 50 50;" },
-        [h(
-          "path",
-          {
-            attrs: { fill: "#000", d: "M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" }
+          attrs: {
+            version: '1.1',
+            id: 'loader-1',
+            xmlns: 'http://www.w3.org/2000/svg',
+            xmlnsXlink: 'http://www.w3.org/1999/xlink',
+            x: '0px',
+            y: '0px',
+            viewBox: '0 0 50 50',
+
+            xmlSpace: 'preserve'
           },
-          [h("animateTransform", {
-            attrs: { attributeType: "xml",
-              attributeName: "transform",
-              type: "rotate",
-              from: "0 25 25",
-              to: "360 25 25",
-              dur: "0.6s",
-              repeatCount: "indefinite" }
+          style: 'enable-background:new 0 0 50 50;' },
+        [h(
+          'path',
+          {
+            attrs: {
+              fill: '#000',
+              d: 'M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z'
+            }
+          },
+          [h('animateTransform', {
+            attrs: {
+              attributeType: 'xml',
+              attributeName: 'transform',
+              type: 'rotate',
+              from: '0 25 25',
+              to: '360 25 25',
+              dur: '0.6s',
+              repeatCount: 'indefinite'
+            }
           })]
         )]
       );
       break;
-    case "active":
+    case 'active':
       dom = h(
-        "svg",
+        'svg',
         {
-          attrs: { version: "1.1", xmlns: "http://www.w3.org/2000/svg", xmlnsXlink: "http://www.w3.org/1999/xlink", x: "0px", y: "0px", viewBox: "0 0 1000 1000", "enable-background": "new 0 0 1000 1000", xmlSpace: "preserve" }
+          attrs: {
+            version: '1.1',
+            xmlns: 'http://www.w3.org/2000/svg',
+            xmlnsXlink: 'http://www.w3.org/1999/xlink',
+            x: '0px',
+            y: '0px',
+            viewBox: '0 0 1000 1000',
+            'enable-background': 'new 0 0 1000 1000',
+            xmlSpace: 'preserve'
+          }
         },
-        [h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), h("g", [h(
-          "g",
+        [h('metadata', [' Svg Vector Icons : http://www.sfont.cn ']), h('g', [h(
+          'g',
           {
-            attrs: { transform: "matrix(1 0 0 -1 0 1008)" }
+            attrs: { transform: 'matrix(1 0 0 -1 0 1008)' }
           },
-          [h("path", {
-            attrs: { d: "M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" }
+          [h('path', {
+            attrs: { d: 'M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z' }
           })]
         )])]
       );
@@ -3100,29 +3055,34 @@ function createTipDom(h, stage) {
 function findValuesByMode(mode, vm) {
   var axis = {};
   switch (mode) {
-    case "native":
-    case "pure-native":
-      axis = { x: vm.scrollPanelElm.scrollLeft, y: vm.scrollPanelElm.scrollTop };break;
-    case "slide":
-      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };break;
+    case 'native':
+    case 'pure-native':
+      axis = {
+        x: vm.scrollPanelElm.scrollLeft,
+        y: vm.scrollPanelElm.scrollTop
+      };
+      break;
+    case 'slide':
+      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+      break;
   }
   return axis;
 }
 
 var vuescroll = {
-  name: "vueScroll",
+  name: 'vueScroll',
   components: { bar: bar, rail: rail, scrollContent: scrollContent, scrollPanel: scrollPanel },
   props: { ops: { type: Object } },
   mixins: [hackLifecycle, api, nativeMode, slideMode],
   data: function data() {
     return {
       /**
-       * @description 
+       * @description
        * In state props of each components, we store the states of each
        * components, and in mergedOptions props, we store the options
        * that are megred from user-defined options to default options.
        * @author wangyi7099
-       * @returns 
+       * @returns
        */
       vuescroll: {
         state: {
@@ -3132,8 +3092,8 @@ var vuescroll = {
           timeoutId: 0,
           internalScrollTop: 0,
           internalScrollLeft: 0,
-          refreshStage: "deactive",
-          loadStage: "deactive"
+          refreshStage: 'deactive',
+          loadStage: 'deactive'
         }
       },
       scrollPanel: {},
@@ -3168,18 +3128,18 @@ var vuescroll = {
   render: function render(h) {
     var vm = this;
     if (vm.renderError) {
-      return [vm.$slots["default"]];
+      return [vm.$slots['default']];
     }
     // vuescroll data
     var vuescrollData = {
       style: {
-        position: "relative",
-        height: "100%",
-        width: "100%",
+        position: 'relative',
+        height: '100%',
+        width: '100%',
         padding: 0,
-        overflow: "hidden"
+        overflow: 'hidden'
       },
-      class: "vue-scroll",
+      class: 'vue-scroll',
       on: {
         mouseenter: function mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
@@ -3196,9 +3156,9 @@ var vuescroll = {
       }
     };
     return h(
-      "div",
+      'div',
       vuescrollData,
-      [createPanel(h, vm), createRail(h, vm, "vertical"), createBar(h, vm, "vertical"), createRail(h, vm, "horizontal"), createBar(h, vm, "horizontal")]
+      [createPanel(h, vm), createRail(h, vm, 'vertical'), createBar(h, vm, 'vertical'), createRail(h, vm, 'horizontal'), createBar(h, vm, 'horizontal')]
     );
   },
 
@@ -3207,7 +3167,7 @@ var vuescroll = {
       return this.$refs.scrollPanel.$el;
     },
     scrollContentElm: function scrollContentElm() {
-      return this.$refs["scrollContent"]._isVue ? this.$refs["scrollContent"].$el : this.$refs["scrollContent"];
+      return this.$refs['scrollContent']._isVue ? this.$refs['scrollContent'].$el : this.$refs['scrollContent'];
     },
     mode: function mode() {
       return this.mergedOptions.vuescroll.mode;
@@ -3226,9 +3186,9 @@ var vuescroll = {
     update: function update(eventType) {
       var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-      if (this.mode == "native" || this.mode == "pure-native") {
+      if (this.mode == 'native' || this.mode == 'pure-native') {
         this.updateNativeModeBarState();
-      } else if (this.mode == "slide") {
+      } else if (this.mode == 'slide') {
         this.updateSlideModeBarState();
       }
       if (eventType) {
@@ -3251,19 +3211,19 @@ var vuescroll = {
         this.destroyScroller();
         this.destroyScroller = null;
       }
-      if (this.mode == "slide") {
+      if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
-      } else if (this.mode == "native" || this.mode == "pure-native") {
+      } else if (this.mode == 'native' || this.mode == 'pure-native') {
         // remove the legacy transform style attribute
-        this.scrollPanelElm.style.transform = "";
-        this.scrollPanelElm.style.transformOrigin = "";
+        this.scrollPanelElm.style.transform = '';
+        this.scrollPanelElm.style.transformOrigin = '';
       }
       // keep the last-mode's position.
       this.scrollTo({ x: x, y: y }, false, true /* force */);
     },
     handleScroll: function handleScroll(nativeEvent) {
       this.recordCurrentPos();
-      this.update("handle-scroll", nativeEvent);
+      this.update('handle-scroll', nativeEvent);
       this.showAndDefferedHideBar();
     },
     setBarClick: function setBarClick(val) {
@@ -3297,23 +3257,23 @@ var vuescroll = {
           scrollLeft = _scrollPanelElm.scrollLeft;
 
       var vertical = {
-        type: "vertical"
+        type: 'vertical'
       },
           horizontal = {
-        type: "horizontal"
+        type: 'horizontal'
       };
-      if (this.mode == "slide") {
+      if (this.mode == 'slide') {
         scrollTop = this.scroller.__scrollTop;
         scrollLeft = this.scroller.__scrollLeft;
         clientHeight = this.$el.clientHeight;
         clientWidth = this.$el.clientWidth;
       }
-      vertical["process"] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
-      horizontal["process"] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
-      vertical["barSize"] = this.bar.vBar.state.size;
-      horizontal["barSize"] = this.bar.hBar.state.size;
-      vertical["scrollTop"] = scrollTop;
-      horizontal["scrollLeft"] = scrollLeft;
+      vertical['process'] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
+      horizontal['process'] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
+      vertical['barSize'] = this.bar.vBar.state.size;
+      horizontal['barSize'] = this.bar.hBar.state.size;
+      vertical['scrollTop'] = scrollTop;
+      horizontal['scrollLeft'] = scrollLeft;
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
     showBar: function showBar() {
@@ -3326,8 +3286,8 @@ var vuescroll = {
       if (this.vuescroll.state.isDragging) {
         return;
       }
-      // add isClickingBar condition 
-      // to prevent from hiding bar while dragging the bar 
+      // add isClickingBar condition
+      // to prevent from hiding bar while dragging the bar
       if (!this.mergedOptions.bar.vBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
         this.bar.vBar.state.opacity = 0;
       }
@@ -3351,36 +3311,36 @@ var vuescroll = {
         this.destroyResize();
       }
       var contentElm = null;
-      if (this.mode == "slide" || this.mode == "pure-native") {
+      if (this.mode == 'slide' || this.mode == 'pure-native') {
         contentElm = this.scrollPanelElm;
-      } else if (this.mode == "native") {
+      } else if (this.mode == 'native') {
         // scrollContent maybe a component or a pure-dom
         contentElm = this.scrollContentElm;
       }
       var handleWindowResize = function handleWindowResize() {
         _this3.update();
         _this3.showAndDefferedHideBar();
-        if (_this3.mode == "slide") {
+        if (_this3.mode == 'slide') {
           _this3.updateScroller();
         }
       };
       var handleDomResize = function handleDomResize() {
         var currentSize = {};
-        if (_this3.mode == "slide") {
+        if (_this3.mode == 'slide') {
           _this3.updateScroller();
-          currentSize["width"] = _this3.scroller.__contentWidth;
-          currentSize["height"] = _this3.scroller.__contentHeight;
-        } else if (_this3.mode == "native") {
-          currentSize["width"] = _this3.scrollPanelElm.scrollWidth;
-          currentSize["height"] = _this3.scrollPanelElm.scrollHeight;
+          currentSize['width'] = _this3.scroller.__contentWidth;
+          currentSize['height'] = _this3.scroller.__contentHeight;
+        } else if (_this3.mode == 'native') {
+          currentSize['width'] = _this3.scrollPanelElm.scrollWidth;
+          currentSize['height'] = _this3.scrollPanelElm.scrollHeight;
         }
-        _this3.update("handle-resize", currentSize);
+        _this3.update('handle-resize', currentSize);
         _this3.showAndDefferedHideBar();
       };
-      window.addEventListener("resize", handleWindowResize, false);
+      window.addEventListener('resize', handleWindowResize, false);
       var destroyDomResize = listenResize(contentElm, handleDomResize);
       var destroyWindowResize = function destroyWindowResize() {
-        window.removeEventListener("resize", handleWindowResize, false);
+        window.removeEventListener('resize', handleWindowResize, false);
       };
 
       this.destroyResize = function () {
@@ -3405,7 +3365,7 @@ var vuescroll = {
         deep: true,
         sync: true
       };
-      this.$watch("mergedOptions", function () {
+      this.$watch('mergedOptions', function () {
         // record current position
         _this4.recordCurrentPos();
         _this4.$nextTick(function () {
@@ -3417,7 +3377,7 @@ var vuescroll = {
 
       uncessaryChangeArray.forEach(function (opts) {
         _this4.$watch(opts, function () {
-          // when small changes changed, 
+          // when small changes changed,
           // we need not to updateMode or registryResize
           _this4.shouldStop = true;
         }, watchOpts);
@@ -3428,7 +3388,7 @@ var vuescroll = {
     var _this5 = this;
 
     if (!this._isDestroyed && !this.renderError) {
-      if (this.mode == "slide") {
+      if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       }
       this.lastMode = this.mode;
@@ -3457,7 +3417,7 @@ var vuescroll = {
 var scroll = {
   install: function install(Vue$$1) {
     if (scroll.isInstalled) {
-      log.warn("You should not install the vuescroll again!");
+      log.warn('You should not install the vuescroll again!');
       return;
     }
     // registry vuescroll
@@ -3465,11 +3425,11 @@ var scroll = {
 
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
-    scroll.version = "4.5.13";
+    scroll.version = '4.5.13';
   }
 };
 /* istanbul ignore if */
-if (typeof Vue !== "undefined" && "cjs" === "umd") {
+if (typeof Vue !== 'undefined' && "cjs" === 'umd') {
   Vue.use(scroll);
 }
 

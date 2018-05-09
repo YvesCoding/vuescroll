@@ -1,8 +1,11 @@
-import Vue from "vue";
+import Vue from 'vue';
 export function deepCopy(source, target) {
-  target = typeof target === "object"&&target || {};
+  target = (typeof target === 'object' && target) || {};
   for (var key in source) {
-    target[key] = typeof source[key] === "object" ? deepCopy(source[key], target[key] = {}) : source[key];
+    target[key] =
+      typeof source[key] === 'object'
+        ? deepCopy(source[key], (target[key] = {}))
+        : source[key];
   }
   return target;
 }
@@ -10,16 +13,15 @@ export function deepCopy(source, target) {
 export function deepMerge(from, to) {
   to = to || {};
   for (var key in from) {
-    if (typeof from[key] === "object") {
-      if (typeof(to[key]) === "undefined") {
+    if (typeof from[key] === 'object') {
+      if (typeof to[key] === 'undefined') {
         to[key] = {};
         deepCopy(from[key], to[key]);
       } else {
         deepMerge(from[key], to[key]);
       }
     } else {
-      if(typeof(to[key]) === "undefined")
-        to[key] = from[key];
+      if (typeof to[key] === 'undefined') to[key] = from[key];
     }
   }
   return to;
@@ -27,17 +29,19 @@ export function deepMerge(from, to) {
 
 export function defineReactive(target, key, source, souceKey) {
   let getter = null;
-  if(!source[key] && typeof source !== "function") {
+  if (!source[key] && typeof source !== 'function') {
     return;
   }
   souceKey = souceKey || key;
-  if(typeof source === "function") {
+  if (typeof source === 'function') {
     getter = source;
   }
   Object.defineProperty(target, key, {
-    get: getter || function() {
-      return source[souceKey];
-    },
+    get:
+      getter ||
+      function() {
+        return source[souceKey];
+      },
     configurable: true
   });
 }
@@ -48,19 +52,19 @@ export function getGutter() {
   /* istanbul ignore next */
   if (Vue.prototype.$isServer) return 0;
   if (scrollBarWidth !== undefined) return scrollBarWidth;
-  const outer = document.createElement("div");
-  outer.style.visibility = "hidden";
-  outer.style.width = "100px";
-  outer.style.position = "absolute";
-  outer.style.top = "-9999px";
+  const outer = document.createElement('div');
+  outer.style.visibility = 'hidden';
+  outer.style.width = '100px';
+  outer.style.position = 'absolute';
+  outer.style.top = '-9999px';
   document.body.appendChild(outer);
 
   const widthNoScroll = outer.offsetWidth;
-  outer.style.overflow = "scroll";
-  const inner = document.createElement("div");
-  inner.style.width = "100%";
+  outer.style.overflow = 'scroll';
+  const inner = document.createElement('div');
+  inner.style.width = '100%';
   outer.appendChild(inner);
-  
+
   const widthWithScroll = inner.offsetWidth;
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
@@ -73,19 +77,22 @@ const doneUtil = {
   hide: false
 };
 export function hideSystemBar() {
-  if(doneUtil["hide"]) {
+  if (doneUtil['hide']) {
     return;
   }
-  doneUtil["hide"] = true;
-  let styleDom = document.createElement("style");
-  styleDom.type = "text/css";
-  styleDom.innerHTML=".vuescroll-panel::-webkit-scrollbar{width:0;height:0}";
-  document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
+  doneUtil['hide'] = true;
+  let styleDom = document.createElement('style');
+  styleDom.type = 'text/css';
+  styleDom.innerHTML = '.vuescroll-panel::-webkit-scrollbar{width:0;height:0}';
+  document
+    .getElementsByTagName('HEAD')
+    .item(0)
+    .appendChild(styleDom);
 }
 
-const styleMap ={};
+const styleMap = {};
 
-styleMap["refreshDomStyle"] = `
+styleMap['refreshDomStyle'] = `
 .vuescroll-refresh {
     color: black;
     height: 50px;
@@ -105,7 +112,7 @@ fill: #FF6700;
 }
 `;
 
-styleMap["loadDomStyle"] = `
+styleMap['loadDomStyle'] = `
 .vuescroll-load {
     color: black;
     height: 50px;
@@ -126,31 +133,29 @@ fill: #FF6700;
 `;
 
 export function createDomStyle(styleType) {
-  if(doneUtil[styleType]) {
+  if (doneUtil[styleType]) {
     return;
   }
   doneUtil[styleType] = true;
-  let styleDom = document.createElement("style");
-  styleDom.type = "text/css";
-  styleDom.innerHTML= styleMap[styleType];
-  document.getElementsByTagName("HEAD").item(0).appendChild(styleDom);
+  let styleDom = document.createElement('style');
+  styleDom.type = 'text/css';
+  styleDom.innerHTML = styleMap[styleType];
+  document
+    .getElementsByTagName('HEAD')
+    .item(0)
+    .appendChild(styleDom);
 }
 
-export function eventCenter(dom,
+export function eventCenter(
+  dom,
   eventName,
   hander,
   capture = false,
-  type = "on"
+  type = 'on'
 ) {
-  type == "on" ? dom.addEventListener(
-    eventName,
-    hander,
-    capture
-  ): dom.removeEventListener(
-    eventName,
-    hander,
-    capture
-  );
+  type == 'on'
+    ? dom.addEventListener(eventName, hander, capture)
+    : dom.removeEventListener(eventName, hander, capture);
 }
 
 // native console

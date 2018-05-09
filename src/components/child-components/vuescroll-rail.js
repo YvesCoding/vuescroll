@@ -1,28 +1,36 @@
-import map from "../../shared/scroll-map";
+import map from '../../shared/scroll-map';
 
-function handleClickTrack(e, { client, offset, posName, scrollSize }, parentRef, type, parent) {
+function handleClickTrack(
+  e,
+  { client, offset, posName, scrollSize },
+  parentRef,
+  type,
+  parent
+) {
   const barOffset = parentRef[`${type}Bar`].$el[offset];
-  const percent = (e[client] - e.target.getBoundingClientRect()[posName] - barOffset/2) / e.target[offset];
-  const pos = parentRef["scrollPanel"].$el[scrollSize] * percent; 
+  const percent =
+    (e[client] - e.target.getBoundingClientRect()[posName] - barOffset / 2) /
+    e.target[offset];
+  const pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
   parent.scrollTo({ [map[type].axis.toLowerCase()]: pos });
 }
 
 export default {
-  name: "rail",
+  name: 'rail',
   functional: true,
-  render(h, {parent, props}) {
+  render(h, { parent, props }) {
     const bar = map[props.type].bar;
     const parentRef = parent.$refs;
     let style = {
       [bar.posName]: 0,
       [props.ops.pos]: 0,
-      [bar.size]: "100%",
+      [bar.size]: '100%',
       [bar.opsSize]: props.ops[bar.opsSize],
       borderRadius: props.ops[bar.opsSize],
       background: props.ops.background,
       opacity: props.ops.opacity,
-      position: "absolute",
-      cursor: "pointer"
+      position: 'absolute',
+      cursor: 'pointer'
     };
     let data = {
       style: style,
@@ -30,35 +38,27 @@ export default {
       ref: `${props.type}Rail`,
       on: {
         click(e) {
-          handleClickTrack(
-            e,
-            bar,
-            parentRef,
-            props.type,
-            parent
-          );
+          handleClickTrack(e, bar, parentRef, props.type, parent);
         }
       }
     };
-    return (
-      <div {...data}> </div>
-    );
+    return <div {...data}> </div>;
   }
 };
 
 export /**
-* create rails
-* 
-* @param {any} size 
-* @param {any} type 
-* @param {any} vm 
-* @returns 
-*/
+ * create rails
+ *
+ * @param {any} size
+ * @param {any} type
+ * @param {any} vm
+ * @returns
+ */
 function createRail(h, vm, type) {
   // rail data
-  const railType = type === "vertical"? "vRail": "hRail";
-  const barType = type === "vertical"? "vBar": "hBar";
-  const axis = type === "vertical"? "Y": "X";
+  const railType = type === 'vertical' ? 'vRail' : 'hRail';
+  const barType = type === 'vertical' ? 'vBar' : 'hBar';
+  const axis = type === 'vertical' ? 'Y' : 'X';
 
   const railData = {
     props: {
@@ -67,14 +67,13 @@ function createRail(h, vm, type) {
       state: vm.rail[railType].state
     }
   };
-  if(!vm.bar[barType].state.size
-   || vm.mode == "pure-native"
-   || !vm.mergedOptions.scrollPanel["scrolling" + axis]
-   || (vm.refreshLoad && type !== "vertical" && vm.mode === "slide")) {
+  if (
+    !vm.bar[barType].state.size ||
+    vm.mode == 'pure-native' ||
+    !vm.mergedOptions.scrollPanel['scrolling' + axis] ||
+    (vm.refreshLoad && type !== 'vertical' && vm.mode === 'slide')
+  ) {
     return null;
   }
-  return (
-    <rail {...railData} />
-  );
-
+  return <rail {...railData} />;
 }

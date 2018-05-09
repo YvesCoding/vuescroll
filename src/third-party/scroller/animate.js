@@ -22,40 +22,41 @@
  * rendering. This eases a lot of cases where it might be pretty complex to break down a state
  * based on the pure time difference.
  */
-import { requestAnimationFrame } from "./requestAnimationFrame";
+import { requestAnimationFrame } from './requestAnimationFrame';
 
-var time = Date.now || function() {
-  return +new Date();
-};
+var time =
+  Date.now ||
+  function() {
+    return +new Date();
+  };
 var desiredFrames = 60;
 var millisecondsPerSecond = 1000;
 var running = {};
 var counter = 1;
 
-const core = { effect : {} };
+const core = { effect: {} };
 let global = null;
 
-if(typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   global = window;
 } else {
   global = {};
 }
 
 core.effect.Animate = {
-
   /**
-     * A requestAnimationFrame wrapper / polyfill.
-     *
-     * @param callback {Function} The callback to be invoked before the next repaint.
-     * @param root {HTMLElement} The root element for the repaint
-     */
+   * A requestAnimationFrame wrapper / polyfill.
+   *
+   * @param callback {Function} The callback to be invoked before the next repaint.
+   * @param root {HTMLElement} The root element for the repaint
+   */
   requestAnimationFrame: requestAnimationFrame(global),
   /**
-     * Stops the given animation.
-     *
-     * @param id {Integer} Unique animation ID
-     * @return {Boolean} Whether the animation was stopped (aka, was running before)
-     */
+   * Stops the given animation.
+   *
+   * @param id {Integer} Unique animation ID
+   * @return {Boolean} Whether the animation was stopped (aka, was running before)
+   */
   stop: function(id) {
     var cleared = running[id] != null;
     if (cleared) {
@@ -65,36 +66,40 @@ core.effect.Animate = {
     return cleared;
   },
 
-
   /**
-     * Whether the given animation is still running.
-     *
-     * @param id {Integer} Unique animation ID
-     * @return {Boolean} Whether the animation is still running
-     */
+   * Whether the given animation is still running.
+   *
+   * @param id {Integer} Unique animation ID
+   * @return {Boolean} Whether the animation is still running
+   */
   isRunning: function(id) {
     return running[id] != null;
   },
 
-
   /**
-     * Start the animation.
-     *
-     * @param stepCallback {Function} Pointer to function which is executed on every step.
-     *   Signature of the method should be `function(percent, now, virtual) { return continueWithAnimation; }`
-     * @param verifyCallback {Function} Executed before every animation step.
-     *   Signature of the method should be `function() { return continueWithAnimation; }`
-     * @param completedCallback {Function}
-     *   Signature of the method should be `function(droppedFrames, finishedAnimation) {}`
-     * @param duration {Integer} Milliseconds to run the animation
-     * @param easingMethod {Function} Pointer to easing function
-     *   Signature of the method should be `function(percent) { return modifiedValue; }`
-     * @param root {Element ? document.body} Render root, when available. Used for internal
-     *   usage of requestAnimationFrame.
-     * @return {Integer} Identifier of animation. Can be used to stop it any time.
-     */
-  start: function(stepCallback, verifyCallback, completedCallback, duration, easingMethod, root) {
-
+   * Start the animation.
+   *
+   * @param stepCallback {Function} Pointer to function which is executed on every step.
+   *   Signature of the method should be `function(percent, now, virtual) { return continueWithAnimation; }`
+   * @param verifyCallback {Function} Executed before every animation step.
+   *   Signature of the method should be `function() { return continueWithAnimation; }`
+   * @param completedCallback {Function}
+   *   Signature of the method should be `function(droppedFrames, finishedAnimation) {}`
+   * @param duration {Integer} Milliseconds to run the animation
+   * @param easingMethod {Function} Pointer to easing function
+   *   Signature of the method should be `function(percent) { return modifiedValue; }`
+   * @param root {Element ? document.body} Render root, when available. Used for internal
+   *   usage of requestAnimationFrame.
+   * @return {Integer} Identifier of animation. Can be used to stop it any time.
+   */
+  start: function(
+    stepCallback,
+    verifyCallback,
+    completedCallback,
+    duration,
+    easingMethod,
+    root
+  ) {
     var start = time();
     var lastFrame = start;
     var percent = 0;
@@ -116,7 +121,6 @@ core.effect.Animate = {
 
     // This is the internal step method which is called every few milliseconds
     var step = function(virtual) {
-
       // Normalize virtual value
       var render = virtual !== true;
 
@@ -125,23 +129,28 @@ core.effect.Animate = {
 
       // Verification is executed before next animation step
       if (!running[id] || (verifyCallback && !verifyCallback(id))) {
-
         running[id] = null;
-        completedCallback && completedCallback(desiredFrames - (dropCounter / ((now - start) / millisecondsPerSecond)), id, false);
+        completedCallback &&
+          completedCallback(
+            desiredFrames -
+              dropCounter / ((now - start) / millisecondsPerSecond),
+            id,
+            false
+          );
         return;
-
       }
 
       // For the current rendering to apply let's update omitted steps in memory.
       // This is important to bring internal state variables up-to-date with progress in time.
       if (render) {
-
-        var droppedFrames = Math.round((now - lastFrame) / (millisecondsPerSecond / desiredFrames)) - 1;
+        var droppedFrames =
+          Math.round(
+            (now - lastFrame) / (millisecondsPerSecond / desiredFrames)
+          ) - 1;
         for (var j = 0; j < Math.min(droppedFrames, 4); j++) {
           step(true);
           dropCounter++;
         }
-
       }
 
       // Compute percent value
@@ -154,9 +163,18 @@ core.effect.Animate = {
 
       // Execute step callback, then...
       var value = easingMethod ? easingMethod(percent) : percent;
-      if ((stepCallback(value, now, render) === false || percent === 1) && render) {
+      if (
+        (stepCallback(value, now, render) === false || percent === 1) &&
+        render
+      ) {
         running[id] = null;
-        completedCallback && completedCallback(desiredFrames - (dropCounter / ((now - start) / millisecondsPerSecond)), id, percent === 1 || duration == null);
+        completedCallback &&
+          completedCallback(
+            desiredFrames -
+              dropCounter / ((now - start) / millisecondsPerSecond),
+            id,
+            percent === 1 || duration == null
+          );
       } else if (render) {
         lastFrame = now;
         core.effect.Animate.requestAnimationFrame(step, root);
@@ -174,6 +192,4 @@ core.effect.Animate = {
   }
 };
 
-export {
-  core
-};
+export { core };
