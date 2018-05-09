@@ -7,8 +7,7 @@
   },
   "bundleDependencies": false,
   "dependencies": {
-    "vue": "^2.0",
-    "vuescroll": "^4.5.8"
+    "vue": "^2.0"
   },
   "deprecated": false,
   "description": "A reactive, muli-function, virtual scrollbar based on vue.js2.X",
@@ -32,9 +31,10 @@
     "build": "node scripts/autoBuild.js",
     "test": "npm run test:cover",
     "test:cover": "karma start test/karma.conf.js",
-    "report-coverage": "codecov"
+    "report-coverage": "codecov",
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
-  "version": "4.5.12",
+  "version": "4.5.13",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
