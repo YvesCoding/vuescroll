@@ -3089,7 +3089,9 @@ var vuescroll = {
           internalScrollTop: 0,
           internalScrollLeft: 0,
           refreshStage: 'deactive',
-          loadStage: 'deactive'
+          loadStage: 'deactive',
+          height: '',
+          width: ''
         }
       },
       scrollPanel: {},
@@ -3130,8 +3132,8 @@ var vuescroll = {
     var vuescrollData = {
       style: {
         position: 'relative',
-        height: '100%',
-        width: '100%',
+        height: vm.vuescroll.state.height,
+        width: vm.vuescroll.state.width,
         padding: 0,
         overflow: 'hidden'
       },
@@ -3344,6 +3346,22 @@ var vuescroll = {
         destroyDomResize();
       };
     },
+    registryParentResize: function registryParentResize() {
+      this.destroyParentDomResize = listenResize(this.$el.parentNode, this.setVsSize);
+      this.setVsSize();
+    },
+
+    // set its size to be equal to its parentNode
+    setVsSize: function setVsSize() {
+      var parentElm = this.$el.parentNode;
+      var position = parentElm.style.position;
+
+      if (!position || position == 'static') {
+        this.$el.parentNode.style.position = 'relative';
+      }
+      this.vuescroll.state.height = parentElm.clientHeight + 'px';
+      this.vuescroll.state.width = parentElm.clientWidth + 'px';
+    },
     recordCurrentPos: function recordCurrentPos() {
       var mode = this.mode;
       if (this.mode !== this.lastMode) {
@@ -3391,7 +3409,7 @@ var vuescroll = {
 
       this.registryResize();
       this.initWatch();
-
+      this.registryParentResize();
       this.$nextTick(function () {
         // update state
         _this5.update();
@@ -3407,6 +3425,15 @@ var vuescroll = {
         _this6.showAndDefferedHideBar();
       }
     });
+  },
+  beforeDestroy: function beforeDestroy() {
+    // remove registryed resize
+    if (this.destroyParentDomResize) {
+      this.destroyParentDomResize();
+    }
+    if (this.destroyDomResize) {
+      this.destroyDomResize();
+    }
   }
 };
 

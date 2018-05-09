@@ -52,7 +52,9 @@ export default {
           internalScrollTop: 0,
           internalScrollLeft: 0,
           refreshStage: 'deactive',
-          loadStage: 'deactive'
+          loadStage: 'deactive',
+          height: '',
+          width: ''
         }
       },
       scrollPanel: {},
@@ -93,8 +95,8 @@ export default {
     const vuescrollData = {
       style: {
         position: 'relative',
-        height: '100%',
-        width: '100%',
+        height: vm.vuescroll.state.height,
+        width: vm.vuescroll.state.width,
         padding: 0,
         overflow: 'hidden'
       },
@@ -323,6 +325,23 @@ export default {
         destroyDomResize();
       };
     },
+    registryParentResize() {
+      this.destroyParentDomResize = listenResize(
+        this.$el.parentNode,
+        this.setVsSize
+      );
+      this.setVsSize();
+    },
+    // set its size to be equal to its parentNode
+    setVsSize() {
+      const parentElm = this.$el.parentNode;
+      const { position } = parentElm.style;
+      if (!position || position == 'static') {
+        this.$el.parentNode.style.position = 'relative';
+      }
+      this.vuescroll.state.height = parentElm.clientHeight + 'px';
+      this.vuescroll.state.width = parentElm.clientWidth + 'px';
+    },
     recordCurrentPos() {
       let mode = this.mode;
       if (this.mode !== this.lastMode) {
@@ -374,7 +393,7 @@ export default {
 
       this.registryResize();
       this.initWatch();
-
+      this.registryParentResize();
       this.$nextTick(() => {
         // update state
         this.update();
@@ -388,5 +407,14 @@ export default {
         this.showAndDefferedHideBar();
       }
     });
+  },
+  beforeDestroy() {
+    // remove registryed resize
+    if (this.destroyParentDomResize) {
+      this.destroyParentDomResize();
+    }
+    if (this.destroyDomResize) {
+      this.destroyDomResize();
+    }
   }
 };
