@@ -1,5 +1,6 @@
 export function listenContainer(container, scroller, eventCallback, zooming, preventDefault) {
   let destroy = null;
+  let timeoutId = null;
   // for touch
   function touchstart(e) {
     // Don't react if initial down happens on a form element
@@ -8,18 +9,23 @@ export function listenContainer(container, scroller, eventCallback, zooming, pre
     }
     eventCallback("mousedown");
     scroller.doTouchStart(e.touches, e.timeStamp);
-
     if (preventDefault) {
       e.preventDefault();
     }
+    // here , we want to manully prevent default, so we 
+    // set passive to false
+    // see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener    
+    document.addEventListener("touchmove", touchmove, { passive: false });
   }
   function touchmove(e) {
     eventCallback("mousemove");
     scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
+    e.preventDefault();
   }
   function touchend(e) {
     eventCallback("mouseup");
     scroller.doTouchEnd(e.timeStamp);
+    document.removeEventListener("touchmove", touchmove);
   }
   function touchcancel(e) {
     scroller.doTouchEnd(e.timeStamp);
@@ -70,17 +76,13 @@ export function listenContainer(container, scroller, eventCallback, zooming, pre
     
     container.addEventListener("touchstart", touchstart, false);
         
-    document.addEventListener("touchmove", touchmove, false);
-        
     document.addEventListener("touchend", touchend, false);
     
     document.addEventListener("touchcancel",touchcancel , false);
         
     destroy = function() {
       container.removeEventListener("touchstart", touchstart, false);
-        
-      document.removeEventListener("touchmove", touchmove, false);
-            
+                    
       document.removeEventListener("touchend", touchend, false);
         
       document.removeEventListener("touchcancel",touchcancel , false);
