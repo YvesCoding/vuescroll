@@ -14,21 +14,21 @@ import { uncessaryChangeArray } from '../shared/constants';
 function findValuesByMode(mode, vm) {
   let axis = {};
   switch (mode) {
-    case 'native':
-    case 'pure-native':
-      axis = {
-        x: vm.scrollPanelElm.scrollLeft,
-        y: vm.scrollPanelElm.scrollTop
-      };
-      break;
-    case 'slide':
-      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-      break;
+  case 'native':
+  case 'pure-native':
+    axis = {
+      x: vm.scrollPanelElm.scrollLeft,
+      y: vm.scrollPanelElm.scrollTop
+    };
+    break;
+  case 'slide':
+    axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+    break;
   }
   return axis;
 }
 
-export default {
+const vueScrollCore = {
   name: 'vueScroll',
   components: { bar, rail, scrollContent, scrollPanel },
   props: { ops: { type: Object } },
@@ -201,10 +201,9 @@ export default {
     showAndDefferedHideBar() {
       this.showBar();
       if (this.vuescroll.state.timeoutId) {
-        clearTimeout(this.vuescroll.state.timeoutId); //eslint-disable-line
+        clearTimeout(this.vuescroll.state.timeoutId);
       }
       this.vuescroll.state.timeoutId = setTimeout(() => {
-        //eslint-disable-line
         this.vuescroll.state.timeoutId = 0;
         this.hideBar();
       }, 500);
@@ -328,12 +327,10 @@ export default {
     registryParentResize() {
       this.destroyParentDomResize = listenResize(
         this.$el.parentNode,
-        this.setVsSize
+        this.useNumbericSize
       );
-      this.setVsSize();
     },
-    // set its size to be equal to its parentNode
-    setVsSize() {
+    useNumbericSize() {
       const parentElm = this.$el.parentNode;
       const { position } = parentElm.style;
       if (!position || position == 'static') {
@@ -341,6 +338,22 @@ export default {
       }
       this.vuescroll.state.height = parentElm.clientHeight + 'px';
       this.vuescroll.state.width = parentElm.clientWidth + 'px';
+    },
+    usePercentSize() {
+      this.vuescroll.state.height = '100%';
+      this.vuescroll.state.width = '100%';
+    },
+    // set its size to be equal to its parentNode
+    setVsSize() {
+      if (this.mergedOptions.vuescroll.sizeStrategy == 'number') {
+        this.useNumbericSize();
+        this.registryParentResize();
+      } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
+        if (this.destroyParentDomResize) {
+          this.destroyParentDomResize();
+        }
+        this.usePercentSize();
+      }
     },
     recordCurrentPos() {
       let mode = this.mode;
@@ -393,7 +406,7 @@ export default {
 
       this.registryResize();
       this.initWatch();
-      this.registryParentResize();
+      this.setVsSize();
       this.$nextTick(() => {
         // update state
         this.update();
@@ -418,3 +431,5 @@ export default {
     }
   }
 };
+
+export default vueScrollCore;

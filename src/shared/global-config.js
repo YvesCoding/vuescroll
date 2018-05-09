@@ -3,6 +3,10 @@ export default {
   // vuescroll
   vuescroll: {
     mode: 'native',
+    // vuescroll's size(height/width) should be a percent(100%)
+    // or be a number that is equal to its parentNode's width or
+    // height ?
+    sizeStrategy: 'percent',
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
       enable: false,
@@ -114,8 +118,8 @@ export function validateOptions(ops) {
   // validate vuescroll
   if (!~modes.indexOf(vuescroll.mode)) {
     console.error(
-      `[vuescroll][ops]: The vuescroll's option "mode" should be one of the ${modes}`
-    ); //eslint-disable-line
+      `[vuescroll]: The vuescroll's option "mode" should be one of the ${modes}`
+    );
     shouldStopRender = true;
   }
 
@@ -125,8 +129,8 @@ export function validateOptions(ops) {
     (vuescroll.pullRefresh || vuescroll.pushLoad)
   ) {
     console.error(
-      `[vuescroll][ops]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.`
-    ); //eslint-disable-line
+      '[vuescroll][ops]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.'
+    );
   }
   // validate scrollPanel
   const initialScrollY = scrollPanel['initialScrollY'];
@@ -135,13 +139,13 @@ export function validateOptions(ops) {
   if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
     console.error(
       '[vuescroll][ops]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
-    ); // eslint-disable-line
+    );
   }
 
   if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
     console.error(
       '[vuescroll][ops]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
-    ); // eslint-disable-line
+    );
   }
 
   return shouldStopRender;

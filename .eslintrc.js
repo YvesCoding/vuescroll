@@ -5,8 +5,15 @@ module.exports = {
     indent: ['error', 2, { MemberExpression: 'off' }],
     semi: ['error', 'always'],
     'no-undef': 0,
+    'no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^h$'
+      }
+    ],
     quotes: ['error', 'single'],
-    excludedFiles: 'dist/*.js'
+    excludedFiles: 'dist/*.js'.anchor,
+    'no-console': [0]
   },
   parserOptions: {
     ecmaVersion: 6,

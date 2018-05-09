@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.5.13
+    * @name: vuescroll 4.5.14
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -160,6 +160,10 @@ var GCF = {
   // vuescroll
   vuescroll: {
     mode: 'native',
+    // vuescroll's size(height/width) should be a percent(100%)
+    // or be a number that is equal to its parentNode's width or
+    // height ?
+    sizeStrategy: 'percent',
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
       enable: false,
@@ -272,23 +276,23 @@ function validateOptions(ops) {
   // validate vuescroll
 
   if (!~modes.indexOf(vuescroll.mode)) {
-    console.error('[vuescroll][ops]: The vuescroll\'s option "mode" should be one of the ' + modes); //eslint-disable-line
+    console.error('[vuescroll]: The vuescroll\'s option "mode" should be one of the ' + modes);
     shouldStopRender = true;
   }
 
   if (vuescroll.paging == vuescroll.snapping.enable && vuescroll.paging && (vuescroll.pullRefresh || vuescroll.pushLoad)) {
-    console.error('[vuescroll][ops]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.'); //eslint-disable-line
+    console.error('[vuescroll][ops]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.');
   }
   // validate scrollPanel
   var initialScrollY = scrollPanel['initialScrollY'];
   var initialScrollX = scrollPanel['initialScrollX'];
 
   if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error('[vuescroll][ops]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'); // eslint-disable-line
+    console.error('[vuescroll][ops]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
   }
 
   if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error('[vuescroll][ops]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'); // eslint-disable-line
+    console.error('[vuescroll][ops]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
   }
 
   return shouldStopRender;
@@ -3071,7 +3075,7 @@ function findValuesByMode(mode, vm) {
   return axis;
 }
 
-var vuescroll = {
+var vueScrollCore = {
   name: 'vueScroll',
   components: { bar: bar, rail: rail, scrollContent: scrollContent, scrollPanel: scrollPanel },
   props: { ops: { type: Object } },
@@ -3238,10 +3242,9 @@ var vuescroll = {
 
       this.showBar();
       if (this.vuescroll.state.timeoutId) {
-        clearTimeout(this.vuescroll.state.timeoutId); //eslint-disable-line
+        clearTimeout(this.vuescroll.state.timeoutId);
       }
       this.vuescroll.state.timeoutId = setTimeout(function () {
-        //eslint-disable-line
         _this2.vuescroll.state.timeoutId = 0;
         _this2.hideBar();
       }, 500);
@@ -3353,12 +3356,9 @@ var vuescroll = {
       };
     },
     registryParentResize: function registryParentResize() {
-      this.destroyParentDomResize = listenResize(this.$el.parentNode, this.setVsSize);
-      this.setVsSize();
+      this.destroyParentDomResize = listenResize(this.$el.parentNode, this.useNumbericSize);
     },
-
-    // set its size to be equal to its parentNode
-    setVsSize: function setVsSize() {
+    useNumbericSize: function useNumbericSize() {
       var parentElm = this.$el.parentNode;
       var position = parentElm.style.position;
 
@@ -3367,6 +3367,23 @@ var vuescroll = {
       }
       this.vuescroll.state.height = parentElm.clientHeight + 'px';
       this.vuescroll.state.width = parentElm.clientWidth + 'px';
+    },
+    usePercentSize: function usePercentSize() {
+      this.vuescroll.state.height = '100%';
+      this.vuescroll.state.width = '100%';
+    },
+
+    // set its size to be equal to its parentNode
+    setVsSize: function setVsSize() {
+      if (this.mergedOptions.vuescroll.sizeStrategy == 'number') {
+        this.useNumbericSize();
+        this.registryParentResize();
+      } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
+        if (this.destroyParentDomResize) {
+          this.destroyParentDomResize();
+        }
+        this.usePercentSize();
+      }
     },
     recordCurrentPos: function recordCurrentPos() {
       var mode = this.mode;
@@ -3415,7 +3432,7 @@ var vuescroll = {
 
       this.registryResize();
       this.initWatch();
-      this.registryParentResize();
+      this.setVsSize();
       this.$nextTick(function () {
         // update state
         _this5.update();
@@ -3450,11 +3467,11 @@ var scroll = {
       return;
     }
     // registry vuescroll
-    Vue$$1.component(vuescroll.name, vuescroll);
+    Vue$$1.component(vueScrollCore.name, vueScrollCore);
 
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
-    scroll.version = '4.5.13';
+    scroll.version = '4.5.14';
   }
 };
 /* istanbul ignore if */
