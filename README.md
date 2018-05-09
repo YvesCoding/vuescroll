@@ -11,6 +11,10 @@
 ## Introduction
 Vuescroll is a virtual scrollbar based on Vue.js which is designed for beautifying and enhancing your native scrollbar. 
 
+## Demo & Documentation
+* You can find Demo under the root of this repo.
+* For detailed demo and documentation: Please visit [Offical Website](https://wangyi7099.github.io/vuescrolljs/).
+
 ## Features 
 - Specially design for Vue. Has the reactive feature of Vue.
 - Ability to run in PC or mobile by choosing different modes:
@@ -39,7 +43,7 @@ In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel
 npm install vuescroll -S
 # yarn add vuescroll
 ```
-### Upgrade
+#### Or Upgrade
 ```bash
    npm i vuescroll@latest
    # yarn add vuescroll@latest
@@ -82,13 +86,9 @@ const vm = new Vue({
     </vue-scroll>
 </div>
 ``` 
-3. That's all, just so easy.
 
-## Demo
-There are two ways to checkout Demo:
-1. Download this repo, and open the [Demo](https://github.com/wangyi7099/vuescroll/tree/dev/demo) folder under the root.
-2. Go to [Demo](https://wangyi7099.github.io/vuescrolljs/Demo/) page of the [Offical Website](https://wangyi7099.github.io/vuescrolljs/).
-
+## Changelog
+Detailed changes for each release are documented in the [release notes](https://github.com/wangyi7099/vuescroll/releases).
 
 ## Contribution
 

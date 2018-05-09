@@ -10,6 +10,10 @@
 ## 介绍
 Vuescroll是一个基于Vue.js的虚拟滚动条，设计它的目的是用来美化和增强你的滚动条的。 
 
+## Demo & 文档
+* 你可以浏览这个repo的根目录下的Demo文件夹。
+* 详细的Demo, 文档: 请访问 [官方地址](https://wangyi7099.github.io/vuescrolljs/zh/).
+
 ## 特点 
 - 为Vue量身打造，拥有Vue响应式的特点。
 - 可以通过选择不同的模式来运行在PC端或者手机上:
@@ -81,12 +85,9 @@ const vm = new Vue({
     </vue-scroll>
 </div>
 ``` 
-3. 完事。 就是这么简单。
 
-## Demo
-有两种方式查看Demo:
-1. 下载项目， 打开项目根目录下的[demo](https://github.com/wangyi7099/vuescroll/tree/dev/demo)文件夹。
-2. 去[官网](https://wangyi7099.github.io/vuescrolljs/zh/guide/)的[Demo](https://wangyi7099.github.io/vuescrolljs/zh/Demo/)。
+## 变更日志
+每个版本的详细记录在[发行日志](https://github.com/wangyi7099/vuescroll/releases)里面。
 
 ## 贡献
 
