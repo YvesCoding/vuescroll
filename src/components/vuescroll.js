@@ -53,8 +53,8 @@ const vueScrollCore = {
           internalScrollLeft: 0,
           refreshStage: 'deactive',
           loadStage: 'deactive',
-          height: '',
-          width: ''
+          height: '100%',
+          width: '100%'
         }
       },
       scrollPanel: {},
