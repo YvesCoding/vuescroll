@@ -6,7 +6,6 @@ export function listenContainer(
   preventDefault
 ) {
   let destroy = null;
-  let timeoutId = null;
   // for touch
   function touchstart(e) {
     // Don't react if initial down happens on a form element

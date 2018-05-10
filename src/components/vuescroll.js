@@ -6,7 +6,7 @@ import slideMode from '../mixins/mode/slide-mode';
 
 import bar, { createBar } from './child-components/vuescroll-bar';
 import rail, { createRail } from './child-components/vuescroll-rail';
-import scrollContent from './child-components/vueScroll-content';
+import scrollContent from './child-components/vuescroll-content';
 import scrollPanel, { createPanel } from './child-components/vueScroll-panel';
 
 import { uncessaryChangeArray } from '../shared/constants';

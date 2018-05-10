@@ -63,14 +63,17 @@ export default {
   },
   methods: {
     handleMousedown(e) {
-      e.stopPropagation();
-      document.onselectstart = () => false;
-      this.axisStartPos =
-        e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
-      // tell parent that the mouse has been down.
-      this.$emit('setBarClick', true);
-      eventCenter(document, 'mousemove', this.handleMouseMove);
-      eventCenter(document, 'mouseup', this.handleMouseUp);
+      /* istanbul ignore next */
+      {
+        e.stopPropagation();
+        document.onselectstart = () => false;
+        this.axisStartPos =
+          e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
+        // tell parent that the mouse has been down.
+        this.$emit('setBarClick', true);
+        eventCenter(document, 'mousemove', this.handleMouseMove);
+        eventCenter(document, 'mouseup', this.handleMouseUp);
+      }
     },
     handleMouseMove(e) {
       /* istanbul ignore next */
@@ -98,12 +101,15 @@ export default {
       }
     },
     handleMouseUp() {
-      this.$emit('setBarClick', false);
-      document.onselectstart = null;
-      this.$parent.hideBar();
-      this.axisStartPos = 0;
-      eventCenter(document, 'mousemove', this.handleMouseMove, 'off');
-      eventCenter(document, 'mouseup', this.handleMouseUp, 'off');
+      /* istanbul ignore next */
+      {
+        this.$emit('setBarClick', false);
+        document.onselectstart = null;
+        this.$parent.hideBar();
+        this.axisStartPos = 0;
+        eventCenter(document, 'mousemove', this.handleMouseMove, 'off');
+        eventCenter(document, 'mouseup', this.handleMouseUp, 'off');
+      }
     }
   }
 };

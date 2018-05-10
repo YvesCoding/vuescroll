@@ -19,7 +19,8 @@ Vuescroll is a virtual scrollbar based on Vue.js which is designed for beautifyi
 
 ## Features
 
-* Specially design for Vue. Has the reactive feature of Vue.
+* Originally created virutal scrollbar + sliding scrolling for both being suitable for PC and mobile!
+* Has multi modes and has ability to toggle them anytime, each modes has diffrernt features:
 * Ability to run in PC or mobile by choosing different modes:
   * `native` mode: Like thr native scrollbar, but can costumize styles of scrollbars, it is suitable for PC.
   * `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry, it is suitable for mobile.
