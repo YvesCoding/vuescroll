@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.5.15
+    * @name: vuescroll 4.5.13
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -225,14 +225,14 @@ var GCF = {
   //
   rail: {
     vRail: {
-      width: '5px',
+      width: '6px',
       pos: 'right',
       background: '#01a99a',
       opacity: 0
     },
     //
     hRail: {
-      height: '5px',
+      height: '6px',
       pos: 'bottom',
       background: '#01a99a',
       opacity: 0
@@ -3465,7 +3465,7 @@ var scroll = {
 
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
     scroll.isInstalled = true;
-    scroll.version = '4.5.15';
+    scroll.version = '4.5.13';
   }
 };
 /* istanbul ignore if */

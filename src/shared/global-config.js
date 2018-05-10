@@ -74,14 +74,14 @@ export default {
   //
   rail: {
     vRail: {
-      width: '5px',
+      width: '6px',
       pos: 'right',
       background: '#01a99a',
       opacity: 0
     },
     //
     hRail: {
-      height: '5px',
+      height: '6px',
       pos: 'bottom',
       background: '#01a99a',
       opacity: 0
