@@ -4,11 +4,7 @@ import {
   makeTemplate,
   startSchedule
 } from 'test/unit/util';
-/**
- * we won't test push-refresh and
- * push-load here, we will test them in vuescroll.spec.js.
- * we only test the options belong to scrollPanel
- */
+
 describe('api', () => {
   let vm;
 

@@ -79,7 +79,6 @@ describe('handle-resize', () => {
         content.style.width = '200px';
         _r = r;
       })
-      .wait(1)
       .then(r => {
         hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
         expect(hBar).not.toBe(null);
