@@ -1,0 +1,1200 @@
+[33mcommit 76a0131b5f69028a752eda341602a86b7937eb6b[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon May 14 00:00:30 2018 +0800
+
+    build: release 4.5.16
+    chore:
+    add unit test
+    fix:
+    window.resize may throw an error
+
+[33mcommit 5f59be3a3119bc12d53447133cbdb34ecc75d65a[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun May 13 23:56:54 2018 +0800
+
+    test-cov
+
+[33mcommit bec1541e2231503d2a583ab395fd56d0a6a7d0dc[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun May 13 23:47:29 2018 +0800
+
+    tweak: ci
+
+[33mcommit 0bb8ea1038389653ed4f3008c757bd5948bbac68[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun May 13 23:44:18 2018 +0800
+
+    tweak: ci
+
+[33mcommit 7177de029ef1879636d9f71086416453d21d6b11[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun May 13 23:43:17 2018 +0800
+
+    tweak: ci
+
+[33mcommit fc2f5bbe014d9e322c64d0c7f71411c141f22081[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun May 13 23:40:27 2018 +0800
+
+    tweak: ci
+
+[33mcommit 27b69bbae3178c420e167b957012f1da96aa5b84[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun May 13 23:35:03 2018 +0800
+
+    chore: add unit test
+
+[33mcommit 43cdba05caf2f0dd25ad44a43dc4d3bd8393f9eb[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri May 11 06:22:54 2018 +0800
+
+    tweak: readme
+    WIP: refactor unit test module
+
+[33mcommit fa1bca7235dca40aa3ba296de99c47e3040b4bbf[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri May 11 06:20:48 2018 +0800
+
+    tweak: readme.md
+    WIP: refactor unit test module
+
+[33mcommit 5c74c13223c271fc58a913bb2ffe9f2c409d5723[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Thu May 10 14:33:38 2018 +0800
+
+    tweak: bar/rail width/height default from 5px to  6px
+
+[33mcommit 9bfda52749af589401f48f0123b1a71d2fe8ea5f[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed May 9 21:02:20 2018 +0800
+
+    build: release 4.5.15
+    Hot Fix:
+    Vuescroll's width and height should default to `100%` in case of getting
+    an  incorrect size in slide mode .
+
+[33mcommit 76ec8a4082c4318215e8bafbd23b6a12303bb019[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed May 9 20:39:54 2018 +0800
+
+    build: release 4.5.14
+    Feature:
+      Add sizeStrategy option for vuescroll  To decide use a numberic size  or
+      a percent size for vuescroll while parent dom's size maybe a numberic
+      value or a percent value
+    close #26
+
+[33mcommit 6d2029be7e53379ac2d4b41f87db5db9c042276a[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 9 17:48:03 2018 +0800
+
+    tweak: manully add height or width to vuescroll elm  when mounted
+
+[33mcommit 1ec99ec5cdba2eca3d30482cfce6802721b21017[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 9 14:16:24 2018 +0800
+
+    chore: format code with prettier
+
+[33mcommit 3e7575a89940a58b7fec92141afa928cd8cee769[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 9 13:40:40 2018 +0800
+
+    changelog
+
+[33mcommit 91aeb1ec0ac610aa852b254ecd707eeae4739fb1[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 9 13:36:52 2018 +0800
+
+    buid: release 4.5.13
+
+[33mcommit 89848a5814edfa44d43a454772901aad43afc3c0[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 9 13:09:49 2018 +0800
+
+    tweak: readme
+
+[33mcommit 53148ed161b81c89a84f0a04b26953b7decc18fa[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 9 12:16:19 2018 +0800
+
+    perf(touch): optimize scroll experience
+
+[33mcommit cee0223b6820f327954314a3fcb9385a5002c1c1[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue May 8 21:47:06 2018 +0800
+
+    tweak: the position of preventDefault options in global-config.js
+
+[33mcommit 418b45ade30b1156e9d8fb371ba4557c976d79bb[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue May 8 20:24:32 2018 +0800
+
+    fix: internalscrollTop should default to 0
+
+[33mcommit 1dbaa2d58cb82ec120d9914c7d46f41becd9ea61[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue May 8 09:59:18 2018 +0800
+
+    tweak: dynamically set data
+
+[33mcommit 97825830a5f84f47ef16c848764504c5dc4dd797[m
+Merge: de6c4c2 61cb0e8
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue May 8 08:52:44 2018 +0800
+
+    Merge branch 'dev' of github.com:wangyi7099/vuescroll into dev
+
+[33mcommit de6c4c27b42c3b35436e6a5e3fa3682052ff6fcb[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue May 8 08:52:24 2018 +0800
+
+    fix: rail's borderradius cannot be dynamiclly set
+
+[33mcommit 5a7000cec3a0a1d7579c8ecee8a0e76d6f00ac06[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 14:45:23 2018 +0800
+
+    tweak: readme
+
+[33mcommit 62c31662d68f517a3f55efed953ce8463a4185ae[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 12:55:24 2018 +0800
+
+    tweak: demo style
+
+[33mcommit 057dfdaf6db464d464d207f0ab986b100f798254[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 12:11:30 2018 +0800
+
+    fix: typo in readme
+
+[33mcommit 695532125f312d2a10d45f818c039df077ca01a9[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 12:07:52 2018 +0800
+
+    fix: typo in readme
+
+[33mcommit 586b042ccd1b198eb20e50fa171d550919e6f394[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 12:06:24 2018 +0800
+
+    tweak: readme
+
+[33mcommit 9acd84c7588e1e6a0ce016af0b7e50d9398a22bb[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 12:01:19 2018 +0800
+
+    tweak: readme
+
+[33mcommit 5b96c2f1333111144e0cb17402ccaeabf1081eb8[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 11:22:16 2018 +0800
+
+    tweak: readme
+
+[33mcommit 61cb0e8c6770d1b07d87b914f2b600b601aab8b2[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon May 7 11:20:40 2018 +0800
+
+    tweak: readme
+
+[33mcommit 74d3cf345b022cb8f8263d8c61880b7d6e98976d[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 11:17:18 2018 +0800
+
+    tweak: readme
+
+[33mcommit af38120ef179f012192b58b9c9e67aa5906c6038[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 11:13:03 2018 +0800
+
+    tweak: readme
+
+[33mcommit 626f555d8ed1c7fcb41c40f2dfdf6e37c86749fe[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon May 7 11:09:57 2018 +0800
+
+    tweak: readme
+
+[33mcommit 057f0563bd10fc1e7512c5c43fb6bf2b6255cf63[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon May 7 10:53:16 2018 +0800
+
+    refactor: code structure
+
+[33mcommit e119ee9a343225d23fa77c14620f33781d1385f1[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun May 6 15:11:31 2018 +0800
+
+    refator: push=refresh and push-laod
+
+[33mcommit 55599a607793549109f098125e225b0f51d7d745[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat May 5 06:39:19 2018 +0800
+
+    tweak: readme
+
+[33mcommit 42985c3d85822d98c03ff2ebe47b491538c36952[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat May 5 06:37:17 2018 +0800
+
+    tweak: readme
+
+[33mcommit 09b8828bcf1fe549b219c9563cfeb1ecc4a5eb5f[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat May 5 06:33:05 2018 +0800
+
+    tweak: readme
+
+[33mcommit 0c361d004a7ddc6195c208da97151b149bd0980e[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat May 5 06:30:20 2018 +0800
+
+    tweak:add chinese readme link
+
+[33mcommit 4f72eb1fd3848cfe78499a97153dcf168aeeb985[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat May 5 06:23:19 2018 +0800
+
+    tweak: readme
+
+[33mcommit 0c31be8ee4e6545ff501c741059cc10d52bda84a[m
+Author: Frantisek Polasek <me@fandaa.name>
+Date:   Fri May 4 16:59:32 2018 +0200
+
+    fix: indent
+
+[33mcommit 70e188653cc7e7601465e6c98ecff448cabedec8[m
+Author: Frantisek Polasek <polasekf@gmail.com>
+Date:   Fri May 4 16:46:53 2018 +0200
+
+    feat(api): add preventDefault option
+
+[33mcommit 8cfcbf82faf57f6323413ad8841f12e40f22654e[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri May 4 13:59:49 2018 +0800
+
+    tweak: readme
+
+[33mcommit 67c997e4b6fd1aef6204dafa726cc8af2116113a[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri May 4 16:09:53 2018 +0800
+
+    tweak: readme.md
+
+[33mcommit 5832a6ac31ca15bb8dbd4e487d88814216145ea2[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri May 4 16:01:31 2018 +0800
+
+    4.5.12
+
+[33mcommit a3e2478b16fba00d55f9036ce54d9119a72cbdbe[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri May 4 15:56:18 2018 +0800
+
+    feat(paging): add getCurrentPage, goToPage api for paging in slide mode
+
+[33mcommit 77690998e8df5c40f045b3f814ffa6d60d64a112[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Thu May 3 15:25:12 2018 +0800
+
+    feat(api): add zoomTo, zoomBy, getCurrentviewDom methods
+    zoomTo: only for slide mode, zoom to a given level.
+    zoomBy: only for slide mode, zoom by given factor.
+    getCurrentviewDom: get the currentview doms.
+
+[33mcommit fc8c1e46af570662dd5025114f2041fa3885e11f[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed May 2 14:51:15 2018 +0800
+
+    4.5.11
+
+[33mcommit a16f75d614758a05e3f4622896b6a3d117e29979[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 2 14:28:45 2018 +0800
+
+    tweak: indent in readme.md
+
+[33mcommit e10f85dfe5817ad3937e4e41aa6b8c3601a9ace3[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 2 14:00:34 2018 +0800
+
+    tweak: padding defaults to false
+
+[33mcommit ff76b39896e38fd877b317cca547bc7cc107a43d[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 2 13:08:18 2018 +0800
+
+    fix: typo
+
+[33mcommit 3eaa1cada7c4e1b17bf68077272b28c5a40bc267[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed May 2 08:59:29 2018 +0800
+
+    fix: error process when mode is 'slide'
+
+[33mcommit 5b12cf090bfa7880d47d587cb1013a116288e956[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue May 1 05:36:07 2018 +0800
+
+    build: release 4.5.10
+    Features:
+    add some options to config scroll behavior in slide mode. See
+    ops->vuescroll->scroller in global-config.js
+    
+    t
+
+[33mcommit 5018cbe575e6bd0a9a6516cb351e19d062ba5b28[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue May 1 05:26:44 2018 +0800
+
+    build: release 4.5.9
+    Features:
+    Add a new event 'handle-scroll-complete', will emit when scroll complete.
+    Refactor:
+    Code structure, to be more easier understood
+
+[33mcommit 6da46f36b32a5746e44e52aa208b5a98fc3a69b4[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Apr 29 04:42:42 2018 +0800
+
+    fix logo
+
+[33mcommit 762d8afe2fda847c9e6c085521466082060ce8b9[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Apr 29 04:25:10 2018 +0800
+
+    fix error link in zh-readme.md
+
+[33mcommit b3626ca8c2712ecff9b0c802e4a9bc3d370478c7[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Apr 29 04:23:06 2018 +0800
+
+    adD THE missing link in logo
+
+[33mcommit ee8304acbea3d7442bcbf7fad2970f5b8a4dc3af[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Apr 29 04:19:58 2018 +0800
+
+    update readme
+
+[33mcommit d76535b1a2ea30ad36d6d7d4cb2eaf5caef4ce30[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 28 16:53:35 2018 +0800
+
+    release 4.5.8
+    fix: typo in readme.md
+
+[33mcommit ac3a6e5e723dabbb952c3f6830ceee7c691ac9d5[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 28 16:50:38 2018 +0800
+
+    release 4.5.7
+    fix: typo in reamde.md
+
+[33mcommit a5771a57937736a83636fe646fce47bb1c12eb10[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 28 16:40:56 2018 +0800
+
+    release 2.5.6
+    Tweak: add box-sizing style to scrollPanel while in slide mode.
+    Refactor: make readme.md more clear to understand.
+
+[33mcommit ed0e4f3fce944cf1ac466431af5c27dbf6e4fac4[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Sat Apr 28 17:25:36 2018 +0800
+
+    feat: add zooming options to enable zoom in slide mode or not
+
+[33mcommit 5e245624e7aba1b1d656ee5d6630aa2c2ae6aa2c[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Sat Apr 28 10:33:02 2018 +0800
+
+    perf: set document select none when mouse is clicked
+
+[33mcommit cf86fbbafff5a16c84c4eed544215af0af2205d9[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Apr 27 15:06:45 2018 +0800
+
+    changelog
+
+[33mcommit 0e5419ab29130301e39e7777c4c91328e10e5001[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri Apr 27 17:36:45 2018 +0800
+
+    build: release 4.5.4
+
+[33mcommit dbb59084f9dd37947eae8b6643cca4f833862fef[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri Apr 27 16:52:55 2018 +0800
+
+    fix: resize event didn't trigger in FireFox
+    close #22
+
+[33mcommit d89ec35f14c9569615923f9249119ba4221551f7[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri Apr 27 13:06:31 2018 +0800
+
+    fix: typo
+
+[33mcommit 16aa430fa8f5fabefe459cf3755a5d9f02605f23[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri Apr 27 13:05:23 2018 +0800
+
+    chore: update readme
+
+[33mcommit 11da6a89eaee7e4f488edd9b8ff9bc68440597f5[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri Apr 27 13:03:31 2018 +0800
+
+    fix: typo
+
+[33mcommit 4371b53ba72267636a9f996fc71eb24bae5348c7[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri Apr 27 13:02:02 2018 +0800
+
+    chore: remove package-lock.json
+
+[33mcommit 128d52df4adf4c87e02d12465028db8d2158c095[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Fri Apr 27 08:41:13 2018 +0800
+
+    fix a typo in readme
+
+[33mcommit 4901c5440bf69d31f3cbac0449f2e78832b493e0[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Apr 26 17:18:43 2018 +0800
+
+    new offical website
+
+[33mcommit 50949cd51ce105f6cad413164cc4ed91fb2e1b10[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Apr 26 15:42:28 2018 +0800
+
+    4.5.2
+    fix: in module system window object causes undefined error
+
+[33mcommit fe344277c2090d99bc22e528d426c6c307966099[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Apr 26 12:22:58 2018 +0800
+
+    build: release v4.5.1
+    Bug Fix:
+        Add box-sizing: border-box to scrollContent to prevent error calculate
+        of scrollContent.
+
+[33mcommit f64cd824398a39c78b0ab60f9a8fb3cfd804ebc4[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Thu Apr 26 12:59:37 2018 +0800
+
+    changelog
+
+[33mcommit 4fe08eb44bacac084105e608bfa4ff9a2328d13f[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Thu Apr 26 12:54:25 2018 +0800
+
+    build: release 4.5.0
+
+[33mcommit 8249b5d0b9c0879f708ab49ee968a3edf1902875[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Apr 25 17:47:01 2018 +0800
+
+    feat(core): add pure-native mode that you can use native scrollbar in vuescroll
+
+[33mcommit 1876732e879641cef1962e3577054b6fe992f5ae[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed Apr 25 14:43:33 2018 +0800
+
+    refactor(WIP): code format
+
+[33mcommit e7573a02f591eecce2c21e847f5c8d92eb3ce445[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed Apr 25 12:51:15 2018 +0800
+
+    changelog
+
+[33mcommit dc74f82f004a683222814e81da57eeb0c5829482[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed Apr 25 12:46:22 2018 +0800
+
+    changelog
+
+[33mcommit 600563588bef4b5dfb28a81789e76948b06114c7[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed Apr 25 12:35:02 2018 +0800
+
+    changelog
+
+[33mcommit 07663f39dd97ab06f6f45b2b268d226df94bb29d[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed Apr 25 11:10:28 2018 +0800
+
+    tweak: changelog
+
+[33mcommit 4c974e9123ddb727aa43ac964bc417b5d0913fa4[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed Apr 25 10:00:11 2018 +0800
+
+    tweak: readme
+
+[33mcommit 6130bbd67a382477bf5089fbe143927ac266b45a[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Wed Apr 25 09:28:07 2018 +0800
+
+    tweak: readme
+
+[33mcommit a6f32fc23f5f4dab4fd1829526be83ef51daaf7a[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Apr 24 16:19:37 2018 +0800
+
+    tweak: delete with and pos options on bars
+
+[33mcommit 8161055015fcbbbccc39dedff76ce2da1d18bf5e[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Apr 24 16:13:53 2018 +0800
+
+    feat: add scrollby api
+
+[33mcommit 003be279fafe4e023b56b6ab296848e9f3cbb4f8[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue Apr 24 18:47:45 2018 +0800
+
+    fix: use internalscrollLeft in scrollTo api
+
+[33mcommit dc35a88fb3354570cbe1b18cb8ef412b2ff8ce61[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue Apr 24 11:18:33 2018 +0800
+
+    tweak: readme
+
+[33mcommit b2006be113db63f248c21c58208d97de5c341ba5[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue Apr 24 11:10:46 2018 +0800
+
+    tweak: readme
+
+[33mcommit afb3d9d50a253dc55f3340ac4aa65978fc009913[m
+Merge: 6e05d6d 183684d
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue Apr 24 10:43:07 2018 +0800
+
+    Merge branch 'master' into dev
+
+[33mcommit 183684d8c027d8af1a83e10a1b7fd2606a6264b0[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue Apr 24 10:42:38 2018 +0800
+
+    tweak: readme
+
+[33mcommit fd303fcc01b679be7d2b0ff4f548c61b7da54bf3[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Apr 23 15:00:20 2018 +0800
+
+    build:release v4.4.9
+
+[33mcommit 21d4a1cde133f1cff3f0ccde60b2d5c58d03cacb[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon Apr 23 13:04:19 2018 +0800
+
+    refator: code structure
+
+[33mcommit 2f2ccbf5b3bc3d65e76ee4ccbf4553c0be091514[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 19:19:16 2018 +0800
+
+    build: releas v4.4.8
+
+[33mcommit ba6615351c4d550ccd2178916f043eeff26891ea[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 18:05:52 2018 +0800
+
+    build: release 4.4.7
+
+[33mcommit 5e851e9bdd84cc8f0ccb5abc8898d262853c6636[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 16:58:04 2018 +0800
+
+    build: release 4.4.6
+
+[33mcommit 16596662f440b4aed36765a094b7b510d5ec8ba1[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 16:17:30 2018 +0800
+
+    tweak: Add `-moz-fit-content` style to scrollContent for firefox.
+
+[33mcommit 0ffbdd300fd86503f62c638231ae1ef9e23552f4[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 15:48:49 2018 +0800
+
+    build: releas 4.4.4
+    
+    fix in some cases width changes are not detected.
+
+[33mcommit 6e05d6d95f978c3131fa1004c803a93c09b6c1d4[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Apr 23 15:00:20 2018 +0800
+
+    build:release v4.4.9
+
+[33mcommit ce038934506a591a2f370f9fc27d320c3d73e9ae[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Mon Apr 23 13:04:19 2018 +0800
+
+    refator: code structure
+
+[33mcommit 99c343babb471dc103e24d60ba7c2de690f21d0e[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 19:19:16 2018 +0800
+
+    build: releas v4.4.8
+
+[33mcommit db6c1b55a5063c28e972e307f16d4c9d2dd214a4[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 18:05:52 2018 +0800
+
+    build: release 4.4.7
+
+[33mcommit 491a2534c8cfa772ca52ed66e94a17832d3df283[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 16:58:04 2018 +0800
+
+    build: release 4.4.6
+
+[33mcommit f06dbe0f33602c9980d3ac95c8af24ff770554bf[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 16:17:30 2018 +0800
+
+    tweak: Add `-moz-fit-content` style to scrollContent for firefox.
+
+[33mcommit fa22a169972b057f22e89ede768f0d495f093206[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 15:48:49 2018 +0800
+
+    build: releas 4.4.4
+    
+    fix in some cases width changes are not detected.
+
+[33mcommit 8cffa0151eb03bc73ed3140737e2da3484472402[m
+Merge: d302333 7c1b7a2
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 10:24:11 2018 +0800
+
+    Merge pull request #16 from wangyi7099/dev
+    
+    V4.4.3
+
+[33mcommit 7c1b7a22dd2b9a9896902d384651f73a59568ad1[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 21 01:41:06 2018 +0800
+
+    build: release 4.3.3
+
+[33mcommit 59978453bc1cefb99c4798e0b1c91a36ebf617e7[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Apr 20 17:00:32 2018 +0800
+
+    build: realse 4.3.3
+
+[33mcommit 7b97699ee4304353270376430ccb504329031ac9[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Thu Apr 19 16:11:48 2018 +0800
+
+    build: release 4.2.3
+
+[33mcommit 9062ac0e33d1781c091daa59af8edc55102a0dfb[m
+Merge: 4a0913c 927f12c
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Apr 19 07:57:35 2018 +0800
+
+    Merge pull request #13 from diomed/patch-1
+    
+    Update README.md
+
+[33mcommit 927f12c1b204b77126ce1e81fbd644a8357bd32b[m
+Author: May Kittens Devour Your Soul <yoshimitsu002@gmail.com>
+Date:   Wed Apr 18 22:07:49 2018 +0200
+
+    Update README.md
+
+[33mcommit 4a0913c4a5ac5befc88ae2eb513145fe7478b730[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Apr 17 12:54:43 2018 +0800
+
+    build: release v4.2.2
+    
+    q
+
+[33mcommit 6250c2b6679747a8a9c9099f0bd381ebca67afdb[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue Apr 17 17:08:06 2018 +0800
+
+    fix: record pos confilt
+
+[33mcommit 1cb3ecbbba766b21e82a8f259b9dc9a2b8799b25[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue Apr 17 15:10:36 2018 +0800
+
+    fix: typo of setting style of scrollPanel
+
+[33mcommit b3387913277452b66f6debb7665fb44b39dafeb4[m
+Author: wangyi7099 <724003548@qq.com>
+Date:   Tue Apr 17 14:53:37 2018 +0800
+
+    build: 4.1
+
+[33mcommit 481b37004623bd6f62a39297307be2d708de9a94[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Apr 16 13:52:16 2018 +0800
+
+    WIP: add push load
+
+[33mcommit 28078e49067ca9a98b2e67980e9f5e75372ad78a[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Apr 16 10:05:56 2018 +0800
+
+    temp
+
+[33mcommit 0896d1e4beade96f1bcca4fd4fba631819d4da83[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 14 10:09:00 2018 +0800
+
+    sweaks: rename refreshState to refrehStage
+
+[33mcommit f1958d49a81ca62fd8f0120fcb133a579154c685[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Apr 13 11:30:35 2018 +0800
+
+    fix: typo
+
+[33mcommit 3c5402f07d1332a4c9fef6226a1c7f7035e60336[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Apr 13 11:28:50 2018 +0800
+
+    fix: typo
+
+[33mcommit d3023334413ebabdfee0e5a32c38f7709c407e8f[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Apr 13 11:26:31 2018 +0800
+
+    build: 4.0.0
+
+[33mcommit c6cb5fd6632102f520c744fafb10853619630fd8[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Apr 10 22:37:11 2018 +0800
+
+    fix: lot of bugs
+
+[33mcommit 4191c9aeabd6a800054da25000c00d260d1cc698[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Apr 10 14:59:22 2018 +0800
+
+    feat: add pull refresh
+
+[33mcommit 5a98f474484edc45d93c22295467e01bc8bd10c1[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Apr 10 10:57:45 2018 +0800
+
+    refactor: add slide mode
+
+[33mcommit 5bae6540a4f3e993c4cb85facfc4e510232b134f[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Apr 9 16:11:26 2018 +0800
+
+    feat: sync some feature between vuescroll and scroller
+
+[33mcommit d439e4c0bc86e667cbdefd64ef878d123854d727[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Apr 8 22:17:21 2018 +0800
+
+    feat: add zoom support to non-native mode
+
+[33mcommit e60f6eb1a060d929d067e91f71ce90b23207d50b[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Apr 8 17:34:05 2018 +0800
+
+    fix: some bugs
+
+[33mcommit 02a37d6474fc707100403d6a1ea6220c5e1e69f4[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 7 20:36:57 2018 +0800
+
+    update: test files
+
+[33mcommit 699b0685de3ae776621d2c124d079154504c2f68[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Apr 7 20:14:36 2018 +0800
+
+    feat: add native option
+
+[33mcommit 72443a6e3eae3fcd4561fc29642f7bab13263297[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Apr 3 22:39:47 2018 +0800
+
+    feat: add mode options
+
+[33mcommit 299fb5775d51587924e3d35e20885529f2396d7b[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Mar 31 11:17:31 2018 +0800
+
+    update: rollup config
+
+[33mcommit 109f00f9520df8711849f86f800f4aa579144b95[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Mar 31 10:22:26 2018 +0800
+
+    update: readme
+
+[33mcommit 5f81713b5a741684cdaded0e647390d61a14fa46[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Mar 29 12:24:44 2018 +0800
+
+    fix: a typo error in readme
+
+[33mcommit ab11c8714bdb5cc99bc0838f655637dc8d96b1f8[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Mar 29 12:23:32 2018 +0800
+
+    update: add preview section to readme
+
+[33mcommit ae6d5fdd1fd5de46638ae36da2a3e9f33503047f[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Mar 29 12:18:46 2018 +0800
+
+    update: add get started section to readme.md
+
+[33mcommit b8a930f07a16c8fc34e7309a5761cbef28bc4372[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Mar 29 10:46:07 2018 +0800
+
+    update: readme for zh-cn
+
+[33mcommit 813c3a95b7f4a67684b3efd18c6b212ceac7edf5[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Mar 29 10:22:46 2018 +0800
+
+    build: release 3.7.11
+
+[33mcommit cd9b9ab8edd828c90f57d22d0f5948843f738930[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Mar 28 13:38:00 2018 +0800
+
+    sweaks: add hover option to bar's background
+
+[33mcommit b884281a8138890e615274e4f4c1a710d40066d7[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Mar 28 09:51:42 2018 +0800
+
+    update: unit test className
+
+[33mcommit 4b4131f445c4469ee321d73c1053eeb1d17dc172[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Mar 28 09:36:07 2018 +0800
+
+    chores: sweak class name
+
+[33mcommit 198ca16376f47fefba66c793a340dbf3bb1e9ee6[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Mar 27 20:48:04 2018 +0800
+
+    chore: remove unuseful data
+
+[33mcommit e7eebc401590c6f053b666f5eb1c8326e4a818f8[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Mar 27 19:29:09 2018 +0800
+
+    update: fix confilg between resize and update
+
+[33mcommit 5bfcd7373a1fcc5a458619c2955e645fa0f2e2e2[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Mar 26 23:56:25 2018 +0800
+
+    update: readme
+
+[33mcommit 587412c53e01dab1082375bc0bcb12ae3d62681a[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Mar 26 22:17:09 2018 +0800
+
+    sweaks: add handle-rezie event to scrollContent's size change
+
+[33mcommit c83a9b5524890da3ebbaf08e2d36fe38adb34214[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Mar 26 14:15:23 2018 +0800
+
+    fix: error calculate content's height
+
+[33mcommit 77e33b4ebd510bfd4d20854f597cb49bff2ea717[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Mar 25 07:52:03 2018 +0800
+
+    sweaks: remove accuracy option since it is not useful
+
+[33mcommit 9184bba2454a7d5338fff4e9609ef80b5ab6c5c5[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Mar 24 14:58:54 2018 +0800
+
+    fix: resize window scroll doesn't update
+
+[33mcommit b3d2c87f15abcb96b4a3fd642b7300765a86883b[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Mar 24 08:48:46 2018 +0800
+
+    fix: options: scrollContent padding not work(fix:#6)
+
+[33mcommit 017a026708edc5f71d2b99f93e41fb6a8072d809[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 23 15:11:03 2018 +0800
+
+    update: version
+
+[33mcommit 63f243ddcadc9280186efdac61b3374ff45fff25[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 23 15:10:30 2018 +0800
+
+    feat: rewrite  scrollContent and scrollRail to functional components
+
+[33mcommit 1c88f264b4c2f6c1471e516120008a47f347a97b[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 23 16:51:58 2018 +0800
+
+    fix: change condition to hBar instead of vBar
+
+[33mcommit 81d7159d0b7e86f786326e984a65ad5bfe775610[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 23 16:25:18 2018 +0800
+
+    fix: calculate scrollPanel's height wrongly while width isn't overflow
+
+[33mcommit c91464af39acea0f0e6b63c139d0a8844fc30265[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 23 15:59:21 2018 +0800
+
+    chore: overflow will be dynamic
+
+[33mcommit 689c8f431dce8654b7131219f83a42b0645a3cc1[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 23 09:04:31 2018 +0800
+
+    update: website address
+
+[33mcommit 5ec457e6e51e61024c6991be51484c821a08bcff[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Mar 22 14:28:14 2018 +0800
+
+    update: change typo
+
+[33mcommit 2db5cc8a099c5fbc210b08fdd10d5e514514de58[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Mar 22 14:26:42 2018 +0800
+
+    sweaks: showbar while scrolling
+
+[33mcommit cf89320ec3e5c43ac360551bf3400bfc386c7905[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Mar 21 16:25:01 2018 +0800
+
+    fix: called function wrongly (fix:#4)
+
+[33mcommit 4c2220b8e50c8e79b66d0267d707c84b25770c8c[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Mar 19 10:11:28 2018 +0800
+
+    fix: add a limit to scroll distance
+
+[33mcommit 12a365c0f53dbfb5ea40c92a1f44d6101a846b57[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Mar 19 09:40:58 2018 +0800
+
+    update: readme.md
+
+[33mcommit ac938f50df86a818db374209351f0423d663533d[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Mon Mar 19 09:22:59 2018 +0800
+
+    fix: error class name of hiding the bar
+
+[33mcommit b1f56a688fdb765d1a1e4271605eee8040e78fab[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Mar 18 05:47:41 2018 +0800
+
+    fix: judge if vue._isDestroyed to nextTick
+
+[33mcommit 86cd0f2cb742cefc268a7ed0e0590c4a6097641d[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Mar 18 02:44:09 2018 +0800
+
+    chore: update version for npm
+
+[33mcommit f0be53ac2a513b0003e1e05ec74317e08ef2243c[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sun Mar 18 02:43:08 2018 +0800
+
+    chore: update readme
+
+[33mcommit 7cc75a5c279913282f6bdf25e0f0277b441777eb[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Mar 17 10:54:48 2018 +0800
+
+    sweaks: delete updated hook on scrollPanel
+
+[33mcommit c3535a608aef621933973a3c5cefd521c7e6a181[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Mar 17 10:08:25 2018 +0800
+
+    build: release 3.6.0
+
+[33mcommit beaf9b6794e4686342b6440244b7186acf34803f[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Mar 17 03:31:34 2018 +0800
+
+    build: release 3.5.7
+
+[33mcommit cb6c88c83c294c978e26f4aee3b2389df753d271[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 16 17:16:43 2018 +0800
+
+    build: release 3.5.6
+
+[33mcommit 7107085aa62af8be4f1b9876e6cad26b0fb5a126[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 16 16:45:51 2018 +0800
+
+    build: release 3.5.5
+
+[33mcommit bef11a59dfc7f87bfbf5c9c7ae91e2f2e5bfb23d[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 16 16:22:40 2018 +0800
+
+    sweaks: update readme img
+
+[33mcommit e2120f0dd4429de1989786c203d2fad88d8b9e7d[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Mar 16 16:20:42 2018 +0800
+
+    sweaks: change event options
+
+[33mcommit 5d97ea37f28ff842098b8239e205c3ae2b9cd91f[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Mar 14 16:45:05 2018 +0800
+
+    sweaks: fix image link
+
+[33mcommit f3920eb55bd9870e3c43a344cf0060510976b661[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Mar 14 16:42:59 2018 +0800
+
+    sweaks: add logo
+
+[33mcommit 942049fdbc6087e7db68d76ed96045660d15a31e[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Mar 14 14:49:52 2018 +0800
+
+    sweaks: change karma configs
+
+[33mcommit 36486a24d64190782f456a2f7423dc42e932160d[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Mar 14 14:46:16 2018 +0800
+
+    sweaks: change vRail's default pos to 'right'
+
+[33mcommit 6f12e8dc6fd46800c1b563be813fbfdd3be98ce3[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Mar 13 22:35:42 2018 +0800
+
+    feat: sweak core code
+
+[33mcommit 9fe86f981cc3228d8077005b8a69a0a1e84c33af[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Mar 10 17:57:34 2018 +0800
+
+    feat: sweak the core architecture
+
+[33mcommit 10a200950f65d905a601ff6f9148daf05569817c[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Mar 1 22:46:58 2018 +0800
+
+    feature: develop
+
+[33mcommit a11cc79af029d9989565c64536b52a2882a9cd02[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Feb 27 18:02:53 2018 +0800
+
+    feat: update
+
+[33mcommit 90f3139f8d5d537cf2706757d6f4435cf8b71a88[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Feb 27 17:50:22 2018 +0800
+
+    feat: use jsx
+
+[33mcommit d0bfd38c177475d0831698ce5a0223935f684158[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Feb 14 16:45:11 2018 +0800
+
+    feat: merge code
+
+[33mcommit 2f9d70e19a4117ae1b06142f4383b244c3df138d[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Wed Feb 7 16:55:52 2018 +0800
+
+    fix: error correct scrollPanel height
+
+[33mcommit b0c93cefb0ecc09071a153d0490c1be37ff31284[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Feb 3 20:57:11 2018 +0800
+
+    chore: prevent from selection
+
+[33mcommit ccd620ceee58abee9cae72aec44ff374ecbd76b2[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Feb 3 20:46:01 2018 +0800
+
+    fix: error transform style
+
+[33mcommit 83a3c482989b92bded969922812960fc7865c5d9[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Feb 3 20:29:30 2018 +0800
+
+    fix: hide default scrollbar
+
+[33mcommit 225c458a41a57802b1c364d76f9c655a5bef2dac[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Sat Feb 3 11:49:43 2018 +0800
+
+    fix: dynamic set gutter, use es6 syntax to write code
+
+[33mcommit 267f4641fad7f8c089f5df17f948cff4aec38af8[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Fri Feb 2 10:40:31 2018 +0800
+
+    update: readme
+
+[33mcommit a2053d648d04f0ef3604b33bbc596bb031849798[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Feb 1 23:06:25 2018 +0800
+
+    update: readme
+
+[33mcommit c78a3c1ada1c179457930a610d75c58b8f0f5cdb[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Feb 1 23:05:08 2018 +0800
+
+    update: add ci
+
+[33mcommit e81e081444c90cb11b8dab60501d3b5cdd1d47c2[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Feb 1 17:28:50 2018 +0800
+
+    chore: add unit test
+
+[33mcommit 04245050ae45e108390335b791e49f7dd564bf92[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Thu Feb 1 08:57:04 2018 +0800
+
+    update: commit
+
+[33mcommit e1cd84551b8edccd52cb35f129e63f5386639bc1[m
+Author: wangyi7099 <wy564654798@126.com>
+Date:   Tue Jul 25 21:51:16 2017 +0800
+
+    Initial commit
