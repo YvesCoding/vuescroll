@@ -40,11 +40,21 @@ jobs:
            if [[ -z $CI_PULL_REQUEST ]]; then
              cat ./test/coverage/lcov.info | ./node_modules/.bin/codecov
            fi
+  lint:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      # run tests!
+      - run: npm run lint        
 workflows:
   version: 2
   install-and-parallel-test:
     jobs:
       - install
       - test-cover:
+          requires:
+            - install
+      - lint:
           requires:
             - install
