@@ -16,7 +16,6 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
       - run: sudo npm install
       - save_cache:
@@ -32,7 +31,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/project
-      # run tests!
       - run: npm run test
       - run:
          name: report coverage stats for non-PRs
@@ -40,11 +38,20 @@ jobs:
            if [[ -z $CI_PULL_REQUEST ]]; then
              cat ./test/coverage/lcov.info | ./node_modules/.bin/codecov
            fi
+  lint:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run: npm run lint
 workflows:
   version: 2
   install-and-parallel-test:
     jobs:
       - install
-      # - test-cover:
-      #     requires:
-      #       - install
+      - test-cover:
+          requires:
+            - install
+      - lint:
+        requires:
+            - install

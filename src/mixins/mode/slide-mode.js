@@ -30,25 +30,28 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
       done();
     }, 500);
   };
-
+  /* istanbul ignore if */
   if (listeners[type + '-activate']) {
     activateCallback = () => {
       vm.vuescroll.state[stageName] = 'active';
       vm.$emit(type + '-activate', vm, tipDom);
     };
   }
+  /* istanbul ignore if */
   if (listeners[type + '-before-deactivate']) {
     beforeDeactivateCallback = done => {
       vm.vuescroll.state[stageName] = 'beforeDeactive';
       vm.$emit(type + '-before-deactivate', vm, tipDom, done.bind(vm.scroller));
     };
   }
+  /* istanbul ignore if */
   if (listeners[type + '-deactivate']) {
     deactivateCallback = () => {
       vm.vuescroll.state[stageName] = 'deactive';
       vm.$emit(type + '-deactivate', vm, tipDom);
     };
   }
+  /* istanbul ignore if */
   if (listeners[type + '-start']) {
     startCallback = () => {
       vm.vuescroll.state[stageName] = 'start';
@@ -118,7 +121,7 @@ export default {
       const { scrollingY, scrollingX } = this.mergedOptions.scrollPanel;
       // hadnle for scroll complete
       const scrollingComplete = () => {
-        this.update('handle-scroll-complete');
+        this.updateBarStateAndEmitEvent('handle-scroll-complete');
       };
       // Initialize Scroller
       this.scroller = new Scroller(render(this.scrollPanelElm, window, 'px'), {
@@ -194,9 +197,12 @@ export default {
         this.mergedOptions.scrollPanel.scrollingY;
       // out of horizontal bountry
       if (__enableScrollX) {
+        /* istanbul ignore if */
         if (scroller.__scrollLeft < 0) {
           outerLeft = -scroller.__scrollLeft;
-        } else if (scroller.__scrollLeft > scroller.__maxScrollLeft) {
+        } /* istanbul ignore next */ else if (
+          scroller.__scrollLeft > scroller.__maxScrollLeft
+        ) {
           outerLeft = scroller.__scrollLeft - scroller.__maxScrollLeft;
         }
       }
@@ -222,6 +228,7 @@ export default {
         (scrollTop + outerTop) * 100 / vuescroll.clientHeight;
       this.bar.hBar.state.posValue =
         (scrollLeft + outerLeft) * 100 / vuescroll.clientWidth;
+      /* istanbul ignore if */
       if (scroller.__scrollLeft < 0) {
         this.bar.hBar.state.posValue = 0;
       }

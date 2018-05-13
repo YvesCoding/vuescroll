@@ -65,6 +65,6 @@ export default {
   },
   created() {
     hackPropsData.call(this);
-    this.shouldStopRender = validateOptions(this.mergedOptions);
+    this.renderError = validateOptions(this.mergedOptions);
   }
 };

@@ -17,7 +17,9 @@ export default {
       if (this.ops.initialScrollY) {
         y = this.ops.initialScrollY;
       }
-      this.$parent.scrollTo({ x, y });
+      if (x || y) {
+        this.$parent.scrollTo({ x, y });
+      }
     }
   },
   mounted() {
@@ -78,6 +80,7 @@ export function createPanel(h, vm) {
       scrollPanelData.style['overflowX'] = 'hidden';
     }
     let gutter = getGutter();
+    /* istanbul ignore if */
     if (!gutter) {
       hideSystemBar();
       scrollPanelData.style.height = '100%';
@@ -128,6 +131,7 @@ function createPanelChildren(vm, h) {
     // handle for refresh
     if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
       // just use user-defined refresh dom instead of default
+      /* istanbul ignore if */
       if (vm.$slots.refresh) {
         vm.$refs['refreshDom'] = vm.$slots.refresh[0];
         renderChildren.unshift(vm.$slots.refresh[0]);
@@ -145,6 +149,7 @@ function createPanelChildren(vm, h) {
     }
     // handle for load
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
+      /* istanbul ignore if */
       if (vm.$slots.load) {
         vm.$refs['loadDom'] = vm.$slots.load[0];
         renderChildren.push(vm.$slots.load[0]);

@@ -5,6 +5,7 @@ import { deepMerge, log } from './util';
 
 let scroll = {
   install(Vue) {
+    /* istanbul ignore next */
     if (scroll.isInstalled) {
       log.warn('You should not install the vuescroll again!');
       return;

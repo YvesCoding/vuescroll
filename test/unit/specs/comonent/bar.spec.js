@@ -1,15 +1,15 @@
-import { createTest, destroyVM, trigger } from 'test/util';
-import rail from 'src/components/child-components/vuescroll-rail';
+import { createTest, destroyVM, trigger } from 'test/unit/util';
+import bar from 'src/components/child-components/vuescroll-bar';
 
-describe('rail', () => {
+describe('bar', () => {
   let vm;
 
   afterEach(() => {
-    // destroyVM(vm);
+    destroyVM(vm);
   });
-  // create a rail and test its style
-  it('create hRail', () => {
-    vm = createTest(rail, {
+  // create a bar and test its style
+  it('create hBar', () => {
+    vm = createTest(bar, {
       ops: {
         pos: 'top',
         height: '6.5px'
@@ -30,7 +30,7 @@ describe('rail', () => {
     expect(transform).toBe('translate3d(10%, 0%, 0px)');
   });
 
-  it('create vRail', () => {
+  it('create vBar', () => {
     vm = createTest(bar, {
       ops: {
         pos: 'left',

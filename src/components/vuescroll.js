@@ -7,9 +7,9 @@ import slideMode from '../mixins/mode/slide-mode';
 import bar, { createBar } from './child-components/vuescroll-bar';
 import rail, { createRail } from './child-components/vuescroll-rail';
 import scrollContent from './child-components/vuescroll-content';
-import scrollPanel, { createPanel } from './child-components/vueScroll-panel';
+import scrollPanel, { createPanel } from './child-components/vuescroll-panel';
 
-import { uncessaryChangeArray } from '../shared/constants';
+import { smallChangeArray } from '../shared/constants';
 
 function findValuesByMode(mode, vm) {
   let axis = {};
@@ -89,7 +89,7 @@ const vueScrollCore = {
   render(h) {
     let vm = this;
     if (vm.renderError) {
-      return [vm.$slots['default']];
+      return <div>{[vm.$slots['default']]}</div>;
     }
     // vuescroll data
     const vuescrollData = {
@@ -156,7 +156,7 @@ const vueScrollCore = {
     }
   },
   methods: {
-    update(eventType, nativeEvent = null) {
+    updateBarStateAndEmitEvent(eventType, nativeEvent = null) {
       if (this.mode == 'native' || this.mode == 'pure-native') {
         this.updateNativeModeBarState();
       } else if (this.mode == 'slide') {
@@ -167,12 +167,6 @@ const vueScrollCore = {
       }
     },
     updateMode() {
-      if (this.shouldStop) {
-        this.$nextTick(() => {
-          this.shouldStop = false;
-        });
-        return;
-      }
       const x = this.vuescroll.state.internalScrollLeft;
       const y = this.vuescroll.state.internalScrollTop;
       if (this.destroyScroller) {
@@ -192,10 +186,11 @@ const vueScrollCore = {
     },
     handleScroll(nativeEvent) {
       this.recordCurrentPos();
-      this.update('handle-scroll', nativeEvent);
+      this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
       this.showAndDefferedHideBar();
     },
     setBarClick(val) {
+      /* istanbul ignore next */
       this.vuescroll.state.isClickingBar = val;
     },
     showAndDefferedHideBar() {
@@ -253,6 +248,7 @@ const vueScrollCore = {
     hideBar() {
       // when in non-native mode dragging content
       // in slide mode, just return
+      /* istanbul ignore next */
       if (this.vuescroll.state.isDragging) {
         return;
       }
@@ -274,12 +270,6 @@ const vueScrollCore = {
       }
     },
     registryResize() {
-      if (this.shouldStop) {
-        this.$nextTick(() => {
-          this.shouldStop = false;
-        });
-        return;
-      }
       /* istanbul ignore next */
       if (this.destroyResize) {
         // when toggling the mode
@@ -293,8 +283,8 @@ const vueScrollCore = {
         // scrollContent maybe a component or a pure-dom
         contentElm = this.scrollContentElm;
       }
-      const handleWindowResize = () => {
-        this.update();
+      const handleWindowResize = () => /* istanbul ignore next */ {
+        this.updateBarStateAndEmitEvent();
         this.showAndDefferedHideBar();
         if (this.mode == 'slide') {
           this.updateScroller();
@@ -306,11 +296,11 @@ const vueScrollCore = {
           this.updateScroller();
           currentSize['width'] = this.scroller.__contentWidth;
           currentSize['height'] = this.scroller.__contentHeight;
-        } else if (this.mode == 'native') {
+        } else if (this.mode == 'native' || this.mode == 'pure-native') {
           currentSize['width'] = this.scrollPanelElm.scrollWidth;
           currentSize['height'] = this.scrollPanelElm.scrollHeight;
         }
-        this.update('handle-resize', currentSize);
+        this.updateBarStateAndEmitEvent('handle-resize', currentSize);
         this.showAndDefferedHideBar();
       };
       window.addEventListener('resize', handleWindowResize, false);
@@ -351,6 +341,7 @@ const vueScrollCore = {
       } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
         if (this.destroyParentDomResize) {
           this.destroyParentDomResize();
+          this.destroyParentDomResize = null;
         }
         this.usePercentSize();
       }
@@ -376,21 +367,27 @@ const vueScrollCore = {
           // record current position
           this.recordCurrentPos();
           this.$nextTick(() => {
-            // update scroll..
+            if (this.isSmallChangeThisTick == true) {
+              this.isSmallChangeThisTick = false;
+              return;
+            }
+            // re do them jobsin case of
+            // option changes
             this.registryResize();
             this.updateMode();
+            this.setVsSize();
           });
         },
         watchOpts
       );
 
-      uncessaryChangeArray.forEach(opts => {
+      smallChangeArray.forEach(opts => {
         this.$watch(
           opts,
           () => {
             // when small changes changed,
             // we need not to updateMode or registryResize
-            this.shouldStop = true;
+            this.isSmallChangeThisTick = true;
           },
           watchOpts
         );
@@ -398,7 +395,7 @@ const vueScrollCore = {
     }
   },
   mounted() {
-    if (!this._isDestroyed && !this.renderError) {
+    if (!this.renderError) {
       if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       }
@@ -407,11 +404,8 @@ const vueScrollCore = {
       this.registryResize();
       this.initWatch();
       this.setVsSize();
-      this.$nextTick(() => {
-        // update state
-        this.update();
-        this.showAndDefferedHideBar();
-      });
+      this.updateBarStateAndEmitEvent();
+      this.showAndDefferedHideBar();
     }
   },
   updated() {
@@ -425,9 +419,11 @@ const vueScrollCore = {
     // remove registryed resize
     if (this.destroyParentDomResize) {
       this.destroyParentDomResize();
+      this.destroyParentDomResize = null;
     }
-    if (this.destroyDomResize) {
-      this.destroyDomResize();
+    if (this.destroyResize) {
+      this.destroyResize();
+      this.destroyResize = null;
     }
   }
 };

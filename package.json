@@ -10,14 +10,10 @@
     "vue": "^2.0"
   },
   "deprecated": false,
-  "description": "A reactive, muli-function, virtual scrollbar based on vue.js2.X",
+  "description":
+    "A reactive, muli-function, virtual scrollbar based on vue.js2.X",
   "homepage": "https://github.com/wangyi7099/vuescroll#readme",
-  "keywords": [
-    "vuescroll",
-    "scrollbar",
-    "vuescrollbar",
-    "vue"
-  ],
+  "keywords": ["vuescroll", "scrollbar", "vuescrollbar", "vue"],
   "license": "MIT",
   "unpkg": "./dist/vuescroll.js",
   "jsdelivr": "./dist/vuescroll.js",
@@ -30,7 +26,8 @@
   "scripts": {
     "build": "node scripts/autoBuild.js",
     "test": "npm run test:cover",
-    "test:cover": "karma start test/karma.conf.js",
+    "lint": "eslint --fix src scripts test",
+    "test:cover": "karma start test/unit/karma.conf.js",
     "report-coverage": "codecov",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
@@ -47,6 +44,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2015-rollup": "^3.0.0",
     "codecov": "^3.0.0",
+    "eslint": "^4.13.1",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.1",
     "karma": "^2.0.0",

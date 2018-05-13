@@ -1,46 +1,48 @@
-const fs = require("fs");
-const path = require("path");
-const zlib = require("zlib");
-const rollup = require("rollup");
-const UglifyJS = require("uglify-es");
+const fs = require('fs');
+const path = require('path');
+const zlib = require('zlib');
+const rollup = require('rollup');
+const UglifyJS = require('uglify-es');
 let autoBuild = false;
-if (!fs.existsSync("dist")) {
-  fs.mkdirSync("dist");
+if (!fs.existsSync('dist')) {
+  fs.mkdirSync('dist');
 }
 
-let builds = require("./config").getAllBuilds();
+let builds = require('./config').getAllBuilds();
 
-if(!autoBuild) {
+if (!autoBuild) {
   build(builds);
 }
 
-function build (builds) {
+function build(builds) {
   let built = 0;
   const total = builds.length;
   const next = () => {
-    buildEntry(builds[built]).then(() => {
-      built++;
-      if (built < total) {
-        next();
-      }
-    }).catch(logError);
+    buildEntry(builds[built])
+      .then(() => {
+        built++;
+        if (built < total) {
+          next();
+        }
+      })
+      .catch(logError);
   };
 
   next();
 }
 
-
-function buildEntry (config) {
+function buildEntry(config) {
   const output = config.output;
   const { file } = output;
   const isProd = /min\.js$/.test(file);
-  return rollup.rollup(config)
+  return rollup
+    .rollup(config)
     .then(bundle => bundle.generate(output))
     .then(({ code }) => {
       if (isProd) {
         var minified = UglifyJS.minify(code, {
-          output:{
-            comments: "some"
+          output: {
+            comments: 'some'
           }
         }).code;
         return write(file, minified, true);
@@ -50,10 +52,15 @@ function buildEntry (config) {
     });
 }
 
-function write (dest, code, zip) {
+function write(dest, code, zip) {
   return new Promise((resolve, reject) => {
-    function report (extra) {
-      console.log(blue(path.relative(process.cwd(), dest)) + " " + getSize(code) + (extra || "")); //eslint-disable-line
+    function report(extra) {
+      console.log(
+        blue(path.relative(process.cwd(), dest)) +
+          ' ' +
+          getSize(code) +
+          (extra || '')
+      ); //eslint-disable-line
       resolve();
     }
 
@@ -62,7 +69,7 @@ function write (dest, code, zip) {
       if (zip) {
         zlib.gzip(code, (err, zipped) => {
           if (err) return reject(err);
-          report(" (gzipped: " + getSize(zipped) + ")");
+          report(' (gzipped: ' + getSize(zipped) + ')');
         });
       } else {
         report();
@@ -71,16 +78,16 @@ function write (dest, code, zip) {
   });
 }
 
-function getSize (code) {
-  return (code.length / 1024).toFixed(2) + "kb";
+function getSize(code) {
+  return (code.length / 1024).toFixed(2) + 'kb';
 }
 
-function logError (e) {
+function logError(e) {
   console.log(e); //eslint-disable-line
 }
 
-function blue (str) {
-  return "\x1b[1m\x1b[34m" + str + "\x1b[39m\x1b[22m";
+function blue(str) {
+  return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m';
 }
 
 module.exports = function() {

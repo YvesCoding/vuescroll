@@ -52,13 +52,12 @@ export function goScrolling(
     positionY = startLocationY + deltaY * percentage;
     elm['scrollTop'] = Math.floor(positionY);
     elm['scrollLeft'] = Math.floor(positionX);
-    return verifyCallback();
   };
 
   const verifyCallback = () => {
     return (
-      Math.abs(positionY - startLocationY) < Math.abs(deltaY) ||
-      Math.abs(positionX - startLocationX) < Math.abs(deltaX)
+      Math.abs(positionY - startLocationY) <= Math.abs(deltaY) ||
+      Math.abs(positionX - startLocationX) <= Math.abs(deltaX)
     );
   };
 
@@ -179,7 +178,7 @@ export default {
         if (animate) {
           // hadnle for scroll complete
           const scrollingComplete = () => {
-            this.update('handle-scroll-complete');
+            this.updateBarStateAndEmitEvent('handle-scroll-complete');
           };
           goScrolling(
             this.$refs['scrollPanel'].$el,

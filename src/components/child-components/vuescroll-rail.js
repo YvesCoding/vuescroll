@@ -1,5 +1,5 @@
 import map from '../../shared/scroll-map';
-
+/* istanbul ignore next */
 function handleClickTrack(
   e,
   { client, offset, posName, scrollSize },
@@ -37,7 +37,7 @@ export default {
       class: `vuescroll-${props.type}-rail`,
       ref: `${props.type}Rail`,
       on: {
-        click(e) {
+        click(e) /* istanbul ignore next */ {
           handleClickTrack(e, bar, parentRef, props.type, parent);
         }
       }

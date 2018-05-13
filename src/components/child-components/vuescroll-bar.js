@@ -22,9 +22,11 @@ export default {
       return scrollMap[this.type].bar;
     },
     axis() {
+      /* istanbul ignore next */
       return scrollMap[this.type].axis;
     },
     parent() {
+      /* istanbul ignore next */
       return this.$parent.$refs;
     }
   },
@@ -68,7 +70,8 @@ export default {
         e.stopPropagation();
         document.onselectstart = () => false;
         this.axisStartPos =
-          e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
+          e[this.bar.client] -
+          this.$el.getBoundingClientRect()[this.bar.posName];
         // tell parent that the mouse has been down.
         this.$emit('setBarClick', true);
         eventCenter(document, 'mousemove', this.handleMouseMove);

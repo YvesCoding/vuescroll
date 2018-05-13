@@ -1,4 +1,5 @@
 import { modes } from './constants';
+import { log } from '../util';
 export default {
   // vuescroll
   vuescroll: {
@@ -117,7 +118,7 @@ export function validateOptions(ops) {
 
   // validate vuescroll
   if (!~modes.indexOf(vuescroll.mode)) {
-    console.error(
+    log.error(
       `[vuescroll]: The vuescroll's option "mode" should be one of the ${modes}`
     );
     shouldStopRender = true;
@@ -128,8 +129,8 @@ export function validateOptions(ops) {
     vuescroll.paging &&
     (vuescroll.pullRefresh || vuescroll.pushLoad)
   ) {
-    console.error(
-      '[vuescroll][ops]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.'
+    log.error(
+      '[vuescroll]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.'
     );
   }
   // validate scrollPanel
@@ -137,14 +138,14 @@ export function validateOptions(ops) {
   const initialScrollX = scrollPanel['initialScrollX'];
 
   if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error(
-      '[vuescroll][ops]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
+    log.error(
+      '[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
     );
   }
 
   if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
-    console.error(
-      '[vuescroll][ops]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
+    log.error(
+      '[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
     );
   }
 

@@ -29,6 +29,7 @@ export function deepMerge(from, to) {
 
 export function defineReactive(target, key, source, souceKey) {
   let getter = null;
+  /* istanbul ignore if */
   if (!source[key] && typeof source !== 'function') {
     return;
   }
@@ -77,23 +78,29 @@ const doneUtil = {
   hide: false
 };
 export function hideSystemBar() {
-  if (doneUtil['hide']) {
-    return;
+  /* istanbul ignore next */
+  {
+    if (doneUtil['hide']) {
+      return;
+    }
+    doneUtil['hide'] = true;
+    let styleDom = document.createElement('style');
+    styleDom.type = 'text/css';
+    styleDom.innerHTML =
+      '.vuescroll-panel::-webkit-scrollbar{width:0;height:0}';
+    document
+      .getElementsByTagName('HEAD')
+      .item(0)
+      .appendChild(styleDom);
   }
-  doneUtil['hide'] = true;
-  let styleDom = document.createElement('style');
-  styleDom.type = 'text/css';
-  styleDom.innerHTML = '.vuescroll-panel::-webkit-scrollbar{width:0;height:0}';
-  document
-    .getElementsByTagName('HEAD')
-    .item(0)
-    .appendChild(styleDom);
 }
 
 const styleMap = {};
 
 styleMap['refreshDomStyle'] = `
 .vuescroll-refresh {
+    position:absolute;
+    width: 100%;
     color: black;
     height: 50px;
     text-align: center;
@@ -114,6 +121,8 @@ fill: #FF6700;
 
 styleMap['loadDomStyle'] = `
 .vuescroll-load {
+    position:absolute;
+    width: 100%;
     color: black;
     height: 50px;
     text-align: center;
