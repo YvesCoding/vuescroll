@@ -144,8 +144,9 @@ Vuescroll is extremely easy to expand.You only have to do 2 steps
 ```
 
 3.  Modify the code in your local and push the code to your remote repo.
-4.  Click `New pull request` in vuescroll repo and that's all, like the picture below:<br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" />
-5.  Wait for my agreement, and then your code will be merged into the `dev` branch !
+4.  Click `New pull request` in vuescroll repo as follows:
+    <br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" />
+5.  When I agree, your code will merge into the `dev` branch!
 
 ## Inspired By
 
