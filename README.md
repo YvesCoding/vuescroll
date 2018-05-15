@@ -1,4 +1,4 @@
-  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/zh/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
+  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
 <p align="center">
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a>
    <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage"></a>
@@ -6,13 +6,20 @@
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
 <a href="https://github.com/wangyi7099/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
-<h4 align="center">Vuescroll - Beautify and enhance your scrollbar</h4>
+<h3 align="center">Vuescroll</h4>
+<h4  align="center">A customizable, cross platform virtual scrollbar based on Vue.js that can help you beautify and enhance your scrollbar on the web.</h4>
 
 [中文版 README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 
 ## Introduction
 
-Vuescroll is a virtual scrollbar based on Vue.js which is designed for beautifying and enhancing your native scrollbar.It has different modes for different people. If you like native scrollbar, you can choose `pure-native` mode, if you like customize styles of scrollbar, you can choose `native` mode, if you like run you project in mobile, you can choose `slide` mode.
+Vuescroll is a virtual scrollbar based on Vue.js which is designed for beautifying and enhancing your native scrollbar on the web.
+
+You can choose different models according to your own needs:
+
+* `native` mode: Like thr native scrollbar, but can costumize styles of scrollbars, it is suitable for PC.
+* `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry, it is suitable for mobile.
+* `pure-native` mode: Use native scrollbars， it is suitable for PC and the users who like native scrollbar.
 
 In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel, time picker, a plugin that can automatically detect the size change of content and so on.
 

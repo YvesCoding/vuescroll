@@ -6,11 +6,18 @@
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
 <a href="https://github.com/wangyi7099/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
-<h4 align="center">Vuescroll - 美化和增强你的滚动条</h4>
+<h3 align="center">Vuescroll</h4>
+<h4  align="center">一个基于VUE.JS的可定制的跨平台虚拟滚动条，可以帮助您美化和增强Web上的滚动条。</h4>
 
 ## 介绍
 
-Vuescroll 是一个基于 Vue.js 的虚拟滚动条，设计它的目的是用来美化和增强你的滚动条的。它有不同的模式适合不同的人群， 如果你喜欢原生滚动条， 你可以选择`pure-native`模式，如果你喜欢自定义滚动条，你可以选择`native`模式，如果你喜欢在手机端运行你的软件，你可以选择`slide`模式。
+Vuescroll 是一个基于 Vue.js 的虚拟滚动条，设计它的目的是用来美化和增强你的滚动条的。
+
+你可以根据自己的喜好，需要来选择不同的模式:
+
+* `native` 模式: 类似于原生的滚动条，但是可以自定义滚动条样式，使用于 PC 端用户。
+* `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围，适用于移动端端用户。
+* `pure-native`模式: 滚动条使用原生的滚动条，适用于喜欢原生滚动条的用户。
 
 总的来说，Vuescroll 不仅仅只一个滚动条， 你可以用它制作一个轮播图、时间选择器、能够自动侦测内容发生变化的一个插件等等。
 
