@@ -12,7 +12,9 @@
 
 ## Introduction
 
-Vuescroll is a virtual scrollbar based on Vue.js which is designed for beautifying and enhancing your native scrollbar.
+Vuescroll is a virtual scrollbar based on Vue.js which is designed for beautifying and enhancing your native scrollbar.It has different modes for different people. If you like native scrollbar, you can choose `pure-native` mode, if you like customize styles of scrollbar, you can choose `native` mode, if you like run you project in mobile, you can choose `slide` mode.
+
+In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel, time picker, a plugin that can automatically detect the size change of content and so on.
 
 ## Demo & Documentation
 
@@ -38,8 +40,6 @@ Vuescroll is a virtual scrollbar based on Vue.js which is designed for beautifyi
 * Set bar/rail opacity or background.
 * Set bar/rail's position.
 * Customize the tag of content. (That is you can set the tag of content to a component tag)
-
-In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel, time picker, a plugin that can automatically detect the size change of content and so on.
 
 ## Quick Start
 
