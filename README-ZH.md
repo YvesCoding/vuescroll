@@ -19,6 +19,18 @@ Vuescroll 是一个基于 Vue.js 的虚拟滚动条，设计它的目的是用�
 * `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围，适用于移动端端用户。
 * `pure-native`模式: 滚动条使用原生的滚动条，适用于喜欢原生滚动条的用户。
 
+你也可以定制滚动条的样式，包括：
+
+* 透明度
+* 高度/宽度
+* 位置
+* 背景色
+* 是否保持显示
+
+> 想了解更多请访问官方网站[指南页面](https://wangyi7099.github.io/vuescrolljs/zh/)
+
+> 如果你不满足上述特性，想要扩展特性的话，请考虑贡献代码。
+
 总的来说，Vuescroll 不仅仅只一个滚动条， 你可以用它制作一个轮播图、时间选择器、能够自动侦测内容发生变化的一个插件等等。
 
 ## Demo & 文档
@@ -107,6 +119,20 @@ const vm = new Vue({
 每个版本的详细记录在[发行日志](https://github.com/wangyi7099/vuescroll/releases)里面。
 
 ## 贡献
+
+从两方面贡献代码:
+
+### 代码层面
+
+Vuescroll 是极其容易扩展的，你基本只需要做 2 步即可。
+
+1.  在 [global-config.js](https://github.com/wangyi7099/vuescroll/blob/dev/src/shared/global-config.js) 文件中对应的模块处修改/增加对应的特性，比如，我想增加一个可以配置滚动面板颜色的特性,默认是红色，如下图：
+    ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s1.jpg?raw=true)
+2.  找到对应的模块文件， 并在模块的对应的代码处修改即可，如下图：
+    ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s2.jpg?raw=true)
+    ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s3.jpg?raw=true)
+
+### Git 层面
 
 1.  把这个项目 fork 下来。
 2.  把你的 fork 的项目克隆下来

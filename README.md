@@ -21,6 +21,18 @@ You can choose different models according to your own needs:
 * `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry, it is suitable for mobile.
 * `pure-native` mode: Use native scrollbars， it is suitable for PC and the users who like native scrollbar.
 
+You can also customize the style of the scrollbar, including:
+
+* Opacity
+* Height/Width
+* Position
+* Background
+* Keep show or not
+
+> To learn more, please visit the official website [guide page](https://wangyi7099.github.io/vuescrolljs/guide/)
+
+> If you do not satisfy the above characteristics and want to expand the features, consider to [contribution code](#contribution).
+
 In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel, time picker, a plugin that can automatically detect the size change of content and so on.
 
 ## Demo & Documentation
@@ -110,6 +122,20 @@ Detailed changes for each release are documented in the [release notes](https://
 
 ## Contribution
 
+Contributing code from two aspects：
+
+## Code level
+
+Vuescroll is extremely easy to expand.You only have to do 2 steps
+
+1.  To modify / add the corresponding features at the corresponding modules in the [global-config.js](https://github.com/wangyi7099/vuescroll/blob/dev/src/shared/global-config.js) file, for example, I want to add a feature that can configure the color of the scrolling panel, the default is red, as follows:
+    ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s1.jpg?raw=true)
+2.  Find the corresponding module file and modify it in the corresponding code of the module, as follows:
+    ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s2.jpg?raw=true)
+    ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s3.jpg?raw=true)
+
+## Git level
+
 1.  Fork this repo.
 2.  Clone the repo you have just forked.
 
@@ -121,7 +147,7 @@ Detailed changes for each release are documented in the [release notes](https://
 4.  Click `New pull request` in vuescroll repo and that's all, like the picture below:<br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" />
 5.  Wait for my agreement, and then your code will be merged into the `dev` branch !
 
-## Inspired
+## Inspired By
 
 * [slimscroll](https://github.com/rochal/jQuery-slimScroll)
 * [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src)
