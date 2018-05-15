@@ -13,7 +13,7 @@
 
 ## Introduction
 
-Vuescroll is a customizable, cross platform, compatible with the third party UI framework, and the virtual scroll bar based on Vue.js , the purpose of the design is to beautify and enhance your scroll bar.
+Vuescroll is a customizable, cross platform, compatible with the third party UI framework, and the virtual scroll bar based on Vue.js , the purpose of the design is to beautify and enhance your scrollbar.
 
 You can choose different modes according to your own needs:
 
