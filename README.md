@@ -124,7 +124,7 @@ Detailed changes for each release are documented in the [release notes](https://
 
 Contributing code from two aspects：
 
-## Code level
+### Code level
 
 Vuescroll is extremely easy to expand.You only have to do 2 steps
 
@@ -134,7 +134,7 @@ Vuescroll is extremely easy to expand.You only have to do 2 steps
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s2.jpg?raw=true)
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s3.jpg?raw=true)
 
-## Git level
+### Git level
 
 1.  Fork this repo.
 2.  Clone the repo you have just forked.
