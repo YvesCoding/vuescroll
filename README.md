@@ -18,9 +18,9 @@ The purpose of the design is to beautify and enhance your scrollbar.
 
 You can choose different modes according to your own needs:
 
-* `native` mode: Like thr native scrollbar, but can costumize styles of scrollbars, it is suitable for PC.
-* `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry, it is suitable for mobile.
-* `pure-native` mode: Use native scrollbars， it is suitable for PC and the users who like native scrollbar.
+* `native` mode: Like the native scrollbar, but has ability to costumize styles of scrollbar, it is suitable for the users who use PC.
+* `slide` mode: Allow you slide by finger or mouse pointer, has ability to slide out of bountry, it is suitable for the users who use mobile phone.
+* `pure-native` mode: Use native scrollbar, it is suitable for PC and the users who like native scrollbar.
 
 You can also customize the style of the scrollbar, including:
 
@@ -45,9 +45,9 @@ In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel
 
 * Originally created virutal scrollbar + sliding scrolling for both being suitable for PC and mobile!
 * Has multi modes and has ability to toggle them anytime, each modes has diffrernt features:
-  * `native` mode: Like thr native scrollbar, but can costumize styles of scrollbars, it is suitable for PC.
-  * `slide` mode: Allow you slide by finger or mouse pointer, can slide out of bountry, it is suitable for mobile.
-  * `pure-native` mode: Use native scrollbars， it is suitable for PC and the users who like native scrollbar.
+  * `native` mode: Like the native scrollbar, but has ability to costumize styles of scrollbar, it is suitable for the users who use PC.
+  * `slide` mode: Allow you slide by finger or mouse pointer, has ability to slide out of bountry, it is suitable for the users who use mobile phone.
+  * `pure-native` mode: Use native scrollbar, it is suitable for PC and the users who like native scrollbar.
 * Ability to detect the size change of the content and automatically update scrollbar.
 * Ability to scroll smoothly by using [different animations](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#scrollpanel).
 * Pull-to-Refresh (Pull top out of the boundaries to start refreshing list)
