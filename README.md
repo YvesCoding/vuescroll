@@ -133,6 +133,7 @@ Vuescroll is extremely easy to expand.You only have to do 2 steps
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s1.jpg?raw=true)
 2.  Find the corresponding module file and modify it in the corresponding code of the module, as follows:
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s2.jpg?raw=true)
+    <br>
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s3.jpg?raw=true)
 
 ### Git level

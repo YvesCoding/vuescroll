@@ -130,6 +130,7 @@ Vuescroll 是极其容易扩展的，你基本只需要做 2 步即可。
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s1.jpg?raw=true)
 2.  找到对应的模块文件， 并在模块的对应的代码处修改即可，如下图：
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s2.jpg?raw=true)
+    <br>
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s3.jpg?raw=true)
 
 ### Git 层面
