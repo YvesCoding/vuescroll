@@ -151,9 +151,10 @@ Vuescroll is extremely easy to expand.You only have to do 2 steps
 
 ## Inspired By
 
-* [slimscroll](https://github.com/rochal/jQuery-slimScroll)
-* [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src)
-* [scroller](https://github.com/pbakaus/scroller)
+* [slimscroll](http://rocha.la/jQuery-slimScroll)
+* [element-ui](http://element.eleme.io/#/zh-CN/component/installation)
+* [scroller](http://zynga.github.io/scroller/)
+* [CodePen](https://codepen.io/wangyi7099/pen/YLVBNe)
 
 ## License
 
