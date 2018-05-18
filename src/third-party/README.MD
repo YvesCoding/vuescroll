@@ -1,7 +1,7 @@
-#### This directory contains core or one of modules of third-party libraries.
+#### The following is the third party library used by Vuescroll and its corresponding module.
 
 | Libarary Name   | Module        |
 | --------------- | ------------- |
-| Scroller        | core          |
+| Scroller        | core, animate |
 | Smooth-scroll   | easingPattern |
 | resize-detector | injectObject  |

@@ -11,7 +11,7 @@
 
 ## 介绍
 
-Vuescroll 是一个可定制的， 跨平台的，可以和第三方 UI 框架兼容的，基于 Vue.js 的虚拟滚动条。它创造了div用于包裹要滚动的内容，充当滚动条，然后操作div完成滚动。 设计它的目的是用来美化和增强你的滚动条的。
+Vuescroll 是一个可定制的， 跨平台的，可以和第三方 UI 框架兼容的，基于 Vue.js 的虚拟滚动条。它创造了 div 用于包裹要滚动的内容，充当滚动条，然后操作 div 完成滚动。 设计它的目的是用来美化和增强你的滚动条的。
 
 你可以根据自己的喜好，需要来选择不同的模式:
 
@@ -36,7 +36,7 @@ Vuescroll 是一个可定制的， 跨平台的，可以和第三方 UI 框架�
 ## Demo & 文档
 
 * 你可以浏览这个 repo 的根目录下的 Demo 文件夹。
-* 详细的 Demo, 文档: 请访问 [官方地址](https://wangyi7099.github.io/vuescrolljs/zh/).
+* 详细的 Demo, 文档: 请访问 [官方地址](https://wangyi7099.github.io/vuescrolljs/zh/Demo/).
 
 ## 特点
 
@@ -127,9 +127,12 @@ const vm = new Vue({
 Vuescroll 是极其容易扩展的，你基本只需要做 2 步即可。
 
 1.  在 [global-config.js](https://github.com/wangyi7099/vuescroll/blob/dev/src/shared/global-config.js) 文件中对应的模块处修改/增加对应的特性，比如，我想增加一个可以配置滚动面板颜色的特性,默认是红色，如下图：
+    <br>
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s1.jpg?raw=true)
 2.  找到对应的模块文件， 并在模块的对应的代码处修改即可，如下图：
+    <br>
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s2.jpg?raw=true)
+    <br>
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s3.jpg?raw=true)
 
 ### Git 层面
@@ -147,9 +150,10 @@ Vuescroll 是极其容易扩展的，你基本只需要做 2 步即可。
 
 ## 灵感来源
 
-* [slimscroll](https://github.com/rochal/jQuery-slimScroll)
-* [element-ui](https://github.com/ElemeFE/element/tree/dev/packages/scrollbar/src)
-* [scroller](https://github.com/pbakaus/scroller)
+* [slimscroll](http://rocha.la/jQuery-slimScroll)
+* [element-ui](http://element.eleme.io/#/zh-CN/component/installation)
+* [scroller](http://zynga.github.io/scroller/)
+* [CodePen](https://codepen.io/wangyi7099/pen/YLVBNe)
 
 ## 协议
 
