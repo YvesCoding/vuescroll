@@ -1,3 +1,19 @@
+<a name="4.5.17"></a>
+## [4.5.17](https://github.com/wangyi7099/vuescroll/compare/v4.5.16...v4.5.17) (2018-05-18)
+
+
+### Bug Fixes
+
+* rename comonent to component ([d9995b8](https://github.com/wangyi7099/vuescroll/commit/d9995b8))
+* typo ([c19f27d](https://github.com/wangyi7099/vuescroll/commit/c19f27d))
+
+
+### Features
+
+* **api:** Add scrollIntoView api that allows you scroll an elment into view ([50a458b](https://github.com/wangyi7099/vuescroll/commit/50a458b))
+
+
+
 <a name="4.5.13"></a>
 
 ## 4.5.13 (2018-05-09)
