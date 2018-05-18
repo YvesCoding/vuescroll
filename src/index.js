@@ -1,25 +1,20 @@
 import Vue from 'vue';
 import vuescroll from './components/vuescroll';
 import GCF from './shared/global-config';
-import { deepMerge, log } from './util';
+import { deepMerge } from './util';
 
-let scroll = {
+const Vuescroll = {
   install(Vue) {
-    /* istanbul ignore next */
-    if (scroll.isInstalled) {
-      log.warn('You should not install the vuescroll again!');
-      return;
-    }
     // registry vuescroll
     Vue.component(vuescroll.name, vuescroll);
-
     Vue.prototype.$vuescrollConfig = deepMerge(GCF, {});
-    scroll.isInstalled = true;
-    scroll.version = '__version__';
-  }
+  },
+  version: '__version__'
 };
+
 /* istanbul ignore if */
-if (typeof Vue !== 'undefined' && process.env.NODE_FORMAT === 'umd') {
-  Vue.use(scroll);
+if (typeof window !== 'undefined' && window.Vue) {
+  Vue.use(Vuescroll);
 }
-export default scroll;
+
+export default Vuescroll;

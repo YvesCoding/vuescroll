@@ -124,9 +124,48 @@ function eventCenter(dom, eventName, hander) {
 
   type == 'on' ? dom.addEventListener(eventName, hander, capture) : dom.removeEventListener(eventName, hander, capture);
 }
-
 // native console
 var log = console;
+
+var error = void 0;
+// It only happens when child is inline-block,
+// scollheight will have a error of
+// 4px in chrome or some other browsers.
+// So write a method to get the error and get the real scrollHeight.
+function getRealScrollHeight(scrollHeight) {
+  /* istanbul ignore next */
+  if (Vue.prototype.$isServer) return 0;
+  if (error !== undefined) return scrollHeight - error;
+  var outer = document.createElement('div');
+  outer.style.visibility = 'hidden';
+  outer.style.height = '100px';
+  outer.style.position = 'absolute';
+  outer.style.top = '-9999px';
+  outer.style.overflow = 'hidden';
+  document.body.appendChild(outer);
+  var inner = document.createElement('div');
+  inner.style.visibility = 'hidden';
+  inner.style.height = '100px';
+  inner.style.display = 'inline-block';
+  outer.appendChild(inner);
+  error = outer.scrollHeight - outer.clientHeight;
+  outer.parentNode.removeChild(outer);
+  return scrollHeight - error;
+}
+
+function isChildInParent(child, parent) {
+  var flag = false;
+  if (!child || !parent) {
+    return flag;
+  }
+  while (child.parentNode !== parent && child.parentNode.nodeType !== 9 && !child.parentNode._isVuescroll) {
+    child = child.parentNode;
+  }
+  if (child.parentNode == parent) {
+    flag = true;
+  }
+  return flag;
+}
 
 // detect content size change
 // https://github.com/wnr/element-resize-detector/blob/465fe68efbea85bb9fe22db2f68ebc7fde8bbcf5/src/detection-strategy/object.js
@@ -636,8 +675,9 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
   if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  if (startLocationY + deltaY > elm['scrollHeight']) {
-    deltaY = elm['scrollHeight'] - startLocationY;
+  var scrollHeight = getRealScrollHeight(elm['scrollHeight']);
+  if (startLocationY + deltaY > scrollHeight) {
+    deltaY = scrollHeight - startLocationY;
   }
   if (startLocationX + deltaX < 0) {
     deltaX = -startLocationX;
@@ -679,13 +719,15 @@ var api = {
       if (typeof y === 'undefined') {
         y = this.vuescroll.state.internalScrollTop || 0;
       } else {
-        y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
+        y = getNumericValue(y, getRealScrollHeight(this.scrollPanelElm.scrollHeight));
       }
       this.internalScrollTo(x, y, animate, force);
     },
     scrollBy: function scrollBy(_ref2) {
-      var dx = _ref2.dx,
-          dy = _ref2.dy;
+      var _ref2$dx = _ref2.dx,
+          dx = _ref2$dx === undefined ? 0 : _ref2$dx,
+          _ref2$dy = _ref2.dy,
+          dy = _ref2$dy === undefined ? 0 : _ref2$dy;
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       var _vuescroll$state = this.vuescroll.state,
           _vuescroll$state$inte = _vuescroll$state.internalScrollLeft,
@@ -697,7 +739,7 @@ var api = {
         internalScrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth);
       }
       if (dy) {
-        internalScrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight);
+        internalScrollTop += getNumericValue(dy, getRealScrollHeight(this.scrollPanelElm.scrollHeight));
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
     },
@@ -791,6 +833,37 @@ var api = {
       else if (this.mode == 'slide') {
           this.scroller.scrollTo(destX, destY, animate, undefined, force);
         }
+    },
+    scrollIntoView: function scrollIntoView(elm) {
+      var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+      var parentElm = this.$el;
+      if (typeof elm === 'string') {
+        elm = parentElm.querySelector(elm);
+      }
+      if (!isChildInParent(elm, parentElm)) {
+        log.warn('[vuescroll]: The element or selector you passed is not the element of Vuescroll, please pass the element that is in Vuescroll to scrollIntoView API. ');
+        return;
+      }
+      // parent elm left, top
+
+      var _$el$getBoundingClien2 = this.$el.getBoundingClientRect(),
+          left = _$el$getBoundingClien2.left,
+          top = _$el$getBoundingClien2.top;
+      // child elm left, top
+
+
+      var _elm$getBoundingClien = elm.getBoundingClientRect(),
+          childLeft = _elm$getBoundingClien.left,
+          childTop = _elm$getBoundingClien.top;
+
+      var diffX = left - childLeft;
+      var diffY = top - childTop;
+
+      this.scrollBy({
+        dx: -diffX,
+        dy: -diffY
+      }, animate);
     }
   }
 };
@@ -800,7 +873,7 @@ var nativeMode = {
     updateNativeModeBarState: function updateNativeModeBarState() {
       var scrollPanel = this.scrollPanelElm;
       var vuescroll = this.$el;
-      var heightPercentage = vuescroll.clientHeight * 100 / scrollPanel.scrollHeight;
+      var heightPercentage = vuescroll.clientHeight * 100 / getRealScrollHeight(scrollPanel.scrollHeight);
       var widthPercentage = vuescroll.clientWidth * 100 / scrollPanel.scrollWidth;
       this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / vuescroll.clientHeight;
       this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / vuescroll.clientWidth;
@@ -1435,8 +1508,17 @@ var members = {
       y: this.__currentPageY
     };
   },
-  goToPage: function goToPage(dest, animate) {
-    this.scrollTo((dest.x - 1) * this.__clientWidth, (dest.y - 1) * this.__clientHeight, animate);
+  goToPage: function goToPage(_ref3, animate) {
+    var x = _ref3.x,
+        y = _ref3.y;
+
+    if (isNaN(x)) {
+      x = 1;
+    }
+    if (isNaN(y)) {
+      y = 1;
+    }
+    this.scrollTo((x - 1) * this.__clientWidth, (y - 1) * this.__clientHeight, animate);
   },
 
 
@@ -1857,6 +1939,12 @@ var members = {
     if (self.__disable) {
       return;
     }
+    if (isNaN(left) || !left) {
+      left = this.__scrollLeft;
+    }
+    if (isNaN(top) || !top) {
+      top = this.__scrollTop;
+    }
     // Remember whether we had an animation, then we try to continue based on the current "drive" of the animation
     var wasAnimating = self.__isAnimating;
     if (wasAnimating) {
@@ -2165,8 +2253,8 @@ function render(content, global, suffix, value) {
 
   var vendorPrefix = {
     trident: 'ms',
-    gecko: 'Moz',
-    webkit: 'Webkit',
+    gecko: 'moz',
+    webkit: 'webkit',
     presto: 'O'
   }[engine];
 
@@ -2174,7 +2262,7 @@ function render(content, global, suffix, value) {
   var undef;
 
   var perspectiveProperty = vendorPrefix + 'Perspective';
-  var transformProperty = vendorPrefix + 'Transform';
+  var transformProperty = 'transform'; //vendorPrefix + 'Transform';
 
   if (helperElem.style[perspectiveProperty] !== undef) {
     if (typeof content == 'string') {
@@ -3427,6 +3515,21 @@ var vueScrollCore = {
           _this3.isSmallChangeThisTick = true;
         }, watchOpts);
       });
+    },
+
+    // check whether there is a
+    // hash in url or not, if true
+    // scroll to the hash automatically
+    scrollToHash: function scrollToHash() /* istanbul ignore next */{
+      var hash = window.location.hash;
+      if (!hash) {
+        return;
+      }
+      var elm = document.querySelector(hash);
+      if (!isChildInParent(elm, this.$el) || this.mergedOptions.scrollPanel.initialScrollY || this.mergedOptions.scrollPanel.initialScrollX) {
+        return;
+      }
+      this.scrollIntoView(elm);
     }
   },
   mounted: function mounted() {
@@ -3434,6 +3537,8 @@ var vueScrollCore = {
       if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       }
+      this.$el._isVuescroll = true;
+
       this.lastMode = this.mode;
 
       this.registryResize();
@@ -3441,6 +3546,8 @@ var vueScrollCore = {
       this.setVsSize();
       this.updateBarStateAndEmitEvent();
       this.showAndDefferedHideBar();
+
+      this.scrollToHash();
     }
   },
   updated: function updated() {
@@ -3465,24 +3572,19 @@ var vueScrollCore = {
   }
 };
 
-var scroll = {
+var Vuescroll = {
   install: function install(Vue$$1) {
-    /* istanbul ignore next */
-    if (scroll.isInstalled) {
-      log.warn('You should not install the vuescroll again!');
-      return;
-    }
     // registry vuescroll
     Vue$$1.component(vueScrollCore.name, vueScrollCore);
-
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
-    scroll.isInstalled = true;
-    scroll.version = '4.5.16';
-  }
+  },
+
+  version: '4.5.16'
 };
+
 /* istanbul ignore if */
-if (typeof Vue !== 'undefined' && "cjs" === 'umd') {
-  Vue.use(scroll);
+if (typeof window !== 'undefined' && window.Vue) {
+  Vue.use(Vuescroll);
 }
 
-module.exports = scroll;
+module.exports = Vuescroll;

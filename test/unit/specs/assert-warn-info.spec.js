@@ -235,4 +235,36 @@ describe('assert-warn-info', () => {
     ).toHaveBeenTipped();
     expect('zoomBy and zoomTo are only for slide mode!').toHaveBeenTipped();
   });
+
+  it('The params passed to scrollIntoView that is not a child of Vuescroll ', () => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 200,
+            h: 200
+          },
+          {
+            w: 100,
+            h: 100
+          },
+          '',
+          3
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'native'
+            }
+          }
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+    vs.scrollIntoView('#d4');
+    expect(
+      'The element or selector you passed is not the element of Vuescroll, please pass the element that is in Vuescroll to scrollIntoView API.'
+    ).toHaveBeenTipped();
+  });
 });

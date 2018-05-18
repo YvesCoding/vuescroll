@@ -10,6 +10,7 @@ import scrollContent from './child-components/vuescroll-content';
 import scrollPanel, { createPanel } from './child-components/vuescroll-panel';
 
 import { smallChangeArray } from '../shared/constants';
+import { isChildInParent } from '../util';
 
 function findValuesByMode(mode, vm) {
   let axis = {};
@@ -392,6 +393,24 @@ const vueScrollCore = {
           watchOpts
         );
       });
+    },
+    // check whether there is a
+    // hash in url or not, if true
+    // scroll to the hash automatically
+    scrollToHash() /* istanbul ignore next */ {
+      const hash = window.location.hash;
+      if (!hash) {
+        return;
+      }
+      const elm = document.querySelector(hash);
+      if (
+        !isChildInParent(elm, this.$el) ||
+        this.mergedOptions.scrollPanel.initialScrollY ||
+        this.mergedOptions.scrollPanel.initialScrollX
+      ) {
+        return;
+      }
+      this.scrollIntoView(elm);
     }
   },
   mounted() {
@@ -399,6 +418,8 @@ const vueScrollCore = {
       if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       }
+      this.$el._isVuescroll = true;
+
       this.lastMode = this.mode;
 
       this.registryResize();
@@ -406,6 +427,8 @@ const vueScrollCore = {
       this.setVsSize();
       this.updateBarStateAndEmitEvent();
       this.showAndDefferedHideBar();
+
+      this.scrollToHash();
     }
   },
   updated() {

@@ -23,8 +23,8 @@ export function render(content, global, suffix, value) {
 
   var vendorPrefix = {
     trident: 'ms',
-    gecko: 'Moz',
-    webkit: 'Webkit',
+    gecko: 'moz',
+    webkit: 'webkit',
     presto: 'O'
   }[engine];
 
@@ -32,7 +32,7 @@ export function render(content, global, suffix, value) {
   var undef;
 
   var perspectiveProperty = vendorPrefix + 'Perspective';
-  var transformProperty = vendorPrefix + 'Transform';
+  var transformProperty = 'transform'; //vendorPrefix + 'Transform';
 
   if (helperElem.style[perspectiveProperty] !== undef) {
     if (typeof content == 'string') {

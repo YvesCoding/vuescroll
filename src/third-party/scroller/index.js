@@ -664,10 +664,16 @@ var members = {
     };
   },
 
-  goToPage(dest, animate) {
+  goToPage({ x, y }, animate) {
+    if (isNaN(x)) {
+      x = 1;
+    }
+    if (isNaN(y)) {
+      y = 1;
+    }
     this.scrollTo(
-      (dest.x - 1) * this.__clientWidth,
-      (dest.y - 1) * this.__clientHeight,
+      (x - 1) * this.__clientWidth,
+      (y - 1) * this.__clientHeight,
       animate
     );
   },
@@ -1146,6 +1152,12 @@ var members = {
     var self = this;
     if (self.__disable) {
       return;
+    }
+    if (isNaN(left) || !left) {
+      left = this.__scrollLeft;
+    }
+    if (isNaN(top) || !top) {
+      top = this.__scrollTop;
     }
     // Remember whether we had an animation, then we try to continue based on the current "drive" of the animation
     var wasAnimating = self.__isAnimating;

@@ -1,10 +1,13 @@
+import { getRealScrollHeight } from '../../util';
 export default {
   methods: {
     updateNativeModeBarState() {
       const scrollPanel = this.scrollPanelElm;
       const vuescroll = this.$el;
       let heightPercentage =
-        vuescroll.clientHeight * 100 / scrollPanel.scrollHeight;
+        vuescroll.clientHeight *
+        100 /
+        getRealScrollHeight(scrollPanel.scrollHeight);
       let widthPercentage =
         vuescroll.clientWidth * 100 / scrollPanel.scrollWidth;
       this.bar.vBar.state.posValue =

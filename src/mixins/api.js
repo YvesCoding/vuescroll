@@ -3,7 +3,7 @@ import {
   easingPattern
 } from '../third-party/easingPattern';
 import { core } from '../third-party/scroller/animate';
-import { log } from '../util';
+import { log, getRealScrollHeight, isChildInParent } from '../util';
 
 function getNumericValue(distance, size) {
   let number;
@@ -16,14 +16,7 @@ function getNumericValue(distance, size) {
   return number;
 }
 
-export function goScrolling(
-  elm,
-  deltaX,
-  deltaY,
-  speed,
-  easing,
-  scrollingComplete
-) {
+function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
   const startLocationY = elm['scrollTop'];
   const startLocationX = elm['scrollLeft'];
   let positionX = startLocationX;
@@ -35,8 +28,9 @@ export function goScrolling(
   if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  if (startLocationY + deltaY > elm['scrollHeight']) {
-    deltaY = elm['scrollHeight'] - startLocationY;
+  const scrollHeight = getRealScrollHeight(elm['scrollHeight']);
+  if (startLocationY + deltaY > scrollHeight) {
+    deltaY = scrollHeight - startLocationY;
   }
   if (startLocationX + deltaX < 0) {
     deltaX = -startLocationX;
@@ -82,11 +76,14 @@ export default {
       if (typeof y === 'undefined') {
         y = this.vuescroll.state.internalScrollTop || 0;
       } else {
-        y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
+        y = getNumericValue(
+          y,
+          getRealScrollHeight(this.scrollPanelElm.scrollHeight)
+        );
       }
       this.internalScrollTo(x, y, animate, force);
     },
-    scrollBy({ dx, dy }, animate = true) {
+    scrollBy({ dx = 0, dy = 0 }, animate = true) {
       let {
         internalScrollLeft = 0,
         internalScrollTop = 0
@@ -100,7 +97,7 @@ export default {
       if (dy) {
         internalScrollTop += getNumericValue(
           dy,
-          this.scrollPanelElm.scrollHeight
+          getRealScrollHeight(this.scrollPanelElm.scrollHeight)
         );
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
@@ -197,6 +194,33 @@ export default {
       else if (this.mode == 'slide') {
         this.scroller.scrollTo(destX, destY, animate, undefined, force);
       }
+    },
+    scrollIntoView(elm, animate = true) {
+      const parentElm = this.$el;
+      if (typeof elm === 'string') {
+        elm = parentElm.querySelector(elm);
+      }
+      if (!isChildInParent(elm, parentElm)) {
+        log.warn(
+          '[vuescroll]: The element or selector you passed is not the element of Vuescroll, please pass the element that is in Vuescroll to scrollIntoView API. '
+        );
+        return;
+      }
+      // parent elm left, top
+      const { left, top } = this.$el.getBoundingClientRect();
+      // child elm left, top
+      const { left: childLeft, top: childTop } = elm.getBoundingClientRect();
+
+      const diffX = left - childLeft;
+      const diffY = top - childTop;
+
+      this.scrollBy(
+        {
+          dx: -diffX,
+          dy: -diffY
+        },
+        animate
+      );
     }
   }
 };

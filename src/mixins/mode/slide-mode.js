@@ -2,7 +2,6 @@
 import Scroller from '../../third-party/scroller';
 import { render } from '../../third-party/scroller/render';
 import { listenContainer } from '../../third-party/scroller/listener';
-
 /**
  * @description refresh and load callback
  */

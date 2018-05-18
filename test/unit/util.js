@@ -77,6 +77,7 @@ export function makeTemplate(child, parent, templateAttribute = null, num = 1) {
         <div 
         v-for="i in ${num}"
         :key="i"
+        :id="'d' + i"
         style="width:${child.w}px;height:${child.h}px">
         </div>
       </vue-scroll>
