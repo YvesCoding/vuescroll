@@ -101,7 +101,7 @@ const vm = new Vue({
 });
 ```
 
-2.  Wrap the content you want to scroll by vuescroll.
+2.  Then use vuescroll to wrap the contents that need to be scrolled.
 
 ```html
 <div id="app" >

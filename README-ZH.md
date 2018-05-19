@@ -98,7 +98,7 @@ const vm = new Vue({
 });
 ```
 
-2.  Then use vuescroll to wrap the contents that need to be scrolled.
+2.  然后使用 vuescroll 把需要滚动的内容包裹起来即可。
 
 ```html
 <div id="app" >
