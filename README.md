@@ -101,6 +101,22 @@ const vm = new Vue({
 });
 ```
 
+2.  Wrap the content you want to scroll by vuescroll.
+
+```html
+<div id="app" >
+    <vue-scroll :ops="ops">
+        <div
+        class="content"
+        v-for= "item in 100"
+        :key="item"
+        >
+        <span>{{item}}</span>
+        </div>
+    </vue-scroll>
+</div>
+```
+
 ## Preview
 
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p8.jpg?raw=true)
@@ -120,22 +136,6 @@ const vm = new Vue({
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p6.jpg?raw=true)
 
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p7.jpg?raw=true)
-
-2.  Wrap the content you want to scroll by vuescroll.
-
-```html
-<div id="app" >
-    <vue-scroll :ops="ops">
-        <div
-        class="content"
-        v-for= "item in 100"
-        :key="item"
-        >
-        <span>{{item}}</span>
-        </div>
-    </vue-scroll>
-</div>
-```
 
 ## Changelog
 
