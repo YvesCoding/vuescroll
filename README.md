@@ -81,7 +81,7 @@ npm install vuescroll -S
 
 ### Usage
 
-1.  Configure in your entry file
+1.  First, install `Vuescroll` in your entry file
 
 ```javascript
 import Vue from 'vue';
@@ -117,7 +117,7 @@ const vm = new Vue({
 </div>
 ```
 
-3.  The detailed configuration is as follows:
+### The detailed configuration is as follows:
 
 ```javascript
   {
@@ -227,6 +227,14 @@ const vm = new Vue({
   }
 }
 ```
+
+### API Reference
+
+[Vuescroll API](https://wangyi7099.github.io/vuescrolljs/guide/api.html)
+
+### Event Reference
+
+[Vuescroll Event](https://wangyi7099.github.io/vuescrolljs/guide/event.html)
 
 ## Preview
 

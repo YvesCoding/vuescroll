@@ -78,7 +78,7 @@ npm install vuescroll -S
 
 ### 用法
 
-1.  在你的入口文件进行配置
+1.  首先在你的入口文件安装 Vuescroll
 
 ```javascript
 import Vue from 'vue';
@@ -98,7 +98,7 @@ const vm = new Vue({
 });
 ```
 
-2.  使用 vuescroll 把需要滚动的内容包裹起来
+2.  Then use vuescroll to wrap the contents that need to be scrolled.
 
 ```html
 <div id="app" >
@@ -114,7 +114,7 @@ const vm = new Vue({
 </div>
 ```
 
-3.  详细的配置如下:
+### 详细的配置如下:
 
 ```javascript
   {
@@ -224,6 +224,14 @@ const vm = new Vue({
   }
 }
 ```
+
+### API 参考
+
+[Vuescroll API](https://wangyi7099.github.io/vuescrolljs/zh/guide/api.html)
+
+### Event 参考
+
+[Vuescroll Event](https://wangyi7099.github.io/vuescrolljs/zh/guide/event.html)
 
 ## 预览
 
