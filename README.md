@@ -101,6 +101,26 @@ const vm = new Vue({
 });
 ```
 
+## Preview
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p8.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p0.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p4.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p5.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p6.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p7.jpg?raw=true)
+
 2.  Wrap the content you want to scroll by vuescroll.
 
 ```html

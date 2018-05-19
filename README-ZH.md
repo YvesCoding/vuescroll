@@ -114,6 +114,26 @@ const vm = new Vue({
 </div>
 ```
 
+## 预览
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p8.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p0.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p4.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p5.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p6.jpg?raw=true)
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p7.jpg?raw=true)
+
 ## 变更日志
 
 每个版本的详细记录在[发行日志](https://github.com/wangyi7099/vuescroll/releases)里面。
