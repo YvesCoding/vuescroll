@@ -1,4 +1,5 @@
   <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/zh/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
+  <h3 align="center">Vuescroll</h4>
 <p align="center">
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a>
   <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage"></a>
@@ -6,8 +7,6 @@
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
 <a href="https://github.com/wangyi7099/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
-<h3 align="center">Vuescroll</h4>
-<h4  align="center">一个基于VUE.JS的可定制的跨平台虚拟滚动条，可以帮助您美化和增强Web上的滚动条。</h4>
 
 ## 介绍
 
@@ -33,7 +32,13 @@ Vuescroll 是一个可定制的， 跨平台的，可以和第三方 UI 框架�
 
 总的来说，Vuescroll 不仅仅只一个滚动条， 你可以用它制作一个轮播图、时间选择器、能够自动侦测内容发生变化的一个插件等等。
 
-## Demo & 文档
+## 预览
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.gif?raw=true)
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.gif?raw=true)
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.gif?raw=true)
+
+## 在线 Demo & 文档
 
 * 你可以浏览这个 repo 的根目录下的 Demo 文件夹。
 * 详细的 Demo, 文档: 请访问 [官方地址](https://wangyi7099.github.io/vuescrolljs/zh/Demo/).
@@ -232,26 +237,6 @@ const vm = new Vue({
 ### Event 参考
 
 [Vuescroll Event](https://wangyi7099.github.io/vuescrolljs/zh/guide/event.html)
-
-## 预览
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p8.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p0.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p4.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p5.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p6.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p7.jpg?raw=true)
 
 ## 变更日志
 

@@ -1,4 +1,5 @@
   <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
+<h3 align="center">Vuescroll</h4>
 <p align="center">
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a>
    <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage"></a>
@@ -6,8 +7,6 @@
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
 <a href="https://github.com/wangyi7099/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
-<h3 align="center">Vuescroll</h4>
-<h4  align="center">A customizable, cross platform virtual scrollbar based on Vue.js that can help you beautify and enhance your scrollbar on the web.</h4>
 
 [中文版 README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 
@@ -36,7 +35,13 @@ You can also customize the style of the scrollbar, including:
 
 In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel, time picker, a plugin that can automatically detect the size change of content and so on.
 
-## Demo & Documentation
+## Preview
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.gif?raw=true)
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.gif?raw=true)
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.gif?raw=true)
+
+## Online Demo & Documentation
 
 * You can find Demo under the root of this repo.
 * For detailed demo and documentation: Please visit [Offical Website](https://wangyi7099.github.io/vuescrolljs/Demo/).
@@ -235,26 +240,6 @@ const vm = new Vue({
 ### Event Reference
 
 [Vuescroll Event](https://wangyi7099.github.io/vuescrolljs/guide/event.html)
-
-## Preview
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p8.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p0.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p4.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p5.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p6.jpg?raw=true)
-
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p7.jpg?raw=true)
 
 ## Changelog
 
