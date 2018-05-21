@@ -280,6 +280,7 @@ Vuescroll is extremely easy to expand.You only have to do 2 steps
 * [element-ui](http://element.eleme.io/#/zh-CN/component/installation)
 * [scroller](http://zynga.github.io/scroller/)
 * [CodePen](https://codepen.io/wangyi7099/pen/YLVBNe)
+* [better-scroll](https://github.com/ustbhuangyi/better-scroll)
 
 ## License
 

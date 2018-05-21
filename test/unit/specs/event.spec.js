@@ -22,12 +22,12 @@ describe('handle-resize', () => {
       {
         template: makeTemplate(
           {
-            w: 200,
-            h: 200
+            w: 198,
+            h: 198
           },
           {
-            w: 100,
-            h: 100
+            w: 99,
+            h: 99
           },
           '@handle-resize="handleResize"'
         ),
@@ -52,13 +52,13 @@ describe('handle-resize', () => {
       .then(r => {
         hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
         expect(hBar).not.toBe(null);
-        content.style.width = '100px';
+        content.style.width = '99px';
         _r = r;
       })
       .then(r => {
         hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
         expect(hBar).toBe(null);
-        content.style.width = '200px';
+        content.style.width = '198px';
         _r = r;
       })
       .then(r => {
@@ -70,13 +70,13 @@ describe('handle-resize', () => {
       })
       .then(r => {
         content = vm.$el.querySelector('.vuescroll-panel > div');
-        content.style.width = '100px';
+        content.style.width = '99px';
         _r = r;
       })
       .then(r => {
         hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
         expect(hBar).toBe(null);
-        content.style.width = '200px';
+        content.style.width = '198px';
         _r = r;
       })
       .then(r => {
