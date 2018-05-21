@@ -1,4 +1,4 @@
-import { deepMerge } from '../../util';
+import { deepMerge, getScrollError } from '../../util';
 // scrollContent
 export default {
   name: 'scrollContent',
@@ -14,6 +14,7 @@ export default {
   },
   render(h, { props, slots }) {
     let style = deepMerge(props.state.style, {});
+    const error = getScrollError();
     style.position = 'relative';
     style.minHeight = '100%';
     style.minWidth = '100%';
@@ -21,6 +22,9 @@ export default {
     style.boxSizing = 'border-box';
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
+    }
+    if (error) {
+      style.marginBottom = `-${error}px`;
     }
     return h(
       props.ops.tag,

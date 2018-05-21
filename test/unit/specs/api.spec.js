@@ -43,10 +43,7 @@ describe('api', () => {
       .then(r => {
         const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
         const { scrollTop } = scrollPanel;
-        // note: in chrome , scrollHeight is added extra 4px than actual content
-        // so we should add 4 to let test pass.\
-        // https://stackoverflow.com/questions/29132892/how-to-auto-resize-an-input-field-vertically-and-not-horizontally-like-facebook/29133328#29133328
-        expect(Math.ceil(scrollTop)).toBe(104);
+        expect(Math.ceil(scrollTop)).toBe(100);
         // scroll X axis
         vs.scrollTo(
           {

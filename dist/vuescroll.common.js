@@ -128,14 +128,14 @@ function eventCenter(dom, eventName, hander) {
 var log = console;
 
 var error = void 0;
-// It only happens when child is inline-block,
+// It only happens when child is inline-block in chrome,
 // scollheight will have a error of
-// 4px in chrome or some other browsers.
-// So write a method to get the error and get the real scrollHeight.
-function getRealScrollHeight(scrollHeight) {
+// 4px, so write a method to compute the error.
+// https://stackoverflow.com/questions/29132892/how-to-auto-resize-an-input-field-vertically-and-not-horizontally-like-facebook/29133328#29133328
+function getScrollError() {
   /* istanbul ignore next */
   if (Vue.prototype.$isServer) return 0;
-  if (error !== undefined) return scrollHeight - error;
+  if (error !== undefined) return error;
   var outer = document.createElement('div');
   outer.style.visibility = 'hidden';
   outer.style.height = '100px';
@@ -150,7 +150,7 @@ function getRealScrollHeight(scrollHeight) {
   outer.appendChild(inner);
   error = outer.scrollHeight - outer.clientHeight;
   outer.parentNode.removeChild(outer);
-  return scrollHeight - error;
+  return error;
 }
 
 function isChildInParent(child, parent) {
@@ -675,7 +675,8 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
   if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  var scrollHeight = getRealScrollHeight(elm['scrollHeight']);
+  var error = getScrollError();
+  var scrollHeight = elm['scrollHeight'] - error;
   if (startLocationY + deltaY > scrollHeight) {
     deltaY = scrollHeight - startLocationY;
   }
@@ -711,6 +712,7 @@ var api = {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       var force = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
+      var error = getScrollError();
       if (typeof x === 'undefined') {
         x = this.vuescroll.state.internalScrollLeft || 0;
       } else {
@@ -719,7 +721,7 @@ var api = {
       if (typeof y === 'undefined') {
         y = this.vuescroll.state.internalScrollTop || 0;
       } else {
-        y = getNumericValue(y, getRealScrollHeight(this.scrollPanelElm.scrollHeight));
+        y = getNumericValue(y, this.scrollPanelElm.scrollHeight - error);
       }
       this.internalScrollTo(x, y, animate, force);
     },
@@ -729,6 +731,8 @@ var api = {
           _ref2$dy = _ref2.dy,
           dy = _ref2$dy === undefined ? 0 : _ref2$dy;
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+      var error = getScrollError();
       var _vuescroll$state = this.vuescroll.state,
           _vuescroll$state$inte = _vuescroll$state.internalScrollLeft,
           internalScrollLeft = _vuescroll$state$inte === undefined ? 0 : _vuescroll$state$inte,
@@ -739,7 +743,7 @@ var api = {
         internalScrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth);
       }
       if (dy) {
-        internalScrollTop += getNumericValue(dy, getRealScrollHeight(this.scrollPanelElm.scrollHeight));
+        internalScrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight - error);
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
     },
@@ -871,11 +875,12 @@ var api = {
 var nativeMode = {
   methods: {
     updateNativeModeBarState: function updateNativeModeBarState() {
+      var error = getScrollError();
       var scrollPanel = this.scrollPanelElm;
       var vuescroll = this.$el;
-      var heightPercentage = vuescroll.clientHeight * 100 / getRealScrollHeight(scrollPanel.scrollHeight);
+      var heightPercentage = vuescroll.clientHeight * 100 / (scrollPanel.scrollHeight - error);
       var widthPercentage = vuescroll.clientWidth * 100 / scrollPanel.scrollWidth;
-      this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / vuescroll.clientHeight;
+      this.bar.vBar.state.posValue = (scrollPanel.scrollTop - error) * 100 / vuescroll.clientHeight;
       this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / vuescroll.clientWidth;
       this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
       this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
@@ -2848,6 +2853,7 @@ var scrollContent = {
         slots = _ref.slots;
 
     var style = deepMerge(props.state.style, {});
+    var error = getScrollError();
     style.position = 'relative';
     style.minHeight = '100%';
     style.minWidth = '100%';
@@ -2855,6 +2861,9 @@ var scrollContent = {
     style.boxSizing = 'border-box';
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
+    }
+    if (error) {
+      style.marginBottom = '-' + error + 'px';
     }
     return h(props.ops.tag, {
       style: style,
