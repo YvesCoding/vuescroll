@@ -41,7 +41,7 @@ Vuescroll 是一个可定制的， 跨平台的，可以和第三方 UI 框架�
 ## 在线 Demo & 文档
 
 * 你可以浏览这个 repo 的根目录下的 Demo 文件夹。
-* 详细的 Demo, 文档: 请访问 [官方地址](https://wangyi7099.github.io/vuescrolljs/zh/Demo/).
+* 详细的 Demo, 文档: 请访问 [官方地址](https://wangyi7099.github.io/vuescrolljs/zh/Demo/Basic/).
 
 ## 特点
 

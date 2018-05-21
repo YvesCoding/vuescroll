@@ -44,7 +44,7 @@ In a word, Vuescroll is not only a scrollbar, but you can use to make a carousel
 ## Online Demo & Documentation
 
 * You can find Demo under the root of this repo.
-* For detailed demo and documentation: Please visit [Offical Website](https://wangyi7099.github.io/vuescrolljs/Demo/).
+* For detailed demo and documentation: Please visit [Offical Website](https://wangyi7099.github.io/vuescrolljs/Demo/Basic/).
 
 ## Features
 
