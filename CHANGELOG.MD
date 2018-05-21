@@ -1,3 +1,13 @@
+<a name="4.5.18"></a>
+## [4.5.18](https://github.com/wangyi7099/vuescroll/compare/v4.5.17...v4.5.18) (2018-05-21)
+
+
+### Bug Fixes
+
+* get incorrect hash when component mounted ([6ad69af](https://github.com/wangyi7099/vuescroll/commit/6ad69af))
+
+
+
 <a name="4.5.17"></a>
 ## [4.5.17](https://github.com/wangyi7099/vuescroll/compare/v4.5.16...v4.5.17) (2018-05-18)
 
