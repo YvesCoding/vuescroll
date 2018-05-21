@@ -15,16 +15,16 @@ import { isChildInParent } from '../util';
 function findValuesByMode(mode, vm) {
   let axis = {};
   switch (mode) {
-  case 'native':
-  case 'pure-native':
-    axis = {
-      x: vm.scrollPanelElm.scrollLeft,
-      y: vm.scrollPanelElm.scrollTop
-    };
-    break;
-  case 'slide':
-    axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-    break;
+    case 'native':
+    case 'pure-native':
+      axis = {
+        x: vm.scrollPanelElm.scrollLeft,
+        y: vm.scrollPanelElm.scrollTop
+      };
+      break;
+    case 'slide':
+      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+      break;
   }
   return axis;
 }
@@ -394,12 +394,18 @@ const vueScrollCore = {
         );
       });
     },
-    // check whether there is a
-    // hash in url or not, if true
+    // if there is a hash in url,
     // scroll to the hash automatically
     scrollToHash() /* istanbul ignore next */ {
-      const hash = window.location.hash;
-      if (!hash) {
+      const validateHashSelector = function(hash) {
+        return /^#[a-zA-Z_]\d*$/.test(hash);
+      };
+      let hash = window.location.hash;
+      if (
+        !hash ||
+        ((hash = hash.slice(hash.lastIndexOf('#'))) &&
+          !validateHashSelector(hash))
+      ) {
         return;
       }
       const elm = document.querySelector(hash);

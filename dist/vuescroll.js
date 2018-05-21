@@ -3519,12 +3519,15 @@ var vueScrollCore = {
       });
     },
 
-    // check whether there is a
-    // hash in url or not, if true
+    // if there is a hash in url,
     // scroll to the hash automatically
     scrollToHash: function scrollToHash() /* istanbul ignore next */{
+      var validateHashSelector = function validateHashSelector(hash) {
+        return (/^#[a-zA-Z_]\d*$/.test(hash)
+        );
+      };
       var hash = window.location.hash;
-      if (!hash) {
+      if (!hash || (hash = hash.slice(hash.lastIndexOf('#'))) && !validateHashSelector(hash)) {
         return;
       }
       var elm = document.querySelector(hash);
