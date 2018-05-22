@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.5.18
+    * @name: vuescroll 4.5.19
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -3583,7 +3583,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.18'
+  version: '4.5.19'
 };
 
 /* istanbul ignore if */
