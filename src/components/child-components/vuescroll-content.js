@@ -16,8 +16,6 @@ export default {
   render(h, { props, slots }) {
     let style = deepMerge(props.state.style, {});
     style.position = 'relative';
-    style.minHeight = '100%';
-    style.minWidth = '100%';
     const widthStyle = `-${getPrefix(window)}-fit-content`;
     const elm = document.createElement('div');
     elm.style.width = widthStyle;
