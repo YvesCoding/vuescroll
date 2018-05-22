@@ -33,13 +33,18 @@ describe('api', () => {
     );
     const vs = vm.$refs['vs'];
     // scroll Y axis
-    vs.scrollTo(
-      {
-        y: 300
-      },
-      true
-    );
-    startSchedule(350)
+
+    startSchedule()
+      .then(r => {
+        vs.scrollTo(
+          {
+            y: 300
+          },
+          true
+        );
+        r();
+      })
+      .wait(350)
       .then(r => {
         const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
         const { scrollTop } = scrollPanel;
@@ -98,22 +103,27 @@ describe('api', () => {
     );
     const vs = vm.$refs['vs'];
 
-    vs.scrollBy(
-      {
-        dy: 50,
-        dx: 50
-      },
-      true
-    );
-    startSchedule(350).then(r => {
-      const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
-      const { scrollTop, scrollLeft } = scrollPanel;
+    startSchedule()
+      .then(r => {
+        vs.scrollBy(
+          {
+            dy: 50,
+            dx: 50
+          },
+          true
+        );
+        r();
+      })
+      .wait(350)
+      .then(r => {
+        const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
+        const { scrollTop, scrollLeft } = scrollPanel;
 
-      expect(scrollTop).toBe(50);
-      expect(scrollLeft).toBe(50);
-      r();
-      done();
-    });
+        expect(scrollTop).toBe(50);
+        expect(scrollLeft).toBe(50);
+        r();
+        done();
+      });
   });
 
   it('zoomBy, zoomTo', done => {
@@ -141,14 +151,18 @@ describe('api', () => {
     );
     const vs = vm.$refs['vs'];
 
-    vs.zoomBy(
-      0.5, // factor self.__zoomLevel = self.__zoomLevel * factor
-      true
-    );
-    startSchedule(350)
+    startSchedule()
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-scrollbar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        vs.zoomBy(
+          0.5, // factor self.__zoomLevel = self.__zoomLevel * factor
+          true
+        );
+        r();
+      })
+      .wait(350)
+      .then(r => {
+        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
+        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
 
         expect(vBar).toBe(null);
         expect(hBar).toBe(null);
@@ -160,8 +174,8 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-scrollbar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
+        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
 
         expect(vBar).not.toBe(null);
         expect(hBar).not.toBe(null);
@@ -170,15 +184,11 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        let { clientHeight } = vm.$el.querySelector(
-          '.vuescroll-vertical-scrollbar'
-        );
-        let { clientWidth } = vm.$el.querySelector(
-          '.vuescroll-horizontal-scrollbar'
-        );
+        let { clientHeight } = vm.$el.querySelector('.vuescroll-vertical-bar');
+        let { clientWidth } = vm.$el.querySelector('.vuescroll-horizontal-bar');
 
-        expect(clientHeight).toBe(25); // 100 / 2 / 2
-        expect(clientWidth).toBe(25); // 100 / 2 / 2
+        expect(clientHeight).toBe(24); // (100 - 4 bar-wrap: top:2px bottom: 2px) / 2 / 2
+        expect(clientWidth).toBe(24); // (100 - 4) / 2 / 2
         r();
         done();
       });

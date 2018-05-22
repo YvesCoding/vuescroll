@@ -129,32 +129,6 @@ function eventCenter(dom, eventName, hander) {
 // native console
 var log = console;
 
-var error = void 0;
-// It only happens when child is inline-block in chrome,
-// scollheight will have a error of
-// 4px, so write a method to compute the error.
-// https://stackoverflow.com/questions/29132892/how-to-auto-resize-an-input-field-vertically-and-not-horizontally-like-facebook/29133328#29133328
-function getScrollError() {
-  /* istanbul ignore next */
-  if (Vue.prototype.$isServer) return 0;
-  if (error !== undefined) return error;
-  var outer = document.createElement('div');
-  outer.style.visibility = 'hidden';
-  outer.style.height = '100px';
-  outer.style.position = 'absolute';
-  outer.style.top = '-9999px';
-  outer.style.overflow = 'hidden';
-  document.body.appendChild(outer);
-  var inner = document.createElement('div');
-  inner.style.visibility = 'hidden';
-  inner.style.height = '100px';
-  inner.style.display = 'inline-block';
-  outer.appendChild(inner);
-  error = outer.scrollHeight - outer.clientHeight;
-  outer.parentNode.removeChild(outer);
-  return error;
-}
-
 function isChildInParent(child, parent) {
   var flag = false;
   if (!child || !parent) {
@@ -170,9 +144,11 @@ function isChildInParent(child, parent) {
 }
 
 // detect content size change
-// https://github.com/wnr/element-resize-detector/blob/465fe68efbea85bb9fe22db2f68ebc7fde8bbcf5/src/detection-strategy/object.js
-// modified by wangyi7099
-function listenResize(element, func) {
+function listenResize(element, callback) {
+  return injectObject(element, callback);
+}
+
+function injectObject(element, callback) {
   var OBJECT_STYLE = 'display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;';
   var object = document.createElement('object');
   object.style.cssText = OBJECT_STYLE;
@@ -181,12 +157,12 @@ function listenResize(element, func) {
   object.data = 'about:blank';
   object.isResizeElm = true;
   object.onload = function () {
-    eventCenter(object.contentDocument.defaultView, 'resize', func);
+    eventCenter(object.contentDocument.defaultView, 'resize', callback);
   };
   element.appendChild(object);
   return function destroy() {
     if (object.contentDocument) {
-      eventCenter(object.contentDocument.defaultView, 'resize', func, 'off');
+      eventCenter(object.contentDocument.defaultView, 'resize', callback, 'off');
     }
     element.removeChild(object);
   };
@@ -677,8 +653,7 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
   if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  var error = getScrollError();
-  var scrollHeight = elm['scrollHeight'] - error;
+  var scrollHeight = elm['scrollHeight'];
   if (startLocationY + deltaY > scrollHeight) {
     deltaY = scrollHeight - startLocationY;
   }
@@ -714,7 +689,6 @@ var api = {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
       var force = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-      var error = getScrollError();
       if (typeof x === 'undefined') {
         x = this.vuescroll.state.internalScrollLeft || 0;
       } else {
@@ -723,7 +697,7 @@ var api = {
       if (typeof y === 'undefined') {
         y = this.vuescroll.state.internalScrollTop || 0;
       } else {
-        y = getNumericValue(y, this.scrollPanelElm.scrollHeight - error);
+        y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
       }
       this.internalScrollTo(x, y, animate, force);
     },
@@ -733,8 +707,6 @@ var api = {
           _ref2$dy = _ref2.dy,
           dy = _ref2$dy === undefined ? 0 : _ref2$dy;
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-      var error = getScrollError();
       var _vuescroll$state = this.vuescroll.state,
           _vuescroll$state$inte = _vuescroll$state.internalScrollLeft,
           internalScrollLeft = _vuescroll$state$inte === undefined ? 0 : _vuescroll$state$inte,
@@ -745,7 +717,7 @@ var api = {
         internalScrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth);
       }
       if (dy) {
-        internalScrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight - error);
+        internalScrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight);
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
     },
@@ -877,12 +849,11 @@ var api = {
 var nativeMode = {
   methods: {
     updateNativeModeBarState: function updateNativeModeBarState() {
-      var error = getScrollError();
       var scrollPanel = this.scrollPanelElm;
       var vuescroll = this.$el;
-      var heightPercentage = vuescroll.clientHeight * 100 / (scrollPanel.scrollHeight - error);
+      var heightPercentage = vuescroll.clientHeight * 100 / scrollPanel.scrollHeight;
       var widthPercentage = vuescroll.clientWidth * 100 / scrollPanel.scrollWidth;
-      this.bar.vBar.state.posValue = (scrollPanel.scrollTop - error) * 100 / vuescroll.clientHeight;
+      this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / vuescroll.clientHeight;
       this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / vuescroll.clientWidth;
       this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
       this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
@@ -1167,6 +1138,8 @@ var members = {
    * @param contentHeight {Integer ? null} Outer height of inner element
    */
   setDimensions: function setDimensions(clientWidth, clientHeight, contentWidth, contentHeight) {
+    var animate = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : trye;
+
     var self = this;
 
     // Only update values which are defined
@@ -1190,7 +1163,7 @@ var members = {
     self.__computeScrollMax();
 
     // Refresh scroll position
-    self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+    self.scrollTo(self.__scrollLeft, self.__scrollTop, animate);
   },
 
   /**
@@ -1946,10 +1919,10 @@ var members = {
     if (self.__disable) {
       return;
     }
-    if (isNaN(left) || !left) {
+    if (isNaN(left)) {
       left = this.__scrollLeft;
     }
-    if (isNaN(top) || !top) {
+    if (isNaN(top)) {
       top = this.__scrollTop;
     }
     // Remember whether we had an animation, then we try to continue based on the current "drive" of the animation
@@ -2238,11 +2211,8 @@ for (var key in members) {
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-/* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
-function render(content, global, suffix, value) {
+function getPrefix(global) {
   var docStyle = document.documentElement.style;
-  var x = null;
-  var y = null;
   var engine;
   if (global.opera && Object.prototype.toString.call(opera) === '[object Opera]') {
     engine = 'presto';
@@ -2253,17 +2223,25 @@ function render(content, global, suffix, value) {
   } else if (typeof navigator.cpuClass === 'string') {
     engine = 'trident';
   }
-
-  if (typeof content == 'string') {
-    y = content == 'vertical' ? (x = 0) || value : (x = value) && 0;
-  }
-
   var vendorPrefix = {
     trident: 'ms',
     gecko: 'moz',
     webkit: 'webkit',
     presto: 'O'
   }[engine];
+  return vendorPrefix;
+}
+
+/* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
+function render(content, global, suffix, value) {
+  var x = null;
+  var y = null;
+
+  if (typeof content == 'string') {
+    y = content == 'vertical' ? (x = 0) || value : (x = value) && 0;
+  }
+
+  var vendorPrefix = getPrefix(global);
 
   var helperElem = document.createElement('div');
   var undef;
@@ -2497,7 +2475,7 @@ var slideMode = {
         //  hide the trailing load dom..
         contentHeight -= loadHeight;
       }
-      this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight);
+      this.scroller.setDimensions(clientWidth, clientHeight, contentWidth, contentHeight, false);
     },
     registryScroller: function registryScroller() {
       var _this = this;
@@ -2623,6 +2601,7 @@ var map = {
       size: 'height',
       opsSize: 'width',
       posName: 'top',
+      opposName: 'bottom',
       page: 'pageY',
       scroll: 'scrollTop',
       scrollSize: 'scrollHeight',
@@ -2636,6 +2615,7 @@ var map = {
       size: 'width',
       opsSize: 'height',
       posName: 'left',
+      opposName: 'right',
       page: 'pageX',
       scroll: 'scrollLeft',
       scrollSize: 'scrollWidth',
@@ -2646,9 +2626,21 @@ var map = {
   }
 };
 
-var _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* istanbul ignore next */
+function handleClickTrack(e, _ref, parentRef, type, parent) {
+  var client = _ref.client,
+      offset = _ref.offset,
+      posName = _ref.posName,
+      scrollSize = _ref.scrollSize;
+
+  var inner = parentRef[type + 'Bar'].$refs['inner'];
+  var barOffset = inner[offset];
+  var percent = (e[client] - e.target.getBoundingClientRect()[posName] - barOffset / 2) / e.target[offset];
+  var pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
+  parent.scrollTo(_defineProperty$1({}, map[type].axis.toLowerCase(), pos));
+}
 
 var bar = {
   name: 'bar',
@@ -2679,19 +2671,22 @@ var bar = {
       return this.$parent.$refs;
     }
   },
-  render: function render$$1(h) {
-    var _extends2,
-        _this = this;
+  render: function render(h) {
+    var _style,
+        _this = this,
+        _style2;
 
     // eslint-disable-line
-    var style = _extends$1((_extends2 = {}, _defineProperty$1(_extends2, this.bar.posName, 0), _defineProperty$1(_extends2, this.ops.pos, 0), _defineProperty$1(_extends2, this.bar.size, this.state.size), _defineProperty$1(_extends2, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty$1(_extends2, 'borderRadius', this.ops[this.bar.opsSize]), _defineProperty$1(_extends2, 'background', this.ops.background), _defineProperty$1(_extends2, 'opacity', this.state.opacity), _defineProperty$1(_extends2, 'cursor', 'pointer'), _defineProperty$1(_extends2, 'position', 'absolute'), _defineProperty$1(_extends2, 'transition', 'opacity .5s'), _defineProperty$1(_extends2, 'userSelect', 'none'), _extends2), render(this.type, window, '%', this.state.posValue));
+    var style = (_style = {}, _defineProperty$1(_style, this.bar.posName, 0), _defineProperty$1(_style, this.ops.pos, 0), _defineProperty$1(_style, this.bar.size, this.state.size), _defineProperty$1(_style, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty$1(_style, 'borderRadius', this.ops[this.bar.opsSize]), _defineProperty$1(_style, 'background', this.ops.background), _defineProperty$1(_style, 'opacity', this.state.opacity), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'position', 'relative'), _defineProperty$1(_style, 'transition', 'opacity .5s'), _defineProperty$1(_style, 'userSelect', 'none'), _defineProperty$1(_style, 'transform', 'translate' + map[this.type].axis + '(' + this.state.posValue + '%)'), _style);
     var data = {
       style: style,
-      class: 'vuescroll-' + this.type + '-scrollbar',
+      class: 'vuescroll-' + this.type + '-bar',
       on: {
         mousedown: this.handleMousedown
-      }
+      },
+      ref: 'inner'
     };
+    /* istanbul ignore if */
     if (this.ops.hover) {
       data.on['mouseenter'] = function () {
         _this.$el.style.background = _this.ops.hover;
@@ -2700,18 +2695,35 @@ var bar = {
         _this.$el.style.background = _this.ops.background;
       };
     }
-    return h('div', data);
+    var vm = this;
+    var parentRef = vm.$parent.$refs;
+    var barWrap = {
+      class: 'vuescroll-' + this.type + '-bar-wrap',
+      style: (_style2 = {
+        position: 'absolute'
+      }, _defineProperty$1(_style2, this.bar.posName, '2px'), _defineProperty$1(_style2, this.bar.opposName, '2px'), _defineProperty$1(_style2, this.ops.pos, 0), _style2),
+      on: {
+        click: function click(e) /* istanbul ignore next */{
+          handleClickTrack(e, vm.bar, parentRef, vm.type, vm.$parent);
+        }
+      }
+    };
+    return h(
+      'div',
+      barWrap,
+      [h('div', data)]
+    );
   },
 
   methods: {
     handleMousedown: function handleMousedown(e) {
       /* istanbul ignore next */
       {
-        e.stopPropagation();
+        e.stopImmediatePropagation();
         document.onselectstart = function () {
           return false;
         };
-        this.axisStartPos = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
+        this.axisStartPos = e[this.bar.client] - this.$refs['inner'].getBoundingClientRect()[this.bar.posName];
         // tell parent that the mouse has been down.
         this.$emit('setBarClick', true);
         eventCenter(document, 'mousemove', this.handleMouseMove);
@@ -2726,8 +2738,8 @@ var bar = {
       /* istanbul ignore next */
       {
         // https://github.com/ElemeFE/element/blob/27a8c1556e30ae38423ebc4bb100486e59b8601f/packages/scrollbar/src/bar.js#L72
-        var delta = e[this.bar.client] - this.parent[this.type + 'Rail'].getBoundingClientRect()[this.bar.posName];
-        var percent = (delta - this.axisStartPos) / this.parent[this.type + 'Rail'][this.bar.offset];
+        var delta = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
+        var percent = (delta - this.axisStartPos) / this.$el[this.bar.offset];
         this.$parent.scrollTo(_defineProperty$1({}, this.axis.toLowerCase(), this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent), false);
       }
     },
@@ -2775,40 +2787,21 @@ function createBar(h, vm, type) {
 
 function _defineProperty$2(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-/* istanbul ignore next */
-function handleClickTrack(e, _ref, parentRef, type, parent) {
-  var client = _ref.client,
-      offset = _ref.offset,
-      posName = _ref.posName,
-      scrollSize = _ref.scrollSize;
-
-  var barOffset = parentRef[type + 'Bar'].$el[offset];
-  var percent = (e[client] - e.target.getBoundingClientRect()[posName] - barOffset / 2) / e.target[offset];
-  var pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
-  parent.scrollTo(_defineProperty$2({}, map[type].axis.toLowerCase(), pos));
-}
-
 var rail = {
   name: 'rail',
   functional: true,
-  render: function render(h, _ref2) {
+  render: function render(h, _ref) {
     var _style;
 
-    var parent = _ref2.parent,
-        props = _ref2.props;
+    var props = _ref.props;
 
     var bar = map[props.type].bar;
-    var parentRef = parent.$refs;
-    var style = (_style = {}, _defineProperty$2(_style, bar.posName, 0), _defineProperty$2(_style, props.ops.pos, 0), _defineProperty$2(_style, bar.size, '100%'), _defineProperty$2(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$2(_style, 'borderRadius', props.ops[bar.opsSize]), _defineProperty$2(_style, 'background', props.ops.background), _defineProperty$2(_style, 'opacity', props.ops.opacity), _defineProperty$2(_style, 'position', 'absolute'), _defineProperty$2(_style, 'cursor', 'pointer'), _style);
+
+    var style = (_style = {}, _defineProperty$2(_style, bar.posName, 0), _defineProperty$2(_style, props.ops.pos, 0), _defineProperty$2(_style, bar.size, '100%'), _defineProperty$2(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$2(_style, 'borderRadius', props.ops[bar.opsSize]), _defineProperty$2(_style, 'background', props.ops.background), _defineProperty$2(_style, 'opacity', props.ops.opacity), _defineProperty$2(_style, 'position', 'absolute'), _style);
     var data = {
       style: style,
       class: 'vuescroll-' + props.type + '-rail',
-      ref: props.type + 'Rail',
-      on: {
-        click: function click(e) /* istanbul ignore next */{
-          handleClickTrack(e, bar, parentRef, props.type, parent);
-        }
-      }
+      ref: props.type + 'Rail'
     };
     return h(
       'div',
@@ -2850,22 +2843,25 @@ var scrollContent = {
       }
     }
   },
-  render: function render(h, _ref) {
+  render: function render$$1(h, _ref) {
     var props = _ref.props,
         slots = _ref.slots;
 
     var style = deepMerge(props.state.style, {});
-    var error = getScrollError();
     style.position = 'relative';
     style.minHeight = '100%';
     style.minWidth = '100%';
-    style.display = 'inline-block';
+    var widthStyle = '-' + getPrefix(window) + '-fit-content';
+    var elm = document.createElement('div');
+    elm.style.width = widthStyle;
+    if (elm.style.width == widthStyle) {
+      style.width = widthStyle;
+    } /* istanbul ignore next */else {
+        style.display = 'inline-block';
+      }
     style.boxSizing = 'border-box';
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
-    }
-    if (error) {
-      style.marginBottom = '-' + error + 'px';
     }
     return h(props.ops.tag, {
       style: style,
@@ -3207,7 +3203,6 @@ var vueScrollCore = {
           isDragging: false,
           isClickingBar: false,
           pointerLeave: true,
-          timeoutId: 0,
           internalScrollTop: 0,
           internalScrollLeft: 0,
           refreshStage: 'deactive',
@@ -3346,11 +3341,12 @@ var vueScrollCore = {
       var _this = this;
 
       this.showBar();
-      if (this.vuescroll.state.timeoutId) {
-        clearTimeout(this.vuescroll.state.timeoutId);
+      if (this.timeoutId) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = 0;
       }
-      this.vuescroll.state.timeoutId = setTimeout(function () {
-        _this.vuescroll.state.timeoutId = 0;
+      this.timeoutId = setTimeout(function () {
+        _this.timeoutId = 0;
         _this.hideBar();
       }, 500);
     },

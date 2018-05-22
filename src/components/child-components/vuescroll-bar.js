@@ -1,6 +1,23 @@
 import scrollMap from '../../shared/scroll-map';
 import { eventCenter } from '../../util';
-import { render } from '../../third-party/scroller/render';
+
+/* istanbul ignore next */
+function handleClickTrack(
+  e,
+  { client, offset, posName, scrollSize },
+  parentRef,
+  type,
+  parent
+) {
+  const inner = parentRef[`${type}Bar`].$refs['inner'];
+  const barOffset = inner[offset];
+  const percent =
+    (e[client] - e.target.getBoundingClientRect()[posName] - barOffset / 2) /
+    e.target[offset];
+  const pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
+  parent.scrollTo({ [scrollMap[type].axis.toLowerCase()]: pos });
+}
+
 export default {
   name: 'bar',
   props: {
@@ -41,18 +58,22 @@ export default {
       background: this.ops.background,
       opacity: this.state.opacity,
       cursor: 'pointer',
-      position: 'absolute',
+      position: 'relative',
       transition: 'opacity .5s',
       userSelect: 'none',
-      ...render(this.type, window, '%', this.state.posValue)
+      transform: `translate${scrollMap[this.type].axis}(${
+        this.state.posValue
+      }%)`
     };
     const data = {
       style: style,
-      class: `vuescroll-${this.type}-scrollbar`,
+      class: `vuescroll-${this.type}-bar`,
       on: {
         mousedown: this.handleMousedown
-      }
+      },
+      ref: 'inner'
     };
+    /* istanbul ignore if */
     if (this.ops.hover) {
       data.on['mouseenter'] = () => {
         this.$el.style.background = this.ops.hover;
@@ -61,17 +82,37 @@ export default {
         this.$el.style.background = this.ops.background;
       };
     }
-    return <div {...data} />;
+    const vm = this;
+    const parentRef = vm.$parent.$refs;
+    const barWrap = {
+      class: `vuescroll-${this.type}-bar-wrap`,
+      style: {
+        position: 'absolute',
+        [this.bar.posName]: '2px',
+        [this.bar.opposName]: '2px',
+        [this.ops.pos]: 0
+      },
+      on: {
+        click(e) /* istanbul ignore next */ {
+          handleClickTrack(e, vm.bar, parentRef, vm.type, vm.$parent);
+        }
+      }
+    };
+    return (
+      <div {...barWrap}>
+        <div {...data} />
+      </div>
+    );
   },
   methods: {
     handleMousedown(e) {
       /* istanbul ignore next */
       {
-        e.stopPropagation();
+        e.stopImmediatePropagation();
         document.onselectstart = () => false;
         this.axisStartPos =
           e[this.bar.client] -
-          this.$el.getBoundingClientRect()[this.bar.posName];
+          this.$refs['inner'].getBoundingClientRect()[this.bar.posName];
         // tell parent that the mouse has been down.
         this.$emit('setBarClick', true);
         eventCenter(document, 'mousemove', this.handleMouseMove);
@@ -88,12 +129,8 @@ export default {
         // https://github.com/ElemeFE/element/blob/27a8c1556e30ae38423ebc4bb100486e59b8601f/packages/scrollbar/src/bar.js#L72
         const delta =
           e[this.bar.client] -
-          this.parent[`${this.type}Rail`].getBoundingClientRect()[
-            this.bar.posName
-          ];
-        const percent =
-          (delta - this.axisStartPos) /
-          this.parent[`${this.type}Rail`][this.bar.offset];
+          this.$el.getBoundingClientRect()[this.bar.posName];
+        const percent = (delta - this.axisStartPos) / this.$el[this.bar.offset];
         this.$parent.scrollTo(
           {
             [this.axis.toLowerCase()]:

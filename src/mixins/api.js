@@ -3,7 +3,7 @@ import {
   easingPattern
 } from '../third-party/easingPattern';
 import { core } from '../third-party/scroller/animate';
-import { log, getScrollError, isChildInParent } from '../util';
+import { log, isChildInParent } from '../util';
 
 function getNumericValue(distance, size) {
   let number;
@@ -28,8 +28,7 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
   if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  const error = getScrollError();
-  const scrollHeight = elm['scrollHeight'] - error;
+  const scrollHeight = elm['scrollHeight'];
   if (startLocationY + deltaY > scrollHeight) {
     deltaY = scrollHeight - startLocationY;
   }
@@ -69,7 +68,6 @@ export default {
   methods: {
     // public api
     scrollTo({ x, y }, animate = true, force = false) {
-      const error = getScrollError();
       if (typeof x === 'undefined') {
         x = this.vuescroll.state.internalScrollLeft || 0;
       } else {
@@ -78,12 +76,11 @@ export default {
       if (typeof y === 'undefined') {
         y = this.vuescroll.state.internalScrollTop || 0;
       } else {
-        y = getNumericValue(y, this.scrollPanelElm.scrollHeight - error);
+        y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
       }
       this.internalScrollTo(x, y, animate, force);
     },
     scrollBy({ dx = 0, dy = 0 }, animate = true) {
-      const error = getScrollError();
       let {
         internalScrollLeft = 0,
         internalScrollTop = 0
@@ -97,7 +94,7 @@ export default {
       if (dy) {
         internalScrollTop += getNumericValue(
           dy,
-          this.scrollPanelElm.scrollHeight - error
+          this.scrollPanelElm.scrollHeight
         );
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);

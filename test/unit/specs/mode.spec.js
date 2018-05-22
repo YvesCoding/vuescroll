@@ -57,8 +57,8 @@ describe('mode', () => {
       })
       .then(r => {
         let content = vm.$el.querySelector('.vuescroll-content');
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-scrollbar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
+        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         let vRail = vm.$el.querySelector('.vuescroll-vertical-rail');
         let hRail = vm.$el.querySelector('.vuescroll-horizontal-rail');
 

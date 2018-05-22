@@ -288,7 +288,8 @@ var members = {
     clientWidth,
     clientHeight,
     contentWidth,
-    contentHeight
+    contentHeight,
+    animate = trye
   ) {
     var self = this;
 
@@ -313,7 +314,7 @@ var members = {
     self.__computeScrollMax();
 
     // Refresh scroll position
-    self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+    self.scrollTo(self.__scrollLeft, self.__scrollTop, animate);
   },
 
   /**
@@ -1153,10 +1154,10 @@ var members = {
     if (self.__disable) {
       return;
     }
-    if (isNaN(left) || !left) {
+    if (isNaN(left)) {
       left = this.__scrollLeft;
     }
-    if (isNaN(top) || !top) {
+    if (isNaN(top)) {
       top = this.__scrollTop;
     }
     // Remember whether we had an animation, then we try to continue based on the current "drive" of the animation

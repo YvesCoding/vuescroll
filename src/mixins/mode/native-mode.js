@@ -1,16 +1,14 @@
-import { getScrollError } from '../../util';
 export default {
   methods: {
     updateNativeModeBarState() {
-      const error = getScrollError();
       const scrollPanel = this.scrollPanelElm;
       const vuescroll = this.$el;
       let heightPercentage =
-        vuescroll.clientHeight * 100 / (scrollPanel.scrollHeight - error);
+        vuescroll.clientHeight * 100 / scrollPanel.scrollHeight;
       let widthPercentage =
         vuescroll.clientWidth * 100 / scrollPanel.scrollWidth;
       this.bar.vBar.state.posValue =
-        (scrollPanel.scrollTop - error) * 100 / vuescroll.clientHeight;
+        scrollPanel.scrollTop * 100 / vuescroll.clientHeight;
       this.bar.hBar.state.posValue =
         scrollPanel.scrollLeft * 100 / vuescroll.clientWidth;
       this.bar.vBar.state.size =

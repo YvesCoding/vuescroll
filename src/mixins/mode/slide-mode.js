@@ -103,7 +103,8 @@ export default {
         clientWidth,
         clientHeight,
         contentWidth,
-        contentHeight
+        contentHeight,
+        false
       );
     },
     registryScroller() {

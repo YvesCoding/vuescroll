@@ -169,32 +169,6 @@ export function eventCenter(
 // native console
 export const log = console;
 
-let error;
-// It only happens when child is inline-block in chrome,
-// scollheight will have a error of
-// 4px, so write a method to compute the error.
-// https://stackoverflow.com/questions/29132892/how-to-auto-resize-an-input-field-vertically-and-not-horizontally-like-facebook/29133328#29133328
-export function getScrollError() {
-  /* istanbul ignore next */
-  if (Vue.prototype.$isServer) return 0;
-  if (error !== undefined) return error;
-  const outer = document.createElement('div');
-  outer.style.visibility = 'hidden';
-  outer.style.height = '100px';
-  outer.style.position = 'absolute';
-  outer.style.top = '-9999px';
-  outer.style.overflow = 'hidden';
-  document.body.appendChild(outer);
-  const inner = document.createElement('div');
-  inner.style.visibility = 'hidden';
-  inner.style.height = '100px';
-  inner.style.display = 'inline-block';
-  outer.appendChild(inner);
-  error = outer.scrollHeight - outer.clientHeight;
-  outer.parentNode.removeChild(outer);
-  return error;
-}
-
 export function isChildInParent(child, parent) {
   let flag = false;
   if (!child || !parent) {

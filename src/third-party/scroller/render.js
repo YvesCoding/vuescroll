@@ -1,8 +1,5 @@
-/* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
-export function render(content, global, suffix, value) {
+export function getPrefix(global) {
   var docStyle = document.documentElement.style;
-  var x = null;
-  var y = null;
   var engine;
   if (
     global.opera &&
@@ -16,17 +13,25 @@ export function render(content, global, suffix, value) {
   } else if (typeof navigator.cpuClass === 'string') {
     engine = 'trident';
   }
-
-  if (typeof content == 'string') {
-    y = content == 'vertical' ? (x = 0) || value : (x = value) && 0;
-  }
-
   var vendorPrefix = {
     trident: 'ms',
     gecko: 'moz',
     webkit: 'webkit',
     presto: 'O'
   }[engine];
+  return vendorPrefix;
+}
+
+/* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
+export function render(content, global, suffix, value) {
+  var x = null;
+  var y = null;
+
+  if (typeof content == 'string') {
+    y = content == 'vertical' ? (x = 0) || value : (x = value) && 0;
+  }
+
+  var vendorPrefix = getPrefix(global);
 
   var helperElem = document.createElement('div');
   var undef;

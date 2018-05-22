@@ -50,19 +50,19 @@ describe('handle-resize', () => {
     let content = vm.$el.querySelector('.vuescroll-content > div');
     startSchedule()
       .then(r => {
-        hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).not.toBe(null);
         content.style.width = '99px';
         _r = r;
       })
       .then(r => {
-        hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).toBe(null);
         content.style.width = '198px';
         _r = r;
       })
       .then(r => {
-        hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).not.toBe(null);
         // test slide mode
         vm.ops.vuescroll.mode = 'slide';
@@ -74,13 +74,13 @@ describe('handle-resize', () => {
         _r = r;
       })
       .then(r => {
-        hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).toBe(null);
         content.style.width = '198px';
         _r = r;
       })
       .then(r => {
-        hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).not.toBe(null);
         r();
         done();

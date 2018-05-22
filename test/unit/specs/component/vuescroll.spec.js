@@ -123,7 +123,6 @@ describe('vuescroll', () => {
       // start
       vs.scroller.triggerRefreshOrLoad('refresh');
       vm.$nextTick(() => {
-        vs.scroller.triggerRefreshOrLoad('refresh');
         expect(tipDom.innerText).toBe('refresh start tip');
         startSchedule(2010)
           .then(r => {
@@ -202,7 +201,6 @@ describe('vuescroll', () => {
       // start
       vs.scroller.triggerRefreshOrLoad('load');
       vm.$nextTick(() => {
-        vs.scroller.triggerRefreshOrLoad('load');
         expect(tipDom.innerText).toBe('load start tip');
         startSchedule(2010)
           .then(r => {
@@ -250,13 +248,17 @@ describe('vuescroll', () => {
     );
     const vs = vm.$refs['vs'];
 
-    vs.scrollTo(
-      {
-        y: 201
-      },
-      true
-    );
-    startSchedule(350)
+    startSchedule()
+      .then(r => {
+        vs.scrollTo(
+          {
+            y: 201
+          },
+          true
+        );
+        r();
+      })
+      .wait(350)
       .then(r => {
         // Math.round(201 / 200) * 200 == 200
         expect(vs.scroller.__scrollTop).toBe(200);
@@ -307,13 +309,17 @@ describe('vuescroll', () => {
     );
     const vs = vm.$refs['vs'];
 
-    vs.scrollTo(
-      {
-        y: 51
-      },
-      true
-    );
-    startSchedule(350)
+    startSchedule()
+      .then(r => {
+        vs.scrollTo(
+          {
+            y: 51
+          },
+          true
+        );
+        r();
+      })
+      .wait(350)
       .then(r => {
         // Math.round(51 / 50) * 50 == 50
         expect(vs.scroller.__scrollTop).toBe(50);
@@ -368,8 +374,8 @@ describe('vuescroll', () => {
       })
       .wait(520)
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-scrollbar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
+        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(vBar.style.opacity).toBe('1');
         expect(hBar.style.opacity).toBe('1');
         trigger(vs.$el, 'mouseleave');
@@ -377,8 +383,8 @@ describe('vuescroll', () => {
       })
       .wait(520)
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-scrollbar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-scrollbar');
+        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
+        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(vBar.style.opacity).toBe('0');
         expect(hBar.style.opacity).toBe('0');
         vm.ops.bar.vBar.keepShow = true;
@@ -388,7 +394,7 @@ describe('vuescroll', () => {
       })
       .wait(520)
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-scrollbar');
+        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
         expect(vBar.style.opacity).toBe('1');
         r();
         done();

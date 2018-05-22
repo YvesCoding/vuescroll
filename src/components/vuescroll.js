@@ -49,7 +49,6 @@ const vueScrollCore = {
           isDragging: false,
           isClickingBar: false,
           pointerLeave: true,
-          timeoutId: 0,
           internalScrollTop: 0,
           internalScrollLeft: 0,
           refreshStage: 'deactive',
@@ -196,11 +195,12 @@ const vueScrollCore = {
     },
     showAndDefferedHideBar() {
       this.showBar();
-      if (this.vuescroll.state.timeoutId) {
-        clearTimeout(this.vuescroll.state.timeoutId);
+      if (this.timeoutId) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = 0;
       }
-      this.vuescroll.state.timeoutId = setTimeout(() => {
-        this.vuescroll.state.timeoutId = 0;
+      this.timeoutId = setTimeout(() => {
+        this.timeoutId = 0;
         this.hideBar();
       }, 500);
     },
