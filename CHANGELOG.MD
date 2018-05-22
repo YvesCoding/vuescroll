@@ -1,3 +1,18 @@
+<a name="4.5.19"></a>
+## [4.5.19](https://github.com/wangyi7099/vuescroll/compare/v4.5.18...v4.5.19) (2018-05-22)
+
+
+### Bug Fixes
+
+* incorrect bar position when there is a error of scrollHeight in browser ([5330cce](https://github.com/wangyi7099/vuescroll/commit/5330cce))
+
+
+### Performance Improvements
+
+* **scrollbar:** make the position of scrollbar more accurate ([50c1ca1](https://github.com/wangyi7099/vuescroll/commit/50c1ca1))
+
+
+
 <a name="4.5.18"></a>
 ## [4.5.18](https://github.com/wangyi7099/vuescroll/compare/v4.5.17...v4.5.18) (2018-05-21)
 
