@@ -3250,6 +3250,7 @@ var vueScrollCore = {
       on: {
         mouseenter: function mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
           vm.showBar();
         },
         mouseleave: function mouseleave() {
@@ -3258,6 +3259,7 @@ var vueScrollCore = {
         },
         mousemove: function mousemove() /* istanbul ignore next */{
           vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
           vm.showBar();
         }
       }
