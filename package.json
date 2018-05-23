@@ -29,7 +29,7 @@
     "lint": "eslint --fix src scripts test",
     "test:cover": "karma start test/unit/karma.conf.js",
     "report-coverage": "codecov",
-    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
   "version": "4.5.21",
   "devDependencies": {
