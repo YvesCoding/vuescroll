@@ -31,7 +31,7 @@
     "report-coverage": "codecov",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
   },
-  "version": "4.5.20",
+  "version": "4.5.21",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
