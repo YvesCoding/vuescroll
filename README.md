@@ -12,16 +12,16 @@
 
 ## Introduction
 
-Vuescroll is a customizable, cross platform, compatible with the third party UI framework, and the virtual scroll bar based on Vue.js .It creates the div that used to wrap and scroll the content, acts as a scroll bar, and then operates div to complete scrolling.
+Vuescroll is a configuration based Vue.js virtual scrollbar. It creates the div that used to wrap and scroll the content, acts as a scroll bar, and then operates div to complete scrolling.
 The purpose of the design is to beautify and enhance your scrollbar.
 
-You can choose different modes according to your own needs:
+You can choose different modes by changing the configuration:
 
 * `native` mode: Like the native scrollbar, but has ability to costumize styles of scrollbar, it is suitable for the users who use PC.
 * `slide` mode: Allow you slide by finger or mouse pointer, has ability to slide out of bountry, it is suitable for the users who use mobile phone.
 * `pure-native` mode: Use native scrollbar, it is suitable for PC and the users who like native scrollbar.
 
-You can also customize the style of the scrollbar, including:
+You can also change the styles of the scroll bar by changing the configuration, including:
 
 * Opacity
 * Height/Width
