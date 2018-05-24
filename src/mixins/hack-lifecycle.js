@@ -19,27 +19,6 @@ function hackPropsData() {
     });
     // from ops to mergedOptions
     deepMerge(ops, vm.mergedOptions);
-    // to sync the rail and bar
-    defineReactive(
-      vm.mergedOptions.bar.vBar,
-      'pos',
-      vm.mergedOptions.rail.vRail
-    );
-    defineReactive(
-      vm.mergedOptions.bar.vBar,
-      'width',
-      vm.mergedOptions.rail.vRail
-    );
-    defineReactive(
-      vm.mergedOptions.bar.hBar,
-      'pos',
-      vm.mergedOptions.rail.hRail
-    );
-    defineReactive(
-      vm.mergedOptions.bar.hBar,
-      'height',
-      vm.mergedOptions.rail.hRail
-    );
 
     const prefix = 'padding-';
     defineReactive(vm.mergedOptions.scrollContent, 'paddPos', () => {

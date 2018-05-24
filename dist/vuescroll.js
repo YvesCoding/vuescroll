@@ -335,11 +335,6 @@ function hackPropsData() {
     });
     // from ops to mergedOptions
     deepMerge(ops, vm.mergedOptions);
-    // to sync the rail and bar
-    defineReactive(vm.mergedOptions.bar.vBar, 'pos', vm.mergedOptions.rail.vRail);
-    defineReactive(vm.mergedOptions.bar.vBar, 'width', vm.mergedOptions.rail.vRail);
-    defineReactive(vm.mergedOptions.bar.hBar, 'pos', vm.mergedOptions.rail.hRail);
-    defineReactive(vm.mergedOptions.bar.hBar, 'height', vm.mergedOptions.rail.hRail);
 
     var prefix = 'padding-';
     defineReactive(vm.mergedOptions.scrollContent, 'paddPos', function () {
@@ -2595,7 +2590,7 @@ var slideMode = {
   }
 };
 
-var map = {
+var scrollMap = {
   vertical: {
     bar: {
       size: 'height',
@@ -2639,7 +2634,29 @@ function handleClickTrack(e, _ref, parentRef, type, parent) {
   var barOffset = inner[offset];
   var percent = (e[client] - e.target.getBoundingClientRect()[posName] - barOffset / 2) / e.target[offset];
   var pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
-  parent.scrollTo(_defineProperty$1({}, map[type].axis.toLowerCase(), pos));
+  parent.scrollTo(_defineProperty$1({}, scrollMap[type].axis.toLowerCase(), pos));
+}
+
+var colorCache = {};
+
+var rgbReg = /rgb\(/;
+var extractRgbColor = /rgb\((.*)\)/;
+
+function getRgbAColor(color, opacity) {
+  var cachedColor = null;
+  if (cachedColor = colorCache[color + '&' + opacity]) {
+    return cachedColor;
+  }
+  var div = document.createElement('div');
+  div.style.background = color;
+  document.body.appendChild(div);
+  var computedColor = window.getComputedStyle(div).backgroundColor;
+  document.body.removeChild(div);
+  /* istanbul ignore if */
+  if (!rgbReg.test(computedColor)) {
+    return color;
+  }
+  return colorCache[color + '&' + opacity] = cachedColor = 'rgba(' + extractRgbColor.exec(computedColor)[1] + ', ' + opacity + ')';
 }
 
 var bar = {
@@ -2660,11 +2677,11 @@ var bar = {
   },
   computed: {
     bar: function bar() {
-      return map[this.type].bar;
+      return scrollMap[this.type].bar;
     },
     axis: function axis() {
       /* istanbul ignore next */
-      return map[this.type].axis;
+      return scrollMap[this.type].axis;
     },
     parent: function parent() {
       /* istanbul ignore next */
@@ -2676,9 +2693,9 @@ var bar = {
         _this = this,
         _style2;
 
-    // eslint-disable-line
-    var style = (_style = {}, _defineProperty$1(_style, this.bar.posName, 0), _defineProperty$1(_style, this.ops.pos, 0), _defineProperty$1(_style, this.bar.size, this.state.size), _defineProperty$1(_style, this.bar.opsSize, this.ops[this.bar.opsSize]), _defineProperty$1(_style, 'borderRadius', this.ops[this.bar.opsSize]), _defineProperty$1(_style, 'background', this.ops.background), _defineProperty$1(_style, 'opacity', this.state.opacity), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'position', 'relative'), _defineProperty$1(_style, 'transition', 'opacity .5s'), _defineProperty$1(_style, 'userSelect', 'none'), _defineProperty$1(_style, 'transform', 'translate' + map[this.type].axis + '(' + this.state.posValue + '%)'), _style);
-    var data = {
+    var railBackgroundColor = getRgbAColor(this.ops.rail.background, this.ops.rail.opacity);
+    var style = (_style = {}, _defineProperty$1(_style, this.bar.posName, 0), _defineProperty$1(_style, this.bar.opsSize, '100%'), _defineProperty$1(_style, this.bar.size, this.state.size), _defineProperty$1(_style, 'borderRadius', this.ops.rail[this.bar.opsSize]), _defineProperty$1(_style, 'background', this.ops.bar.background), _defineProperty$1(_style, 'opacity', this.state.opacity), _defineProperty$1(_style, 'transform', 'translate' + scrollMap[this.type].axis + '(' + this.state.posValue + '%)'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'position', 'relative'), _defineProperty$1(_style, 'transition', 'opacity .5s'), _defineProperty$1(_style, 'userSelect', 'none'), _style);
+    var bar = {
       style: style,
       class: 'vuescroll-' + this.type + '-bar',
       on: {
@@ -2687,21 +2704,25 @@ var bar = {
       ref: 'inner'
     };
     /* istanbul ignore if */
-    if (this.ops.hover) {
-      data.on['mouseenter'] = function () {
+    if (this.ops.bar.hover) {
+      bar.on['mouseenter'] = function () {
         _this.$el.style.background = _this.ops.hover;
       };
-      data.on['mouseleave'] = function () {
+      bar.on['mouseleave'] = function () {
         _this.$el.style.background = _this.ops.background;
       };
     }
+
     var vm = this;
     var parentRef = vm.$parent.$refs;
-    var barWrap = {
-      class: 'vuescroll-' + this.type + '-bar-wrap',
+
+    var rail = {
+      class: 'vuescroll-' + this.type + '-rail',
       style: (_style2 = {
-        position: 'absolute'
-      }, _defineProperty$1(_style2, this.bar.posName, '2px'), _defineProperty$1(_style2, this.bar.opposName, '2px'), _defineProperty$1(_style2, this.ops.pos, 0), _style2),
+        position: 'absolute',
+        borderRadius: this.ops.rail[this.bar.opsSize],
+        background: railBackgroundColor
+      }, _defineProperty$1(_style2, this.bar.opsSize, this.ops.rail[this.bar.opsSize]), _defineProperty$1(_style2, this.bar.posName, '2px'), _defineProperty$1(_style2, this.bar.opposName, '2px'), _defineProperty$1(_style2, this.ops.rail.pos, 0), _style2),
       on: {
         click: function click(e) /* istanbul ignore next */{
           handleClickTrack(e, vm.bar, parentRef, vm.type, vm.$parent);
@@ -2710,8 +2731,8 @@ var bar = {
     };
     return h(
       'div',
-      barWrap,
-      [h('div', data)]
+      rail,
+      [h('div', bar)]
     );
   },
 
@@ -2764,14 +2785,21 @@ var bar = {
  * @param {any} type
  */
 function createBar(h, vm, type) {
-  // hBar data
-  var barType = type === 'vertical' ? 'vBar' : 'hBar';
   var axis = type === 'vertical' ? 'Y' : 'X';
+  var barType = type.charAt(0) + 'Bar';
+  var railType = type.charAt(0) + 'Rail';
+
+  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel['scrolling' + axis] || vm.mode == 'pure-native' || vm.refreshLoad && type !== 'vertical' && vm.mode === 'slide') {
+    return null;
+  }
 
   var barData = {
     props: {
       type: type,
-      ops: vm.mergedOptions.bar[barType],
+      ops: {
+        bar: vm.mergedOptions.bar[barType],
+        rail: vm.mergedOptions.rail[railType]
+      },
       state: vm.bar[barType].state
     },
     on: {
@@ -2779,55 +2807,8 @@ function createBar(h, vm, type) {
     },
     ref: type + 'Bar'
   };
-  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel['scrolling' + axis] || vm.mode == 'pure-native' || vm.refreshLoad && type !== 'vertical' && vm.mode === 'slide') {
-    return null;
-  }
+
   return h('bar', barData);
-}
-
-function _defineProperty$2(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-var rail = {
-  name: 'rail',
-  functional: true,
-  render: function render(h, _ref) {
-    var _style;
-
-    var props = _ref.props;
-
-    var bar = map[props.type].bar;
-
-    var style = (_style = {}, _defineProperty$2(_style, bar.posName, 0), _defineProperty$2(_style, props.ops.pos, 0), _defineProperty$2(_style, bar.size, '100%'), _defineProperty$2(_style, bar.opsSize, props.ops[bar.opsSize]), _defineProperty$2(_style, 'borderRadius', props.ops[bar.opsSize]), _defineProperty$2(_style, 'background', props.ops.background), _defineProperty$2(_style, 'opacity', props.ops.opacity), _defineProperty$2(_style, 'position', 'absolute'), _style);
-    var data = {
-      style: style,
-      class: 'vuescroll-' + props.type + '-rail',
-      ref: props.type + 'Rail'
-    };
-    return h(
-      'div',
-      data,
-      [' ']
-    );
-  }
-};
-
-function createRail(h, vm, type) {
-  // rail data
-  var railType = type === 'vertical' ? 'vRail' : 'hRail';
-  var barType = type === 'vertical' ? 'vBar' : 'hBar';
-  var axis = type === 'vertical' ? 'Y' : 'X';
-
-  var railData = {
-    props: {
-      type: type,
-      ops: vm.mergedOptions.rail[railType],
-      state: vm.rail[railType].state
-    }
-  };
-  if (!vm.bar[barType].state.size || vm.mode == 'pure-native' || !vm.mergedOptions.scrollPanel['scrolling' + axis] || vm.refreshLoad && type !== 'vertical' && vm.mode === 'slide') {
-    return null;
-  }
-  return h('rail', railData);
 }
 
 // scrollContent
@@ -3183,7 +3164,7 @@ function findValuesByMode(mode, vm) {
 
 var vueScrollCore = {
   name: 'vueScroll',
-  components: { bar: bar, rail: rail, scrollContent: scrollContent, scrollPanel: scrollPanel },
+  components: { bar: bar, scrollContent: scrollContent, scrollPanel: scrollPanel },
   props: { ops: { type: Object } },
   mixins: [hackLifecycle, api, nativeMode, slideMode],
   data: function data() {
@@ -3273,7 +3254,7 @@ var vueScrollCore = {
     return h(
       'div',
       vuescrollData,
-      [createPanel(h, vm), createRail(h, vm, 'vertical'), createBar(h, vm, 'vertical'), createRail(h, vm, 'horizontal'), createBar(h, vm, 'horizontal')]
+      [createPanel(h, vm), createBar(h, vm, 'vertical'), createBar(h, vm, 'horizontal')]
     );
   },
 

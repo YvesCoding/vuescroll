@@ -18,6 +18,30 @@ function handleClickTrack(
   parent.scrollTo({ [scrollMap[type].axis.toLowerCase()]: pos });
 }
 
+const colorCache = {};
+
+const rgbReg = /rgb\(/;
+const extractRgbColor = /rgb\((.*)\)/;
+
+function getRgbAColor(color, opacity) {
+  let cachedColor = null;
+  if ((cachedColor = colorCache[color + '&' + opacity])) {
+    return cachedColor;
+  }
+  const div = document.createElement('div');
+  div.style.background = color;
+  document.body.appendChild(div);
+  const computedColor = window.getComputedStyle(div).backgroundColor;
+  document.body.removeChild(div);
+  /* istanbul ignore if */
+  if (!rgbReg.test(computedColor)) {
+    return color;
+  }
+  return (colorCache[color + '&' + opacity] = cachedColor = `rgba(${
+    extractRgbColor.exec(computedColor)[1]
+  }, ${opacity})`);
+}
+
 export default {
   name: 'bar',
   props: {
@@ -48,24 +72,26 @@ export default {
     }
   },
   render(h) {
-    // eslint-disable-line
+    const railBackgroundColor = getRgbAColor(
+      this.ops.rail.background,
+      this.ops.rail.opacity
+    );
     let style = {
       [this.bar.posName]: 0,
-      [this.ops.pos]: 0,
+      [this.bar.opsSize]: '100%',
       [this.bar.size]: this.state.size,
-      [this.bar.opsSize]: this.ops[this.bar.opsSize],
-      borderRadius: this.ops[this.bar.opsSize],
-      background: this.ops.background,
+      borderRadius: this.ops.rail[this.bar.opsSize],
+      background: this.ops.bar.background,
       opacity: this.state.opacity,
+      transform: `translate${scrollMap[this.type].axis}(${
+        this.state.posValue
+      }%)`,
       cursor: 'pointer',
       position: 'relative',
       transition: 'opacity .5s',
-      userSelect: 'none',
-      transform: `translate${scrollMap[this.type].axis}(${
-        this.state.posValue
-      }%)`
+      userSelect: 'none'
     };
-    const data = {
+    const bar = {
       style: style,
       class: `vuescroll-${this.type}-bar`,
       on: {
@@ -74,23 +100,28 @@ export default {
       ref: 'inner'
     };
     /* istanbul ignore if */
-    if (this.ops.hover) {
-      data.on['mouseenter'] = () => {
+    if (this.ops.bar.hover) {
+      bar.on['mouseenter'] = () => {
         this.$el.style.background = this.ops.hover;
       };
-      data.on['mouseleave'] = () => {
+      bar.on['mouseleave'] = () => {
         this.$el.style.background = this.ops.background;
       };
     }
+
     const vm = this;
     const parentRef = vm.$parent.$refs;
-    const barWrap = {
-      class: `vuescroll-${this.type}-bar-wrap`,
+
+    const rail = {
+      class: `vuescroll-${this.type}-rail`,
       style: {
         position: 'absolute',
+        borderRadius: this.ops.rail[this.bar.opsSize],
+        background: railBackgroundColor,
+        [this.bar.opsSize]: this.ops.rail[this.bar.opsSize],
         [this.bar.posName]: '2px',
         [this.bar.opposName]: '2px',
-        [this.ops.pos]: 0
+        [this.ops.rail.pos]: 0
       },
       on: {
         click(e) /* istanbul ignore next */ {
@@ -99,8 +130,8 @@ export default {
       }
     };
     return (
-      <div {...barWrap}>
-        <div {...data} />
+      <div {...rail}>
+        <div {...bar} />
       </div>
     );
   },
@@ -161,21 +192,10 @@ export default {
  * @param {any} type
  */
 export function createBar(h, vm, type) {
-  // hBar data
-  const barType = type === 'vertical' ? 'vBar' : 'hBar';
   const axis = type === 'vertical' ? 'Y' : 'X';
+  const barType = `${type.charAt(0)}Bar`;
+  const railType = `${type.charAt(0)}Rail`;
 
-  const barData = {
-    props: {
-      type: type,
-      ops: vm.mergedOptions.bar[barType],
-      state: vm.bar[barType].state
-    },
-    on: {
-      setBarClick: vm.setBarClick
-    },
-    ref: `${type}Bar`
-  };
   if (
     !vm.bar[barType].state.size ||
     !vm.mergedOptions.scrollPanel['scrolling' + axis] ||
@@ -184,5 +204,21 @@ export function createBar(h, vm, type) {
   ) {
     return null;
   }
+
+  const barData = {
+    props: {
+      type: type,
+      ops: {
+        bar: vm.mergedOptions.bar[barType],
+        rail: vm.mergedOptions.rail[railType]
+      },
+      state: vm.bar[barType].state
+    },
+    on: {
+      setBarClick: vm.setBarClick
+    },
+    ref: `${type}Bar`
+  };
+
   return <bar {...barData} />;
 }

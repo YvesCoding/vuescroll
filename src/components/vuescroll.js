@@ -5,7 +5,6 @@ import nativeMode from '../mixins/mode/native-mode';
 import slideMode from '../mixins/mode/slide-mode';
 
 import bar, { createBar } from './child-components/vuescroll-bar';
-import rail, { createRail } from './child-components/vuescroll-rail';
 import scrollContent from './child-components/vuescroll-content';
 import scrollPanel, { createPanel } from './child-components/vuescroll-panel';
 
@@ -31,7 +30,7 @@ function findValuesByMode(mode, vm) {
 
 const vueScrollCore = {
   name: 'vueScroll',
-  components: { bar, rail, scrollContent, scrollPanel },
+  components: { bar, scrollContent, scrollPanel },
   props: { ops: { type: Object } },
   mixins: [hackLifecycle, api, nativeMode, slideMode],
   data() {
@@ -121,9 +120,7 @@ const vueScrollCore = {
     return (
       <div {...vuescrollData}>
         {createPanel(h, vm)}
-        {createRail(h, vm, 'vertical')}
         {createBar(h, vm, 'vertical')}
-        {createRail(h, vm, 'horizontal')}
         {createBar(h, vm, 'horizontal')}
       </div>
     );
