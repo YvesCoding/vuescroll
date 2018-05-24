@@ -1,3 +1,13 @@
+<a name="4.5.22"></a>
+## [4.5.22](https://github.com/wangyi7099/vuescroll/compare/v4.5.21...v4.5.22) (2018-05-24)
+
+
+### Performance Improvements
+
+* **bar:** refactor bar and rail ([706d274](https://github.com/wangyi7099/vuescroll/commit/706d274))
+
+
+
 <a name="4.5.21"></a>
 ## [4.5.21](https://github.com/wangyi7099/vuescroll/compare/v4.5.20...v4.5.21) (2018-05-23)
 
