@@ -257,7 +257,7 @@ const vm = new Vue({
 ```javascript
 ops: {
   vuescroll: {
-    sizeStrategy: 'number';
+    sizeStrategy: 'number'
   }
 }
 ```
