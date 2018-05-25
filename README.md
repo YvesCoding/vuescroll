@@ -8,7 +8,7 @@
 <a href="https://github.com/wangyi7099/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
 
-[中文版 README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
+English Version | [中文版](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 
 * [Introduction](#introduction)
 * [Preview](#preview)
