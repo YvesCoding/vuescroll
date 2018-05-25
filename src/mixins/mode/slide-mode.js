@@ -1,7 +1,7 @@
-// import scroller
 import Scroller from '../../third-party/scroller';
 import { render } from '../../third-party/scroller/render';
 import { listenContainer } from '../../third-party/scroller/listener';
+
 /**
  * @description refresh and load callback
  */
@@ -75,8 +75,8 @@ export default {
   methods: {
     // update scrollbar's size and pos  while in slide mode.
     updateScroller() {
-      const clientWidth = this.$el.clientWidth;
-      const clientHeight = this.$el.clientHeight;
+      const clientWidth = this.clientWidth;
+      const clientHeight = this.clientHeight;
       let contentWidth = this.scrollPanelElm.scrollWidth;
       let contentHeight = this.scrollPanelElm.scrollHeight;
       let refreshHeight = 0;
@@ -186,8 +186,8 @@ export default {
       const scroller = this.scroller;
       let outerLeft = 0;
       let outerTop = 0;
-      const clientWidth = vuescroll.clientWidth;
-      const clientHeight = vuescroll.clientHeight;
+      const clientWidth = this.clientWidth;
+      const clientHeight = this.clientHeight;
       const contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       const contentHeight = clientHeight + this.scroller.__maxScrollTop;
       const __enableScrollX =

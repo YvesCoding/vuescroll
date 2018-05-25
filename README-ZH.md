@@ -8,6 +8,17 @@
 <a href="https://github.com/wangyi7099/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
 
+* [介绍](#介绍)
+* [预览](#预览)
+* [在线 Demo & 文档](#在线-demo--文档)
+* [特点](#特点)
+* [快速入门](#快速入门)
+* [常见问题及解答](#常见问题及解答)
+* [变更日志](#变更日志)
+* [贡献](#贡献)
+* [灵感来源](#灵感来源)
+* [协议](#协议)
+
 ## 介绍
 
 Vuescroll 是一个基于配置的 Vue.js 虚拟滚动条。它创造了 div 用于包裹要滚动的内容，充当滚动条，然后操作 div 完成滚动。 设计它的目的是用来美化和增强你的滚动条的。
@@ -236,6 +247,20 @@ const vm = new Vue({
 ### Event 参考
 
 [Vuescroll Event](https://wangyi7099.github.io/vuescrolljs/zh/guide/event.html)
+
+## 常见问题及解答
+
+1.  内容已经超出比父元素打了，为什么 vuescroll 的滚动条不出现？
+    * 首先，请确认是否升级到 vuescroll 的最新版本。
+    * 其次，如果你的父元素大小不是一个固定的值，比如百分比，或者 max-height 之类的值(如#29)，请将`sizeStrategy`设置为`number`,否则 vuescroll 将不能侦测到父元素的大小，今儿控制是否显示滚动条！如下配置即可：
+
+```javascript
+ops: {
+  vuescroll: {
+    sizeStrategy: 'number';
+  }
+}
+```
 
 ## 变更日志
 

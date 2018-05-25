@@ -1,5 +1,5 @@
 /*
-    * @name: vuescroll 4.5.22
+    * @name: vuescroll 4.5.23
     * @author: (c) 2018-2018 wangyi7099
     * @description: A reactive virtual scrollbar based on vue.js 2.X
     * @license: MIT
@@ -141,6 +141,12 @@ function isChildInParent(child, parent) {
   return flag;
 }
 
+var pxValueReg = /(.*?)px/;
+function extractNumberFromPx(value) {
+  var _return = pxValueReg.exec(value);
+  return _return && _return[1];
+}
+
 // detect content size change
 function listenResize(element, callback) {
   return injectObject(element, callback);
@@ -265,7 +271,6 @@ var GCF = {
     //
     vBar: {
       background: '#00a650',
-      deltaY: 100,
       keepShow: false,
       opacity: 1,
       hover: false
@@ -844,10 +849,13 @@ var nativeMode = {
     updateNativeModeBarState: function updateNativeModeBarState() {
       var scrollPanel = this.scrollPanelElm;
       var vuescroll = this.$el;
-      var heightPercentage = vuescroll.clientHeight * 100 / scrollPanel.scrollHeight;
-      var widthPercentage = vuescroll.clientWidth * 100 / scrollPanel.scrollWidth;
-      this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / vuescroll.clientHeight;
-      this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / vuescroll.clientWidth;
+      var isPercent = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
+      var clientWidth = isPercent ? vuescroll.clientWidth : extractNumberFromPx(this.vuescroll.state.width);
+      var clientHeight = isPercent ? vuescroll.clientHeight : extractNumberFromPx(this.vuescroll.state.height);
+      var heightPercentage = clientHeight * 100 / scrollPanel.scrollHeight;
+      var widthPercentage = clientWidth * 100 / scrollPanel.scrollWidth;
+      this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / clientHeight;
+      this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / clientWidth;
       this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
       this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
     }
@@ -2376,7 +2384,6 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-// import scroller
 /**
  * @description refresh and load callback
  */
@@ -2445,8 +2452,8 @@ var slideMode = {
   methods: {
     // update scrollbar's size and pos  while in slide mode.
     updateScroller: function updateScroller() {
-      var clientWidth = this.$el.clientWidth;
-      var clientHeight = this.$el.clientHeight;
+      var clientWidth = this.clientWidth;
+      var clientHeight = this.clientHeight;
       var contentWidth = this.scrollPanelElm.scrollWidth;
       var contentHeight = this.scrollPanelElm.scrollHeight;
       var refreshHeight = 0;
@@ -2537,8 +2544,8 @@ var slideMode = {
       var scroller = this.scroller;
       var outerLeft = 0;
       var outerTop = 0;
-      var clientWidth = vuescroll.clientWidth;
-      var clientHeight = vuescroll.clientHeight;
+      var clientWidth = this.clientWidth;
+      var clientHeight = this.clientHeight;
       var contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       var contentHeight = clientHeight + this.scroller.__maxScrollTop;
       var __enableScrollX = clientWidth < contentWidth && this.mergedOptions.scrollPanel.scrollingX;
@@ -3160,6 +3167,13 @@ function findValuesByMode(mode, vm) {
   return axis;
 }
 
+function getClientSizeByType(type) {
+  var vuescroll = this.$el;
+  var isPercentStrategy = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
+  var clientSize = isPercentStrategy ? vuescroll['client' + (type.charAt(0).toUpperCase() + type.slice(1))] : extractNumberFromPx(this.vuescroll.state[type]);
+  return clientSize - 0;
+}
+
 var vueScrollCore = {
   name: 'vueScroll',
   components: { bar: bar, scrollContent: scrollContent, scrollPanel: scrollPanel },
@@ -3274,6 +3288,12 @@ var vueScrollCore = {
     },
     refreshLoad: function refreshLoad() {
       return this.mergedOptions.vuescroll.pullRefresh.enable || this.mergedOptions.vuescroll.pushLoad.enable;
+    },
+    clientWidth: function clientWidth() {
+      return getClientSizeByType.call(this, 'width');
+    },
+    clientHeight: function clientHeight() {
+      return getClientSizeByType.call(this, 'height');
     }
   },
   methods: {
@@ -3440,8 +3460,8 @@ var vueScrollCore = {
       if (!position || position == 'static') {
         this.$el.parentNode.style.position = 'relative';
       }
-      this.vuescroll.state.height = parentElm.clientHeight + 'px';
-      this.vuescroll.state.width = parentElm.clientWidth + 'px';
+      this.vuescroll.state.height = parentElm.offsetHeight + 'px';
+      this.vuescroll.state.width = parentElm.offsetWidth + 'px';
     },
     usePercentSize: function usePercentSize() {
       this.vuescroll.state.height = '100%';
@@ -3488,9 +3508,9 @@ var vueScrollCore = {
           }
           // re do them jobsin case of
           // option changes
+          _this3.setVsSize();
           _this3.registryResize();
           _this3.updateMode();
-          _this3.setVsSize();
         });
       }, watchOpts);
 
@@ -3523,16 +3543,17 @@ var vueScrollCore = {
   },
   mounted: function mounted() {
     if (!this.renderError) {
+      this.lastMode = this.mode;
+      this.$el._isVuescroll = true;
+
+      this.setVsSize();
+
       if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       }
-      this.$el._isVuescroll = true;
-
-      this.lastMode = this.mode;
 
       this.registryResize();
       this.initWatch();
-      this.setVsSize();
       this.updateBarStateAndEmitEvent();
       this.showAndDefferedHideBar();
 
@@ -3568,7 +3589,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.22'
+  version: '4.5.23'
 };
 
 /* istanbul ignore if */

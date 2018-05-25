@@ -9,7 +9,7 @@ import scrollContent from './child-components/vuescroll-content';
 import scrollPanel, { createPanel } from './child-components/vuescroll-panel';
 
 import { smallChangeArray } from '../shared/constants';
-import { isChildInParent } from '../util';
+import { isChildInParent, extractNumberFromPx } from '../util';
 
 function findValuesByMode(mode, vm) {
   let axis = {};
@@ -26,6 +26,16 @@ function findValuesByMode(mode, vm) {
     break;
   }
   return axis;
+}
+
+function getClientSizeByType(type) {
+  const vuescroll = this.$el;
+  const isPercentStrategy =
+    this.mergedOptions.vuescroll.sizeStrategy == 'percent';
+  const clientSize = isPercentStrategy
+    ? vuescroll[`client${type.charAt(0).toUpperCase() + type.slice(1)}`]
+    : extractNumberFromPx(this.vuescroll.state[type]);
+  return clientSize - 0;
 }
 
 const vueScrollCore = {
@@ -152,6 +162,12 @@ const vueScrollCore = {
         this.mergedOptions.vuescroll.pullRefresh.enable ||
         this.mergedOptions.vuescroll.pushLoad.enable
       );
+    },
+    clientWidth() {
+      return getClientSizeByType.call(this, 'width');
+    },
+    clientHeight() {
+      return getClientSizeByType.call(this, 'height');
     }
   },
   methods: {
@@ -326,8 +342,8 @@ const vueScrollCore = {
       if (!position || position == 'static') {
         this.$el.parentNode.style.position = 'relative';
       }
-      this.vuescroll.state.height = parentElm.clientHeight + 'px';
-      this.vuescroll.state.width = parentElm.clientWidth + 'px';
+      this.vuescroll.state.height = parentElm.offsetHeight + 'px';
+      this.vuescroll.state.width = parentElm.offsetWidth + 'px';
     },
     usePercentSize() {
       this.vuescroll.state.height = '100%';
@@ -373,9 +389,9 @@ const vueScrollCore = {
             }
             // re do them jobsin case of
             // option changes
+            this.setVsSize();
             this.registryResize();
             this.updateMode();
-            this.setVsSize();
           });
         },
         watchOpts
@@ -420,16 +436,17 @@ const vueScrollCore = {
   },
   mounted() {
     if (!this.renderError) {
+      this.lastMode = this.mode;
+      this.$el._isVuescroll = true;
+
+      this.setVsSize();
+
       if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       }
-      this.$el._isVuescroll = true;
-
-      this.lastMode = this.mode;
 
       this.registryResize();
       this.initWatch();
-      this.setVsSize();
       this.updateBarStateAndEmitEvent();
       this.showAndDefferedHideBar();
 

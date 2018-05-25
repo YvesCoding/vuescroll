@@ -10,6 +10,17 @@
 
 [中文版 README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 
+* [introduction](#introduction)
+* [Preview](#preview)
+* [Online Demo & Documentation](#online-demo--documentation)
+* [Features](#features)
+* [Quick Start](#quick-start)
+* [General FAQ](#general-faq)
+* [Changelog](#changelog)
+* [Contribution](#contribution)
+* [Inspired By](#inspired-by)
+* [License](#license)
+
 ## Introduction
 
 Vuescroll is a configuration based Vue.js virtual scrollbar. It creates the div that used to wrap and scroll the content, acts as a scroll bar, and then operates div to complete scrolling.
@@ -239,6 +250,21 @@ const vm = new Vue({
 ### Event Reference
 
 [Vuescroll Event](https://wangyi7099.github.io/vuescrolljs/guide/event.html)
+
+## General FAQ
+
+1.  The content has gone beyond the parent element. Why doesn't the vuescroll scrollbars appear?
+
+    * Firstly, please confirm to upgrade to the latest version of vuescroll
+    * Secondly, if your parent element size is not a fixed value, such as a percentage, or a value such as max-height (#29), please set the `sizeStrategy` to `number`, otherwise vuescroll will not detect the size of the parent element and show the scrollbars! The configuration can be:
+
+```javascript
+ops: {
+  vuescroll: {
+    sizeStrategy: 'number';
+  }
+}
+```
 
 ## Changelog
 

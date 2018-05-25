@@ -186,3 +186,9 @@ export function isChildInParent(child, parent) {
   }
   return flag;
 }
+
+const pxValueReg = /(.*?)px/;
+export function extractNumberFromPx(value) {
+  const _return = pxValueReg.exec(value);
+  return _return && _return[1];
+}
