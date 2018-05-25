@@ -1,3 +1,8 @@
+<a name="4.5.23"></a>
+## [4.5.23](https://github.com/wangyi7099/vuescroll/compare/v4.5.22...v4.5.23) (2018-05-25)
+
+
+
 <a name="4.5.22"></a>
 ## [4.5.22](https://github.com/wangyi7099/vuescroll/compare/v4.5.21...v4.5.22) (2018-05-24)
 

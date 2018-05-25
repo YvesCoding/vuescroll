@@ -10,7 +10,7 @@
 
 [中文版 README](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
 
-* [introduction](#introduction)
+* [Introduction](#introduction)
 * [Preview](#preview)
 * [Online Demo & Documentation](#online-demo--documentation)
 * [Features](#features)
@@ -253,18 +253,18 @@ const vm = new Vue({
 
 ## General FAQ
 
-1.  The content has gone beyond the parent element. Why doesn't the vuescroll scrollbars appear?
+1.  The content has gone beyond the parent element. Why don't the vuescroll scrollbars appear?
 
     * Firstly, please confirm to upgrade to the latest version of vuescroll
     * Secondly, if your parent element size is not a fixed value, such as a percentage, or a value such as max-height (#29), please set the `sizeStrategy` to `number`, otherwise vuescroll will not detect the size of the parent element and show the scrollbars! The configuration can be:
 
-```javascript
-ops: {
-  vuescroll: {
-    sizeStrategy: 'number';
-  }
-}
-```
+    ```javascript
+    ops: {
+      vuescroll: {
+        sizeStrategy: 'number';
+      }
+    }
+    ```
 
 ## Changelog
 
