@@ -1,9 +1,7 @@
 /*
-    * @name: vuescroll 4.5.23
-    * @author: (c) 2018-2018 wangyi7099
-    * @description: A reactive virtual scrollbar based on vue.js 2.X
-    * @license: MIT
-    * @GitHub: https://github.com/wangyi7099/vuescroll
+    * vuescroll 4.5.24
+    * (c) 2018-2018 wangyi7099
+    * Released under the MIT License
     */
    
 import Vue from 'vue';
@@ -2630,6 +2628,7 @@ var colorCache = {};
 var rgbReg = /rgb\(/;
 var extractRgbColor = /rgb\((.*)\)/;
 
+/* istanbul ignore next */
 function createMouseEvent(ctx) {
   function mousedown(e) {
     e.stopImmediatePropagation();
@@ -2662,6 +2661,7 @@ function createMouseEvent(ctx) {
   return mousedown;
 }
 
+/* istanbul ignore next */
 function createTouchEvent(ctx) {
   function touchstart(e) {
     e.stopImmediatePropagation();
@@ -2779,7 +2779,7 @@ var bar = {
         vm.$el.style.background = vm.ops.background;
       };
     }
-
+    /* istanbul ignore if */
     if (isSupportTouch) {
       bar.on['touchstart'] = createTouchEvent(this);
     } else {
@@ -3326,24 +3326,24 @@ var vueScrollCore = {
           vm.showBar();
         }
       };
-    } else {
-      vuescrollData.on = {
-        touchstart: function touchstart() {
-          vm.vuescroll.state.pointerLeave = false;
-          vm.updateBarStateAndEmitEvent();
-          vm.showBar();
-        },
-        touchend: function touchend() {
-          vm.vuescroll.state.pointerLeave = true;
-          vm.hideBar();
-        },
-        touchmove: function touchmove() /* istanbul ignore next */{
-          vm.vuescroll.state.pointerLeave = false;
-          vm.updateBarStateAndEmitEvent();
-          vm.showBar();
-        }
-      };
-    }
+    } else /* istanbul ignore next */{
+        vuescrollData.on = {
+          touchstart: function touchstart() {
+            vm.vuescroll.state.pointerLeave = false;
+            vm.updateBarStateAndEmitEvent();
+            vm.showBar();
+          },
+          touchend: function touchend() {
+            vm.vuescroll.state.pointerLeave = true;
+            vm.hideBar();
+          },
+          touchmove: function touchmove() /* istanbul ignore next */{
+            vm.vuescroll.state.pointerLeave = false;
+            vm.updateBarStateAndEmitEvent();
+            vm.showBar();
+          }
+        };
+      }
     return h(
       'div',
       vuescrollData,
@@ -3653,7 +3653,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.23'
+  version: '4.5.24'
 };
 
 /* istanbul ignore if */

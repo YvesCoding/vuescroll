@@ -257,14 +257,15 @@ const vm = new Vue({
 
     * Firstly, please confirm to upgrade to the latest version of vuescroll
     * Secondly, if your parent element size is not a fixed value, such as a percentage, or a value such as max-height (#29), please set the `sizeStrategy` to `number`, otherwise vuescroll will not detect the size of the parent element and show the scrollbars! The configuration can be:
-
-    ```javascript
-    ops: {
-      vuescroll: {
-        sizeStrategy: 'number'
+      ```javascript
+      ops: {
+        vuescroll: {
+          sizeStrategy: 'number'
+        }
       }
-    }
-    ```
+      ```
+2. Why is my content inconsistent with the width of my expectation, and there is always a small surplus？
+   > Because vuescroll wants to detect changes of element size, the width style of the element `.vuescroll-content` is `width: fit-content`, so if you want the width of the content to be displayed normally, add the following style `.vuescroll-content{width: 100%! Important}` in the CSS.
 
 ## Changelog
 

@@ -254,15 +254,15 @@ const vm = new Vue({
 1.  内容已经超出比父元素打了，为什么 vuescroll 的滚动条不出现？
     * 首先，请确认是否升级到 vuescroll 的最新版本。
     * 其次，如果你的父元素大小不是一个固定的值，比如百分比，或者 max-height 之类的值(如#29)，请将`sizeStrategy`设置为`number`,否则 vuescroll 将不能侦测到父元素的大小，今儿控制是否显示滚动条！如下配置即可：
-
-```javascript
-ops: {
-  vuescroll: {
-    sizeStrategy: 'number'
-  }
-}
-```
-
+      ```javascript
+      ops: {
+        vuescroll: {
+          sizeStrategy: 'number'
+        }
+      }
+      ```
+2. 为什么我的内容宽度不足，总是留下一部分空间？
+   > 因为vuescroll要检测元素尺寸的变化，所以设置的包裹内容的元素`.scroll-content`的宽度样式是`width: fit-content`,所以， 如果你要想让内容的宽度为正常显示，请在CSS里加如下样式`.vuescroll-content{ width: 100%!important}`即可。
 ## 变更日志
 
 每个版本的详细记录在[发行日志](https://github.com/wangyi7099/vuescroll/releases)里面。
