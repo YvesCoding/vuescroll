@@ -214,7 +214,6 @@ const vm = new Vue({
     //
     vBar: {
       background: '#00a650',
-      deltaY: 100,
       keepShow: false,
       opacity: 1,
       hover: false
