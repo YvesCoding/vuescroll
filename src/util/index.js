@@ -192,3 +192,5 @@ export function extractNumberFromPx(value) {
   const _return = pxValueReg.exec(value);
   return _return && _return[1];
 }
+
+export const isSupportTouch = 'ontouchstart' in window;

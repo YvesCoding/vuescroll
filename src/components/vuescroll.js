@@ -9,7 +9,7 @@ import scrollContent from './child-components/vuescroll-content';
 import scrollPanel, { createPanel } from './child-components/vuescroll-panel';
 
 import { smallChangeArray } from '../shared/constants';
-import { isChildInParent, extractNumberFromPx } from '../util';
+import { isChildInParent, extractNumberFromPx, isSupportTouch } from '../util';
 
 function findValuesByMode(mode, vm) {
   let axis = {};
@@ -43,6 +43,41 @@ const vueScrollCore = {
   components: { bar, scrollContent, scrollPanel },
   props: { ops: { type: Object } },
   mixins: [hackLifecycle, api, nativeMode, slideMode],
+  mounted() {
+    if (!this.renderError) {
+      this.initVariables();
+
+      this.initVuescrollSizeType();
+
+      this.initScroller();
+
+      this.initResizeDetection();
+
+      this.initWatchOpsChange();
+
+      this.initBarState();
+
+      this.initVuescrollPosition();
+    }
+  },
+  updated() {
+    this.$nextTick(() => {
+      if (!this._isDestroyed) {
+        this.showAndDefferedHideBar();
+      }
+    });
+  },
+  beforeDestroy() {
+    // remove registryed resize
+    if (this.destroyParentDomResize) {
+      this.destroyParentDomResize();
+      this.destroyParentDomResize = null;
+    }
+    if (this.destroyResize) {
+      this.destroyResize();
+      this.destroyResize = null;
+    }
+  },
   data() {
     return {
       /**
@@ -109,8 +144,10 @@ const vueScrollCore = {
         padding: 0,
         overflow: 'hidden'
       },
-      class: 'vue-scroll',
-      on: {
+      class: 'vue-scroll'
+    };
+    if (!isSupportTouch) {
+      vuescrollData.on = {
         mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
@@ -125,8 +162,25 @@ const vueScrollCore = {
           vm.updateBarStateAndEmitEvent();
           vm.showBar();
         }
-      }
-    };
+      };
+    } else /* istanbul ignore next */{
+      vuescrollData.on = {
+        touchstart() {
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
+          vm.showBar();
+        },
+        touchend() {
+          vm.vuescroll.state.pointerLeave = true;
+          vm.hideBar();
+        },
+        touchmove() /* istanbul ignore next */ {
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
+          vm.showBar();
+        }
+      };
+    }
     return (
       <div {...vuescrollData}>
         {createPanel(h, vm)}
@@ -372,7 +426,7 @@ const vueScrollCore = {
       this.vuescroll.state.internalScrollLeft = axis.x;
       this.vuescroll.state.internalScrollTop = axis.y;
     },
-    initWatch() {
+    initWatchOpsChange() {
       const watchOpts = {
         deep: true,
         sync: true
@@ -432,43 +486,28 @@ const vueScrollCore = {
         return;
       }
       this.scrollIntoView(elm);
-    }
-  },
-  mounted() {
-    if (!this.renderError) {
+    },
+    initVariables() {
       this.lastMode = this.mode;
       this.$el._isVuescroll = true;
-
-      this.setVsSize();
-
+    },
+    initScroller() {
       if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       }
-
+    },
+    initVuescrollSizeType() {
+      this.setVsSize();
+    },
+    initResizeDetection() {
       this.registryResize();
-      this.initWatch();
+    },
+    initBarState() {
       this.updateBarStateAndEmitEvent();
       this.showAndDefferedHideBar();
-
+    },
+    initVuescrollPosition() {
       this.scrollToHash();
-    }
-  },
-  updated() {
-    this.$nextTick(() => {
-      if (!this._isDestroyed) {
-        this.showAndDefferedHideBar();
-      }
-    });
-  },
-  beforeDestroy() {
-    // remove registryed resize
-    if (this.destroyParentDomResize) {
-      this.destroyParentDomResize();
-      this.destroyParentDomResize = null;
-    }
-    if (this.destroyResize) {
-      this.destroyResize();
-      this.destroyResize = null;
     }
   }
 };

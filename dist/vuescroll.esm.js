@@ -143,6 +143,8 @@ function extractNumberFromPx(value) {
   return _return && _return[1];
 }
 
+var isSupportTouch = 'ontouchstart' in window;
+
 // detect content size change
 function listenResize(element, callback) {
   return injectObject(element, callback);
@@ -2624,6 +2626,93 @@ var scrollMap = {
 
 function _defineProperty$1(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+var colorCache = {};
+var rgbReg = /rgb\(/;
+var extractRgbColor = /rgb\((.*)\)/;
+
+function createMouseEvent(ctx) {
+  function mousedown(e) {
+    e.stopImmediatePropagation();
+    document.onselectstart = function () {
+      return false;
+    };
+    ctx.axisStartPos = e[ctx.bar.client] - ctx.$refs['inner'].getBoundingClientRect()[ctx.bar.posName];
+    // tell parent that the mouse has been down.
+    ctx.$emit('setBarClick', true);
+    eventCenter(document, 'mousemove', mousemove);
+    eventCenter(document, 'mouseup', mouseup);
+  }
+  function mousemove(e) {
+    if (!ctx.axisStartPos) {
+      return;
+    }
+    var delta = e[ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
+    var percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
+    ctx.$parent.scrollTo(_defineProperty$1({}, ctx.axis.toLowerCase(), ctx.parent['scrollPanel'].$el[ctx.bar.scrollSize] * percent), false);
+  }
+  function mouseup() {
+    ctx.$emit('setBarClick', false);
+    document.onselectstart = null;
+    ctx.$parent.hideBar();
+    ctx.axisStartPos = 0;
+    eventCenter(document, 'mousemove', mousemove, 'off');
+    eventCenter(document, 'mouseup', mouseup, 'off');
+  }
+
+  return mousedown;
+}
+
+function createTouchEvent(ctx) {
+  function touchstart(e) {
+    e.stopImmediatePropagation();
+    document.onselectstart = function () {
+      return false;
+    };
+    ctx.axisStartPos = e.touches[0][ctx.bar.client] - ctx.$refs['inner'].getBoundingClientRect()[ctx.bar.posName];
+    // tell parent that the mouse has been down.
+    ctx.$emit('setBarClick', true);
+    eventCenter(document, 'touchmove', touchmove);
+    eventCenter(document, 'touchend', touchend);
+  }
+  function touchmove(e) {
+    if (!ctx.axisStartPos) {
+      return;
+    }
+    var delta = e.touches[0][ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
+    var percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
+    ctx.$parent.scrollTo(_defineProperty$1({}, ctx.axis.toLowerCase(), ctx.parent['scrollPanel'].$el[ctx.bar.scrollSize] * percent), false);
+  }
+  function touchend() {
+    ctx.$emit('setBarClick', false);
+    document.onselectstart = null;
+    ctx.$parent.hideBar();
+    ctx.axisStartPos = 0;
+    eventCenter(document, 'touchmove', touchmove, 'off');
+    eventCenter(document, 'touchend', touchend, 'off');
+  }
+  return touchstart;
+}
+
+function getRgbAColor(color, opacity) {
+  var id = color + '&' + opacity;
+  if (colorCache[id]) {
+    return colorCache[id];
+  }
+
+  var div = document.createElement('div');
+  div.style.background = color;
+  document.body.appendChild(div);
+  var computedColor = window.getComputedStyle(div).backgroundColor;
+  document.body.removeChild(div);
+
+  /* istanbul ignore if */
+  if (!rgbReg.test(computedColor)) {
+    return color;
+  }
+
+  return colorCache[id] = 'rgba(' + extractRgbColor.exec(computedColor)[1] + ', ' + opacity + ')';
+}
+
 /* istanbul ignore next */
 function handleClickTrack(e, _ref, parentRef, type, parent) {
   var client = _ref.client,
@@ -2636,28 +2725,6 @@ function handleClickTrack(e, _ref, parentRef, type, parent) {
   var percent = (e[client] - e.target.getBoundingClientRect()[posName] - barOffset / 2) / e.target[offset];
   var pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
   parent.scrollTo(_defineProperty$1({}, scrollMap[type].axis.toLowerCase(), pos));
-}
-
-var colorCache = {};
-
-var rgbReg = /rgb\(/;
-var extractRgbColor = /rgb\((.*)\)/;
-
-function getRgbAColor(color, opacity) {
-  var cachedColor = null;
-  if (cachedColor = colorCache[color + '&' + opacity]) {
-    return cachedColor;
-  }
-  var div = document.createElement('div');
-  div.style.background = color;
-  document.body.appendChild(div);
-  var computedColor = window.getComputedStyle(div).backgroundColor;
-  document.body.removeChild(div);
-  /* istanbul ignore if */
-  if (!rgbReg.test(computedColor)) {
-    return color;
-  }
-  return colorCache[color + '&' + opacity] = cachedColor = 'rgba(' + extractRgbColor.exec(computedColor)[1] + ', ' + opacity + ')';
 }
 
 var bar = {
@@ -2690,92 +2757,54 @@ var bar = {
     }
   },
   render: function render(h) {
-    var _style,
-        _this = this,
-        _style2;
-
-    var railBackgroundColor = getRgbAColor(this.ops.rail.background, this.ops.rail.opacity);
-    var style = (_style = {}, _defineProperty$1(_style, this.bar.posName, 0), _defineProperty$1(_style, this.bar.opsSize, '100%'), _defineProperty$1(_style, this.bar.size, this.state.size), _defineProperty$1(_style, 'borderRadius', this.ops.rail[this.bar.opsSize]), _defineProperty$1(_style, 'background', this.ops.bar.background), _defineProperty$1(_style, 'opacity', this.state.opacity), _defineProperty$1(_style, 'transform', 'translate' + scrollMap[this.type].axis + '(' + this.state.posValue + '%)'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'position', 'relative'), _defineProperty$1(_style, 'transition', 'opacity .5s'), _defineProperty$1(_style, 'userSelect', 'none'), _style);
-    var bar = {
-      style: style,
-      class: 'vuescroll-' + this.type + '-bar',
-      on: {
-        mousedown: this.handleMousedown
-      },
-      ref: 'inner'
-    };
-    /* istanbul ignore if */
-    if (this.ops.bar.hover) {
-      bar.on['mouseenter'] = function () {
-        _this.$el.style.background = _this.ops.hover;
-      };
-      bar.on['mouseleave'] = function () {
-        _this.$el.style.background = _this.ops.background;
-      };
-    }
+    var _style, _style2;
 
     var vm = this;
     var parentRef = vm.$parent.$refs;
+    var railBackgroundColor = getRgbAColor(vm.ops.rail.background, vm.ops.rail.opacity);
+    var style = (_style = {}, _defineProperty$1(_style, vm.bar.posName, 0), _defineProperty$1(_style, vm.bar.opsSize, '100%'), _defineProperty$1(_style, vm.bar.size, vm.state.size), _defineProperty$1(_style, 'borderRadius', vm.ops.rail[vm.bar.opsSize]), _defineProperty$1(_style, 'background', vm.ops.bar.background), _defineProperty$1(_style, 'opacity', vm.state.opacity), _defineProperty$1(_style, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'position', 'relative'), _defineProperty$1(_style, 'transition', 'opacity .5s'), _defineProperty$1(_style, 'userSelect', 'none'), _style);
+    var bar = {
+      style: style,
+      class: 'vuescroll-' + vm.type + '-bar',
+      ref: 'inner',
+      on: {}
+    };
+
+    /* istanbul ignore if */
+    if (vm.ops.bar.hover) {
+      bar.on['mouseenter'] = function () {
+        vm.$el.style.background = vm.ops.hover;
+      };
+      bar.on['mouseleave'] = function () {
+        vm.$el.style.background = vm.ops.background;
+      };
+    }
+
+    if (isSupportTouch) {
+      bar.on['touchstart'] = createTouchEvent(this);
+    } else {
+      bar.on['mousedown'] = createMouseEvent(this);
+    }
 
     var rail = {
-      class: 'vuescroll-' + this.type + '-rail',
+      class: 'vuescroll-' + vm.type + '-rail',
       style: (_style2 = {
         position: 'absolute',
-        borderRadius: this.ops.rail[this.bar.opsSize],
+        borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor
-      }, _defineProperty$1(_style2, this.bar.opsSize, this.ops.rail[this.bar.opsSize]), _defineProperty$1(_style2, this.bar.posName, '2px'), _defineProperty$1(_style2, this.bar.opposName, '2px'), _defineProperty$1(_style2, this.ops.rail.pos, 0), _style2),
+      }, _defineProperty$1(_style2, vm.bar.opsSize, vm.ops.rail[vm.bar.opsSize]), _defineProperty$1(_style2, vm.bar.posName, '2px'), _defineProperty$1(_style2, vm.bar.opposName, '2px'), _defineProperty$1(_style2, vm.ops.rail.pos, 0), _style2),
       on: {
         click: function click(e) /* istanbul ignore next */{
           handleClickTrack(e, vm.bar, parentRef, vm.type, vm.$parent);
         }
       }
     };
+
     return h(
       'div',
       rail,
       [h('div', bar)]
     );
-  },
-
-  methods: {
-    handleMousedown: function handleMousedown(e) {
-      /* istanbul ignore next */
-      {
-        e.stopImmediatePropagation();
-        document.onselectstart = function () {
-          return false;
-        };
-        this.axisStartPos = e[this.bar.client] - this.$refs['inner'].getBoundingClientRect()[this.bar.posName];
-        // tell parent that the mouse has been down.
-        this.$emit('setBarClick', true);
-        eventCenter(document, 'mousemove', this.handleMouseMove);
-        eventCenter(document, 'mouseup', this.handleMouseUp);
-      }
-    },
-    handleMouseMove: function handleMouseMove(e) {
-      /* istanbul ignore next */
-      if (!this.axisStartPos) {
-        return;
-      }
-      /* istanbul ignore next */
-      {
-        // https://github.com/ElemeFE/element/blob/27a8c1556e30ae38423ebc4bb100486e59b8601f/packages/scrollbar/src/bar.js#L72
-        var delta = e[this.bar.client] - this.$el.getBoundingClientRect()[this.bar.posName];
-        var percent = (delta - this.axisStartPos) / this.$el[this.bar.offset];
-        this.$parent.scrollTo(_defineProperty$1({}, this.axis.toLowerCase(), this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent), false);
-      }
-    },
-    handleMouseUp: function handleMouseUp() {
-      /* istanbul ignore next */
-      {
-        this.$emit('setBarClick', false);
-        document.onselectstart = null;
-        this.$parent.hideBar();
-        this.axisStartPos = 0;
-        eventCenter(document, 'mousemove', this.handleMouseMove, 'off');
-        eventCenter(document, 'mouseup', this.handleMouseUp, 'off');
-      }
-    }
   }
 };
 
@@ -3175,6 +3204,43 @@ var vueScrollCore = {
   components: { bar: bar, scrollContent: scrollContent, scrollPanel: scrollPanel },
   props: { ops: { type: Object } },
   mixins: [hackLifecycle, api, nativeMode, slideMode],
+  mounted: function mounted() {
+    if (!this.renderError) {
+      this.initVariables();
+
+      this.initVuescrollSizeType();
+
+      this.initScroller();
+
+      this.initResizeDetection();
+
+      this.initWatchOpsChange();
+
+      this.initBarState();
+
+      this.initVuescrollPosition();
+    }
+  },
+  updated: function updated() {
+    var _this = this;
+
+    this.$nextTick(function () {
+      if (!_this._isDestroyed) {
+        _this.showAndDefferedHideBar();
+      }
+    });
+  },
+  beforeDestroy: function beforeDestroy() {
+    // remove registryed resize
+    if (this.destroyParentDomResize) {
+      this.destroyParentDomResize();
+      this.destroyParentDomResize = null;
+    }
+    if (this.destroyResize) {
+      this.destroyResize();
+      this.destroyResize = null;
+    }
+  },
   data: function data() {
     return {
       /**
@@ -3241,8 +3307,10 @@ var vueScrollCore = {
         padding: 0,
         overflow: 'hidden'
       },
-      class: 'vue-scroll',
-      on: {
+      class: 'vue-scroll'
+    };
+    if (!isSupportTouch) {
+      vuescrollData.on = {
         mouseenter: function mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
@@ -3257,8 +3325,25 @@ var vueScrollCore = {
           vm.updateBarStateAndEmitEvent();
           vm.showBar();
         }
-      }
-    };
+      };
+    } else {
+      vuescrollData.on = {
+        touchstart: function touchstart() {
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
+          vm.showBar();
+        },
+        touchend: function touchend() {
+          vm.vuescroll.state.pointerLeave = true;
+          vm.hideBar();
+        },
+        touchmove: function touchmove() /* istanbul ignore next */{
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
+          vm.showBar();
+        }
+      };
+    }
     return h(
       'div',
       vuescrollData,
@@ -3333,7 +3418,7 @@ var vueScrollCore = {
       this.vuescroll.state.isClickingBar = val;
     },
     showAndDefferedHideBar: function showAndDefferedHideBar() {
-      var _this = this;
+      var _this2 = this;
 
       this.showBar();
       if (this.timeoutId) {
@@ -3341,8 +3426,8 @@ var vueScrollCore = {
         this.timeoutId = 0;
       }
       this.timeoutId = setTimeout(function () {
-        _this.timeoutId = 0;
-        _this.hideBar();
+        _this2.timeoutId = 0;
+        _this2.hideBar();
       }, 500);
     },
 
@@ -3400,7 +3485,7 @@ var vueScrollCore = {
       }
     },
     registryResize: function registryResize() {
-      var _this2 = this;
+      var _this3 = this;
 
       /* istanbul ignore next */
       if (this.destroyResize) {
@@ -3416,24 +3501,24 @@ var vueScrollCore = {
         contentElm = this.scrollContentElm;
       }
       var handleWindowResize = function handleWindowResize() /* istanbul ignore next */{
-        _this2.updateBarStateAndEmitEvent();
-        _this2.showAndDefferedHideBar();
-        if (_this2.mode == 'slide') {
-          _this2.updateScroller();
+        _this3.updateBarStateAndEmitEvent();
+        _this3.showAndDefferedHideBar();
+        if (_this3.mode == 'slide') {
+          _this3.updateScroller();
         }
       };
       var handleDomResize = function handleDomResize() {
         var currentSize = {};
-        if (_this2.mode == 'slide') {
-          _this2.updateScroller();
-          currentSize['width'] = _this2.scroller.__contentWidth;
-          currentSize['height'] = _this2.scroller.__contentHeight;
-        } else if (_this2.mode == 'native' || _this2.mode == 'pure-native') {
-          currentSize['width'] = _this2.scrollPanelElm.scrollWidth;
-          currentSize['height'] = _this2.scrollPanelElm.scrollHeight;
+        if (_this3.mode == 'slide') {
+          _this3.updateScroller();
+          currentSize['width'] = _this3.scroller.__contentWidth;
+          currentSize['height'] = _this3.scroller.__contentHeight;
+        } else if (_this3.mode == 'native' || _this3.mode == 'pure-native') {
+          currentSize['width'] = _this3.scrollPanelElm.scrollWidth;
+          currentSize['height'] = _this3.scrollPanelElm.scrollHeight;
         }
-        _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
-        _this2.showAndDefferedHideBar();
+        _this3.updateBarStateAndEmitEvent('handle-resize', currentSize);
+        _this3.showAndDefferedHideBar();
       };
       window.addEventListener('resize', handleWindowResize, false);
       var destroyDomResize = listenResize(contentElm, handleDomResize);
@@ -3487,8 +3572,8 @@ var vueScrollCore = {
       this.vuescroll.state.internalScrollLeft = axis.x;
       this.vuescroll.state.internalScrollTop = axis.y;
     },
-    initWatch: function initWatch() {
-      var _this3 = this;
+    initWatchOpsChange: function initWatchOpsChange() {
+      var _this4 = this;
 
       var watchOpts = {
         deep: true,
@@ -3496,25 +3581,25 @@ var vueScrollCore = {
       };
       this.$watch('mergedOptions', function () {
         // record current position
-        _this3.recordCurrentPos();
-        _this3.$nextTick(function () {
-          if (_this3.isSmallChangeThisTick == true) {
-            _this3.isSmallChangeThisTick = false;
+        _this4.recordCurrentPos();
+        _this4.$nextTick(function () {
+          if (_this4.isSmallChangeThisTick == true) {
+            _this4.isSmallChangeThisTick = false;
             return;
           }
           // re do them jobsin case of
           // option changes
-          _this3.setVsSize();
-          _this3.registryResize();
-          _this3.updateMode();
+          _this4.setVsSize();
+          _this4.registryResize();
+          _this4.updateMode();
         });
       }, watchOpts);
 
       smallChangeArray.forEach(function (opts) {
-        _this3.$watch(opts, function () {
+        _this4.$watch(opts, function () {
           // when small changes changed,
           // we need not to updateMode or registryResize
-          _this3.isSmallChangeThisTick = true;
+          _this4.isSmallChangeThisTick = true;
         }, watchOpts);
       });
     },
@@ -3535,45 +3620,28 @@ var vueScrollCore = {
         return;
       }
       this.scrollIntoView(elm);
-    }
-  },
-  mounted: function mounted() {
-    if (!this.renderError) {
+    },
+    initVariables: function initVariables() {
       this.lastMode = this.mode;
       this.$el._isVuescroll = true;
-
-      this.setVsSize();
-
+    },
+    initScroller: function initScroller() {
       if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       }
-
+    },
+    initVuescrollSizeType: function initVuescrollSizeType() {
+      this.setVsSize();
+    },
+    initResizeDetection: function initResizeDetection() {
       this.registryResize();
-      this.initWatch();
+    },
+    initBarState: function initBarState() {
       this.updateBarStateAndEmitEvent();
       this.showAndDefferedHideBar();
-
+    },
+    initVuescrollPosition: function initVuescrollPosition() {
       this.scrollToHash();
-    }
-  },
-  updated: function updated() {
-    var _this4 = this;
-
-    this.$nextTick(function () {
-      if (!_this4._isDestroyed) {
-        _this4.showAndDefferedHideBar();
-      }
-    });
-  },
-  beforeDestroy: function beforeDestroy() {
-    // remove registryed resize
-    if (this.destroyParentDomResize) {
-      this.destroyParentDomResize();
-      this.destroyParentDomResize = null;
-    }
-    if (this.destroyResize) {
-      this.destroyResize();
-      this.destroyResize = null;
     }
   }
 };

@@ -4,14 +4,11 @@ const babel = require('rollup-plugin-babel');
 const replace = require('rollup-plugin-replace');
 const path = require('path');
 const version = process.env.VERSION || require('../package.json').version;
- 
-const banner =
-   `/*
-    * @name: vuescroll ${version}
-    * @author: (c) 2018-${new Date().getFullYear()} wangyi7099
-    * @description: A reactive virtual scrollbar based on vue.js 2.X
-    * @license: MIT
-    * @GitHub: https://github.com/wangyi7099/vuescroll
+
+const banner = `/*
+    * vuescroll ${version}
+    * (c) 2018-${new Date().getFullYear()} wangyi7099
+    * Released under the MIT License
     */
    `;
 
@@ -73,7 +70,7 @@ const builds = {
   }
 };
 
-function genConfig (name) {
+function genConfig(name) {
   const opts = builds[name];
   const config = {
     input: opts.entry,
@@ -90,16 +87,14 @@ function genConfig (name) {
     plugins: [
       resolveNode(),
       babel({
-        exclude: 'node_modules/**', // only transpile our source code
+        exclude: 'node_modules/**' // only transpile our source code
       }),
       replace({
         'process.env.NODE_FORMAT': JSON.stringify(opts.format),
-        '__version__': version
+        __version__: version
       })
     ]
   };
-
-   
 
   Object.defineProperty(config, '_name', {
     enumerable: false,

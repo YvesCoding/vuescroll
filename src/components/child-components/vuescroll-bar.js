@@ -1,5 +1,111 @@
 import scrollMap from '../../shared/scroll-map';
-import { eventCenter } from '../../util';
+import { eventCenter, isSupportTouch } from '../../util';
+
+const colorCache = {};
+const rgbReg = /rgb\(/;
+const extractRgbColor = /rgb\((.*)\)/;
+
+/* istanbul ignore next */
+function createMouseEvent(ctx) {
+  function mousedown(e) {
+    e.stopImmediatePropagation();
+    document.onselectstart = () => false;
+    ctx.axisStartPos =
+      e[ctx.bar.client] -
+      ctx.$refs['inner'].getBoundingClientRect()[ctx.bar.posName];
+    // tell parent that the mouse has been down.
+    ctx.$emit('setBarClick', true);
+    eventCenter(document, 'mousemove', mousemove);
+    eventCenter(document, 'mouseup', mouseup);
+  }
+  function mousemove(e) {
+    if (!ctx.axisStartPos) {
+      return;
+    }
+    const delta =
+      e[ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
+    const percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
+    ctx.$parent.scrollTo(
+      {
+        [ctx.axis.toLowerCase()]:
+          ctx.parent['scrollPanel'].$el[ctx.bar.scrollSize] * percent
+      },
+      false
+    );
+  }
+  function mouseup() {
+    ctx.$emit('setBarClick', false);
+    document.onselectstart = null;
+    ctx.$parent.hideBar();
+    ctx.axisStartPos = 0;
+    eventCenter(document, 'mousemove', mousemove, 'off');
+    eventCenter(document, 'mouseup', mouseup, 'off');
+  }
+
+  return mousedown;
+}
+
+/* istanbul ignore next */
+function createTouchEvent(ctx) {
+  function touchstart(e) {
+    e.stopImmediatePropagation();
+    document.onselectstart = () => false;
+    ctx.axisStartPos =
+      e.touches[0][ctx.bar.client] -
+      ctx.$refs['inner'].getBoundingClientRect()[ctx.bar.posName];
+    // tell parent that the mouse has been down.
+    ctx.$emit('setBarClick', true);
+    eventCenter(document, 'touchmove', touchmove);
+    eventCenter(document, 'touchend', touchend);
+  }
+  function touchmove(e) {
+    if (!ctx.axisStartPos) {
+      return;
+    }
+    const delta =
+      e.touches[0][ctx.bar.client] -
+      ctx.$el.getBoundingClientRect()[ctx.bar.posName];
+    const percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
+    ctx.$parent.scrollTo(
+      {
+        [ctx.axis.toLowerCase()]:
+          ctx.parent['scrollPanel'].$el[ctx.bar.scrollSize] * percent
+      },
+      false
+    );
+  }
+  function touchend() {
+    ctx.$emit('setBarClick', false);
+    document.onselectstart = null;
+    ctx.$parent.hideBar();
+    ctx.axisStartPos = 0;
+    eventCenter(document, 'touchmove', touchmove, 'off');
+    eventCenter(document, 'touchend', touchend, 'off');
+  }
+  return touchstart;
+}
+
+function getRgbAColor(color, opacity) {
+  const id = color + '&' + opacity;
+  if (colorCache[id]) {
+    return colorCache[id];
+  }
+
+  const div = document.createElement('div');
+  div.style.background = color;
+  document.body.appendChild(div);
+  const computedColor = window.getComputedStyle(div).backgroundColor;
+  document.body.removeChild(div);
+
+  /* istanbul ignore if */
+  if (!rgbReg.test(computedColor)) {
+    return color;
+  }
+
+  return (colorCache[id] = `rgba(${
+    extractRgbColor.exec(computedColor)[1]
+  }, ${opacity})`);
+}
 
 /* istanbul ignore next */
 function handleClickTrack(
@@ -16,30 +122,6 @@ function handleClickTrack(
     e.target[offset];
   const pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
   parent.scrollTo({ [scrollMap[type].axis.toLowerCase()]: pos });
-}
-
-const colorCache = {};
-
-const rgbReg = /rgb\(/;
-const extractRgbColor = /rgb\((.*)\)/;
-
-function getRgbAColor(color, opacity) {
-  let cachedColor = null;
-  if ((cachedColor = colorCache[color + '&' + opacity])) {
-    return cachedColor;
-  }
-  const div = document.createElement('div');
-  div.style.background = color;
-  document.body.appendChild(div);
-  const computedColor = window.getComputedStyle(div).backgroundColor;
-  document.body.removeChild(div);
-  /* istanbul ignore if */
-  if (!rgbReg.test(computedColor)) {
-    return color;
-  }
-  return (colorCache[color + '&' + opacity] = cachedColor = `rgba(${
-    extractRgbColor.exec(computedColor)[1]
-  }, ${opacity})`);
 }
 
 export default {
@@ -72,20 +154,20 @@ export default {
     }
   },
   render(h) {
+    const vm = this;
+    const parentRef = vm.$parent.$refs;
     const railBackgroundColor = getRgbAColor(
-      this.ops.rail.background,
-      this.ops.rail.opacity
+      vm.ops.rail.background,
+      vm.ops.rail.opacity
     );
     let style = {
-      [this.bar.posName]: 0,
-      [this.bar.opsSize]: '100%',
-      [this.bar.size]: this.state.size,
-      borderRadius: this.ops.rail[this.bar.opsSize],
-      background: this.ops.bar.background,
-      opacity: this.state.opacity,
-      transform: `translate${scrollMap[this.type].axis}(${
-        this.state.posValue
-      }%)`,
+      [vm.bar.posName]: 0,
+      [vm.bar.opsSize]: '100%',
+      [vm.bar.size]: vm.state.size,
+      borderRadius: vm.ops.rail[vm.bar.opsSize],
+      background: vm.ops.bar.background,
+      opacity: vm.state.opacity,
+      transform: `translate${scrollMap[vm.type].axis}(${vm.state.posValue}%)`,
       cursor: 'pointer',
       position: 'relative',
       transition: 'opacity .5s',
@@ -93,35 +175,37 @@ export default {
     };
     const bar = {
       style: style,
-      class: `vuescroll-${this.type}-bar`,
-      on: {
-        mousedown: this.handleMousedown
-      },
-      ref: 'inner'
+      class: `vuescroll-${vm.type}-bar`,
+      ref: 'inner',
+      on: {}
     };
+
     /* istanbul ignore if */
-    if (this.ops.bar.hover) {
+    if (vm.ops.bar.hover) {
       bar.on['mouseenter'] = () => {
-        this.$el.style.background = this.ops.hover;
+        vm.$el.style.background = vm.ops.hover;
       };
       bar.on['mouseleave'] = () => {
-        this.$el.style.background = this.ops.background;
+        vm.$el.style.background = vm.ops.background;
       };
     }
-
-    const vm = this;
-    const parentRef = vm.$parent.$refs;
+    /* istanbul ignore if */
+    if (isSupportTouch) {
+      bar.on['touchstart'] = createTouchEvent(this);
+    } else {
+      bar.on['mousedown'] = createMouseEvent(this);
+    }
 
     const rail = {
-      class: `vuescroll-${this.type}-rail`,
+      class: `vuescroll-${vm.type}-rail`,
       style: {
         position: 'absolute',
-        borderRadius: this.ops.rail[this.bar.opsSize],
+        borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor,
-        [this.bar.opsSize]: this.ops.rail[this.bar.opsSize],
-        [this.bar.posName]: '2px',
-        [this.bar.opposName]: '2px',
-        [this.ops.rail.pos]: 0
+        [vm.bar.opsSize]: vm.ops.rail[vm.bar.opsSize],
+        [vm.bar.posName]: '2px',
+        [vm.bar.opposName]: '2px',
+        [vm.ops.rail.pos]: 0
       },
       on: {
         click(e) /* istanbul ignore next */ {
@@ -129,59 +213,12 @@ export default {
         }
       }
     };
+
     return (
       <div {...rail}>
         <div {...bar} />
       </div>
     );
-  },
-  methods: {
-    handleMousedown(e) {
-      /* istanbul ignore next */
-      {
-        e.stopImmediatePropagation();
-        document.onselectstart = () => false;
-        this.axisStartPos =
-          e[this.bar.client] -
-          this.$refs['inner'].getBoundingClientRect()[this.bar.posName];
-        // tell parent that the mouse has been down.
-        this.$emit('setBarClick', true);
-        eventCenter(document, 'mousemove', this.handleMouseMove);
-        eventCenter(document, 'mouseup', this.handleMouseUp);
-      }
-    },
-    handleMouseMove(e) {
-      /* istanbul ignore next */
-      if (!this.axisStartPos) {
-        return;
-      }
-      /* istanbul ignore next */
-      {
-        // https://github.com/ElemeFE/element/blob/27a8c1556e30ae38423ebc4bb100486e59b8601f/packages/scrollbar/src/bar.js#L72
-        const delta =
-          e[this.bar.client] -
-          this.$el.getBoundingClientRect()[this.bar.posName];
-        const percent = (delta - this.axisStartPos) / this.$el[this.bar.offset];
-        this.$parent.scrollTo(
-          {
-            [this.axis.toLowerCase()]:
-              this.parent['scrollPanel'].$el[this.bar.scrollSize] * percent
-          },
-          false
-        );
-      }
-    },
-    handleMouseUp() {
-      /* istanbul ignore next */
-      {
-        this.$emit('setBarClick', false);
-        document.onselectstart = null;
-        this.$parent.hideBar();
-        this.axisStartPos = 0;
-        eventCenter(document, 'mousemove', this.handleMouseMove, 'off');
-        eventCenter(document, 'mouseup', this.handleMouseUp, 'off');
-      }
-    }
   }
 };
 
