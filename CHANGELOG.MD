@@ -1,3 +1,13 @@
+<a name="4.5.24"></a>
+## [4.5.24](https://github.com/wangyi7099/vuescroll/compare/v4.5.23...v4.5.24) (2018-05-25)
+
+
+### Features
+
+* **bar:** support dragging in mobile ([640bd7b](https://github.com/wangyi7099/vuescroll/commit/640bd7b))
+
+
+
 <a name="4.5.23"></a>
 ## [4.5.23](https://github.com/wangyi7099/vuescroll/compare/v4.5.22...v4.5.23) (2018-05-25)
 
