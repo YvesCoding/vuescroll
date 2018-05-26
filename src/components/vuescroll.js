@@ -146,7 +146,7 @@ const vueScrollCore = {
       },
       class: 'vue-scroll'
     };
-    if (!isSupportTouch) {
+    if (!isSupportTouch()) {
       vuescrollData.on = {
         mouseenter() {
           vm.vuescroll.state.pointerLeave = false;

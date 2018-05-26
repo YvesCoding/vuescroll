@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.5.24
+    * vuescroll 4.5.25
     * (c) 2018-2018 wangyi7099
     * Released under the MIT License
     */
@@ -145,7 +145,9 @@ function extractNumberFromPx(value) {
   return _return && _return[1];
 }
 
-var isSupportTouch = 'ontouchstart' in window;
+function isSupportTouch() {
+  return 'ontouchstart' in window;
+}
 
 // detect content size change
 function listenResize(element, callback) {
@@ -2784,7 +2786,7 @@ var bar = {
       };
     }
     /* istanbul ignore if */
-    if (isSupportTouch) {
+    if (isSupportTouch()) {
       bar.on['touchstart'] = createTouchEvent(this);
     } else {
       bar.on['mousedown'] = createMouseEvent(this);
@@ -3313,7 +3315,7 @@ var vueScrollCore = {
       },
       class: 'vue-scroll'
     };
-    if (!isSupportTouch) {
+    if (!isSupportTouch()) {
       vuescrollData.on = {
         mouseenter: function mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
@@ -3657,7 +3659,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.24'
+  version: '4.5.25'
 };
 
 /* istanbul ignore if */

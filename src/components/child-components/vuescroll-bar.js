@@ -190,7 +190,7 @@ export default {
       };
     }
     /* istanbul ignore if */
-    if (isSupportTouch) {
+    if (isSupportTouch()) {
       bar.on['touchstart'] = createTouchEvent(this);
     } else {
       bar.on['mousedown'] = createMouseEvent(this);

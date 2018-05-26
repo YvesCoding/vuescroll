@@ -193,4 +193,6 @@ export function extractNumberFromPx(value) {
   return _return && _return[1];
 }
 
-export const isSupportTouch = 'ontouchstart' in window;
+export function isSupportTouch() {
+  return 'ontouchstart' in window;
+}
