@@ -271,7 +271,7 @@ const vueScrollCore = {
       this.timeoutId = setTimeout(() => {
         this.timeoutId = 0;
         this.hideBar();
-      }, 500);
+      }, this.mergedOptions.bar.showDuration);
     },
     /**
      *  emit user registry event

@@ -270,7 +270,7 @@ var GCF = {
     }
   },
   bar: {
-    //
+    showDuration: 500,
     vBar: {
       background: '#00a650',
       keepShow: false,
@@ -3435,7 +3435,7 @@ var vueScrollCore = {
       this.timeoutId = setTimeout(function () {
         _this2.timeoutId = 0;
         _this2.hideBar();
-      }, 500);
+      }, this.mergedOptions.bar.showDuration);
     },
 
     /**
