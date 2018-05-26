@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.5.25
+    * vuescroll 4.5.26
     * (c) 2018-2018 wangyi7099
     * Released under the MIT License
     */
@@ -2667,6 +2667,7 @@ function createMouseEvent(ctx) {
 function createTouchEvent(ctx) {
   function touchstart(e) {
     e.stopImmediatePropagation();
+    e.preventDefault();
     document.onselectstart = function () {
       return false;
     };
@@ -3655,7 +3656,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.25'
+  version: '4.5.26'
 };
 
 /* istanbul ignore if */

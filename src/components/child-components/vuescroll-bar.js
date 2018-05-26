@@ -49,6 +49,7 @@ function createMouseEvent(ctx) {
 function createTouchEvent(ctx) {
   function touchstart(e) {
     e.stopImmediatePropagation();
+    e.preventDefault();
     document.onselectstart = () => false;
     ctx.axisStartPos =
       e.touches[0][ctx.bar.client] -
