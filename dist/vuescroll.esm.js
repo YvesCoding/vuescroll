@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.5.26
+    * vuescroll 4.5.27
     * (c) 2018-2018 wangyi7099
     * Released under the MIT License
     */
@@ -148,15 +148,16 @@ function isSupportTouch() {
 function getPrefix(global) {
   var docStyle = document.documentElement.style;
   var engine;
+  /* istanbul ignore if */
   if (global.opera && Object.prototype.toString.call(opera) === '[object Opera]') {
     engine = 'presto';
-  } else if ('MozAppearance' in docStyle) {
-    engine = 'gecko';
-  } else if ('WebkitAppearance' in docStyle) {
-    engine = 'webkit';
-  } else if (typeof navigator.cpuClass === 'string') {
-    engine = 'trident';
-  }
+  } /* istanbul ignore next */else if ('MozAppearance' in docStyle) {
+      engine = 'gecko';
+    } else if ('WebkitAppearance' in docStyle) {
+      engine = 'webkit';
+    } /* istanbul ignore next */else if (typeof navigator.cpuClass === 'string') {
+        engine = 'trident';
+      }
   var vendorPrefix = {
     trident: 'ms',
     gecko: 'moz',
@@ -173,6 +174,7 @@ function isSupportGivenStyle(property, value) {
   if (testElm.style[property] == compatibleValue) {
     return compatibleValue;
   }
+  /* istanbul ignore next */
   return false;
 }
 
@@ -3677,7 +3679,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.26'
+  version: '4.5.27'
 };
 
 /* istanbul ignore if */
