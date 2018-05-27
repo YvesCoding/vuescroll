@@ -134,7 +134,7 @@ const vm = new Vue({
 ### 详细的配置如下:
 
 ```javascript
-  {
+{
   // vuescroll
   vuescroll: {
     mode: 'native',
@@ -223,7 +223,7 @@ const vm = new Vue({
     }
   },
   bar: {
-    //
+    showDelay: 500,
     vBar: {
       background: '#00a650',
       keepShow: false,
@@ -238,7 +238,7 @@ const vm = new Vue({
       hover: false
     }
   }
-}
+};
 ```
 
 ### API 参考

@@ -136,7 +136,7 @@ const vm = new Vue({
 ### The detailed configuration is as follows:
 
 ```javascript
-  {
+{
   // vuescroll
   vuescroll: {
     mode: 'native',
@@ -225,7 +225,7 @@ const vm = new Vue({
     }
   },
   bar: {
-    //
+    showDelay: 500,
     vBar: {
       background: '#00a650',
       keepShow: false,
@@ -240,7 +240,7 @@ const vm = new Vue({
       hover: false
     }
   }
-}
+};
 ```
 
 ### API Reference
