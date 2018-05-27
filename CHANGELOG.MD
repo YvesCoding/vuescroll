@@ -1,3 +1,28 @@
+<a name="4.5.27"></a>
+## [4.5.27](https://github.com/wangyi7099/vuescroll/compare/v4.5.26...v4.5.27) (2018-05-27)
+
+
+### Bug Fixes
+
+* **silde-mode:** what scroll-panel's display style is inline-block  may disrupt content style ([d8e0eab](https://github.com/wangyi7099/vuescroll/commit/d8e0eab)), closes [#30](https://github.com/wangyi7099/vuescroll/issues/30)
+
+
+### Features
+
+* **bar:** Add **showDelay**  option to controll the show time of bars ([2f21464](https://github.com/wangyi7099/vuescroll/commit/2f21464))
+
+
+
+<a name="4.5.26"></a>
+## [4.5.26](https://github.com/wangyi7099/vuescroll/compare/v4.5.25...v4.5.26) (2018-05-26)
+
+
+
+<a name="4.5.25"></a>
+## [4.5.25](https://github.com/wangyi7099/vuescroll/compare/v4.5.24...v4.5.25) (2018-05-26)
+
+
+
 <a name="4.5.24"></a>
 ## [4.5.24](https://github.com/wangyi7099/vuescroll/compare/v4.5.23...v4.5.24) (2018-05-25)
 
