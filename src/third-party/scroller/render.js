@@ -1,26 +1,4 @@
-export function getPrefix(global) {
-  var docStyle = document.documentElement.style;
-  var engine;
-  if (
-    global.opera &&
-    Object.prototype.toString.call(opera) === '[object Opera]'
-  ) {
-    engine = 'presto';
-  } else if ('MozAppearance' in docStyle) {
-    engine = 'gecko';
-  } else if ('WebkitAppearance' in docStyle) {
-    engine = 'webkit';
-  } else if (typeof navigator.cpuClass === 'string') {
-    engine = 'trident';
-  }
-  var vendorPrefix = {
-    trident: 'ms',
-    gecko: 'moz',
-    webkit: 'webkit',
-    presto: 'O'
-  }[engine];
-  return vendorPrefix;
-}
+import {getPrefix} from '../../util';
 
 /* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
 export function render(content, global, suffix, value) {

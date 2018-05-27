@@ -1,5 +1,4 @@
-import { deepMerge } from '../../util';
-import { getPrefix } from '../../third-party/scroller/render';
+import { deepMerge,isSupportGivenStyle } from '../../util';
 // scrollContent
 export default {
   name: 'scrollContent',
@@ -16,13 +15,12 @@ export default {
   render(h, { props, slots }) {
     let style = deepMerge(props.state.style, {});
     style.position = 'relative';
-    const widthStyle = `-${getPrefix(window)}-fit-content`;
-    const elm = document.createElement('div');
-    elm.style.width = widthStyle;
-    if (elm.style.width == widthStyle) {
-      style.width = widthStyle;
+    let width = isSupportGivenStyle('width', 'fit-content');
+    if (width) {
+      style.width = width;
     } /* istanbul ignore next */ else {
-      style.display = 'inline-block';
+      style['min-width'] = '100%';
+      style['min-height'] = '100%';
     }
     style.boxSizing = 'border-box';
     if (props.ops.padding) {

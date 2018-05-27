@@ -27,7 +27,13 @@ function findValuesByMode(mode, vm) {
   }
   return axis;
 }
-
+/**
+ * 
+ * 
+ * @param {any} type height or width
+ * have been computed in this.useNumbericSize
+ * @returns 
+ */
 function getClientSizeByType(type) {
   const vuescroll = this.$el;
   const isPercentStrategy =
@@ -271,7 +277,7 @@ const vueScrollCore = {
       this.timeoutId = setTimeout(() => {
         this.timeoutId = 0;
         this.hideBar();
-      }, this.mergedOptions.bar.showDuration);
+      }, this.mergedOptions.bar.showDelay);
     },
     /**
      *  emit user registry event

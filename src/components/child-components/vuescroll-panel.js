@@ -1,5 +1,5 @@
 // begin importing
-import { getGutter, hideSystemBar, createDomStyle } from '../../util';
+import { getGutter, hideSystemBar, createDomStyle, isSupportGivenStyle } from '../../util';
 import { createContent } from './vuescroll-content';
 // vueScrollPanel
 export default {
@@ -98,13 +98,19 @@ export function createPanel(h, vm) {
     scrollPanelData.style.transformOrigin = '';
     scrollPanelData.style.transform = '';
   } else if (vm.mode == 'slide') {
-    scrollPanelData.style['display'] = 'inline-block';
     scrollPanelData.style['transformOrigin'] = 'left top 0px';
     scrollPanelData.style['userSelect'] = 'none';
     scrollPanelData.style['height'] = '';
     // add box-sizing for sile mode because
     // let's use scrollPanel intead of scrollContent to wrap content
     scrollPanelData.style['box-sizing'] = 'border-box';
+    let width = isSupportGivenStyle('width', 'fit-content');
+    if (width) {
+      scrollPanelData.style['width'] = width;
+    } /* istanbul ignore next */ else {
+      style['min-width'] = '100%';
+      style['min-height'] = '100%';
+    }
   } else if (vm.mode == 'pure-native') {
     scrollPanelData.style['width'] = '100%';
     if (vm.mergedOptions.scrollPanel.scrollingY) {

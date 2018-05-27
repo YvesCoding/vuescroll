@@ -149,6 +149,37 @@ function isSupportTouch() {
   return 'ontouchstart' in window;
 }
 
+function getPrefix(global) {
+  var docStyle = document.documentElement.style;
+  var engine;
+  if (global.opera && Object.prototype.toString.call(opera) === '[object Opera]') {
+    engine = 'presto';
+  } else if ('MozAppearance' in docStyle) {
+    engine = 'gecko';
+  } else if ('WebkitAppearance' in docStyle) {
+    engine = 'webkit';
+  } else if (typeof navigator.cpuClass === 'string') {
+    engine = 'trident';
+  }
+  var vendorPrefix = {
+    trident: 'ms',
+    gecko: 'moz',
+    webkit: 'webkit',
+    presto: 'O'
+  }[engine];
+  return vendorPrefix;
+}
+
+function isSupportGivenStyle(property, value) {
+  var compatibleValue = '-' + getPrefix(window) + '-' + value;
+  var testElm = document.createElement('div');
+  testElm.style[property] = compatibleValue;
+  if (testElm.style[property] == compatibleValue) {
+    return compatibleValue;
+  }
+  return false;
+}
+
 // detect content size change
 function listenResize(element, callback) {
   return injectObject(element, callback);
@@ -270,7 +301,7 @@ var GCF = {
     }
   },
   bar: {
-    showDuration: 500,
+    showDelay: 500,
     vBar: {
       background: '#00a650',
       keepShow: false,
@@ -2214,27 +2245,6 @@ for (var key in members) {
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-function getPrefix(global) {
-  var docStyle = document.documentElement.style;
-  var engine;
-  if (global.opera && Object.prototype.toString.call(opera) === '[object Opera]') {
-    engine = 'presto';
-  } else if ('MozAppearance' in docStyle) {
-    engine = 'gecko';
-  } else if ('WebkitAppearance' in docStyle) {
-    engine = 'webkit';
-  } else if (typeof navigator.cpuClass === 'string') {
-    engine = 'trident';
-  }
-  var vendorPrefix = {
-    trident: 'ms',
-    gecko: 'moz',
-    webkit: 'webkit',
-    presto: 'O'
-  }[engine];
-  return vendorPrefix;
-}
-
 /* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
 function render(content, global, suffix, value) {
   var x = null;
@@ -2861,19 +2871,18 @@ var scrollContent = {
       }
     }
   },
-  render: function render$$1(h, _ref) {
+  render: function render(h, _ref) {
     var props = _ref.props,
         slots = _ref.slots;
 
     var style = deepMerge(props.state.style, {});
     style.position = 'relative';
-    var widthStyle = '-' + getPrefix(window) + '-fit-content';
-    var elm = document.createElement('div');
-    elm.style.width = widthStyle;
-    if (elm.style.width == widthStyle) {
-      style.width = widthStyle;
+    var width = isSupportGivenStyle('width', 'fit-content');
+    if (width) {
+      style.width = width;
     } /* istanbul ignore next */else {
-        style.display = 'inline-block';
+        style['min-width'] = '100%';
+        style['min-height'] = '100%';
       }
     style.boxSizing = 'border-box';
     if (props.ops.padding) {
@@ -3010,13 +3019,19 @@ function createPanel(h, vm) {
     scrollPanelData.style.transformOrigin = '';
     scrollPanelData.style.transform = '';
   } else if (vm.mode == 'slide') {
-    scrollPanelData.style['display'] = 'inline-block';
     scrollPanelData.style['transformOrigin'] = 'left top 0px';
     scrollPanelData.style['userSelect'] = 'none';
     scrollPanelData.style['height'] = '';
     // add box-sizing for sile mode because
     // let's use scrollPanel intead of scrollContent to wrap content
     scrollPanelData.style['box-sizing'] = 'border-box';
+    var width = isSupportGivenStyle('width', 'fit-content');
+    if (width) {
+      scrollPanelData.style['width'] = width;
+    } /* istanbul ignore next */else {
+        style['min-width'] = '100%';
+        style['min-height'] = '100%';
+      }
   } else if (vm.mode == 'pure-native') {
     scrollPanelData.style['width'] = '100%';
     if (vm.mergedOptions.scrollPanel.scrollingY) {
@@ -3198,7 +3213,13 @@ function findValuesByMode(mode, vm) {
   }
   return axis;
 }
-
+/**
+ * 
+ * 
+ * @param {any} type height or width
+ * have been computed in this.useNumbericSize
+ * @returns 
+ */
 function getClientSizeByType(type) {
   var vuescroll = this.$el;
   var isPercentStrategy = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
@@ -3435,7 +3456,7 @@ var vueScrollCore = {
       this.timeoutId = setTimeout(function () {
         _this2.timeoutId = 0;
         _this2.hideBar();
-      }, this.mergedOptions.bar.showDuration);
+      }, this.mergedOptions.bar.showDelay);
     },
 
     /**
