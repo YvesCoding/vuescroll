@@ -89,7 +89,7 @@ export default {
     }
   },
   bar: {
-    showDuration: 500,
+    showDelay: 500,
     vBar: {
       background: '#00a650',
       keepShow: false,

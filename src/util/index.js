@@ -196,3 +196,39 @@ export function extractNumberFromPx(value) {
 export function isSupportTouch() {
   return 'ontouchstart' in window;
 }
+
+export function getPrefix(global) {
+  var docStyle = document.documentElement.style;
+  var engine;
+  /* istanbul ignore if */
+  if (
+    global.opera &&
+    Object.prototype.toString.call(opera) === '[object Opera]'
+  ) {
+    engine = 'presto';
+  } /* istanbul ignore next */ else if ('MozAppearance' in docStyle) {
+    engine = 'gecko';
+  } else if ('WebkitAppearance' in docStyle) {
+    engine = 'webkit';
+  }  /* istanbul ignore next */else if (typeof navigator.cpuClass === 'string') {
+    engine = 'trident';
+  }
+  var vendorPrefix = {
+    trident: 'ms',
+    gecko: 'moz',
+    webkit: 'webkit',
+    presto: 'O'
+  }[engine];
+  return vendorPrefix;
+}
+
+export function isSupportGivenStyle(property, value) {
+  const compatibleValue = `-${getPrefix(window)}-${value}`;
+  const testElm = document.createElement('div');
+  testElm.style[property] = compatibleValue;
+  if (testElm.style[property] == compatibleValue)  {
+    return compatibleValue;
+  }
+  /* istanbul ignore next */
+  return false;
+}
