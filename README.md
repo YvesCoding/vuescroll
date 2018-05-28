@@ -273,32 +273,7 @@ Detailed changes for each release are documented in the [release notes](https://
 
 ## Contribution
 
-Contributing code from two aspects：
-
-### Code level
-
-Vuescroll is extremely easy to expand.You only have to do 2 steps
-
-1.  To modify / add the corresponding features at the corresponding modules in the [global-config.js](https://github.com/wangyi7099/vuescroll/blob/dev/src/shared/global-config.js) file, for example, I want to add a feature that can configure the color of the scrolling panel, the default is red, as follows:
-    ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s1.jpg?raw=true)
-2.  Find the corresponding module file and modify it in the corresponding code of the module, as follows:
-    ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s2.jpg?raw=true)
-    <br>
-    ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s3.jpg?raw=true)
-
-### Git level
-
-1.  Fork this repo.
-2.  Clone the repo you have just forked.
-
-```base
-   git clone git@github.com:<Your Username>/vuescroll.git
-```
-
-3.  Modify the code in your local and push the code to your remote repo.
-4.  Click `New pull request` in vuescroll repo as follows:
-    <br /><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/others/pr.jpg?raw=true" />
-5.  When I agree, your code will merge into the `dev` branch!
+Please check out [CONTRIBUTING](.github/CONTRIBUTING.md).
 
 ## Inspired By
 
