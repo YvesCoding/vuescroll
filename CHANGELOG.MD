@@ -1,15 +1,31 @@
+<a name="4.5.29"></a>
+## [4.5.29](https://github.com/wangyi7099/vuescroll/compare/v4.5.27...v4.5.29) (2018-05-29)
+
+
+### Bug Fixes
+
+* typo in createPanel.js ([40b45d7](https://github.com/wangyi7099/vuescroll/commit/40b45d7))
+
+
+### Features
+
+* Support customize svg in pull-refresh or push-load ([dc94053](https://github.com/wangyi7099/vuescroll/commit/dc94053))
+
+
+
 <a name="4.5.27"></a>
 ## [4.5.27](https://github.com/wangyi7099/vuescroll/compare/v4.5.26...v4.5.27) (2018-05-27)
 
 
 ### Bug Fixes
 
-* **silde-mode:** what scroll-panel's display style is inline-block  may disrupt content style ([d8e0eab](https://github.com/wangyi7099/vuescroll/commit/d8e0eab)), closes [#30](https://github.com/wangyi7099/vuescroll/issues/30)
+* **silde-mode:** what scroll-panel's display style is inline-block  may ([d8e0eab](https://github.com/wangyi7099/vuescroll/commit/d8e0eab)), closes [#30](https://github.com/wangyi7099/vuescroll/issues/30)
+* **silde-mode:** what scroll-panel's display style is inline-block  may ([c1aea71](https://github.com/wangyi7099/vuescroll/commit/c1aea71))
 
 
 ### Features
 
-* **bar:** Add **showDelay**  option to controll the show time of bars ([2f21464](https://github.com/wangyi7099/vuescroll/commit/2f21464))
+* **bar:** Add showDuration to controll the show time of bars ([2f21464](https://github.com/wangyi7099/vuescroll/commit/2f21464))
 
 
 
