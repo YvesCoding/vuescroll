@@ -23,7 +23,10 @@ English Version | [中文版](https://github.com/wangyi7099/vuescroll/blob/dev/R
 
 ## Introduction
 
-Vuescroll is a configuration based Vue.js virtual scrollbar. It creates the div that used to wrap and scroll the content, acts as a scroll bar, and then operates div to complete scrolling.
+Vuescroll is a configuration based Vue.js virtual scrollbar.You can see different effects by modifying the configuration.
+
+Its principle is to create div to wrap the contents to be scrolled, act as scroll bars, and then complete the scroll by manipulating the `scrollTop` and `scrollLeft` of div.
+
 The purpose of the design is to beautify and enhance your scrollbar.
 
 You can choose different modes by changing the configuration:
@@ -34,11 +37,11 @@ You can choose different modes by changing the configuration:
 
 You can also change the styles of the scroll bar by changing the configuration, including:
 
-* Opacity
-* Height/Width
-* Position
-* Background
-* Keep show or not
+* `Opacity`
+* `Height/Width`
+* `Position`
+* `Background`
+* `Keep show or not`
 
 > To learn more, please visit the official website [guide page](https://wangyi7099.github.io/vuescrolljs/guide/)
 
@@ -260,12 +263,13 @@ const vm = new Vue({
       ```javascript
       ops: {
         vuescroll: {
-          sizeStrategy: 'number'
+          sizeStrategy: 'number';
         }
       }
       ```
-2. Why is my content inconsistent with the width of my expectation, and there is always a small surplus？
-   > Because vuescroll wants to detect changes of element size, the width style of the element `.vuescroll-content` is `width: fit-content`, so if you want the width of the content to be displayed normally, add the following style `.vuescroll-content{width: 100%! Important}` in the CSS.
+
+2.  Why is my content inconsistent with the width of my expectation, and there is always a small surplus？
+    > Because vuescroll wants to detect changes of element size, the width style of the element `.vuescroll-content` is `width: fit-content`, so if you want the width of the content to be displayed normally, add the following style `.vuescroll-content{width: 100%! Important}` in the CSS.
 
 ## Changelog
 

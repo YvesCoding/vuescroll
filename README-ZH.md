@@ -9,6 +9,7 @@
 </p>
 
 [English Version](https://github.com/wangyi7099/vuescroll) | 中文版
+
 * [介绍](#介绍)
 * [预览](#预览)
 * [在线 Demo & 文档](#在线-demo--文档)
@@ -22,7 +23,11 @@
 
 ## 介绍
 
-Vuescroll 是一个基于配置的 Vue.js 虚拟滚动条。它创造了 div 用于包裹要滚动的内容，充当滚动条，然后操作 div 完成滚动。 设计它的目的是用来美化和增强你的滚动条的。
+Vuescroll 是一个基于配置的 Vue.js 虚拟滚动条。你可以通过修改配置来查看不同的效果。
+
+它的原理是创造 div 用于包裹要滚动的内容，充当滚动条，然后通过操作 div 的 `scrollTop`，`scrollLeft` 来完成滚动。
+
+设计它的目的是用来美化和增强你的滚动条的。
 
 你可以通过更改配置来选择不同的模式:
 
@@ -32,11 +37,11 @@ Vuescroll 是一个基于配置的 Vue.js 虚拟滚动条。它创造了 div 用
 
 你也可以通过更改配置滚动条的样式，包括：
 
-* 透明度
-* 高度/宽度
-* 位置
-* 背景色
-* 是否保持显示
+* `透明度`
+* `高度/宽度`
+* `位置`
+* `背景色`
+* `是否保持显示`
 
 > 想了解更多请访问官方网站[指南页面](https://wangyi7099.github.io/vuescrolljs/zh/)
 
@@ -257,12 +262,13 @@ const vm = new Vue({
       ```javascript
       ops: {
         vuescroll: {
-          sizeStrategy: 'number'
+          sizeStrategy: 'number';
         }
       }
       ```
-2. 为什么我的内容宽度不足，总是留下一部分空间？
-   > 因为vuescroll要检测元素尺寸的变化，所以设置的包裹内容的元素`.scroll-content`的宽度样式是`width: fit-content`,所以， 如果你要想让内容的宽度为正常显示，请在CSS里加如下样式`.vuescroll-content{ width: 100%!important}`即可。
+2.  为什么我的内容宽度不足，总是留下一部分空间？
+    > 因为 vuescroll 要检测元素尺寸的变化，所以设置的包裹内容的元素`.scroll-content`的宽度样式是`width: fit-content`,所以， 如果你要想让内容的宽度为正常显示，请在 CSS 里加如下样式`.vuescroll-content{ width: 100%!important}`即可。
+
 ## 变更日志
 
 每个版本的详细记录在[发行日志](https://github.com/wangyi7099/vuescroll/releases)里面。
