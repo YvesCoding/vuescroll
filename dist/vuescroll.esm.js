@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.5.27
+    * vuescroll 4.5.28
     * (c) 2018-2018 wangyi7099
     * Released under the MIT License
     */
@@ -3027,8 +3027,8 @@ function createPanel(h, vm) {
     if (width) {
       scrollPanelData.style['width'] = width;
     } /* istanbul ignore next */else {
-        style['min-width'] = '100%';
-        style['min-height'] = '100%';
+        scrollPanelData['min-width'] = '100%';
+        scrollPanelData['min-height'] = '100%';
       }
   } else if (vm.mode == 'pure-native') {
     scrollPanelData.style['width'] = '100%';
@@ -3679,7 +3679,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.27'
+  version: '4.5.28'
 };
 
 /* istanbul ignore if */
