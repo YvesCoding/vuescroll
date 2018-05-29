@@ -9,7 +9,7 @@
 
 ### Features
 
-* Support customize svg in pull-refresh or push-load ([dc94053](https://github.com/wangyi7099/vuescroll/commit/dc94053))
+* Support customize [slot dom](https://wangyi7099.github.io/vuescrolljs/guide/slot.html) in pull-refresh or push-load ([dc94053](https://github.com/wangyi7099/vuescroll/commit/dc94053))
 
 
 
@@ -19,8 +19,7 @@
 
 ### Bug Fixes
 
-* **silde-mode:** what scroll-panel's display style is inline-block  may ([d8e0eab](https://github.com/wangyi7099/vuescroll/commit/d8e0eab)), closes [#30](https://github.com/wangyi7099/vuescroll/issues/30)
-* **silde-mode:** what scroll-panel's display style is inline-block  may ([c1aea71](https://github.com/wangyi7099/vuescroll/commit/c1aea71))
+* **silde-mode:** what scroll-panel's display style is inline-block  may disrupt content style([d8e0eab](https://github.com/wangyi7099/vuescroll/commit/d8e0eab)), closes [#30]
 
 
 ### Features
