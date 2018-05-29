@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.5.29
+    * vuescroll 4.5.30
     * (c) 2018-2018 wangyi7099
     * Released under the MIT License
     */
@@ -3680,7 +3680,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.29'
+  version: '4.5.30'
 };
 
 /* istanbul ignore if */
