@@ -2487,7 +2487,6 @@ var slideMode = {
         refreshHeight = refreshDom.offsetHeight;
         if (!refreshDom.style.marginTop) {
           refreshDom.style.marginTop = -refreshHeight + 'px';
-          contentHeight -= refreshHeight;
         }
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
