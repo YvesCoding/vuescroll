@@ -141,40 +141,27 @@ function createPanelChildren(vm, h) {
     let renderChildren = [vm.$slots.default];
     // handle for refresh
     if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
-      // just use user-defined refresh dom instead of default
-      /* istanbul ignore if */
-      if (vm.$slots.refresh) {
-        vm.$refs['refreshDom'] = vm.$slots.refresh[0];
-        renderChildren.unshift(vm.$slots.refresh[0]);
-      } else {
-        // use default refresh dom
-        createDomStyle('refreshDomStyle');
-        let refreshDom = null;
-        refreshDom = createTipDom(h, vm.vuescroll.state.refreshStage);
-        renderChildren.unshift(
-          <div class="vuescroll-refresh" ref="refreshDom" key="refshDom">
-            {[refreshDom, vm.pullRefreshTip]}
-          </div>
-        );
-      }
+      // use default refresh dom
+      createDomStyle('refreshDomStyle');
+      let refreshDom = null;
+      refreshDom = createTipDom(h, vm, 'refresh');
+      renderChildren.unshift(
+        <div class="vuescroll-refresh" ref="refreshDom" key="refshDom">
+          {[refreshDom, vm.pullRefreshTip]}
+        </div>
+      );
     }
     // handle for load
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
-      /* istanbul ignore if */
-      if (vm.$slots.load) {
-        vm.$refs['loadDom'] = vm.$slots.load[0];
-        renderChildren.push(vm.$slots.load[0]);
-      } else {
-        createDomStyle('loadDomStyle');
-        let loadDom = null;
-        loadDom = createTipDom(h, vm.vuescroll.state.loadStage);
-        // no slot load elm, use default
-        renderChildren.push(
-          <div class="vuescroll-load" ref="loadDom" key="loadDom">
-            {[loadDom, vm.pushLoadTip]}
-          </div>
-        );
-      }
+      createDomStyle('loadDomStyle');
+      let loadDom = null;
+      loadDom = createTipDom(h, vm, 'load');
+      // no slot load elm, use default
+      renderChildren.push(
+        <div class="vuescroll-load" ref="loadDom" key="loadDom">
+          {[loadDom, vm.pushLoadTip]}
+        </div>
+      );
     }
     return renderChildren;
   } else if (vm.mode == 'pure-native') {
@@ -182,8 +169,12 @@ function createPanelChildren(vm, h) {
   }
 }
 // create load or refresh tip dom
-function createTipDom(h, stage) {
+function createTipDom(h, vm, type) {
+  const stage = vm.vuescroll.state[`${type}Stage`];
   let dom = null;
+  if ((dom = vm.$slots[`${type}-${stage}`])) {
+    return dom[0];
+  }
   switch (stage) {
     case 'deactive':
       dom = (
