@@ -1,3 +1,13 @@
+<a name="4.5.30"></a>
+## [4.5.30](https://github.com/wangyi7099/vuescroll/compare/v4.5.29...v4.5.30) (2018-05-29)
+
+
+### Bug Fixes
+
+* The content height while push-load is enable ([6f170ee](https://github.com/wangyi7099/vuescroll/commit/6f170ee))
+
+
+
 <a name="4.5.29"></a>
 ## [4.5.29](https://github.com/wangyi7099/vuescroll/compare/v4.5.27...v4.5.29) (2018-05-29)
 
@@ -28,16 +38,6 @@
 
 
 
-<a name="4.5.26"></a>
-## [4.5.26](https://github.com/wangyi7099/vuescroll/compare/v4.5.25...v4.5.26) (2018-05-26)
-
-
-
-<a name="4.5.25"></a>
-## [4.5.25](https://github.com/wangyi7099/vuescroll/compare/v4.5.24...v4.5.25) (2018-05-26)
-
-
-
 <a name="4.5.24"></a>
 ## [4.5.24](https://github.com/wangyi7099/vuescroll/compare/v4.5.23...v4.5.24) (2018-05-25)
 
@@ -45,12 +45,6 @@
 ### Features
 
 * **bar:** support dragging in mobile ([640bd7b](https://github.com/wangyi7099/vuescroll/commit/640bd7b))
-
-
-
-<a name="4.5.23"></a>
-## [4.5.23](https://github.com/wangyi7099/vuescroll/compare/v4.5.22...v4.5.23) (2018-05-25)
-
 
 
 <a name="4.5.22"></a>
@@ -71,10 +65,6 @@
 
 * update bar when mouse enters or moves ([7e0d76f](https://github.com/wangyi7099/vuescroll/commit/7e0d76f))
 
-
-
-<a name="4.5.20"></a>
-## [4.5.20](https://github.com/wangyi7099/vuescroll/compare/v4.5.19...v4.5.20) (2018-05-22)
 
 
 
@@ -118,22 +108,6 @@
 * **api:** Add scrollIntoView api that allows you scroll an elment into view ([50a458b](https://github.com/wangyi7099/vuescroll/commit/50a458b))
 
 
-
-<a name="4.5.16"></a>
-## 4.5.16 (2018-05-13)
-
-
-
-<a name="4.5.15"></a>
-## 4.5.15 (2018-05-09)
-
-
-
-<a name="4.5.14"></a>
-## 4.5.14 (2018-05-09)
-
-
-
 <a name="4.5.13"></a>
 ## 4.5.13 (2018-05-09)
 
@@ -174,12 +148,6 @@
 * **paging:** add getCurrentPage, goToPage api for paging in slide mode ([a3e2478](https://github.com/wangyi7099/vuescroll/commit/a3e2478))
 
 
-
-<a name="4.5.10"></a>
-## 4.5.10 (2018-04-30)
-
-
-
 <a name="4.5.9"></a>
 ## 4.5.9 (2018-04-30)
 
@@ -212,16 +180,6 @@
 
 
 
-<a name="4.5.2"></a>
-## 4.5.2 (2018-04-26)
-
-
-
-<a name="4.5.1"></a>
-## 4.5.1 (2018-04-26)
-
-
-
 <a name="4.5.0"></a>
 # 4.5.0 (2018-04-26)
 
@@ -235,47 +193,6 @@
 
 * add scrollby api ([8161055](https://github.com/wangyi7099/vuescroll/commit/8161055))
 * **core:** add pure-native mode that you can use native scrollbar in vuescroll ([8249b5d](https://github.com/wangyi7099/vuescroll/commit/8249b5d))
-
-
-
-<a name="4.4.8"></a>
-## 4.4.8 (2018-04-21)
-
-
-
-<a name="4.4.7"></a>
-## 4.4.7 (2018-04-21)
-
-
-
-<a name="4.4.6"></a>
-## 4.4.6 (2018-04-21)
-
-
-
-<a name="4.4.5"></a>
-## 4.4.5 (2018-04-21)
-
-
-
-<a name="4.4.3"></a>
-## 4.4.3 (2018-04-20)
-
-
-
-<a name="4.3.3"></a>
-## 4.3.3 (2018-04-20)
-
-
-
-<a name="4.2.3"></a>
-## 4.2.3 (2018-04-19)
-
-
-
-<a name="4.2.2"></a>
-## 4.2.2 (2018-04-17)
-
 
 
 <a name="4.1.2"></a>
