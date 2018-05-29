@@ -2875,17 +2875,22 @@ var scrollContent = {
   },
   render: function render(h, _ref) {
     var props = _ref.props,
-        slots = _ref.slots;
+        slots = _ref.slots,
+        parent = _ref.parent;
 
     var style = deepMerge(props.state.style, {});
     style.position = 'relative';
-    var width = isSupportGivenStyle('width', 'fit-content');
-    if (width) {
-      style.width = width;
-    } /* istanbul ignore next */else {
-        style['min-width'] = '100%';
-        style['min-height'] = '100%';
-      }
+    if (!parent.bar.hBar.state.size) {
+      style['width'] = '100%';
+    } else {
+      var width = isSupportGivenStyle('width', 'fit-content');
+      if (width) {
+        style.width = width;
+      } /* istanbul ignore next */else {
+          style['min-width'] = '100%';
+          style['min-height'] = '100%';
+        }
+    }
     style.boxSizing = 'border-box';
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
@@ -3028,12 +3033,16 @@ function createPanel(h, vm) {
     // let's use scrollPanel intead of scrollContent to wrap content
     scrollPanelData.style['box-sizing'] = 'border-box';
     var width = isSupportGivenStyle('width', 'fit-content');
-    if (width) {
-      scrollPanelData.style['width'] = width;
-    } /* istanbul ignore next */else {
-        scrollPanelData['min-width'] = '100%';
-        scrollPanelData['min-height'] = '100%';
-      }
+    if (!vm.bar.hBar.state.size) {
+      scrollPanelData['width'] = '100%';
+    } else {
+      if (width) {
+        scrollPanelData.style['width'] = width;
+      } /* istanbul ignore next */else {
+          scrollPanelData['min-width'] = '100%';
+          scrollPanelData['min-height'] = '100%';
+        }
+    }
   } else if (vm.mode == 'pure-native') {
     scrollPanelData.style['width'] = '100%';
     if (vm.mergedOptions.scrollPanel.scrollingY) {

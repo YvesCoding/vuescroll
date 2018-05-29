@@ -12,15 +12,19 @@ export default {
       }
     }
   },
-  render(h, { props, slots }) {
+  render(h, { props, slots, parent }) {
     let style = deepMerge(props.state.style, {});
     style.position = 'relative';
-    let width = isSupportGivenStyle('width', 'fit-content');
-    if (width) {
-      style.width = width;
-    } /* istanbul ignore next */ else {
-      style['min-width'] = '100%';
-      style['min-height'] = '100%';
+    if (!parent.bar.hBar.state.size) {
+      style['width'] = '100%';
+    } else {
+      let width = isSupportGivenStyle('width', 'fit-content');
+      if (width) {
+        style.width = width;
+      } /* istanbul ignore next */ else {
+        style['min-width'] = '100%';
+        style['min-height'] = '100%';
+      }
     }
     style.boxSizing = 'border-box';
     if (props.ops.padding) {

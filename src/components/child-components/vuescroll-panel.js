@@ -110,11 +110,15 @@ export function createPanel(h, vm) {
     // let's use scrollPanel intead of scrollContent to wrap content
     scrollPanelData.style['box-sizing'] = 'border-box';
     let width = isSupportGivenStyle('width', 'fit-content');
-    if (width) {
-      scrollPanelData.style['width'] = width;
-    } /* istanbul ignore next */ else {
-      scrollPanelData['min-width'] = '100%';
-      scrollPanelData['min-height'] = '100%';
+    if (!vm.bar.hBar.state.size) {
+      scrollPanelData['width'] = '100%';
+    } else {
+      if (width) {
+        scrollPanelData.style['width'] = width;
+      } /* istanbul ignore next */ else {
+        scrollPanelData['min-width'] = '100%';
+        scrollPanelData['min-height'] = '100%';
+      }
     }
   } else if (vm.mode == 'pure-native') {
     scrollPanelData.style['width'] = '100%';
