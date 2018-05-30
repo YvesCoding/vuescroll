@@ -12,7 +12,7 @@ export default {
       }
     }
   },
-  render(h, { props, slots, parent }) {
+  render(h, { props, slots }) {
     let style = deepMerge(props.state.style, {});
     style.position = 'relative';
     style['min-width'] = '100%';

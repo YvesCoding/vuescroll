@@ -2881,8 +2881,7 @@ var scrollContent = {
   },
   render: function render(h, _ref) {
     var props = _ref.props,
-        slots = _ref.slots,
-        parent = _ref.parent;
+        slots = _ref.slots;
 
     var style = deepMerge(props.state.style, {});
     style.position = 'relative';
