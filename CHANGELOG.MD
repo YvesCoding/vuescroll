@@ -1,3 +1,13 @@
+<a name="4.5.31"></a>
+## [4.5.31](https://github.com/wangyi7099/vuescroll/compare/v4.5.30...v4.5.31) (2018-05-30)
+
+
+### Bug Fixes
+
+* add min-width to scrollPanel, scrollContent([#32](https://github.com/wangyi7099/vuescroll/issues/32)) ([8fc54cd](https://github.com/wangyi7099/vuescroll/commit/8fc54cd))
+
+
+
 <a name="4.5.30"></a>
 ## [4.5.30](https://github.com/wangyi7099/vuescroll/compare/v4.5.29...v4.5.30) (2018-05-29)
 
