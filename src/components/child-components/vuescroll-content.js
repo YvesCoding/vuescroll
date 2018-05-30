@@ -1,4 +1,4 @@
-import { deepMerge,isSupportGivenStyle } from '../../util';
+import { deepMerge, isSupportGivenStyle } from '../../util';
 // scrollContent
 export default {
   name: 'scrollContent',
@@ -15,16 +15,17 @@ export default {
   render(h, { props, slots, parent }) {
     let style = deepMerge(props.state.style, {});
     style.position = 'relative';
-    if (!parent.bar.hBar.state.size) {
-      style['width'] = '100%';
-    } else {
-      let width = isSupportGivenStyle('width', 'fit-content');
-      if (width) {
-        style.width = width;
-      } /* istanbul ignore next */ else {
-        style['min-width'] = '100%';
-        style['min-height'] = '100%';
-      }
+    style['min-width'] = '100%';
+    style['min-height'] = '100%';
+    let width = isSupportGivenStyle('width', 'fit-content');
+    if (width) {
+      style.width = width;
+    } /* istanbul ignore next */ else {
+      // fallback to inline block while
+      // doesn't support 'fit-content',
+      // this may cause some issues, but this
+      // can make `resize` event work...
+      style['display'] = 'inline-block';
     }
     style.boxSizing = 'border-box';
     if (props.ops.padding) {

@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.5.30
+    * vuescroll 4.5.31
     * (c) 2018-2018 wangyi7099
     * Released under the MIT License
     */
@@ -2884,17 +2884,18 @@ var scrollContent = {
 
     var style = deepMerge(props.state.style, {});
     style.position = 'relative';
-    if (!parent.bar.hBar.state.size) {
-      style['width'] = '100%';
-    } else {
-      var width = isSupportGivenStyle('width', 'fit-content');
-      if (width) {
-        style.width = width;
-      } /* istanbul ignore next */else {
-          style['min-width'] = '100%';
-          style['min-height'] = '100%';
-        }
-    }
+    style['min-width'] = '100%';
+    style['min-height'] = '100%';
+    var width = isSupportGivenStyle('width', 'fit-content');
+    if (width) {
+      style.width = width;
+    } /* istanbul ignore next */else {
+        // fallback to inline block while
+        // doesn't support 'fit-content',
+        // this may cause some issues, but this
+        // can make `resize` event work...
+        style['display'] = 'inline-block';
+      }
     style.boxSizing = 'border-box';
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
@@ -3036,17 +3037,18 @@ function createPanel(h, vm) {
     // add box-sizing for sile mode because
     // let's use scrollPanel intead of scrollContent to wrap content
     scrollPanelData.style['box-sizing'] = 'border-box';
+    scrollPanelData.style['min-width'] = '100%';
+    scrollPanelData.style['min-height'] = '100%';
     var width = isSupportGivenStyle('width', 'fit-content');
-    if (!vm.bar.hBar.state.size) {
-      scrollPanelData['width'] = '100%';
-    } else {
-      if (width) {
-        scrollPanelData.style['width'] = width;
-      } /* istanbul ignore next */else {
-          scrollPanelData['min-width'] = '100%';
-          scrollPanelData['min-height'] = '100%';
-        }
-    }
+    if (width) {
+      scrollPanelData.style['width'] = width;
+    } /* istanbul ignore next */else {
+        // fallback to inline block while
+        // doesn't support 'fit-content',
+        // this may cause some issues, but this
+        // can make `resize` event work...
+        scrollPanelData['display'] = 'inline-block';
+      }
   } else if (vm.mode == 'pure-native') {
     scrollPanelData.style['width'] = '100%';
     if (vm.mergedOptions.scrollPanel.scrollingY) {
@@ -3687,7 +3689,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.30'
+  version: '4.5.31'
 };
 
 /* istanbul ignore if */

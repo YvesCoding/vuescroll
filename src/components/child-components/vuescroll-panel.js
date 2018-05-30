@@ -109,16 +109,17 @@ export function createPanel(h, vm) {
     // add box-sizing for sile mode because
     // let's use scrollPanel intead of scrollContent to wrap content
     scrollPanelData.style['box-sizing'] = 'border-box';
+    scrollPanelData.style['min-width'] = '100%';
+    scrollPanelData.style['min-height'] = '100%';
     let width = isSupportGivenStyle('width', 'fit-content');
-    if (!vm.bar.hBar.state.size) {
-      scrollPanelData['width'] = '100%';
-    } else {
-      if (width) {
-        scrollPanelData.style['width'] = width;
-      } /* istanbul ignore next */ else {
-        scrollPanelData['min-width'] = '100%';
-        scrollPanelData['min-height'] = '100%';
-      }
+    if (width) {
+      scrollPanelData.style['width'] = width;
+    } /* istanbul ignore next */ else {
+      // fallback to inline block while
+      // doesn't support 'fit-content',
+      // this may cause some issues, but this
+      // can make `resize` event work...
+      scrollPanelData['display'] = 'inline-block';
     }
   } else if (vm.mode == 'pure-native') {
     scrollPanelData.style['width'] = '100%';
@@ -180,78 +181,78 @@ function createTipDom(h, vm, type) {
     return dom[0];
   }
   switch (stage) {
-  case 'deactive':
-    dom = (
-      <svg
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        x="0px"
-        y="0px"
-        viewBox="0 0 1000 1000"
-        enable-background="new 0 0 1000 1000"
-        xmlSpace="preserve"
-      >
-        <metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
-        <g>
-          <g transform="matrix(1 0 0 -1 0 1008)">
-            <path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" />
-          </g>
-        </g>
-      </svg>
-    );
-    break;
-  case 'start':
-    dom = (
-      <svg
-        version="1.1"
-        id="loader-1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        x="0px"
-        y="0px"
-        viewBox="0 0 50 50"
-        style="enable-background:new 0 0 50 50;"
-        xmlSpace="preserve"
-      >
-        <path
-          fill="#000"
-          d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
+    case 'deactive':
+      dom = (
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 1000 1000"
+          enable-background="new 0 0 1000 1000"
+          xmlSpace="preserve"
         >
-          <animateTransform
-            attributeType="xml"
-            attributeName="transform"
-            type="rotate"
-            from="0 25 25"
-            to="360 25 25"
-            dur="0.6s"
-            repeatCount="indefinite"
-          />
-        </path>
-      </svg>
-    );
-    break;
-  case 'active':
-    dom = (
-      <svg
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        x="0px"
-        y="0px"
-        viewBox="0 0 1000 1000"
-        enable-background="new 0 0 1000 1000"
-        xmlSpace="preserve"
-      >
-        <metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
-        <g>
-          <g transform="matrix(1 0 0 -1 0 1008)">
-            <path d="M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" />
+          <metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
+          <g>
+            <g transform="matrix(1 0 0 -1 0 1008)">
+              <path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" />
+            </g>
           </g>
-        </g>
-      </svg>
-    );
-    break;
+        </svg>
+      );
+      break;
+    case 'start':
+      dom = (
+        <svg
+          version="1.1"
+          id="loader-1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 50 50"
+          style="enable-background:new 0 0 50 50;"
+          xmlSpace="preserve"
+        >
+          <path
+            fill="#000"
+            d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
+          >
+            <animateTransform
+              attributeType="xml"
+              attributeName="transform"
+              type="rotate"
+              from="0 25 25"
+              to="360 25 25"
+              dur="0.6s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </svg>
+      );
+      break;
+    case 'active':
+      dom = (
+        <svg
+          version="1.1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 1000 1000"
+          enable-background="new 0 0 1000 1000"
+          xmlSpace="preserve"
+        >
+          <metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
+          <g>
+            <g transform="matrix(1 0 0 -1 0 1008)">
+              <path d="M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" />
+            </g>
+          </g>
+        </svg>
+      );
+      break;
   }
   return dom;
 }
