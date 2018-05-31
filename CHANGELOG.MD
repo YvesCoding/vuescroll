@@ -1,3 +1,18 @@
+<a name="4.5.32"></a>
+## [4.5.32](https://github.com/wangyi7099/vuescroll/compare/v4.5.31...v4.5.32) (2018-05-31)
+
+
+### Bug Fixes
+
+* update bar in setTimeout ([#31](https://github.com/wangyi7099/vuescroll/issues/31)) ([1b4b65d](https://github.com/wangyi7099/vuescroll/commit/1b4b65d))
+
+
+### Features
+
+* **api:** add triggerRefreshOrLoad Api that you can trigger refresh or load directly ([02fb682](https://github.com/wangyi7099/vuescroll/commit/02fb682))
+
+
+
 <a name="4.5.31"></a>
 ## [4.5.31](https://github.com/wangyi7099/vuescroll/compare/v4.5.30...v4.5.31) (2018-05-30)
 
