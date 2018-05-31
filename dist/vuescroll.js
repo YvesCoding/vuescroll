@@ -124,8 +124,13 @@ function eventCenter(dom, eventName, hander) {
 
   type == 'on' ? dom.addEventListener(eventName, hander, capture) : dom.removeEventListener(eventName, hander, capture);
 }
-// native console
-var log = console;
+
+var error = function error(msg) {
+  console.error('[vuescroll] ' + msg);
+};
+var warn = function warn(msg) {
+  console.warn('[vuescroll] ' + msg);
+};
 
 function isChildInParent(child, parent) {
   var flag = false;
@@ -340,23 +345,23 @@ function validateOptions(ops) {
   // validate vuescroll
 
   if (!~modes.indexOf(vuescroll.mode)) {
-    log.error('[vuescroll]: The vuescroll\'s option "mode" should be one of the ' + modes);
+    error('The vuescroll\'s option "mode" should be one of the ' + modes);
     shouldStopRender = true;
   }
 
   if (vuescroll.paging == vuescroll.snapping.enable && vuescroll.paging && (vuescroll.pullRefresh || vuescroll.pushLoad)) {
-    log.error('[vuescroll]: paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.');
+    error('paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.');
   }
   // validate scrollPanel
   var initialScrollY = scrollPanel['initialScrollY'];
   var initialScrollX = scrollPanel['initialScrollX'];
 
   if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
-    log.error('[vuescroll]: The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
+    error('The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
   }
 
   if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
-    log.error('[vuescroll]: The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
+    error('The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.');
   }
 
   return shouldStopRender;
@@ -763,7 +768,7 @@ var api = {
     },
     zoomBy: function zoomBy(factor, animate, originLeft, originTop, callback) {
       if (this.mode != 'slide') {
-        log.warn('[vuescroll]: zoomBy and zoomTo are only for slide mode!');
+        warn('zoomBy and zoomTo are only for slide mode!');
         return;
       }
       this.scroller.zoomBy(factor, animate, originLeft, originTop, callback);
@@ -775,14 +780,14 @@ var api = {
       var callback = arguments[4];
 
       if (this.mode != 'slide') {
-        log.warn('[vuescroll]: zoomBy and zoomTo are only for slide mode!');
+        warn('zoomBy and zoomTo are only for slide mode!');
         return;
       }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
     getCurrentPage: function getCurrentPage() {
       if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
-        log.warn('[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!');
+        warn('getCurrentPage and goToPage are only for slide mode and paging is enble!');
         return;
       }
       return this.scroller.getCurrentPage();
@@ -791,10 +796,30 @@ var api = {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
       if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
-        log.warn('[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!');
+        warn('getCurrentPage and goToPage are only for slide mode and paging is enble!');
         return;
       }
       this.scroller.goToPage(dest, animate);
+    },
+    triggerRefreshOrLoad: function triggerRefreshOrLoad(type) {
+      if (this.mode != 'slide') {
+        warn('You can only use triggerRefreshOrLoad in slide mode!');
+        return;
+      }
+      var isRefresh = this.mergedOptions.vuescroll.pullRefresh.enable;
+      var isLoad = this.mergedOptions.vuescroll.pushLoad.enable;
+      if (type == 'refresh' && !isRefresh) {
+        warn('refresh must be enabled!');
+        return;
+      } else if (type == 'load' && !isLoad) {
+        warn('load must be enabled!');
+        return;
+      } else if (type !== 'refresh' && type !== 'load') {
+        warn('param must be one of load and refresh!');
+        return;
+      }
+      this.scroller.triggerRefreshOrLoad(type);
+      return true;
     },
     getCurrentviewDom: function getCurrentviewDom() {
       var _this = this;
@@ -860,7 +885,7 @@ var api = {
         elm = parentElm.querySelector(elm);
       }
       if (!isChildInParent(elm, parentElm)) {
-        log.warn('[vuescroll]: The element or selector you passed is not the element of Vuescroll, please pass the element that is in Vuescroll to scrollIntoView API. ');
+        warn('The element or selector you passed is not the element of Vuescroll, please pass the element that is in Vuescroll to scrollIntoView API. ');
         return;
       }
       // parent elm left, top
@@ -1286,11 +1311,13 @@ var members = {
       this.__publish(this.__scrollLeft, -this.__refreshHeight, this.__zoomLevel, true);
       if (this.__refreshStart) {
         this.__refreshStart();
+        this.__refreshActive = true;
       }
     } else {
       this.__publish(this.__scrollLeft, this.__maxScrollTop + this.__loadHeight, this.__zoomLevel, true);
       if (this.__loadStart) {
         this.__loadStart();
+        this.__loadActive = true;
       }
     }
   },
@@ -3256,24 +3283,16 @@ var vueScrollCore = {
 
       this.initWatchOpsChange();
 
-      // setTimeout is long enough to
-      // make sure get correct dom's size
-      setTimeout(function () {
+      this.updateBarStateAndEmitEvent();
+
+      this.$nextTick(function () {
         if (!_this._isDestroyed) {
+          // update again to make sure bar's size is correct.
           _this.updateBarStateAndEmitEvent();
           _this.initVuescrollPosition();
         }
       }, 0);
     }
-  },
-  updated: function updated() {
-    var _this2 = this;
-
-    this.$nextTick(function () {
-      if (!_this2._isDestroyed) {
-        _this2.showAndDefferedHideBar();
-      }
-    });
   },
   beforeDestroy: function beforeDestroy() {
     // remove registryed resize
@@ -3425,6 +3444,9 @@ var vueScrollCore = {
       if (this.mode == 'native' || this.mode == 'pure-native') {
         this.updateNativeModeBarState();
       } else if (this.mode == 'slide') {
+        if (!this.scroller) {
+          return;
+        }
         this.updateSlideModeBarState();
       }
       if (eventType) {
@@ -3459,7 +3481,7 @@ var vueScrollCore = {
       this.vuescroll.state.isClickingBar = val;
     },
     showAndDefferedHideBar: function showAndDefferedHideBar() {
-      var _this3 = this;
+      var _this2 = this;
 
       this.showBar();
       if (this.timeoutId) {
@@ -3467,8 +3489,8 @@ var vueScrollCore = {
         this.timeoutId = 0;
       }
       this.timeoutId = setTimeout(function () {
-        _this3.timeoutId = 0;
-        _this3.hideBar();
+        _this2.timeoutId = 0;
+        _this2.hideBar();
       }, this.mergedOptions.bar.showDelay);
     },
 
@@ -3526,7 +3548,7 @@ var vueScrollCore = {
       }
     },
     registryResize: function registryResize() {
-      var _this4 = this;
+      var _this3 = this;
 
       /* istanbul ignore next */
       if (this.destroyResize) {
@@ -3542,22 +3564,22 @@ var vueScrollCore = {
         contentElm = this.scrollContentElm;
       }
       var handleWindowResize = function handleWindowResize() /* istanbul ignore next */{
-        _this4.updateBarStateAndEmitEvent();
-        if (_this4.mode == 'slide') {
-          _this4.updateScroller();
+        _this3.updateBarStateAndEmitEvent();
+        if (_this3.mode == 'slide') {
+          _this3.updateScroller();
         }
       };
       var handleDomResize = function handleDomResize() {
         var currentSize = {};
-        if (_this4.mode == 'slide') {
-          _this4.updateScroller();
-          currentSize['width'] = _this4.scroller.__contentWidth;
-          currentSize['height'] = _this4.scroller.__contentHeight;
-        } else if (_this4.mode == 'native' || _this4.mode == 'pure-native') {
-          currentSize['width'] = _this4.scrollPanelElm.scrollWidth;
-          currentSize['height'] = _this4.scrollPanelElm.scrollHeight;
+        if (_this3.mode == 'slide') {
+          _this3.updateScroller();
+          currentSize['width'] = _this3.scroller.__contentWidth;
+          currentSize['height'] = _this3.scroller.__contentHeight;
+        } else if (_this3.mode == 'native' || _this3.mode == 'pure-native') {
+          currentSize['width'] = _this3.scrollPanelElm.scrollWidth;
+          currentSize['height'] = _this3.scrollPanelElm.scrollHeight;
         }
-        _this4.updateBarStateAndEmitEvent('handle-resize', currentSize);
+        _this3.updateBarStateAndEmitEvent('handle-resize', currentSize);
       };
       window.addEventListener('resize', handleWindowResize, false);
       var destroyDomResize = listenResize(contentElm, handleDomResize);
@@ -3612,7 +3634,7 @@ var vueScrollCore = {
       this.vuescroll.state.internalScrollTop = axis.y;
     },
     initWatchOpsChange: function initWatchOpsChange() {
-      var _this5 = this;
+      var _this4 = this;
 
       var watchOpts = {
         deep: true,
@@ -3620,25 +3642,27 @@ var vueScrollCore = {
       };
       this.$watch('mergedOptions', function () {
         // record current position
-        _this5.recordCurrentPos();
-        _this5.$nextTick(function () {
-          if (_this5.isSmallChangeThisTick == true) {
-            _this5.isSmallChangeThisTick = false;
+        _this4.recordCurrentPos();
+        setTimeout(function () {
+          if (_this4.isSmallChangeThisTick == true) {
+            _this4.isSmallChangeThisTick = false;
+            _this4.updateBarStateAndEmitEvent();
             return;
           }
           // re do them jobsin case of
           // option changes
-          _this5.setVsSize();
-          _this5.registryResize();
-          _this5.updateMode();
-        });
+          _this4.setVsSize();
+          _this4.registryResize();
+          _this4.updateMode();
+          _this4.updateBarStateAndEmitEvent();
+        }, 0);
       }, watchOpts);
 
       smallChangeArray.forEach(function (opts) {
-        _this5.$watch(opts, function () {
+        _this4.$watch(opts, function () {
           // when small changes changed,
           // we need not to updateMode or registryResize
-          _this5.isSmallChangeThisTick = true;
+          _this4.isSmallChangeThisTick = true;
         }, watchOpts);
       });
     },

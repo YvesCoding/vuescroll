@@ -403,6 +403,7 @@ var members = {
       );
       if (this.__refreshStart) {
         this.__refreshStart();
+        this.__refreshActive = true;
       }
     } else {
       this.__publish(
@@ -413,6 +414,7 @@ var members = {
       );
       if (this.__loadStart) {
         this.__loadStart();
+        this.__loadActive = true;
       }
     }
   },

@@ -3,7 +3,7 @@ import {
   easingPattern
 } from '../third-party/easingPattern';
 import { core } from '../third-party/scroller/animate';
-import { log, isChildInParent } from '../util';
+import { warn, isChildInParent } from '../util';
 
 function getNumericValue(distance, size) {
   let number;
@@ -101,22 +101,22 @@ export default {
     },
     zoomBy(factor, animate, originLeft, originTop, callback) {
       if (this.mode != 'slide') {
-        log.warn('[vuescroll]: zoomBy and zoomTo are only for slide mode!');
+        warn('zoomBy and zoomTo are only for slide mode!');
         return;
       }
       this.scroller.zoomBy(factor, animate, originLeft, originTop, callback);
     },
     zoomTo(level, animate = false, originLeft, originTop, callback) {
       if (this.mode != 'slide') {
-        log.warn('[vuescroll]: zoomBy and zoomTo are only for slide mode!');
+        warn('zoomBy and zoomTo are only for slide mode!');
         return;
       }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
     getCurrentPage() {
       if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
-        log.warn(
-          '[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!'
+        warn(
+          'getCurrentPage and goToPage are only for slide mode and paging is enble!'
         );
         return;
       }
@@ -124,12 +124,32 @@ export default {
     },
     goToPage(dest, animate = false) {
       if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
-        log.warn(
-          '[vuescroll]: getCurrentPage and goToPage are only for slide mode and paging is enble!'
+        warn(
+          'getCurrentPage and goToPage are only for slide mode and paging is enble!'
         );
         return;
       }
       this.scroller.goToPage(dest, animate);
+    },
+    triggerRefreshOrLoad(type) {
+      if (this.mode != 'slide') {
+        warn('You can only use triggerRefreshOrLoad in slide mode!');
+        return;
+      }
+      const isRefresh = this.mergedOptions.vuescroll.pullRefresh.enable;
+      const isLoad = this.mergedOptions.vuescroll.pushLoad.enable;
+      if (type == 'refresh' && !isRefresh) {
+        warn('refresh must be enabled!');
+        return;
+      } else if (type == 'load' && !isLoad) {
+        warn('load must be enabled!');
+        return;
+      } else if (type !== 'refresh' && type !== 'load') {
+        warn('param must be one of load and refresh!');
+        return;
+      }
+      this.scroller.triggerRefreshOrLoad(type);
+      return true;
     },
     getCurrentviewDom() {
       const parent =
@@ -198,8 +218,8 @@ export default {
         elm = parentElm.querySelector(elm);
       }
       if (!isChildInParent(elm, parentElm)) {
-        log.warn(
-          '[vuescroll]: The element or selector you passed is not the element of Vuescroll, please pass the element that is in Vuescroll to scrollIntoView API. '
+        warn(
+          'The element or selector you passed is not the element of Vuescroll, please pass the element that is in Vuescroll to scrollIntoView API. '
         );
         return;
       }

@@ -55,12 +55,14 @@ describe('handle-resize', () => {
         content.style.width = '99px';
         _r = r;
       })
+      .wait(1)
       .then(r => {
         hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).toBe(null);
         content.style.width = '198px';
         _r = r;
       })
+      .wait(1)
       .then(r => {
         hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).not.toBe(null);
@@ -68,17 +70,20 @@ describe('handle-resize', () => {
         vm.ops.vuescroll.mode = 'slide';
         r();
       })
+      .wait(1)
       .then(r => {
         content = vm.$el.querySelector('.vuescroll-panel > div');
         content.style.width = '99px';
         _r = r;
       })
+      .wait(1)
       .then(r => {
         hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).toBe(null);
         content.style.width = '198px';
         _r = r;
       })
+      .wait(1)
       .then(r => {
         hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).not.toBe(null);

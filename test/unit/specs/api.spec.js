@@ -194,7 +194,7 @@ describe('api', () => {
       });
   });
 
-  it('goToPage, getCurrentPage, getCurrentviewDom, scrollIntoView', done => {
+  it('triggerRefreshOrLoad, goToPage ', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -213,7 +213,13 @@ describe('api', () => {
           ops: {
             vuescroll: {
               mode: 'slide',
-              paging: true
+              paging: true,
+              pullRefresh: {
+                enable: false
+              },
+              pushLoad: {
+                enable: false
+              }
             }
           }
         }
@@ -242,12 +248,35 @@ describe('api', () => {
         expect(currentDom[0]).toEqual(divs[1]);
         vs.scrollIntoView('#d3');
         r();
-        // done();
       })
       .wait(350)
       .then(r => {
         const currentDom = vs.getCurrentviewDom();
         expect(currentDom[0].id).toBe('d3');
+        vm.ops.vuescroll.paging = false;
+        vm.ops.vuescroll.pullRefresh.enable = true;
+        vm.ops.vuescroll.pushLoad.enable = true;
+        r();
+      })
+      .wait(1)
+      .then(r => {
+        vs.triggerRefreshOrLoad('refresh');
+        r();
+      })
+      .wait(350)
+      .then(r => {
+        const refreshDom = vs.$el.querySelector('.vuescroll-refresh');
+        expect(refreshDom.innerText).toBe('Refreshing...');
+        r();
+      })
+      .wait(2550)
+      .then(r => {
+        vs.triggerRefreshOrLoad('load');
+        r();
+      })
+      .then(r => {
+        const loadDom = vs.$el.querySelector('.vuescroll-load');
+        expect(loadDom.innerText).toBe('Loading...');
         r();
         done();
       });

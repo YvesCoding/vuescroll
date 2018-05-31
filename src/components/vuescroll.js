@@ -14,16 +14,16 @@ import { isChildInParent, extractNumberFromPx, isSupportTouch } from '../util';
 function findValuesByMode(mode, vm) {
   let axis = {};
   switch (mode) {
-    case 'native':
-    case 'pure-native':
-      axis = {
-        x: vm.scrollPanelElm.scrollLeft,
-        y: vm.scrollPanelElm.scrollTop
-      };
-      break;
-    case 'slide':
-      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-      break;
+  case 'native':
+  case 'pure-native':
+    axis = {
+      x: vm.scrollPanelElm.scrollLeft,
+      y: vm.scrollPanelElm.scrollTop
+    };
+    break;
+  case 'slide':
+    axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+    break;
   }
   return axis;
 }
@@ -61,22 +61,16 @@ const vueScrollCore = {
 
       this.initWatchOpsChange();
 
-      // setTimeout is long enough to
-      // make sure get correct dom's size
-      setTimeout(() => {
+      this.updateBarStateAndEmitEvent();
+
+      this.$nextTick(() => {
         if (!this._isDestroyed) {
+          // update again to make sure bar's size is correct.
           this.updateBarStateAndEmitEvent();
           this.initVuescrollPosition();
         }
       }, 0);
     }
-  },
-  updated() {
-    this.$nextTick(() => {
-      if (!this._isDestroyed) {
-        this.showAndDefferedHideBar();
-      }
-    });
   },
   beforeDestroy() {
     // remove registryed resize
@@ -236,6 +230,9 @@ const vueScrollCore = {
       if (this.mode == 'native' || this.mode == 'pure-native') {
         this.updateNativeModeBarState();
       } else if (this.mode == 'slide') {
+        if (!this.scroller) {
+          return;
+        }
         this.updateSlideModeBarState();
       }
       if (eventType) {
@@ -441,9 +438,10 @@ const vueScrollCore = {
         () => {
           // record current position
           this.recordCurrentPos();
-          this.$nextTick(() => {
+          setTimeout(() => {
             if (this.isSmallChangeThisTick == true) {
               this.isSmallChangeThisTick = false;
+              this.updateBarStateAndEmitEvent();
               return;
             }
             // re do them jobsin case of
@@ -451,7 +449,8 @@ const vueScrollCore = {
             this.setVsSize();
             this.registryResize();
             this.updateMode();
-          });
+            this.updateBarStateAndEmitEvent();
+          }, 0);
         },
         watchOpts
       );

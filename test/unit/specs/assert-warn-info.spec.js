@@ -1,5 +1,10 @@
 // https://github.com/vuejs/vue/blob/dev/test/helpers/to-have-been-warned.js
-import { destroyVM, createVue, makeTemplate } from 'test/unit/util';
+import {
+  destroyVM,
+  createVue,
+  makeTemplate,
+  startSchedule
+} from 'test/unit/util';
 function noop() {}
 
 if (typeof console === 'undefined') {
@@ -266,5 +271,55 @@ describe('assert-warn-info', () => {
     expect(
       'The element or selector you passed is not the element of Vuescroll, please pass the element that is in Vuescroll to scrollIntoView API.'
     ).toHaveBeenTipped();
+  });
+
+  it('assert triggerRefreshOrLoad warn', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 200,
+            h: 200
+          },
+          {
+            w: 100,
+            h: 100
+          }
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'native',
+              paging: true,
+              snapping: {
+                enable: false
+              },
+              pullRefresh: /* or pushLoad */ {
+                enable: false
+              }
+            }
+          }
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+    vs.triggerRefreshOrLoad();
+    expect(
+      'You can only use triggerRefreshOrLoad in slide mode!'
+    ).toHaveBeenTipped();
+    vm.ops.vuescroll.mode = 'slide';
+    startSchedule()
+      .wait(1)
+      .then(r => {
+        vs.triggerRefreshOrLoad();
+        expect('param must be one of load and refresh!').toHaveBeenTipped();
+        vs.triggerRefreshOrLoad('refresh');
+        expect('refresh must be enabled!').toHaveBeenTipped();
+        vs.triggerRefreshOrLoad('load');
+        expect('load must be enabled!').toHaveBeenTipped();
+        r();
+        done();
+      });
   });
 });

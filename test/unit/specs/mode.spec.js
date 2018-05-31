@@ -35,18 +35,14 @@ describe('mode', () => {
       },
       true
     );
-    // In native mode
-    // 1. we can't see native scrollbar
-    // 2. The closet dom that wraps content
-    // is the vuescroll-content
-    // but I don't know how to test
-    // whether native scrollbar is visible or not.
+
     let content = vm.$el.querySelector('.vuescroll-content');
     let panel = vm.$el.querySelector('.vuescroll-panel');
     expect(content).not.toBe(null);
     expect(content.parentNode).toEqual(panel);
     vm.ops.vuescroll.mode = 'slide';
     startSchedule()
+      .wait(1)
       .then(r => {
         let content = vm.$el.querySelector('.vuescroll-content');
         let panel = vm.$el.querySelector('.vuescroll-panel');
@@ -55,6 +51,7 @@ describe('mode', () => {
         vm.ops.vuescroll.mode = 'pure-native';
         r();
       })
+      .wait(1)
       .then(r => {
         let content = vm.$el.querySelector('.vuescroll-content');
         let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');

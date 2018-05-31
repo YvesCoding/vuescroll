@@ -166,9 +166,14 @@ export function eventCenter(
     ? dom.addEventListener(eventName, hander, capture)
     : dom.removeEventListener(eventName, hander, capture);
 }
-// native console
-export const log = console;
 
+export  const error = (msg) => {
+  console.error(`[vuescroll] ${msg}`);
+};
+export  const warn = (msg) => {
+  console.warn(`[vuescroll] ${msg}`);
+};
+ 
 export function isChildInParent(child, parent) {
   let flag = false;
   if (!child || !parent) {
