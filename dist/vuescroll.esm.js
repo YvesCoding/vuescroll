@@ -2951,11 +2951,11 @@ var scrollPanel = {
   mounted: function mounted() {
     var _this = this;
 
-    this.$nextTick(function () {
+    setTimeout(function () {
       if (!_this._isDestroyed) {
         _this.updateInitialScroll();
       }
-    });
+    }, 0);
   },
   render: function render(h) {
     // eslint-disable-line
@@ -3102,6 +3102,7 @@ function createPanelChildren(vm, h) {
 function createTipDom(h, vm, type) {
   var stage = vm.vuescroll.state[type + 'Stage'];
   var dom = null;
+  /* istanbul ignore if */
   if (dom = vm.$slots[type + '-' + stage]) {
     return dom[0];
   }
@@ -3217,11 +3218,11 @@ function findValuesByMode(mode, vm) {
   return axis;
 }
 /**
- * 
- * 
+ *
+ *
  * @param {any} type height or width
  * have been computed in this.useNumbericSize
- * @returns 
+ * @returns
  */
 function getClientSizeByType(type) {
   var vuescroll = this.$el;
@@ -3236,6 +3237,8 @@ var vueScrollCore = {
   props: { ops: { type: Object } },
   mixins: [hackLifecycle, api, nativeMode, slideMode],
   mounted: function mounted() {
+    var _this = this;
+
     if (!this.renderError) {
       this.initVariables();
 
@@ -3247,17 +3250,22 @@ var vueScrollCore = {
 
       this.initWatchOpsChange();
 
-      this.initBarState();
-
-      this.initVuescrollPosition();
+      // setTimeout is long enough to
+      // make sure get correct dom's size
+      setTimeout(function () {
+        if (!_this._isDestroyed) {
+          _this.updateBarStateAndEmitEvent();
+          _this.initVuescrollPosition();
+        }
+      }, 0);
     }
   },
   updated: function updated() {
-    var _this = this;
+    var _this2 = this;
 
     this.$nextTick(function () {
-      if (!_this._isDestroyed) {
-        _this.showAndDefferedHideBar();
+      if (!_this2._isDestroyed) {
+        _this2.showAndDefferedHideBar();
       }
     });
   },
@@ -3345,7 +3353,6 @@ var vueScrollCore = {
         mouseenter: function mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
-          vm.showBar();
         },
         mouseleave: function mouseleave() {
           vm.vuescroll.state.pointerLeave = true;
@@ -3354,15 +3361,13 @@ var vueScrollCore = {
         mousemove: function mousemove() /* istanbul ignore next */{
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
-          vm.showBar();
         }
       };
-    } else /* istanbul ignore next */{
+    } /* istanbul ignore next */else {
         vuescrollData.on = {
           touchstart: function touchstart() {
             vm.vuescroll.state.pointerLeave = false;
             vm.updateBarStateAndEmitEvent();
-            vm.showBar();
           },
           touchend: function touchend() {
             vm.vuescroll.state.pointerLeave = true;
@@ -3371,7 +3376,6 @@ var vueScrollCore = {
           touchmove: function touchmove() /* istanbul ignore next */{
             vm.vuescroll.state.pointerLeave = false;
             vm.updateBarStateAndEmitEvent();
-            vm.showBar();
           }
         };
       }
@@ -3420,6 +3424,7 @@ var vueScrollCore = {
       if (eventType) {
         this.emitEvent(eventType, nativeEvent);
       }
+      this.showAndDefferedHideBar();
     },
     updateMode: function updateMode() {
       var x = this.vuescroll.state.internalScrollLeft;
@@ -3442,14 +3447,13 @@ var vueScrollCore = {
     handleScroll: function handleScroll(nativeEvent) {
       this.recordCurrentPos();
       this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
-      this.showAndDefferedHideBar();
     },
     setBarClick: function setBarClick(val) {
       /* istanbul ignore next */
       this.vuescroll.state.isClickingBar = val;
     },
     showAndDefferedHideBar: function showAndDefferedHideBar() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.showBar();
       if (this.timeoutId) {
@@ -3457,8 +3461,8 @@ var vueScrollCore = {
         this.timeoutId = 0;
       }
       this.timeoutId = setTimeout(function () {
-        _this2.timeoutId = 0;
-        _this2.hideBar();
+        _this3.timeoutId = 0;
+        _this3.hideBar();
       }, this.mergedOptions.bar.showDelay);
     },
 
@@ -3516,7 +3520,7 @@ var vueScrollCore = {
       }
     },
     registryResize: function registryResize() {
-      var _this3 = this;
+      var _this4 = this;
 
       /* istanbul ignore next */
       if (this.destroyResize) {
@@ -3532,24 +3536,22 @@ var vueScrollCore = {
         contentElm = this.scrollContentElm;
       }
       var handleWindowResize = function handleWindowResize() /* istanbul ignore next */{
-        _this3.updateBarStateAndEmitEvent();
-        _this3.showAndDefferedHideBar();
-        if (_this3.mode == 'slide') {
-          _this3.updateScroller();
+        _this4.updateBarStateAndEmitEvent();
+        if (_this4.mode == 'slide') {
+          _this4.updateScroller();
         }
       };
       var handleDomResize = function handleDomResize() {
         var currentSize = {};
-        if (_this3.mode == 'slide') {
-          _this3.updateScroller();
-          currentSize['width'] = _this3.scroller.__contentWidth;
-          currentSize['height'] = _this3.scroller.__contentHeight;
-        } else if (_this3.mode == 'native' || _this3.mode == 'pure-native') {
-          currentSize['width'] = _this3.scrollPanelElm.scrollWidth;
-          currentSize['height'] = _this3.scrollPanelElm.scrollHeight;
+        if (_this4.mode == 'slide') {
+          _this4.updateScroller();
+          currentSize['width'] = _this4.scroller.__contentWidth;
+          currentSize['height'] = _this4.scroller.__contentHeight;
+        } else if (_this4.mode == 'native' || _this4.mode == 'pure-native') {
+          currentSize['width'] = _this4.scrollPanelElm.scrollWidth;
+          currentSize['height'] = _this4.scrollPanelElm.scrollHeight;
         }
-        _this3.updateBarStateAndEmitEvent('handle-resize', currentSize);
-        _this3.showAndDefferedHideBar();
+        _this4.updateBarStateAndEmitEvent('handle-resize', currentSize);
       };
       window.addEventListener('resize', handleWindowResize, false);
       var destroyDomResize = listenResize(contentElm, handleDomResize);
@@ -3604,7 +3606,7 @@ var vueScrollCore = {
       this.vuescroll.state.internalScrollTop = axis.y;
     },
     initWatchOpsChange: function initWatchOpsChange() {
-      var _this4 = this;
+      var _this5 = this;
 
       var watchOpts = {
         deep: true,
@@ -3612,25 +3614,25 @@ var vueScrollCore = {
       };
       this.$watch('mergedOptions', function () {
         // record current position
-        _this4.recordCurrentPos();
-        _this4.$nextTick(function () {
-          if (_this4.isSmallChangeThisTick == true) {
-            _this4.isSmallChangeThisTick = false;
+        _this5.recordCurrentPos();
+        _this5.$nextTick(function () {
+          if (_this5.isSmallChangeThisTick == true) {
+            _this5.isSmallChangeThisTick = false;
             return;
           }
           // re do them jobsin case of
           // option changes
-          _this4.setVsSize();
-          _this4.registryResize();
-          _this4.updateMode();
+          _this5.setVsSize();
+          _this5.registryResize();
+          _this5.updateMode();
         });
       }, watchOpts);
 
       smallChangeArray.forEach(function (opts) {
-        _this4.$watch(opts, function () {
+        _this5.$watch(opts, function () {
           // when small changes changed,
           // we need not to updateMode or registryResize
-          _this4.isSmallChangeThisTick = true;
+          _this5.isSmallChangeThisTick = true;
         }, watchOpts);
       });
     },
@@ -3666,10 +3668,6 @@ var vueScrollCore = {
     },
     initResizeDetection: function initResizeDetection() {
       this.registryResize();
-    },
-    initBarState: function initBarState() {
-      this.updateBarStateAndEmitEvent();
-      this.showAndDefferedHideBar();
     },
     initVuescrollPosition: function initVuescrollPosition() {
       this.scrollToHash();

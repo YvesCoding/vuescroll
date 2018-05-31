@@ -14,25 +14,25 @@ import { isChildInParent, extractNumberFromPx, isSupportTouch } from '../util';
 function findValuesByMode(mode, vm) {
   let axis = {};
   switch (mode) {
-  case 'native':
-  case 'pure-native':
-    axis = {
-      x: vm.scrollPanelElm.scrollLeft,
-      y: vm.scrollPanelElm.scrollTop
-    };
-    break;
-  case 'slide':
-    axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-    break;
+    case 'native':
+    case 'pure-native':
+      axis = {
+        x: vm.scrollPanelElm.scrollLeft,
+        y: vm.scrollPanelElm.scrollTop
+      };
+      break;
+    case 'slide':
+      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+      break;
   }
   return axis;
 }
 /**
- * 
- * 
+ *
+ *
  * @param {any} type height or width
  * have been computed in this.useNumbericSize
- * @returns 
+ * @returns
  */
 function getClientSizeByType(type) {
   const vuescroll = this.$el;
@@ -61,9 +61,14 @@ const vueScrollCore = {
 
       this.initWatchOpsChange();
 
-      this.initBarState();
-
-      this.initVuescrollPosition();
+      // setTimeout is long enough to
+      // make sure get correct dom's size
+      setTimeout(() => {
+        if (!this._isDestroyed) {
+          this.updateBarStateAndEmitEvent();
+          this.initVuescrollPosition();
+        }
+      }, 0);
     }
   },
   updated() {
@@ -157,7 +162,6 @@ const vueScrollCore = {
         mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
-          vm.showBar();
         },
         mouseleave() {
           vm.vuescroll.state.pointerLeave = true;
@@ -166,15 +170,13 @@ const vueScrollCore = {
         mousemove() /* istanbul ignore next */ {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
-          vm.showBar();
         }
       };
-    } else /* istanbul ignore next */{
+    } /* istanbul ignore next */ else {
       vuescrollData.on = {
         touchstart() {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
-          vm.showBar();
         },
         touchend() {
           vm.vuescroll.state.pointerLeave = true;
@@ -183,7 +185,6 @@ const vueScrollCore = {
         touchmove() /* istanbul ignore next */ {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
-          vm.showBar();
         }
       };
     }
@@ -240,6 +241,7 @@ const vueScrollCore = {
       if (eventType) {
         this.emitEvent(eventType, nativeEvent);
       }
+      this.showAndDefferedHideBar();
     },
     updateMode() {
       const x = this.vuescroll.state.internalScrollLeft;
@@ -262,7 +264,6 @@ const vueScrollCore = {
     handleScroll(nativeEvent) {
       this.recordCurrentPos();
       this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
-      this.showAndDefferedHideBar();
     },
     setBarClick(val) {
       /* istanbul ignore next */
@@ -361,7 +362,6 @@ const vueScrollCore = {
       }
       const handleWindowResize = () => /* istanbul ignore next */ {
         this.updateBarStateAndEmitEvent();
-        this.showAndDefferedHideBar();
         if (this.mode == 'slide') {
           this.updateScroller();
         }
@@ -377,7 +377,6 @@ const vueScrollCore = {
           currentSize['height'] = this.scrollPanelElm.scrollHeight;
         }
         this.updateBarStateAndEmitEvent('handle-resize', currentSize);
-        this.showAndDefferedHideBar();
       };
       window.addEventListener('resize', handleWindowResize, false);
       const destroyDomResize = listenResize(contentElm, handleDomResize);
@@ -507,10 +506,6 @@ const vueScrollCore = {
     },
     initResizeDetection() {
       this.registryResize();
-    },
-    initBarState() {
-      this.updateBarStateAndEmitEvent();
-      this.showAndDefferedHideBar();
     },
     initVuescrollPosition() {
       this.scrollToHash();

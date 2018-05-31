@@ -28,11 +28,11 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
+    setTimeout(() => {
       if (!this._isDestroyed) {
         this.updateInitialScroll();
       }
-    });
+    }, 0);
   },
   render(h) {
     // eslint-disable-line
@@ -177,6 +177,7 @@ function createPanelChildren(vm, h) {
 function createTipDom(h, vm, type) {
   const stage = vm.vuescroll.state[`${type}Stage`];
   let dom = null;
+  /* istanbul ignore if */
   if ((dom = vm.$slots[`${type}-${stage}`])) {
     return dom[0];
   }

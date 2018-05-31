@@ -48,7 +48,7 @@ describe('handle-resize', () => {
     );
     let hBar;
     let content = vm.$el.querySelector('.vuescroll-content > div');
-    startSchedule()
+    startSchedule(10)
       .then(r => {
         hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
         expect(hBar).not.toBe(null);
