@@ -812,6 +812,10 @@ var api = {
         warn('param must be one of load and refresh!');
         return;
       }
+
+      if (this.vuescroll.state[type + 'Stage'] == 'start') {
+        return;
+      }
       this.scroller.triggerRefreshOrLoad(type);
       return true;
     },
@@ -1299,6 +1303,11 @@ var members = {
   triggerRefreshOrLoad: function triggerRefreshOrLoad() {
     var type = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'refresh';
 
+    var wasDecelerating = this.__isDecelerating;
+    if (wasDecelerating) {
+      core.effect.Animate.stop(wasDecelerating);
+      this.__isDecelerating = false;
+    }
     // Use publish instead of scrollTo to allow scrolling to out of boundary position
     // We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
     if (type == 'refresh') {
@@ -2150,6 +2159,9 @@ var members = {
     };
 
     var completed = function completed() {
+      if (!self.__isDecelerating) {
+        return;
+      }
       self.__isDecelerating = false;
       if (self.__didDecelerationComplete) {
         self.__scrollComplete();
@@ -3316,6 +3328,8 @@ var vueScrollCore = {
           pointerLeave: true,
           internalScrollTop: 0,
           internalScrollLeft: 0,
+          posX: null,
+          posY: null,
           refreshStage: 'deactive',
           loadStage: 'deactive',
           height: '100%',
@@ -3508,6 +3522,8 @@ var vueScrollCore = {
         type: 'horizontal'
       };
       if (this.mode == 'slide') {
+        scrollHeight = this.scroller.__contentHeight;
+        scrollWidth = this.scroller.__contentWidth;
         scrollTop = this.scroller.__scrollTop;
         scrollLeft = this.scroller.__scrollLeft;
         clientHeight = this.$el.clientHeight;
@@ -3519,6 +3535,8 @@ var vueScrollCore = {
       horizontal['barSize'] = this.bar.hBar.state.size;
       vertical['scrollTop'] = scrollTop;
       horizontal['scrollLeft'] = scrollLeft;
+      vertical['directionY'] = this.vuescroll.state.posY;
+      horizontal['directionX'] = this.vuescroll.state.posX;
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
     showBar: function showBar() {
@@ -3623,9 +3641,14 @@ var vueScrollCore = {
         mode = this.lastMode;
         this.lastMode = this.mode;
       }
+      var state = this.vuescroll.state;
       var axis = findValuesByMode(mode, this);
-      this.vuescroll.state.internalScrollLeft = axis.x;
-      this.vuescroll.state.internalScrollTop = axis.y;
+      var oldX = state.internalScrollLeft;
+      var oldY = state.internalScrollTop;
+      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
+      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
+      state.internalScrollLeft = axis.x;
+      state.internalScrollTop = axis.y;
     },
     initWatchOpsChange: function initWatchOpsChange() {
       var _this4 = this;

@@ -392,6 +392,11 @@ var members = {
    * Starts pull-to-refresh manually.
    */
   triggerRefreshOrLoad: function(type = 'refresh') {
+    var wasDecelerating = this.__isDecelerating;
+    if (wasDecelerating) {
+      core.effect.Animate.stop(wasDecelerating);
+      this.__isDecelerating = false;
+    }
     // Use publish instead of scrollTo to allow scrolling to out of boundary position
     // We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
     if (type == 'refresh') {
@@ -1356,6 +1361,9 @@ var members = {
     };
 
     var completed = function() {
+      if (!self.__isDecelerating) {
+        return;
+      }
       self.__isDecelerating = false;
       if (self.__didDecelerationComplete) {
         self.__scrollComplete();
