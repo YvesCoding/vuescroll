@@ -100,6 +100,8 @@ const vueScrollCore = {
           pointerLeave: true,
           internalScrollTop: 0,
           internalScrollLeft: 0,
+          posX: null,
+          posY: null,
           refreshStage: 'deactive',
           loadStage: 'deactive',
           height: '100%',
@@ -296,6 +298,8 @@ const vueScrollCore = {
           type: 'horizontal'
         };
       if (this.mode == 'slide') {
+        scrollHeight = this.scroller.__contentHeight;
+        scrollWidth = this.scroller.__contentWidth;
         scrollTop = this.scroller.__scrollTop;
         scrollLeft = this.scroller.__scrollLeft;
         clientHeight = this.$el.clientHeight;
@@ -313,6 +317,8 @@ const vueScrollCore = {
       horizontal['barSize'] = this.bar.hBar.state.size;
       vertical['scrollTop'] = scrollTop;
       horizontal['scrollLeft'] = scrollLeft;
+      vertical['directionY'] = this.vuescroll.state.posY;
+      horizontal['directionX'] = this.vuescroll.state.posX;
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
     showBar() {
@@ -424,9 +430,14 @@ const vueScrollCore = {
         mode = this.lastMode;
         this.lastMode = this.mode;
       }
+      const state = this.vuescroll.state;
       let axis = findValuesByMode(mode, this);
-      this.vuescroll.state.internalScrollLeft = axis.x;
-      this.vuescroll.state.internalScrollTop = axis.y;
+      const oldX = state.internalScrollLeft;
+      const oldY = state.internalScrollTop;
+      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
+      state.posY = oldY - axis.y> 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
+      state.internalScrollLeft = axis.x;
+      state.internalScrollTop = axis.y;
     },
     initWatchOpsChange() {
       const watchOpts = {
