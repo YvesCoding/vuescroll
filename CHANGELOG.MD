@@ -1,3 +1,18 @@
+<a name="4.5.33"></a>
+## [4.5.33](https://github.com/wangyi7099/vuescroll/compare/v4.5.32...v4.5.33) (2018-06-01)
+
+
+### Bug Fixes
+
+* don't call complete while __isDecelerating is false ([ff0f950](https://github.com/wangyi7099/vuescroll/commit/ff0f950))
+
+
+### Features
+
+* add `direction info for event handle` ([42153e7](https://github.com/wangyi7099/vuescroll/commit/42153e7))
+
+
+
 <a name="4.5.32"></a>
 ## [4.5.32](https://github.com/wangyi7099/vuescroll/compare/v4.5.31...v4.5.32) (2018-05-31)
 
