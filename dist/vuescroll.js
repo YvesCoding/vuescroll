@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.5.32
+    * vuescroll 4.5.33
     * (c) 2018-2018 wangyi7099
     * Released under the MIT License
     */
@@ -818,7 +818,7 @@ var api = {
         warn('param must be one of load and refresh!');
         return;
       }
-
+      /* istanbul ignore if */
       if (this.vuescroll.state[type + 'Stage'] == 'start') {
         return;
       }
@@ -3735,7 +3735,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.5.32'
+  version: '4.5.33'
 };
 
 /* istanbul ignore if */

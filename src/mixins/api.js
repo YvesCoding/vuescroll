@@ -148,8 +148,8 @@ export default {
         warn('param must be one of load and refresh!');
         return;
       }
-
-      if(this.vuescroll.state[`${type}Stage`] == 'start') {
+      /* istanbul ignore if */
+      if (this.vuescroll.state[`${type}Stage`] == 'start') {
         return;
       }
       this.scroller.triggerRefreshOrLoad(type);
