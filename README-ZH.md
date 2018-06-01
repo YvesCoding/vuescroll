@@ -289,7 +289,7 @@ const vm = new Vue({
 
 **MIT**
 
-#微信交流讨论
+## 微信交流讨论
 
 <p align="center">
   <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400">
