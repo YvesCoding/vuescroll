@@ -20,7 +20,7 @@
 * [贡献](#贡献)
 * [灵感来源](#灵感来源)
 * [协议](#协议)
-
+* [微信交流讨论](#微信交流讨论)
 ## 介绍
 
 Vuescroll 是一个基于配置的 Vue.js 虚拟滚动条。你可以通过修改配置来查看不同的效果。
@@ -288,3 +288,9 @@ const vm = new Vue({
 ## 协议
 
 **MIT**
+
+#微信交流讨论
+
+<p align="center">
+  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400">
+</p>
