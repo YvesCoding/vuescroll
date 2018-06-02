@@ -3,7 +3,7 @@
     "name": "wangyi7099"
   },
   "bugs": {
-    "url": "https://github.com/wangyi7099/vuescroll/issues"
+    "url": "https://github.com/YvesCoding/vuescroll/issues"
   },
   "bundleDependencies": false,
   "dependencies": {
@@ -11,7 +11,7 @@
   },
   "deprecated": false,
   "description": "A configuration based Vue.js virtual scrollbar",
-  "homepage": "https://github.com/wangyi7099/vuescroll#readme",
+  "homepage": "https://github.com/YvesCoding/vuescroll#readme",
   "keywords": ["vuescroll", "scrollbar", "vuescrollbar", "vue"],
   "license": "MIT",
   "unpkg": "./dist/vuescroll.js",
@@ -20,7 +20,7 @@
   "name": "vuescroll",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wangyi7099/vuescroll.git"
+    "url": "git+https://github.com/YvesCoding/vuescroll.git"
   },
   "scripts": {
     "build": "node scripts/autoBuild.js",

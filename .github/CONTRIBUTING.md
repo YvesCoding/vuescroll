@@ -6,7 +6,7 @@ Contributing code from two aspects：
 
 Vuescroll is extremely easy to expand.You only have to do 2 steps
 
-1.  To modify / add the corresponding features at the corresponding modules in the [global-config.js](https://github.com/wangyi7099/vuescroll/blob/dev/src/shared/global-config.js) file, for example, I want to add a feature that can configure the color of the scrolling panel, the default is red, as follows:
+1.  To modify / add the corresponding features at the corresponding modules in the [global-config.js](https://github.com/YvesCoding/blob/dev/src/shared/global-config.js) file, for example, I want to add a feature that can configure the color of the scrolling panel, the default is red, as follows:
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s1.jpg?raw=true)
 2.  Find the corresponding module file and modify it in the corresponding code of the module, as follows:
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s2.jpg?raw=true)
@@ -35,7 +35,7 @@ Vuescroll is extremely easy to expand.You only have to do 2 steps
 
 Vuescroll 是极其容易扩展的，你基本只需要做 2 步即可。
 
-1.  在 [global-config.js](https://github.com/wangyi7099/vuescroll/blob/dev/src/shared/global-config.js) 文件中对应的模块处修改/增加对应的特性，比如，我想增加一个可以配置滚动面板颜色的特性,默认是红色，如下图：
+1.  在 [global-config.js](https://github.com/YvesCoding/blob/dev/src/shared/global-config.js) 文件中对应的模块处修改/增加对应的特性，比如，我想增加一个可以配置滚动面板颜色的特性,默认是红色，如下图：
     <br>
     ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/s1.jpg?raw=true)
 2.  找到对应的模块文件， 并在模块的对应的代码处修改即可，如下图：

@@ -1,14 +1,14 @@
-  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/zh/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
+  <p align="center"><a href="http://vuescrolljs.yvescoding.org/zh/"><img width="100" src="http://vuescrolljs.yvescoding.org/logo.png" /></a></p>
   <h3 align="center">Vuescroll</h4>
 <p align="center">
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a>
   <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage"></a>
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
-<a href="https://github.com/wangyi7099/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
+<a href="https://github.com/YvesCoding"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
 
-[English Version](https://github.com/wangyi7099/vuescroll) | 中文版
+[English Version](https://github.com/YvesCoding) | 中文版
 
 * [介绍](#介绍)
 * [预览](#预览)
@@ -44,7 +44,7 @@ Vuescroll 一个简单上手，有充足配置的滚动小管家。
 * `背景色`
 * `是否保持显示`
 
-> 想了解更多请访问官方网站[指南页面](https://wangyi7099.github.io/vuescrolljs/zh/)
+> 想了解更多请访问官方网站[指南页面](http://vuescrolljs.yvescoding.org/zh/)
 
 > 如果你不满足上述特性，想要扩展特性的话，请考虑[贡献代码](#贡献)。
 
@@ -59,7 +59,7 @@ Vuescroll 一个简单上手，有充足配置的滚动小管家。
 ## 在线 Demo & 文档
 
 * 你可以浏览这个 repo 的根目录下的 Demo 文件夹。
-* 详细的 Demo, 文档: 请访问 [官方地址](https://wangyi7099.github.io/vuescrolljs/zh/Demo/Basic/).
+* 详细的 Demo, 文档: 请访问 [官方地址](http://vuescrolljs.yvescoding.org/zh/Demo/Basic/).
 
 ## 特点
 
@@ -69,7 +69,7 @@ Vuescroll 一个简单上手，有充足配置的滚动小管家。
   * `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围，适用于移动端端用户。
   * `pure-native`模式: 滚动条使用原生的滚动条，适用于喜欢原生滚动条的用户。
 * 检测滚动内容发生尺寸变化并自动更新滚动条。
-* 通过使用 [不同的滚动动画](https://wangyi7099.github.io/vuescrolljs/zh/guide/Configuration.html#scrollpanel)来平滑滚动。
+* 通过使用 [不同的滚动动画](http://vuescrolljs.yvescoding.org/zh/guide/Configuration.html#scrollpanel)来平滑滚动。
 * 下拉-刷新 (拉倒顶部并拉出边界开始刷新列表)
 * 上推-加载 (推到底部并且退出边界开始加载列表)
 * 能够放大或者缩小滚动的内容.
@@ -251,11 +251,11 @@ const vm = new Vue({
 
 ### API 参考
 
-[Vuescroll API](https://wangyi7099.github.io/vuescrolljs/zh/guide/api.html)
+[Vuescroll API](http://vuescrolljs.yvescoding.org/zh/guide/api.html)
 
 ### Event 参考
 
-[Vuescroll Event](https://wangyi7099.github.io/vuescrolljs/zh/guide/event.html)
+[Vuescroll Event](http://vuescrolljs.yvescoding.org/zh/guide/event.html)
 
 ## 常见问题及解答
 
@@ -274,7 +274,7 @@ const vm = new Vue({
 
 ## 变更日志
 
-每个版本的详细记录在[发行日志](https://github.com/wangyi7099/vuescroll/releases)里面。
+每个版本的详细记录在[发行日志](https://github.com/YvesCoding/releases)里面。
 
 ## 贡献
 

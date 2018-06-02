@@ -1,14 +1,14 @@
-  <p align="center"><a href="https://wangyi7099.github.io/vuescrolljs/"><img width="100" src="https://wangyi7099.github.io/vuescrolljs/logo.png" /></a></p>
+  <p align="center"><a href="http://vuescrolljs.yvescoding.org/"><img width="100" src="http://vuescrolljs.yvescoding.org/logo.png" /></a></p>
 <h3 align="center">Vuescroll</h4>
 <p align="center">
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/wangyi7099/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/wangyi7099/vuescroll/dev.svg" alt="Build Status"></a>
    <a href="https://codecov.io/github/wangyi7099/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/wangyi7099/vuescroll/dev.svg" alt="Coverage"></a>
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
 <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
-<a href="https://github.com/wangyi7099/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
+<a href="https://github.com/YvesCoding"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
 
-English Version | [中文版](https://github.com/wangyi7099/vuescroll/blob/dev/README-ZH.md)
+English Version | [中文版](https://github.com/YvesCoding/blob/dev/README-ZH.md)
 
 * [Introduction](#introduction)
 * [Preview](#preview)
@@ -43,7 +43,7 @@ You can also change the styles of the scroll bar by changing the configuration, 
 * `Background`
 * `Keep show or not`
 
-> To learn more, please visit the official website [guide page](https://wangyi7099.github.io/vuescrolljs/guide/)
+> To learn more, please visit the official website [guide page](http://vuescrolljs.yvescoding.org/guide/)
 
 > If you do not satisfy the above characteristics and want to expand the features, consider to [contribution code](#contribution).
 
@@ -58,7 +58,7 @@ In general, Vuescroll is more than a scrollbar, you can use it to make a carouse
 ## Online Demo & Documentation
 
 * You can find Demo under the root of this repo.
-* For detailed demo and documentation: Please visit [Offical Website](https://wangyi7099.github.io/vuescrolljs/Demo/Basic/).
+* For detailed demo and documentation: Please visit [Offical Website](http://vuescrolljs.yvescoding.org/Demo/Basic/).
 
 ## Features
 
@@ -68,7 +68,7 @@ In general, Vuescroll is more than a scrollbar, you can use it to make a carouse
   * `slide` mode: Allow you slide by finger or mouse pointer, has ability to slide out of bountry, it is suitable for the users who use mobile phone.
   * `pure-native` mode: Use native scrollbar, it is suitable for PC and the users who like native scrollbar.
 * Ability to detect the size change of the content and automatically update scrollbar.
-* Ability to scroll smoothly by using [different animations](https://wangyi7099.github.io/vuescrolljs/guide/Configuration.html#scrollpanel).
+* Ability to scroll smoothly by using [different animations](http://vuescrolljs.yvescoding.org/guide/Configuration.html#scrollpanel).
 * Pull-to-Refresh (Pull top out of the boundaries to start refreshing list)
 * Push-to-Load (Push bottom out of the boundaries to start loading list)
 * Ability to zoom in or zoom out the scroll content.
@@ -250,11 +250,11 @@ const vm = new Vue({
 
 ### API Reference
 
-[Vuescroll API](https://wangyi7099.github.io/vuescrolljs/guide/api.html)
+[Vuescroll API](http://vuescrolljs.yvescoding.org/guide/api.html)
 
 ### Event Reference
 
-[Vuescroll Event](https://wangyi7099.github.io/vuescrolljs/guide/event.html)
+[Vuescroll Event](http://vuescrolljs.yvescoding.org/guide/event.html)
 
 ## General FAQ
 
@@ -275,7 +275,7 @@ const vm = new Vue({
 
 ## Changelog
 
-Detailed changes for each release are documented in the [release notes](https://github.com/wangyi7099/vuescroll/releases).
+Detailed changes for each release are documented in the [release notes](https://github.com/YvesCoding/releases).
 
 ## Contribution
 
