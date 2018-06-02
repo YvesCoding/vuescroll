@@ -21,13 +21,14 @@
 * [灵感来源](#灵感来源)
 * [协议](#协议)
 * [微信交流讨论](#微信交流讨论)
+
 ## 介绍
 
-Vuescroll 是一个基于配置的 Vue.js 虚拟滚动条。你可以通过修改配置来查看不同的效果。
+Vuescroll 一个简单上手，有充足配置的滚动小管家。
 
-它的原理是创造 div 用于包裹要滚动的内容，充当滚动条，然后通过操作 div 的 `scrollTop`，`scrollLeft` 来完成滚动。
+它是基于 Vue.js 的一个插件，它的原理是创建 div 用于包裹要滚动的内容，充当滚动条，然后通过操作 div 的 `scrollTop`，`scrollLeft` 来完成滚动。
 
-设计它的目的是用来美化和增强你的滚动条的。
+设计它的目的是用来美化和增强你的滚动条。
 
 你可以通过更改配置来选择不同的模式:
 
@@ -112,9 +113,11 @@ const vm = new Vue({
   el: '#app',
   data: {
     ops: {
+      // 下面的配置分别对应Vuescroll的不同部位
       vuescroll: {},
-      scrollPanel: {}
-      // ...
+      scrollPanel: {},
+      rail: {},
+      bar: {}
     }
   }
 });
@@ -285,11 +288,13 @@ const vm = new Vue({
 * [CodePen](https://codepen.io/wangyi7099/pen/YLVBNe)
 * [better-scroll](https://github.com/ustbhuangyi/better-scroll)
 
-## 协议
+## 许可证
 
 **MIT**
 
-## 微信交流讨论
+## 微信交流讨论群
+
+扫一个扫加入群里面讨论
 
 <p align="center">
   <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400">

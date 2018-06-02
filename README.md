@@ -23,9 +23,9 @@ English Version | [中文版](https://github.com/wangyi7099/vuescroll/blob/dev/R
 
 ## Introduction
 
-Vuescroll is a configuration based Vue.js virtual scrollbar.You can see different effects by modifying the configuration.
+Vuescroll is a scrolling chamberlain with a simple getting-start and full configuration.
 
-Its principle is to create div to wrap the contents to be scrolled, act as scroll bars, and then complete the scroll by manipulating the `scrollTop` and `scrollLeft` of div.
+It's a plugin based on Vue.js, and its principle is to create div to wrap the contents to be scrolled, act as scroll bars, and then complete the scroll by manipulating the `scrollTop` and `scrollLeft` of div.
 
 The purpose of the design is to beautify and enhance your scrollbar.
 
@@ -112,9 +112,11 @@ const vm = new Vue({
   el: '#app',
   data: {
     ops: {
+      // The following configurations correspond to different parts of Vuescroll.
       vuescroll: {},
-      scrollPanel: {}
-      // ...
+      scrollPanel: {},
+      rail: {},
+      bar: {}
     }
   }
 });
