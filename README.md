@@ -47,7 +47,7 @@ You can also change the styles of the scroll bar by changing the configuration, 
 
 > If you do not satisfy the above characteristics and want to expand the features, consider to [contribution code](#contribution).
 
-In general, Vuescroll is more than a scrollbar, you can use it to make a carousel, a time picker, a plug-in that can automatically detect changes of content, and so on.The following is a part of the preview effect.
+In general, vuescroll is more than a scrollbar, you can use it to make a carousel, a time picker, a plug-in that can automatically detect changes of content, and so on.The following is a part of the preview effect.
 
 ## Preview
 
