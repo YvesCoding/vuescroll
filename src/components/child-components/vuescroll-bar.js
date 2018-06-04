@@ -165,7 +165,7 @@ export default {
       [vm.bar.posName]: 0,
       [vm.bar.opsSize]: '100%',
       [vm.bar.size]: vm.state.size,
-      borderRadius: vm.ops.rail[vm.bar.opsSize],
+      borderRadius: 'inherit',
       background: vm.ops.bar.background,
       opacity: vm.state.opacity,
       transform: `translate${scrollMap[vm.type].axis}(${vm.state.posValue}%)`,
@@ -201,7 +201,8 @@ export default {
       class: `vuescroll-${vm.type}-rail`,
       style: {
         position: 'absolute',
-        borderRadius: vm.ops.rail[vm.bar.opsSize],
+        zIndex: 1,
+        // borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor,
         [vm.bar.opsSize]: vm.ops.rail[vm.bar.opsSize],
         [vm.bar.posName]: '2px',

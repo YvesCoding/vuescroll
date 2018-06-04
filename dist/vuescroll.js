@@ -2826,7 +2826,7 @@ var bar = {
     var vm = this;
     var parentRef = vm.$parent.$refs;
     var railBackgroundColor = getRgbAColor(vm.ops.rail.background, vm.ops.rail.opacity);
-    var style = (_style = {}, _defineProperty$1(_style, vm.bar.posName, 0), _defineProperty$1(_style, vm.bar.opsSize, '100%'), _defineProperty$1(_style, vm.bar.size, vm.state.size), _defineProperty$1(_style, 'borderRadius', vm.ops.rail[vm.bar.opsSize]), _defineProperty$1(_style, 'background', vm.ops.bar.background), _defineProperty$1(_style, 'opacity', vm.state.opacity), _defineProperty$1(_style, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'position', 'relative'), _defineProperty$1(_style, 'transition', 'opacity .5s'), _defineProperty$1(_style, 'userSelect', 'none'), _style);
+    var style = (_style = {}, _defineProperty$1(_style, vm.bar.posName, 0), _defineProperty$1(_style, vm.bar.opsSize, '100%'), _defineProperty$1(_style, vm.bar.size, vm.state.size), _defineProperty$1(_style, 'borderRadius', 'inherit'), _defineProperty$1(_style, 'background', vm.ops.bar.background), _defineProperty$1(_style, 'opacity', vm.state.opacity), _defineProperty$1(_style, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'position', 'relative'), _defineProperty$1(_style, 'transition', 'opacity .5s'), _defineProperty$1(_style, 'userSelect', 'none'), _style);
     var bar = {
       style: style,
       class: 'vuescroll-' + vm.type + '-bar',
@@ -2854,7 +2854,8 @@ var bar = {
       class: 'vuescroll-' + vm.type + '-rail',
       style: (_style2 = {
         position: 'absolute',
-        borderRadius: vm.ops.rail[vm.bar.opsSize],
+        zIndex: 1,
+        // borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor
       }, _defineProperty$1(_style2, vm.bar.opsSize, vm.ops.rail[vm.bar.opsSize]), _defineProperty$1(_style2, vm.bar.posName, '2px'), _defineProperty$1(_style2, vm.bar.opposName, '2px'), _defineProperty$1(_style2, vm.ops.rail.pos, 0), _style2),
       on: {
