@@ -1,12 +1,18 @@
-<a name="4.6.0"></a>
-# [4.6.0](https://github.com/YvesCoding/vuescroll/compare/v4.5.33...v4.6.0) (2018-06-04)
+<a name="4.6.1"></a>
 
+## [4.6.1](https://github.com/YvesCoding/vuescroll/compare/v4.5.33...v4.6.1) (2018-06-04)
+
+### Features
+
+* add border-radius to rail ([1d9f418](https://github.com/YvesCoding/vuescroll/commit/1d9f418))
+
+<a name="4.6.0"></a>
+
+# [4.6.0](https://github.com/YvesCoding/vuescroll/compare/v4.5.33...v4.6.0) (2018-06-04)
 
 ### Bug Fixes
 
 * add z-index to rail ([6acc2b4](https://github.com/YvesCoding/vuescroll/commit/6acc2b4))
-
-
 
 <a name="4.5.33"></a>
 
