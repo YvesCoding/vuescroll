@@ -1,3 +1,13 @@
+<a name="4.6.0"></a>
+# [4.6.0](https://github.com/YvesCoding/vuescroll/compare/v4.5.33...v4.6.0) (2018-06-04)
+
+
+### Bug Fixes
+
+* add z-index to rail ([6acc2b4](https://github.com/YvesCoding/vuescroll/commit/6acc2b4))
+
+
+
 <a name="4.5.33"></a>
 
 ## [4.5.33](https://github.com/YvesCoding/compare/v4.5.32...v4.5.33) (2018-06-01)
