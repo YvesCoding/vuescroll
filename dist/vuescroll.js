@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.6.0
+    * vuescroll 4.6.1
     * (c) 2018-2018 wangyi7099
     * Released under the MIT License
     */
@@ -2855,7 +2855,7 @@ var bar = {
       style: (_style2 = {
         position: 'absolute',
         zIndex: 1,
-        // borderRadius: vm.ops.rail[vm.bar.opsSize],
+        borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor
       }, _defineProperty$1(_style2, vm.bar.opsSize, vm.ops.rail[vm.bar.opsSize]), _defineProperty$1(_style2, vm.bar.posName, '2px'), _defineProperty$1(_style2, vm.bar.opposName, '2px'), _defineProperty$1(_style2, vm.ops.rail.pos, 0), _style2),
       on: {
@@ -3736,7 +3736,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.0'
+  version: '4.6.1'
 };
 
 /* istanbul ignore if */

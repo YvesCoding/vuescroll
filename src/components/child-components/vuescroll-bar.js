@@ -202,7 +202,7 @@ export default {
       style: {
         position: 'absolute',
         zIndex: 1,
-        // borderRadius: vm.ops.rail[vm.bar.opsSize],
+        borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor,
         [vm.bar.opsSize]: vm.ops.rail[vm.bar.opsSize],
         [vm.bar.posName]: '2px',
