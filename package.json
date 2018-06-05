@@ -1,6 +1,6 @@
 {
   "author": {
-    "name": "wangyi7099"
+    "name": "Yves Wang"
   },
   "bugs": {
     "url": "https://github.com/YvesCoding/vuescroll/issues"
@@ -12,7 +12,12 @@
   "deprecated": false,
   "description": "A configuration based Vue.js virtual scrollbar",
   "homepage": "https://github.com/YvesCoding/vuescroll#readme",
-  "keywords": ["vuescroll", "scrollbar", "vuescrollbar", "vue"],
+  "keywords": [
+    "vuescroll",
+    "scrollbar",
+    "vuescrollbar",
+    "vue"
+  ],
   "license": "MIT",
   "unpkg": "./dist/vuescroll.js",
   "jsdelivr": "./dist/vuescroll.js",
@@ -30,7 +35,7 @@
     "report-coverage": "codecov",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
-  "version": "4.6.1",
+  "version": "4.6.2",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",

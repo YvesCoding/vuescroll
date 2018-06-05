@@ -167,13 +167,13 @@ export function eventCenter(
     : dom.removeEventListener(eventName, hander, capture);
 }
 
-export  const error = (msg) => {
+export const error = msg => {
   console.error(`[vuescroll] ${msg}`);
 };
-export  const warn = (msg) => {
+export const warn = msg => {
   console.warn(`[vuescroll] ${msg}`);
 };
- 
+
 export function isChildInParent(child, parent) {
   let flag = false;
   if (!child || !parent) {
@@ -215,7 +215,9 @@ export function getPrefix(global) {
     engine = 'gecko';
   } else if ('WebkitAppearance' in docStyle) {
     engine = 'webkit';
-  }  /* istanbul ignore next */else if (typeof navigator.cpuClass === 'string') {
+  } /* istanbul ignore next */ else if (
+    typeof navigator.cpuClass === 'string'
+  ) {
     engine = 'trident';
   }
   var vendorPrefix = {
@@ -231,9 +233,18 @@ export function isSupportGivenStyle(property, value) {
   const compatibleValue = `-${getPrefix(window)}-${value}`;
   const testElm = document.createElement('div');
   testElm.style[property] = compatibleValue;
-  if (testElm.style[property] == compatibleValue)  {
+  if (testElm.style[property] == compatibleValue) {
     return compatibleValue;
   }
   /* istanbul ignore next */
   return false;
+}
+
+export function isIE() /* istanbul ignore next */ {
+  var agent = navigator.userAgent.toLowerCase();
+  return (
+    agent.indexOf('msie') !== -1 ||
+    agent.indexOf('trident') !== -1 ||
+    agent.indexOf(' edge/') !== -1
+  );
 }

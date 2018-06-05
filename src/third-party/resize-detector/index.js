@@ -1,26 +1,35 @@
 // detect content size change
-import { eventCenter } from '../../util';
+import { eventCenter, isIE } from '../../util';
 export function listenResize(element, callback) {
   return injectObject(element, callback);
 }
 
 function injectObject(element, callback) {
-  if(element.hasResized) {
+  if (element.hasResized) {
     return;
   }
+  element.isResizeElm = true;
   var OBJECT_STYLE =
     'display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;';
+  // define a wrap due to ie's zIndex bug
+  var objWrap = document.createElement('div');
+  objWrap.style.cssText = OBJECT_STYLE;
   var object = document.createElement('object');
-  element.hasResized = true;
   object.style.cssText = OBJECT_STYLE;
-  object.tabIndex = -1;
   object.type = 'text/html';
-  object.data = 'about:blank';
-  object.isResizeElm = true;
+  object.tabIndex = -1;
   object.onload = () => {
     eventCenter(object.contentDocument.defaultView, 'resize', callback);
   };
-  element.appendChild(object);
+  // https://github.com/wnr/element-resize-detector/blob/aafe9f7ea11d1eebdab722c7c5b86634e734b9b8/src/detection-strategy/object.js#L159
+  if (!isIE()) {
+    object.data = 'about:blank';
+  }
+  objWrap.appendChild(object);
+  element.appendChild(objWrap);
+  if (isIE()) {
+    object.data = 'about:blank';
+  }
   return function destroy() {
     if (object.contentDocument) {
       eventCenter(
@@ -30,7 +39,7 @@ function injectObject(element, callback) {
         'off'
       );
     }
-    element.removeChild(object);
+    element.removeChild(objWrap);
     element.hasResized = false;
   };
 }
