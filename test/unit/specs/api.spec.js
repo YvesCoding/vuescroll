@@ -274,6 +274,7 @@ describe('api', () => {
         vs.triggerRefreshOrLoad('load');
         r();
       })
+      .wait(350)
       .then(r => {
         const loadDom = vs.$el.querySelector('.vuescroll-load');
         expect(loadDom.innerText).toBe('Loading...');

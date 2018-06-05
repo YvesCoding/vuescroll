@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.6.2
+    * vuescroll 4.6.3
     * (c) 2018-2018 wangyi7099
     * Released under the MIT License
     */
@@ -197,7 +197,7 @@ function injectObject(element, callback) {
   if (element.hasResized) {
     return;
   }
-  element.isResizeElm = true;
+
   var OBJECT_STYLE = 'display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;';
   // define a wrap due to ie's zIndex bug
   var objWrap = document.createElement('div');
@@ -213,6 +213,7 @@ function injectObject(element, callback) {
   if (!isIE()) {
     object.data = 'about:blank';
   }
+  objWrap.isResizeElm = true;
   objWrap.appendChild(object);
   element.appendChild(objWrap);
   if (isIE()) {
@@ -3749,7 +3750,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.2'
+  version: '4.6.3'
 };
 
 /* istanbul ignore if */
