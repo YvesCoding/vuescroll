@@ -1,3 +1,13 @@
+<a name="4.6.4"></a>
+## [4.6.4](https://github.com/YvesCoding/vuescroll/compare/v4.6.1...v4.6.4) (2018-06-06)
+
+
+### Features
+
+* **api:** add refresh/refreshAll ([ca7b5da](https://github.com/YvesCoding/vuescroll/commit/ca7b5da))
+
+
+
 <a name="4.6.1"></a>
 
 ## [4.6.1](https://github.com/YvesCoding/vuescroll/compare/v4.5.33...v4.6.1) (2018-06-04)
