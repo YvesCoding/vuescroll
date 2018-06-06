@@ -4,12 +4,18 @@ import {
   makeTemplate,
   startSchedule
 } from 'test/unit/util';
-
+import { vuescroll as _vs } from '../util';
 describe('api', () => {
   let vm;
 
   afterEach(() => {
-    destroyVM(vm);
+    if (Array.isArray(vm)) {
+      vm.forEach(v => {
+        destroyVM(v);
+      });
+    } else {
+      destroyVM(vm);
+    }
   });
 
   it('scrollTo', done => {
@@ -280,6 +286,106 @@ describe('api', () => {
         expect(loadDom.innerText).toBe('Loading...');
         r();
         done();
+      });
+  });
+
+  it('refresh, refreshAll', done => {
+    vm = [];
+    vm[0] = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 200,
+            h: 200
+          },
+          {
+            w: 100,
+            h: 100
+          },
+          'style="display:none"',
+          3
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'slide',
+              paging: true,
+              pullRefresh: {
+                enable: false
+              },
+              pushLoad: {
+                enable: false
+              }
+            }
+          }
+        }
+      },
+      true
+    );
+    vm[1] = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 200,
+            h: 200
+          },
+          {
+            w: 100,
+            h: 100
+          },
+          'style="display:none"',
+          3
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'slide',
+              paging: true,
+              pullRefresh: {
+                enable: false
+              },
+              pushLoad: {
+                enable: false
+              }
+            }
+          }
+        }
+      },
+      true
+    );
+    // create two instances to test refreshAll api
+    const vs0 = vm[0].$refs['vs'];
+    const vs1 = vm[1].$refs['vs'];
+
+    startSchedule()
+      .then(r => {
+        let vs = document.querySelector('.vuescroll');
+        expect(vs).toBe(null);
+        vs0.$el.style.display = 'block';
+        vs1.$el.style.display = 'block';
+        r();
+      })
+      .then(r => {
+        let vs = document.querySelectorAll('.vue-scroll');
+        expect(vs.length).toBe(2);
+        let hRails = document.querySelector('.vuescroll-horizontal-rail');
+        let vRails = document.querySelector('.vuescroll-vertical-rail');
+        expect(hRails).toBe(null);
+        expect(vRails).toBe(null);
+        vs0.refresh();
+        r();
+      })
+      .then(r => {
+        let hRail = vs0.$el.querySelector('.vuescroll-horizontal-rail');
+        expect(hRail).not.toBe(null);
+        _vs.refreshAll();
+        r();
+      })
+      .then(r => {
+        let hRail = vs1.$el.querySelector('.vuescroll-horizontal-rail');
+        expect(hRail).not.toBe(null);
+        done();
+        r();
       });
   });
 });

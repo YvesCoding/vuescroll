@@ -53,21 +53,15 @@ const vueScrollCore = {
     if (!this.renderError) {
       this.initVariables();
 
-      this.initVuescrollSizeType();
-
-      this.initScroller();
-
-      this.initResizeDetection();
-
       this.initWatchOpsChange();
 
-      this.updateBarStateAndEmitEvent();
+      this.refreshInternalStatus();
 
       this.$nextTick(() => {
         if (!this._isDestroyed) {
           // update again to make sure bar's size is correct.
           this.updateBarStateAndEmitEvent();
-          this.initVuescrollPosition();
+          this.scrollToAnchor();
         }
       }, 0);
     }
@@ -434,10 +428,23 @@ const vueScrollCore = {
       let axis = findValuesByMode(mode, this);
       const oldX = state.internalScrollLeft;
       const oldY = state.internalScrollTop;
-      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
-      state.posY = oldY - axis.y> 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
+      state.posX =
+        oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
+      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
       state.internalScrollLeft = axis.x;
       state.internalScrollTop = axis.y;
+    },
+    refreshInternalStatus() {
+      // 1.set vuescroll height or width according to
+      // sizeStrategy
+      this.setVsSize();
+      // 2. registry resize event
+      this.registryResize();
+      // 3. registry scroller if mode is 'slide'
+      // or remove 'transform origin' is the mode is not `slide`
+      this.updateMode();
+      // 4. update scrollbar's height/width
+      this.updateBarStateAndEmitEvent();
     },
     initWatchOpsChange() {
       const watchOpts = {
@@ -455,12 +462,7 @@ const vueScrollCore = {
               this.updateBarStateAndEmitEvent();
               return;
             }
-            // re do them jobsin case of
-            // option changes
-            this.setVsSize();
-            this.registryResize();
-            this.updateMode();
-            this.updateBarStateAndEmitEvent();
+            this.refreshInternalStatus();
           }, 0);
         },
         watchOpts
@@ -478,9 +480,8 @@ const vueScrollCore = {
         );
       });
     },
-    // if there is a hash in url,
-    // scroll to the hash automatically
-    scrollToHash() /* istanbul ignore next */ {
+    // scrollTo hash-anchor while mounted
+    scrollToAnchor() /* istanbul ignore next */ {
       const validateHashSelector = function(hash) {
         return /^#[a-zA-Z_]\d*$/.test(hash);
       };
@@ -505,20 +506,6 @@ const vueScrollCore = {
     initVariables() {
       this.lastMode = this.mode;
       this.$el._isVuescroll = true;
-    },
-    initScroller() {
-      if (this.mode == 'slide') {
-        this.destroyScroller = this.registryScroller();
-      }
-    },
-    initVuescrollSizeType() {
-      this.setVsSize();
-    },
-    initResizeDetection() {
-      this.registryResize();
-    },
-    initVuescrollPosition() {
-      this.scrollToHash();
     }
   }
 };

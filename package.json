@@ -10,7 +10,7 @@
     "vue": "^2.0"
   },
   "deprecated": false,
-  "description": "A configuration based Vue.js virtual scrollbar",
+  "description": "A scrolling plugin for Vue.js that has ability to customize your scrollbar and scroll with many animations.",
   "homepage": "https://github.com/YvesCoding/vuescroll#readme",
   "keywords": [
     "vuescroll",

@@ -5,13 +5,21 @@ import {
 import { core } from '../third-party/scroller/animate';
 import { warn, isChildInParent } from '../util';
 
+const vsInstances = {};
+
+export function refreshAll() {
+  for (let vs in vsInstances) {
+    vsInstances[vs].refresh();
+  }
+}
+
 function getNumericValue(distance, size) {
   let number;
   if (!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
     number = distance - 0;
   } else {
     number = number[1] - 0;
-    number = size * number / 100;
+    number = (size * number) / 100;
   }
   return number;
 }
@@ -65,6 +73,12 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
 }
 
 export default {
+  mounted() {
+    vsInstances[this._uid] = this;
+  },
+  beforeDestroy() {
+    delete vsInstances[this._uid];
+  },
   methods: {
     // public api
     scrollTo({ x, y }, animate = true, force = false) {
@@ -242,6 +256,9 @@ export default {
         },
         animate
       );
+    },
+    refresh() {
+      this.refreshInternalStatus();
     }
   }
 };

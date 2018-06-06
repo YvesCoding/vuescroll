@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import vuescroll from 'src/index';
-
+export { vuescroll };
 Vue.use(vuescroll);
 
 // https://github.com/ElemeFE/element/blob/dev/test/unit/util.js#L60

@@ -206,6 +206,7 @@ function createTipDom(h, vm, type) {
     break;
   case 'start':
     // IE seems not supporting animateTransform
+    /* istanbul ignore if */
     if (isIE()) {
       dom = null;
       break;

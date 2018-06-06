@@ -207,7 +207,7 @@ export default {
         [vm.bar.opsSize]: vm.ops.rail[vm.bar.opsSize],
         [vm.bar.posName]: '2px',
         [vm.bar.opposName]: '2px',
-        [vm.ops.rail.pos]: 0
+        [vm.ops.rail.pos]: '2px'
       },
       on: {
         click(e) /* istanbul ignore next */ {

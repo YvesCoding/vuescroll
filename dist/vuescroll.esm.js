@@ -684,6 +684,14 @@ core.effect.Animate = {
   }
 };
 
+var vsInstances = {};
+
+function refreshAll() {
+  for (var vs in vsInstances) {
+    vsInstances[vs].refresh();
+  }
+}
+
 function getNumericValue(distance, size) {
   var number = void 0;
   if (!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
@@ -735,6 +743,13 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
 }
 
 var api = {
+  mounted: function mounted() {
+    vsInstances[this._uid] = this;
+  },
+  beforeDestroy: function beforeDestroy() {
+    delete vsInstances[this._uid];
+  },
+
   methods: {
     // public api
     scrollTo: function scrollTo(_ref) {
@@ -920,6 +935,9 @@ var api = {
         dx: -diffX,
         dy: -diffY
       }, animate);
+    },
+    refresh: function refresh() {
+      this.refreshInternalStatus();
     }
   }
 };
@@ -2866,7 +2884,7 @@ var bar = {
         zIndex: 1,
         borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor
-      }, _defineProperty$1(_style2, vm.bar.opsSize, vm.ops.rail[vm.bar.opsSize]), _defineProperty$1(_style2, vm.bar.posName, '2px'), _defineProperty$1(_style2, vm.bar.opposName, '2px'), _defineProperty$1(_style2, vm.ops.rail.pos, 0), _style2),
+      }, _defineProperty$1(_style2, vm.bar.opsSize, vm.ops.rail[vm.bar.opsSize]), _defineProperty$1(_style2, vm.bar.posName, '2px'), _defineProperty$1(_style2, vm.bar.opposName, '2px'), _defineProperty$1(_style2, vm.ops.rail.pos, '2px'), _style2),
       on: {
         click: function click(e) /* istanbul ignore next */{
           handleClickTrack(e, vm.bar, parentRef, vm.type, vm.$parent);
@@ -3190,6 +3208,7 @@ function createTipDom(h, vm, type) {
       break;
     case 'start':
       // IE seems not supporting animateTransform
+      /* istanbul ignore if */
       if (isIE()) {
         dom = null;
         break;
@@ -3302,21 +3321,15 @@ var vueScrollCore = {
     if (!this.renderError) {
       this.initVariables();
 
-      this.initVuescrollSizeType();
-
-      this.initScroller();
-
-      this.initResizeDetection();
-
       this.initWatchOpsChange();
 
-      this.updateBarStateAndEmitEvent();
+      this.refreshInternalStatus();
 
       this.$nextTick(function () {
         if (!_this._isDestroyed) {
           // update again to make sure bar's size is correct.
           _this.updateBarStateAndEmitEvent();
-          _this.initVuescrollPosition();
+          _this.scrollToAnchor();
         }
       }, 0);
     }
@@ -3671,6 +3684,18 @@ var vueScrollCore = {
       state.internalScrollLeft = axis.x;
       state.internalScrollTop = axis.y;
     },
+    refreshInternalStatus: function refreshInternalStatus() {
+      // 1.set vuescroll height or width according to
+      // sizeStrategy
+      this.setVsSize();
+      // 2. registry resize event
+      this.registryResize();
+      // 3. registry scroller if mode is 'slide'
+      // or remove 'transform origin' is the mode is not `slide`
+      this.updateMode();
+      // 4. update scrollbar's height/width
+      this.updateBarStateAndEmitEvent();
+    },
     initWatchOpsChange: function initWatchOpsChange() {
       var _this4 = this;
 
@@ -3687,12 +3712,7 @@ var vueScrollCore = {
             _this4.updateBarStateAndEmitEvent();
             return;
           }
-          // re do them jobsin case of
-          // option changes
-          _this4.setVsSize();
-          _this4.registryResize();
-          _this4.updateMode();
-          _this4.updateBarStateAndEmitEvent();
+          _this4.refreshInternalStatus();
         }, 0);
       }, watchOpts);
 
@@ -3705,9 +3725,8 @@ var vueScrollCore = {
       });
     },
 
-    // if there is a hash in url,
-    // scroll to the hash automatically
-    scrollToHash: function scrollToHash() /* istanbul ignore next */{
+    // scrollTo hash-anchor while mounted
+    scrollToAnchor: function scrollToAnchor() /* istanbul ignore next */{
       var validateHashSelector = function validateHashSelector(hash) {
         return (/^#[a-zA-Z_]\d*$/.test(hash)
         );
@@ -3725,20 +3744,6 @@ var vueScrollCore = {
     initVariables: function initVariables() {
       this.lastMode = this.mode;
       this.$el._isVuescroll = true;
-    },
-    initScroller: function initScroller() {
-      if (this.mode == 'slide') {
-        this.destroyScroller = this.registryScroller();
-      }
-    },
-    initVuescrollSizeType: function initVuescrollSizeType() {
-      this.setVsSize();
-    },
-    initResizeDetection: function initResizeDetection() {
-      this.registryResize();
-    },
-    initVuescrollPosition: function initVuescrollPosition() {
-      this.scrollToHash();
     }
   }
 };
@@ -3750,7 +3755,8 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.3'
+  version: '4.6.3',
+  refreshAll: refreshAll
 };
 
 /* istanbul ignore if */
