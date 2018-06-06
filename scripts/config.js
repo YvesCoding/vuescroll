@@ -7,7 +7,7 @@ const version = process.env.VERSION || require('../package.json').version;
 
 const banner = `/*
     * vuescroll ${version}
-    * (c) 2018-${new Date().getFullYear()} wangyi7099
+    * (c) 2018-${new Date().getFullYear()} Yi(Yves) Wang
     * Released under the MIT License
     */
    `;

@@ -1,6 +1,6 @@
 /*
-    * vuescroll 4.6.3
-    * (c) 2018-2018 wangyi7099
+    * vuescroll 4.6.4
+    * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     */
    
@@ -3761,7 +3761,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.3',
+  version: '4.6.4',
   refreshAll: refreshAll
 };
 
