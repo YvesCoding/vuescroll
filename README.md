@@ -8,18 +8,18 @@
 <a href="https://github.com/YvesCoding/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
 
-English Version | [中文版](https://github.com/YvesCoding/blob/dev/README-ZH.md)
+English Version | [中文版](https://github.com/YvesCoding/vuescroll/blob/dev/README-ZH.md)
 
-* [Introduction](#introduction)
-* [Preview](#preview)
-* [Online Demo & Documentation](#online-demo--documentation)
-* [Features](#features)
-* [Quick Start](#quick-start)
-* [General FAQ](#general-faq)
-* [Changelog](#changelog)
-* [Contribution](#contribution)
-* [Inspired By](#inspired-by)
-* [License](#license)
+- [Introduction](#introduction)
+- [Preview](#preview)
+- [Online Demo & Documentation](#online-demo--documentation)
+- [Features](#features)
+- [Quick Start](#quick-start)
+- [General FAQ](#general-faq)
+- [Changelog](#changelog)
+- [Contribution](#contribution)
+- [Inspired By](#inspired-by)
+- [License](#license)
 
 ## Introduction
 
@@ -29,19 +29,19 @@ Its theory is to create some divs to wrap the contents to be scrolled, act as sc
 
 The purpose of the design is to beautify and enhance your native scrollbar.
 
-**Currently, there are 3 modes in configuration  you can choose:**
+**Currently, there are 3 modes in configuration you can choose:**
 
-* `native` mode: Like the native scrollbar, but has ability to costumize styles of scrollbar, it is suitable for the users who use PC.
-* `slide` mode: Allow you slide by finger or mouse pointer, has ability to slide out of bountry, it is suitable for the users who use mobile phone.
-* `pure-native` mode: Use native scrollbar, it is suitable for PC and the users who like native scrollbar.
+- `native` mode: Like the native scrollbar, but has ability to costumize styles of scrollbar, it is suitable for the users who use PC.
+- `slide` mode: Allow you slide by finger or mouse pointer, has ability to slide out of bountry, it is suitable for the users who use mobile phone.
+- `pure-native` mode: Use native scrollbar, it is suitable for PC and the users who like native scrollbar.
 
 **You can also change the styles of the scroll bar by changing the configuration, including:**
 
-* `Opacity`
-* `Height/Width`
-* `Position`
-* `Background`
-* `Keep show or not`
+- `Opacity`
+- `Height/Width`
+- `Position`
+- `Background`
+- `Keep show or not`
 
 > To learn more, please visit the official website [guide page](http://vuescrolljs.yvescoding.org/guide/)
 
@@ -57,28 +57,28 @@ In general, vuescroll is more than a scrollbar, you can use it to make a carouse
 
 ## Online Demo & Documentation
 
-* You can find Demo under the root of this repo.
-* For detailed demo and documentation: Please visit [Offical Website](http://vuescrolljs.yvescoding.org/Demo/Basic/).
+- You can find Demo under the root of this repo.
+- For detailed demo and documentation: Please visit [Offical Website](http://vuescrolljs.yvescoding.org/Demo/Basic/).
 
 ## Features
 
-* Originally created virutal scrollbar + sliding scrolling for both being suitable for PC and mobile!
-* Has multi modes and has ability to toggle them anytime, each modes has diffrernt features:
-  * `native` mode: Like the native scrollbar, but has ability to costumize styles of scrollbar, it is suitable for the users who use PC.
-  * `slide` mode: Allow you slide by finger or mouse pointer, has ability to slide out of bountry, it is suitable for the users who use mobile phone.
-  * `pure-native` mode: Use native scrollbar, it is suitable for PC and the users who like native scrollbar.
-* Ability to detect the size change of the content and automatically update scrollbar.
-* Ability to scroll smoothly by using [different animations](http://vuescrolljs.yvescoding.org/guide/Configuration.html#scrollpanel).
-* Pull-to-Refresh (Pull top out of the boundaries to start refreshing list)
-* Push-to-Load (Push bottom out of the boundaries to start loading list)
-* Ability to zoom in or zoom out the scroll content.
-* Paging (Slide a whole page each time)
-* Snapping (Slide a user-defined distance each time)
-* Ability to disable scrollingX or scrollingY
-* Keep Bar showing or not.
-* Set bar/rail opacity or background.
-* Set bar/rail's position.
-* Customize the tag of content. (That is you can set the tag of content to a component tag)
+- Originally created virutal scrollbar + sliding scrolling for both being suitable for PC and mobile!
+- Has multi modes and has ability to toggle them anytime, each modes has diffrernt features:
+  - `native` mode: Like the native scrollbar, but has ability to costumize styles of scrollbar, it is suitable for the users who use PC.
+  - `slide` mode: Allow you slide by finger or mouse pointer, has ability to slide out of bountry, it is suitable for the users who use mobile phone.
+  - `pure-native` mode: Use native scrollbar, it is suitable for PC and the users who like native scrollbar.
+- Ability to detect the size change of the content and automatically update scrollbar.
+- Ability to scroll smoothly by using [different animations](http://vuescrolljs.yvescoding.org/guide/Configuration.html#scrollpanel).
+- Pull-to-Refresh (Pull top out of the boundaries to start refreshing list)
+- Push-to-Load (Push bottom out of the boundaries to start loading list)
+- Ability to zoom in or zoom out the scroll content.
+- Paging (Slide a whole page each time)
+- Snapping (Slide a user-defined distance each time)
+- Ability to disable scrollingX or scrollingY
+- Keep Bar showing or not.
+- Set bar/rail opacity or background.
+- Set bar/rail's position.
+- Customize the tag of content. (That is you can set the tag of content to a component tag)
 
 ## Quick Start
 
@@ -260,8 +260,8 @@ const vm = new Vue({
 
 1.  The content has gone beyond the parent element. Why don't the vuescroll scrollbars appear?
 
-    * Firstly, please confirm to upgrade to the latest version of vuescroll
-    * Secondly, if your parent element size is not a fixed value, such as a percentage, or a value such as max-height (#29), please set the `sizeStrategy` to `number`, otherwise vuescroll will not detect the size of the parent element and show the scrollbars! The configuration can be:
+    - Firstly, please confirm to upgrade to the latest version of vuescroll
+    - Secondly, if your parent element size is not a fixed value, such as a percentage, or a value such as max-height (#29), please set the `sizeStrategy` to `number`, otherwise vuescroll will not detect the size of the parent element and show the scrollbars! The configuration can be:
       ```javascript
       ops: {
         vuescroll: {
@@ -283,11 +283,11 @@ Please check out [CONTRIBUTING](.github/CONTRIBUTING.md).
 
 ## Inspired By
 
-* [slimscroll](http://rocha.la/jQuery-slimScroll)
-* [element-ui](http://element.eleme.io/#/zh-CN/component/installation)
-* [scroller](http://zynga.github.io/scroller/)
-* [CodePen](https://codepen.io/wangyi7099/pen/YLVBNe)
-* [better-scroll](https://github.com/ustbhuangyi/better-scroll)
+- [slimscroll](http://rocha.la/jQuery-slimScroll)
+- [element-ui](http://element.eleme.io/#/zh-CN/component/installation)
+- [scroller](http://zynga.github.io/scroller/)
+- [CodePen](https://codepen.io/wangyi7099/pen/YLVBNe)
+- [better-scroll](https://github.com/ustbhuangyi/better-scroll)
 
 ## License
 

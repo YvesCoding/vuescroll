@@ -8,41 +8,41 @@
 <a href="https://github.com/YvesCoding/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
 
-[English Version](https://github.com/YvesCoding) | 中文版
+[English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
-* [介绍](#介绍)
-* [预览](#预览)
-* [在线 Demo & 文档](#在线-demo--文档)
-* [特点](#特点)
-* [快速入门](#快速入门)
-* [常见问题及解答](#常见问题及解答)
-* [变更日志](#变更日志)
-* [贡献](#贡献)
-* [灵感来源](#灵感来源)
-* [协议](#协议)
-* [微信交流讨论](#微信交流讨论)
+- [介绍](#介绍)
+- [预览](#预览)
+- [在线 Demo & 文档](#在线-demo--文档)
+- [特点](#特点)
+- [快速入门](#快速入门)
+- [常见问题及解答](#常见问题及解答)
+- [变更日志](#变更日志)
+- [贡献](#贡献)
+- [灵感来源](#灵感来源)
+- [协议](#协议)
+- [微信交流讨论](#微信交流讨论)
 
 ## 介绍
 
-Vuescroll 一个上手简单，配置丰富的一个vue滚动组件。
+Vuescroll 一个上手简单，配置丰富的一个 vue 滚动组件。
 
-它的原理是创建一些 div用于包裹要滚动的内容，充当滚动条，然后通过操作 div 的 `scrollTop`，`scrollLeft` 来完成被创建的div完成滚动。
+它的原理是创建一些 div 用于包裹要滚动的内容，充当滚动条，然后通过操作 div 的 `scrollTop`，`scrollLeft` 来完成被创建的 div 完成滚动。
 
 设计它的目的是用来美化和增强你的滚动条。
 
 **你可以在配置里选择不同的模式:**
 
-* `native` 模式: 类似于原生的滚动条，但是可以自定义滚动条样式，使用于 PC 端用户。
-* `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围，适用于移动端端用户。
-* `pure-native`模式: 滚动条使用原生的滚动条，适用于喜欢原生滚动条的用户。
+- `native` 模式: 类似于原生的滚动条，但是可以自定义滚动条样式，使用于 PC 端用户。
+- `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围，适用于移动端端用户。
+- `pure-native`模式: 滚动条使用原生的滚动条，适用于喜欢原生滚动条的用户。
 
 **你也可以通过更改配置来改变滚动条的样式，包括:**
 
-* `透明度`
-* `高度/宽度`
-* `位置`
-* `背景色`
-* `是否保持显示`
+- `透明度`
+- `高度/宽度`
+- `位置`
+- `背景色`
+- `是否保持显示`
 
 > 想了解更多请访问官方网站[指南页面](http://vuescrolljs.yvescoding.org/zh/)
 
@@ -58,28 +58,28 @@ Vuescroll 一个上手简单，配置丰富的一个vue滚动组件。
 
 ## 在线 Demo & 文档
 
-* 你可以浏览这个 repo 的根目录下的 Demo 文件夹。
-* 详细的 Demo, 文档: 请访问 [官方地址](http://vuescrolljs.yvescoding.org/zh/Demo/Basic/).
+- 你可以浏览这个 repo 的根目录下的 Demo 文件夹。
+- 详细的 Demo, 文档: 请访问 [官方地址](http://vuescrolljs.yvescoding.org/zh/Demo/Basic/).
 
 ## 特点
 
-* 独创虚拟滚动条+滑动滚动，可以同时适配 PC 端和手机端！
-* 拥有多个模式随时切换，每个模式都有不同的特点:
-  * `native` 模式: 类似于原生的滚动条，但是可以自定义滚动条样式，使用于 PC 端用户。
-  * `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围，适用于移动端端用户。
-  * `pure-native`模式: 滚动条使用原生的滚动条，适用于喜欢原生滚动条的用户。
-* 检测滚动内容发生尺寸变化并自动更新滚动条。
-* 通过使用 [不同的滚动动画](http://vuescrolljs.yvescoding.org/zh/guide/Configuration.html#scrollpanel)来平滑滚动。
-* 下拉-刷新 (拉倒顶部并拉出边界开始刷新列表)
-* 上推-加载 (推到底部并且退出边界开始加载列表)
-* 能够放大或者缩小滚动的内容.
-* 分页 (每次滑动整个页面)
-* 截断 (每次滑动一个用户定义的距离)
-* 能够禁止 X 或 Y 方向上的滚动。
-* 能够设置滚动条是否保持显示。
-* 能够设置滚动条，轨道的颜色和透明度。
-* 能够设置滚动条，轨道的位置。
-* 能够自定义内容的标签 (也就是说你能够设置内容的标签为一个组件)
+- 独创虚拟滚动条+滑动滚动，可以同时适配 PC 端和手机端！
+- 拥有多个模式随时切换，每个模式都有不同的特点:
+  - `native` 模式: 类似于原生的滚动条，但是可以自定义滚动条样式，使用于 PC 端用户。
+  - `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围，适用于移动端端用户。
+  - `pure-native`模式: 滚动条使用原生的滚动条，适用于喜欢原生滚动条的用户。
+- 检测滚动内容发生尺寸变化并自动更新滚动条。
+- 通过使用 [不同的滚动动画](http://vuescrolljs.yvescoding.org/zh/guide/Configuration.html#scrollpanel)来平滑滚动。
+- 下拉-刷新 (拉倒顶部并拉出边界开始刷新列表)
+- 上推-加载 (推到底部并且退出边界开始加载列表)
+- 能够放大或者缩小滚动的内容.
+- 分页 (每次滑动整个页面)
+- 截断 (每次滑动一个用户定义的距离)
+- 能够禁止 X 或 Y 方向上的滚动。
+- 能够设置滚动条是否保持显示。
+- 能够设置滚动条，轨道的颜色和透明度。
+- 能够设置滚动条，轨道的位置。
+- 能够自定义内容的标签 (也就是说你能够设置内容的标签为一个组件)
 
 ## 快速入门
 
@@ -260,8 +260,8 @@ const vm = new Vue({
 ## 常见问题及解答
 
 1.  内容已经超出比父元素打了，为什么 vuescroll 的滚动条不出现？
-    * 首先，请确认是否升级到 vuescroll 的最新版本。
-    * 其次，如果你的父元素大小不是一个固定的值，比如百分比，或者 max-height 之类的值(如#29)，请将`sizeStrategy`设置为`number`,否则 vuescroll 将不能侦测到父元素的大小，进而控制是否显示滚动条！如下配置即可：
+    - 首先，请确认是否升级到 vuescroll 的最新版本。
+    - 其次，如果你的父元素大小不是一个固定的值，比如百分比，或者 max-height 之类的值(如#29)，请将`sizeStrategy`设置为`number`,否则 vuescroll 将不能侦测到父元素的大小，进而控制是否显示滚动条！如下配置即可：
       ```javascript
       ops: {
         vuescroll: {
@@ -282,11 +282,11 @@ const vm = new Vue({
 
 ## 灵感来源
 
-* [slimscroll](http://rocha.la/jQuery-slimScroll)
-* [element-ui](http://element.eleme.io/#/zh-CN/component/installation)
-* [scroller](http://zynga.github.io/scroller/)
-* [CodePen](https://codepen.io/wangyi7099/pen/YLVBNe)
-* [better-scroll](https://github.com/ustbhuangyi/better-scroll)
+- [slimscroll](http://rocha.la/jQuery-slimScroll)
+- [element-ui](http://element.eleme.io/#/zh-CN/component/installation)
+- [scroller](http://zynga.github.io/scroller/)
+- [CodePen](https://codepen.io/wangyi7099/pen/YLVBNe)
+- [better-scroll](https://github.com/ustbhuangyi/better-scroll)
 
 ## 许可证
 
