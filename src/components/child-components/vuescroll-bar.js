@@ -119,8 +119,10 @@ function handleClickTrack(
   const inner = parentRef[`${type}Bar`].$refs['inner'];
   const barOffset = inner[offset];
   const percent =
-    (e[client] - e.target.getBoundingClientRect()[posName] - barOffset / 2) /
-    e.target[offset];
+    (e[client] -
+      e.currentTarget.getBoundingClientRect()[posName] -
+      barOffset / 2) /
+    e.currentTarget[offset];
   const pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
   parent.scrollTo({ [scrollMap[type].axis.toLowerCase()]: pos });
 }
