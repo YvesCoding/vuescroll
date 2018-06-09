@@ -63,8 +63,7 @@ export function createPanel(h, vm) {
       scroll: vm.handleScroll
     },
     props: {
-      ops: vm.mergedOptions.scrollPanel,
-      state: vm.scrollPanel.state
+      ops: vm.mergedOptions.scrollPanel
     }
   };
   // set overflow only if the in native mode
