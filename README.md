@@ -55,7 +55,7 @@ In general, vuescroll is more than a scrollbar, you can use it to make a carouse
 
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.gif?raw=true)
 
-### carousel
+### Carousel
 
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.gif?raw=true)
 
@@ -146,7 +146,7 @@ const vm = new Vue({
 </div>
 ```
 
-### The detailed configuration is as follows:
+### All configuration references
 
 ```javascript
 {

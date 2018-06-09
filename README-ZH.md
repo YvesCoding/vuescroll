@@ -147,7 +147,7 @@ const vm = new Vue({
 </div>
 ```
 
-### 详细的配置如下:
+### 所有的配置参考:
 
 ```javascript
 {
