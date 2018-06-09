@@ -102,16 +102,6 @@ const vueScrollCore = {
           width: '100%'
         }
       },
-      scrollPanel: {},
-      scrollContent: {},
-      rail: {
-        vRail: {
-          state: {}
-        },
-        hRail: {
-          state: {}
-        }
-      },
       bar: {
         vBar: {
           state: {

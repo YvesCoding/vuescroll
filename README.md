@@ -51,9 +51,17 @@ In general, vuescroll is more than a scrollbar, you can use it to make a carouse
 
 ## Preview
 
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.gif?raw=true)
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.gif?raw=true)
+### Pull-to-refresh and Push-to-load
+
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.gif?raw=true)
+
+### carousel
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.gif?raw=true)
+
+### Picker
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.gif?raw=true)
 
 ## Online Demo & Documentation
 

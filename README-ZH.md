@@ -52,9 +52,17 @@ Vuescroll 一个上手简单，配置丰富的一个 vue 滚动组件。
 
 ## 预览
 
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.gif?raw=true)
-![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.gif?raw=true)
+### 下拉刷新和上推加载
+
 ![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.gif?raw=true)
+
+### 轮播图
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.gif?raw=true)
+
+### 选择器
+
+![](https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.gif?raw=true)
 
 ## 在线 Demo & 文档
 
