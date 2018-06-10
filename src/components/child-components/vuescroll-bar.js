@@ -38,8 +38,8 @@ function createMouseEvent(ctx) {
     document.onselectstart = null;
     ctx.$parent.hideBar();
     ctx.axisStartPos = 0;
-    eventCenter(document, 'mousemove', mousemove, 'off');
-    eventCenter(document, 'mouseup', mouseup, 'off');
+    eventCenter(document, 'mousemove', mousemove, false, 'off');
+    eventCenter(document, 'mouseup', mouseup, false, 'off');
   }
 
   return mousedown;
