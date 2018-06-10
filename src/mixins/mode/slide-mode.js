@@ -75,8 +75,8 @@ export default {
   methods: {
     // update scrollbar's size and pos  while in slide mode.
     updateScroller() {
-      const clientWidth = this.clientWidth;
-      const clientHeight = this.clientHeight;
+      const clientWidth = this.$el.clientWidth;
+      const clientHeight = this.$el.clientHeight;
       let contentWidth = this.scrollPanelElm.scrollWidth;
       let contentHeight = this.scrollPanelElm.scrollHeight;
       let refreshHeight = 0;
@@ -185,8 +185,8 @@ export default {
       const scroller = this.scroller;
       let outerLeft = 0;
       let outerTop = 0;
-      const clientWidth = this.clientWidth;
-      const clientHeight = this.clientHeight;
+      const clientWidth = this.$el.clientHeight;
+      const clientHeight = this.$el.clientHeight;
       const contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       const contentHeight = clientHeight + this.scroller.__maxScrollTop;
       const __enableScrollX =
@@ -213,8 +213,8 @@ export default {
           outerTop = scroller.__scrollTop - scroller.__maxScrollTop;
         }
       }
-      heightPercentage = clientHeight * 100 / (contentHeight + outerTop);
-      widthPercentage = clientWidth * 100 / (contentWidth + outerLeft);
+      heightPercentage = (clientHeight * 100) / (contentHeight + outerTop);
+      widthPercentage = (clientWidth * 100) / (contentWidth + outerLeft);
       const scrollTop = Math.min(
         Math.max(0, scroller.__scrollTop),
         scroller.__maxScrollTop
@@ -224,9 +224,9 @@ export default {
         scroller.__maxScrollLeft
       );
       this.bar.vBar.state.posValue =
-        (scrollTop + outerTop) * 100 / vuescroll.clientHeight;
+        ((scrollTop + outerTop) * 100) / vuescroll.clientHeight;
       this.bar.hBar.state.posValue =
-        (scrollLeft + outerLeft) * 100 / vuescroll.clientWidth;
+        ((scrollLeft + outerLeft) * 100) / vuescroll.clientWidth;
       /* istanbul ignore if */
       if (scroller.__scrollLeft < 0) {
         this.bar.hBar.state.posValue = 0;

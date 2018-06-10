@@ -32,6 +32,7 @@
     "test": "npm run test:cover",
     "lint": "eslint --fix src scripts test",
     "test:cover": "karma start test/unit/karma.conf.js",
+    "debug-test": "karma start test/unit/karma.conf.js --no-single-run",
     "report-coverage": "codecov",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },

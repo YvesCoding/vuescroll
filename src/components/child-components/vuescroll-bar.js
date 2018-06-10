@@ -80,8 +80,8 @@ function createTouchEvent(ctx) {
     document.onselectstart = null;
     ctx.$parent.hideBar();
     ctx.axisStartPos = 0;
-    eventCenter(document, 'touchmove', touchmove, 'off');
-    eventCenter(document, 'touchend', touchend, 'off');
+    eventCenter(document, 'touchmove', touchmove, false, 'off');
+    eventCenter(document, 'touchend', touchend, false, 'off');
   }
   return touchstart;
 }

@@ -9,7 +9,7 @@ import scrollContent from './child-components/vuescroll-content';
 import scrollPanel, { createPanel } from './child-components/vuescroll-panel';
 
 import { smallChangeArray } from '../shared/constants';
-import { isChildInParent, extractNumberFromPx, isSupportTouch } from '../util';
+import { isChildInParent, isSupportTouch } from '../util';
 
 function findValuesByMode(mode, vm) {
   let axis = {};
@@ -26,22 +26,6 @@ function findValuesByMode(mode, vm) {
     break;
   }
   return axis;
-}
-/**
- *
- *
- * @param {any} type height or width
- * have been computed in this.useNumbericSize
- * @returns
- */
-function getClientSizeByType(type) {
-  const vuescroll = this.$el;
-  const isPercentStrategy =
-    this.mergedOptions.vuescroll.sizeStrategy == 'percent';
-  const clientSize = isPercentStrategy
-    ? vuescroll[`client${type.charAt(0).toUpperCase() + type.slice(1)}`]
-    : extractNumberFromPx(this.vuescroll.state[type]);
-  return clientSize - 0;
 }
 
 const vueScrollCore = {
@@ -203,12 +187,6 @@ const vueScrollCore = {
         this.mergedOptions.vuescroll.pullRefresh.enable ||
         this.mergedOptions.vuescroll.pushLoad.enable
       );
-    },
-    clientWidth() {
-      return getClientSizeByType.call(this, 'width');
-    },
-    clientHeight() {
-      return getClientSizeByType.call(this, 'height');
     }
   },
   methods: {
@@ -276,11 +254,11 @@ const vueScrollCore = {
         scrollLeft
       } = this.scrollPanelElm;
       const vertical = {
-          type: 'vertical'
-        },
-        horizontal = {
-          type: 'horizontal'
-        };
+        type: 'vertical'
+      };
+      const horizontal = {
+        type: 'horizontal'
+      };
       if (this.mode == 'slide') {
         scrollHeight = this.scroller.__contentHeight;
         scrollWidth = this.scroller.__contentWidth;

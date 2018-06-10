@@ -2545,8 +2545,8 @@ var slideMode = {
   methods: {
     // update scrollbar's size and pos  while in slide mode.
     updateScroller: function updateScroller() {
-      var clientWidth = this.clientWidth;
-      var clientHeight = this.clientHeight;
+      var clientWidth = this.$el.clientWidth;
+      var clientHeight = this.$el.clientHeight;
       var contentWidth = this.scrollPanelElm.scrollWidth;
       var contentHeight = this.scrollPanelElm.scrollHeight;
       var refreshHeight = 0;
@@ -2636,8 +2636,8 @@ var slideMode = {
       var scroller = this.scroller;
       var outerLeft = 0;
       var outerTop = 0;
-      var clientWidth = this.clientWidth;
-      var clientHeight = this.clientHeight;
+      var clientWidth = this.$el.clientHeight;
+      var clientHeight = this.$el.clientHeight;
       var contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       var contentHeight = clientHeight + this.scroller.__maxScrollTop;
       var __enableScrollX = clientWidth < contentWidth && this.mergedOptions.scrollPanel.scrollingX;
@@ -2784,8 +2784,8 @@ function createTouchEvent(ctx) {
     document.onselectstart = null;
     ctx.$parent.hideBar();
     ctx.axisStartPos = 0;
-    eventCenter(document, 'touchmove', touchmove, 'off');
-    eventCenter(document, 'touchend', touchend, 'off');
+    eventCenter(document, 'touchmove', touchmove, false, 'off');
+    eventCenter(document, 'touchend', touchend, false, 'off');
   }
   return touchstart;
 }
@@ -3068,8 +3068,7 @@ function createPanel(h, vm) {
       scroll: vm.handleScroll
     },
     props: {
-      ops: vm.mergedOptions.scrollPanel,
-      state: vm.scrollPanel.state
+      ops: vm.mergedOptions.scrollPanel
     }
   };
   // set overflow only if the in native mode
@@ -3302,19 +3301,6 @@ function findValuesByMode(mode, vm) {
   }
   return axis;
 }
-/**
- *
- *
- * @param {any} type height or width
- * have been computed in this.useNumbericSize
- * @returns
- */
-function getClientSizeByType(type) {
-  var vuescroll = this.$el;
-  var isPercentStrategy = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
-  var clientSize = isPercentStrategy ? vuescroll['client' + (type.charAt(0).toUpperCase() + type.slice(1))] : extractNumberFromPx(this.vuescroll.state[type]);
-  return clientSize - 0;
-}
 
 var vueScrollCore = {
   name: 'vueScroll',
@@ -3374,16 +3360,6 @@ var vueScrollCore = {
           loadStage: 'deactive',
           height: '100%',
           width: '100%'
-        }
-      },
-      scrollPanel: {},
-      scrollContent: {},
-      rail: {
-        vRail: {
-          state: {}
-        },
-        hRail: {
-          state: {}
         }
       },
       bar: {
@@ -3477,12 +3453,6 @@ var vueScrollCore = {
     },
     refreshLoad: function refreshLoad() {
       return this.mergedOptions.vuescroll.pullRefresh.enable || this.mergedOptions.vuescroll.pushLoad.enable;
-    },
-    clientWidth: function clientWidth() {
-      return getClientSizeByType.call(this, 'width');
-    },
-    clientHeight: function clientHeight() {
-      return getClientSizeByType.call(this, 'height');
     }
   },
   methods: {
@@ -3557,8 +3527,8 @@ var vueScrollCore = {
 
       var vertical = {
         type: 'vertical'
-      },
-          horizontal = {
+      };
+      var horizontal = {
         type: 'horizontal'
       };
       if (this.mode == 'slide') {
