@@ -66,7 +66,7 @@ In general, vuescroll is more than a scrollbar, you can use it to make a carouse
 ## Online Demo & Documentation
 
 - You can find Demo under the root of this repo.
-- For detailed demo and documentation: Please visit [Offical Website](http://vuescrolljs.yvescoding.org/Demo/Basic/).
+- For detailed demo and documentation: Please visit [Offical Website](http://vuescrolljs.yvescoding.org/demo/).
 
 ## Features
 
@@ -76,7 +76,7 @@ In general, vuescroll is more than a scrollbar, you can use it to make a carouse
   - `slide` mode: Allow you slide by finger or mouse pointer, has ability to slide out of bountry, it is suitable for the users who use mobile phone.
   - `pure-native` mode: Use native scrollbar, it is suitable for PC and the users who like native scrollbar.
 - Ability to detect the size change of the content and automatically update scrollbar.
-- Ability to scroll smoothly by using [different animations](http://vuescrolljs.yvescoding.org/guide/Configuration.html#scrollpanel).
+- Ability to scroll smoothly by using [different animations](http://vuescrolljs.yvescoding.org/guide/configuration.html#scrollpanel).
 - Pull-to-Refresh (Pull top out of the boundaries to start refreshing list)
 - Push-to-Load (Push bottom out of the boundaries to start loading list)
 - Ability to zoom in or zoom out the scroll content.

@@ -1,5 +1,5 @@
 /*
-    * vuescroll 4.6.4
+    * vuescroll 4.6.5
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     */
@@ -2748,8 +2748,8 @@ function createMouseEvent(ctx) {
     document.onselectstart = null;
     ctx.$parent.hideBar();
     ctx.axisStartPos = 0;
-    eventCenter(document, 'mousemove', mousemove, 'off');
-    eventCenter(document, 'mouseup', mouseup, 'off');
+    eventCenter(document, 'mousemove', mousemove, false, 'off');
+    eventCenter(document, 'mouseup', mouseup, false, 'off');
   }
 
   return mousedown;
@@ -3729,7 +3729,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.4',
+  version: '4.6.5',
   refreshAll: refreshAll
 };
 

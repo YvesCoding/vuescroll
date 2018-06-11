@@ -67,7 +67,7 @@ Vuescroll 一个上手简单，配置丰富的一个 vue 滚动组件。
 ## 在线 Demo & 文档
 
 - 你可以浏览这个 repo 的根目录下的 Demo 文件夹。
-- 详细的 Demo, 文档: 请访问 [官方地址](http://vuescrolljs.yvescoding.org/zh/Demo/Basic/).
+- 详细的 Demo, 文档: 请访问 [官方地址](http://vuescrolljs.yvescoding.org/zh/demo/).
 
 ## 特点
 
@@ -77,7 +77,7 @@ Vuescroll 一个上手简单，配置丰富的一个 vue 滚动组件。
   - `slide` 模式: 允许你用手指或鼠标滑动内容， 可以滑动超出边界范围，适用于移动端端用户。
   - `pure-native`模式: 滚动条使用原生的滚动条，适用于喜欢原生滚动条的用户。
 - 检测滚动内容发生尺寸变化并自动更新滚动条。
-- 通过使用 [不同的滚动动画](http://vuescrolljs.yvescoding.org/zh/guide/Configuration.html#scrollpanel)来平滑滚动。
+- 通过使用 [不同的滚动动画](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#scrollpanel)来平滑滚动。
 - 下拉-刷新 (拉倒顶部并拉出边界开始刷新列表)
 - 上推-加载 (推到底部并且退出边界开始加载列表)
 - 能够放大或者缩小滚动的内容.
