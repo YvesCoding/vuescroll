@@ -1,3 +1,13 @@
+<a name="4.6.5"></a>
+## [4.6.5](https://github.com/YvesCoding/vuescroll/compare/v4.6.4...v4.6.5) (2018-06-11)
+
+
+### Bug Fixes
+
+* use currentTarget to replace target ([0611355](https://github.com/YvesCoding/vuescroll/commit/0611355))
+
+
+
 <a name="4.6.4"></a>
 ## [4.6.4](https://github.com/YvesCoding/vuescroll/compare/v4.6.1...v4.6.4) (2018-06-06)
 
