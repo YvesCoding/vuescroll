@@ -10,17 +10,6 @@
 
 English Version | [中文版](https://github.com/YvesCoding/vuescroll/blob/dev/README-ZH.md)
 
-- [Introduction](#introduction)
-- [Preview](#preview)
-- [Online Demo & Documentation](#online-demo--documentation)
-- [Features](#features)
-- [Quick Start](#quick-start)
-- [General FAQ](#general-faq)
-- [Changelog](#changelog)
-- [Contribution](#contribution)
-- [Inspired By](#inspired-by)
-- [License](#license)
-
 ## Introduction
 
 Vuescroll is a vue-scrolling-component with a easy getting-start and full configuration.
