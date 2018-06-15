@@ -11,6 +11,9 @@
 English Version | [中文版](https://github.com/YvesCoding/vuescroll/blob/dev/README-ZH.md)
 
 > A scrolling plugin based on Vue.js, which has 3 modes for PC and mobile phone.
+> [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
+
+## Preview
 
 <p align="center">
 <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.gif?raw=true" style="max-width:100%"/>

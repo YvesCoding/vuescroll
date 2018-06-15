@@ -11,6 +11,9 @@
 [English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
 > 一个基于 Vue 的滚动插件，有 3 种模式用于适配 PC 和手机。
+> [vuescrolljs.yvescoding.org/zh](http://vuescrolljs.yvescoding.org/)
+
+## 预览
 
 <p align="center">
 <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.gif?raw=true" style="max-width:100%"/>
