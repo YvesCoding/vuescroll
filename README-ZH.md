@@ -24,8 +24,7 @@
 
 ## 在线 Demo & 文档
 
-- 你可以浏览这个 repo 的根目录下的 Demo 文件夹。
-- 详细的 Demo, 文档: 请访问 [官方地址](http://vuescrolljs.yvescoding.org/zh/demo/).
+[官方地址](http://vuescrolljs.yvescoding.org/zh/demo/)
 
 ## 特点
 

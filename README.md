@@ -24,8 +24,7 @@ A scrolling plugin based on Vue.js, which has 3 modes for PC and mobile phone.
 
 ## Online Demo & Documentation
 
-- You can find Demo under the root of this repo.
-- For detailed demo and documentation: Please visit [Offical Website](http://vuescrolljs.yvescoding.org/demo/).
+[Offical Website](http://vuescrolljs.yvescoding.org/demo/)
 
 ## Features
 
