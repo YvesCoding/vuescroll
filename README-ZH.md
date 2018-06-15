@@ -10,13 +10,7 @@
 
 [English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
-## 介绍
-
-Vuescroll 一个上手简单，配置丰富的一个 vue 滚动组件。
-
-它的原理是创建一些 div 用于包裹要滚动的内容，充当滚动条，然后通过操作 div 的 `scrollTop`，`scrollLeft` 来完成被创建的 div 完成滚动。
-
-设计它的目的是用来美化和增强你的滚动条。
+一个基于 Vue 的滚动插件，有 3 种模式可以适配 PC 和手机。
 
 <p align="center">
 <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.gif?raw=true" style="max-width:100%"/>
