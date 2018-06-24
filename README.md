@@ -10,7 +10,7 @@
 
 English Version | [中文版](https://github.com/YvesCoding/vuescroll/blob/dev/README-ZH.md)
 
-> A beautiful scrollbar based on Vue.js for PC and mobile..
+> A beautiful scrollbar based on Vue.js for PC and mobile.
 > [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
 
 ## Preview

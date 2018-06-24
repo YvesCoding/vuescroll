@@ -1,6 +1,7 @@
 module.exports = {
   root: true,
   extends: 'eslint:recommended',
+  parser: 'babel-eslint',
   rules: {
     indent: ['error', 2, { MemberExpression: 'off' }],
     semi: ['error', 'always'],

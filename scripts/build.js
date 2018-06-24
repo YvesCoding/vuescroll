@@ -41,7 +41,7 @@ function buildEntry(config) {
       })
     );
   }
-
+  // eslint-disable-next-line
   return rollup.rollup(config).then(async bundle => {
     const { code } = await bundle.generate(output);
     const fileName = path.basename(output.file);
