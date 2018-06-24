@@ -302,7 +302,7 @@ describe('api', () => {
             w: 100,
             h: 100
           },
-          'style="display:none"',
+          '',
           3
         ),
         data: {
@@ -333,7 +333,7 @@ describe('api', () => {
             w: 100,
             h: 100
           },
-          'style="display:none"',
+          '',
           3
         ),
         data: {
@@ -356,34 +356,33 @@ describe('api', () => {
     // create two instances to test refreshAll api
     const vs0 = vm[0].$refs['vs'];
     const vs1 = vm[1].$refs['vs'];
-
+    vs0.$el.style.display = 'none';
+    vs1.$el.style.display = 'none';
+    _vs.refreshAll();
     startSchedule()
       .then(r => {
-        let vs = document.querySelector('.vuescroll');
-        expect(vs).toBe(null);
+        let vsAmout = document.querySelectorAll('.vuescroll-vertical-rail')
+          .length;
+        expect(vsAmout).toBe(0);
         vs0.$el.style.display = 'block';
-        vs1.$el.style.display = 'block';
-        r();
-      })
-      .then(r => {
-        let vs = document.querySelectorAll('.vue-scroll');
-        expect(vs.length).toBe(2);
-        let hRails = document.querySelector('.vuescroll-horizontal-rail');
-        let vRails = document.querySelector('.vuescroll-vertical-rail');
-        expect(hRails).toBe(null);
-        expect(vRails).toBe(null);
         vs0.refresh();
         r();
       })
       .then(r => {
-        let hRail = vs0.$el.querySelector('.vuescroll-horizontal-rail');
-        expect(hRail).not.toBe(null);
+        let hRails = document.querySelectorAll('.vuescroll-horizontal-rail');
+        let vRails = document.querySelectorAll('.vuescroll-vertical-rail');
+        expect(hRails.length).toBe(1);
+        expect(vRails.length).toBe(1);
+        vs1.$el.style.display = 'block';
+
         _vs.refreshAll();
         r();
       })
       .then(r => {
-        let hRail = vs1.$el.querySelector('.vuescroll-horizontal-rail');
-        expect(hRail).not.toBe(null);
+        let hRails = document.querySelectorAll('.vuescroll-horizontal-rail');
+        let vRails = document.querySelectorAll('.vuescroll-vertical-rail');
+        expect(hRails.length).toBe(2);
+        expect(vRails.length).toBe(2);
         done();
         r();
       });

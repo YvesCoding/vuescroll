@@ -1,0 +1,105 @@
+/*
+    * Vuescroll v4.6.6
+    * (c) 2018-2018 Yi(Yves) Wang
+    * Released under the MIT License
+    * Github Link: https://github.com/YvesCoding/vuescroll
+    */
+.vuescroll {
+  position: relative;
+  overflow: hidden;
+
+  &-panel {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    .vuescroll-content {
+      position: relative;
+      height: 100%;
+    }
+    &.__hidebar::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }
+    &.__slide {
+      transform-origin: left top 0px;
+      user-select: none;
+      min-width: 100%;
+      min-height: 100%;
+    }
+  }
+
+  &-content {
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  &-vertical-rail {
+    position: absolute;
+    z-index: 1;
+    top: 2px;
+    bottom: 2px;
+    .vuescroll-vertical-bar {
+      top: 0;
+      width: 100%;
+      cursor: pointer;
+      position: relative;
+      transition: opacity 0.5s;
+      user-select: none;
+      border-radius: inherit;
+    }
+  }
+  &-horizontal-rail {
+    position: absolute;
+    z-index: 1;
+    right: 2px;
+    left: 2px;
+    .vuescroll-horizontal-bar {
+      left: 0;
+      height: 100%;
+      cursor: pointer;
+      position: relative;
+      transition: opacity 0.5s;
+      user-select: none;
+      border-radius: inherit;
+    }
+  }
+
+  &-refresh {
+    position: absolute;
+    width: 100%;
+    color: black;
+    height: 50px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 50px;
+  }
+  &-refresh svg {
+    margin-right: 10px;
+    width: 25px;
+    height: 25px;
+    vertical-align: sub;
+  }
+  &-refresh svg path,
+  &-refresh svg rect {
+    fill: #ff6700;
+  }
+  &-load {
+    position: absolute;
+    width: 100%;
+    color: black;
+    height: 50px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 50px;
+  }
+  &-load svg {
+    margin-right: 10px;
+    width: 25px;
+    height: 25px;
+    vertical-align: sub;
+  }
+  &-load svg path,
+  &-load svg rect {
+    fill: #ff6700;
+  }
+}

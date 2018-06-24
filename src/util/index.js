@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 export function deepCopy(source, target) {
   target = (typeof target === 'object' && target) || {};
   for (var key in source) {
@@ -70,89 +71,6 @@ export function getGutter() {
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
   return scrollBarWidth;
-}
-
-const doneUtil = {
-  refreshDomStyle: false,
-  loadDomStyle: false,
-  hide: false
-};
-export function hideSystemBar() {
-  /* istanbul ignore next */
-  {
-    if (doneUtil['hide']) {
-      return;
-    }
-    doneUtil['hide'] = true;
-    let styleDom = document.createElement('style');
-    styleDom.type = 'text/css';
-    styleDom.innerHTML =
-      '.vuescroll-panel::-webkit-scrollbar{width:0;height:0}';
-    document
-      .getElementsByTagName('HEAD')
-      .item(0)
-      .appendChild(styleDom);
-  }
-}
-
-const styleMap = {};
-
-styleMap['refreshDomStyle'] = `
-.vuescroll-refresh {
-    position:absolute;
-    width: 100%;
-    color: black;
-    height: 50px;
-    text-align: center;
-    font-size: 16px;
-    line-height: 50px;
-}
-.vuescroll-refresh svg {
-    margin-right: 10px;
-    width: 25px;
-    height: 25px;
-    vertical-align: sub;
-}
-.vuescroll-refresh svg path,
-.vuescroll-refresh svg rect{
-fill: #FF6700;
-}
-`;
-
-styleMap['loadDomStyle'] = `
-.vuescroll-load {
-    position:absolute;
-    width: 100%;
-    color: black;
-    height: 50px;
-    text-align: center;
-    font-size: 16px;
-    line-height: 50px;
-}
-.vuescroll-load svg {
-    margin-right: 10px;
-    width: 25px;
-    height: 25px;
-    vertical-align: sub;
-}
-.vuescroll-load svg path,
-.vuescroll-load svg rect{
-fill: #FF6700;
-}
-`;
-
-export function createDomStyle(styleType) {
-  if (doneUtil[styleType]) {
-    return;
-  }
-  doneUtil[styleType] = true;
-  let styleDom = document.createElement('style');
-  styleDom.type = 'text/css';
-  styleDom.innerHTML = styleMap[styleType];
-  document
-    .getElementsByTagName('HEAD')
-    .item(0)
-    .appendChild(styleDom);
 }
 
 export function eventCenter(
@@ -247,4 +165,52 @@ export function isIE() /* istanbul ignore next */ {
     agent.indexOf('trident') !== -1 ||
     agent.indexOf(' edge/') !== -1
   );
+}
+
+export function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
+  parentVnode = parentVnode[0] ? parentVnode[0] : parentVnode;
+  const tag =
+    (parentVnode.componentOptions && parentVnode.componentOptions.tag) ||
+    parentVnode.tag;
+  // if (!Array.isArray(childVNode)) {
+  //   childVNode = [childVNode];
+  // }
+
+  // // Remove null node
+  // for (let index = 0; index < childVNode.length; index++) {
+  //   const element = childVNode[index];
+  //   if (!element) {
+  //     childVNode.splice(index, 1);
+  //     index--;
+  //   }
+  // }
+  const _data = parentVnode.componentOptions || parentVnode.data || {};
+
+  // If component, use `nativeOn` intead.
+  if (parentVnode.componentOptions) {
+    data.nativeOn = data.on;
+    _data.props = _data.propsData;
+
+    delete data.on;
+    delete data.propsData;
+  }
+
+  return h(
+    tag,
+    {
+      ...data,
+      ..._data
+    },
+    childVNode
+  );
+}
+
+export function getRealParent(ctx) {
+  let parent = ctx.$parent;
+
+  if (!parent._isVuescrollRoot && parent) {
+    parent = parent.$parent;
+  }
+
+  return parent;
 }

@@ -2,13 +2,16 @@
 const resolveNode = require('rollup-plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
 const replace = require('rollup-plugin-replace');
+const scss = require('rollup-plugin-scss');
+
 const path = require('path');
 const version = process.env.VERSION || require('../package.json').version;
 
 const banner = `/*
-    * vuescroll ${version}
+    * Vuescroll v${version}
     * (c) 2018-${new Date().getFullYear()} Yi(Yves) Wang
     * Released under the MIT License
+    * Github Link: https://github.com/YvesCoding/vuescroll
     */
    `;
 
@@ -26,47 +29,20 @@ const resolve = p => {
 const root = aliases.src;
 
 const builds = {
-  'web-dev': {
+  umd: {
     entry: resolve(root + '/index.js'),
     dest: resolve('dist/vuescroll.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
-  'web-prod': {
+  'umd-min': {
     entry: resolve(root + '/index.js'),
     dest: resolve('dist/vuescroll.min.js'),
     format: 'umd',
     external: ['vue'],
-    banner
-  },
-  'esm-dev': {
-    entry: resolve(root + '/index.js'),
-    dest: resolve('dist/vuescroll.esm.js'),
-    format: 'es',
-    external: ['vue'],
-    banner
-  },
-  'esm-pro': {
-    entry: resolve(root + '/index.js'),
-    dest: resolve('dist/vuescroll.esm.min.js'),
-    format: 'es',
-    external: ['vue'],
-    banner
-  },
-  'cjs-dev': {
-    entry: resolve(root + '/index.js'),
-    dest: resolve('dist/vuescroll.common.js'),
-    format: 'cjs',
-    external: ['vue'],
-    banner
-  },
-  'cjs-pro': {
-    entry: resolve(root + '/index.js'),
-    dest: resolve('dist/vuescroll.common.min.js'),
-    format: 'cjs',
-    external: ['vue'],
-    banner
+    banner,
+    sourcemap: true
   }
 };
 
@@ -82,10 +58,15 @@ function genConfig(name) {
       file: opts.dest,
       format: opts.format,
       banner: opts.banner,
-      name: opts.moduleName || 'vuescroll'
+      name: opts.moduleName || 'vuescroll',
+      sourcemap: opts.sourcemap
     },
     plugins: [
       resolveNode(),
+      scss({
+        output: 'dist/vuescroll.css',
+        outputStyle: 'compressed'
+      }),
       babel({
         exclude: 'node_modules/**' // only transpile our source code
       }),
@@ -95,12 +76,6 @@ function genConfig(name) {
       })
     ]
   };
-
-  Object.defineProperty(config, '_name', {
-    enumerable: false,
-    value: name
-  });
-
   return config;
 }
 

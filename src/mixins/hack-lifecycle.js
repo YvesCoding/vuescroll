@@ -44,6 +44,9 @@ export default {
   },
   created() {
     hackPropsData.call(this);
+
+    this._isVuescrollRoot = true;
+
     this.renderError = validateOptions(this.mergedOptions);
   }
 };

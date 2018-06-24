@@ -1,4 +1,8 @@
-import { deepMerge, isSupportGivenStyle } from '../../util';
+import {
+  deepMerge,
+  isSupportGivenStyle,
+  insertChildrenIntoSlot
+} from '../../util';
 // scrollContent
 export default {
   name: 'scrollContent',
@@ -12,11 +16,9 @@ export default {
       }
     }
   },
-  render(h, { props, slots }) {
+  render(h, { props, slots, parent }) {
     let style = deepMerge(props.state.style, {});
     style.position = 'relative';
-    style['min-width'] = '100%';
-    style['min-height'] = '100%';
     let width = isSupportGivenStyle('width', 'fit-content');
     if (width) {
       style.width = width;
@@ -31,17 +33,22 @@ export default {
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
     }
-    return h(
-      props.ops.tag,
-      {
-        style: style,
-        ref: 'scrollContent',
-        class: 'vuescroll-content',
-        props: props.ops.props,
-        attrs: props.ops.attrs
-      },
-      slots().default
-    );
+
+    const propsData = {
+      style: style,
+      ref: 'scrollContent',
+      class: 'vuescroll-content'
+    };
+    const customContent = parent.$slots['scroll-content'];
+    if (customContent) {
+      return insertChildrenIntoSlot(
+        h,
+        customContent,
+        slots().default,
+        propsData
+      );
+    }
+    return <div {...propsData}>{slots().default}</div>;
   }
 };
 

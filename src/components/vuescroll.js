@@ -9,21 +9,25 @@ import scrollContent from './child-components/vuescroll-content';
 import scrollPanel, { createPanel } from './child-components/vuescroll-panel';
 
 import { smallChangeArray } from '../shared/constants';
-import { isChildInParent, isSupportTouch } from '../util';
+import {
+  isChildInParent,
+  isSupportTouch,
+  insertChildrenIntoSlot
+} from '../util';
 
 function findValuesByMode(mode, vm) {
   let axis = {};
   switch (mode) {
-  case 'native':
-  case 'pure-native':
-    axis = {
-      x: vm.scrollPanelElm.scrollLeft,
-      y: vm.scrollPanelElm.scrollTop
-    };
-    break;
-  case 'slide':
-    axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-    break;
+    case 'native':
+    case 'pure-native':
+      axis = {
+        x: vm.scrollPanelElm.scrollLeft,
+        y: vm.scrollPanelElm.scrollTop
+      };
+      break;
+    case 'slide':
+      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+      break;
   }
   return axis;
 }
@@ -31,7 +35,9 @@ function findValuesByMode(mode, vm) {
 const vueScrollCore = {
   name: 'vueScroll',
   components: { bar, scrollContent, scrollPanel },
-  props: { ops: { type: Object } },
+  props: {
+    ops: { type: Object }
+  },
   mixins: [hackLifecycle, api, nativeMode, slideMode],
   mounted() {
     if (!this.renderError) {
@@ -113,13 +119,11 @@ const vueScrollCore = {
     // vuescroll data
     const vuescrollData = {
       style: {
-        position: 'relative',
         height: vm.vuescroll.state.height,
         width: vm.vuescroll.state.width,
-        padding: 0,
-        overflow: 'hidden'
+        padding: 0
       },
-      class: 'vue-scroll'
+      class: 'vuescroll'
     };
     if (!isSupportTouch()) {
       vuescrollData.on = {
@@ -152,17 +156,23 @@ const vueScrollCore = {
         }
       };
     }
-    return (
-      <div {...vuescrollData}>
-        {createPanel(h, vm)}
-        {createBar(h, vm, 'vertical')}
-        {createBar(h, vm, 'horizontal')}
-      </div>
-    );
+    const customContainer = this.$slots['scroll-container'];
+    const ch = [
+      createPanel(h, vm),
+      createBar(h, vm, 'vertical'),
+      createBar(h, vm, 'horizontal')
+    ];
+
+    if (customContainer) {
+      return insertChildrenIntoSlot(h, customContainer, ch, vuescrollData);
+    }
+    return <div {...vuescrollData}>{ch}</div>;
   },
   computed: {
     scrollPanelElm() {
-      return this.$refs.scrollPanel.$el;
+      return this.$refs['scrollPanel']._isVue
+        ? this.$refs['scrollPanel'].$el
+        : this.$refs['scrollPanel'];
     },
     scrollContentElm() {
       return this.$refs['scrollContent']._isVue

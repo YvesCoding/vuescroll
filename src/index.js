@@ -3,6 +3,9 @@ import vuescroll from './components/vuescroll';
 import GCF from './shared/global-config';
 import { deepMerge } from './util';
 import { refreshAll } from './mixins/api';
+
+import './style/vuescroll.scss';
+
 const Vuescroll = {
   install(Vue) {
     // registry vuescroll

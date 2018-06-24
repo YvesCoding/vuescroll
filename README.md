@@ -10,7 +10,7 @@
 
 English Version | [中文版](https://github.com/YvesCoding/vuescroll/blob/dev/README-ZH.md)
 
-> A scrolling plugin based on Vue.js, which has 3 modes for PC and mobile phone.
+> A beautiful scrollbar based on Vue.js for PC and mobile..
 > [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
 
 ## Preview
@@ -62,6 +62,8 @@ npm install vuescroll -S
 ```javascript
 import Vue from 'vue';
 import vuescroll from 'vuescroll';
+// Note: from 4.6.6, you need to import the .css file
+import 'vuescroll/dist/vuescroll.css';
 
 Vue.use(vuescroll);
 
@@ -95,13 +97,17 @@ const vm = new Vue({
 </div>
 ```
 
-### API Reference
+### API
 
-[Vuescroll API](http://vuescrolljs.yvescoding.org/guide/api.html)
+[API](http://vuescrolljs.yvescoding.org/guide/api.html)
 
-### Event Reference
+### Event
 
-[Vuescroll Event](http://vuescrolljs.yvescoding.org/guide/event.html)
+[Event](http://vuescrolljs.yvescoding.org/guide/event.html)
+
+### Slot
+
+[Slot](http://vuescrolljs.yvescoding.org/guide/slot.html)
 
 ## Changelog
 

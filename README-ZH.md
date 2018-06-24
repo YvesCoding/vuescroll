@@ -10,7 +10,7 @@
 
 [English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
-> 一个基于 Vue 的滚动插件，有 3 种模式用于适配 PC 和手机。
+> 一个基于 Vue.js 的漂亮滚动条， 可以适用于 pc 和手机。
 > [vuescrolljs.yvescoding.org/zh](http://vuescrolljs.yvescoding.org/)
 
 ## 预览
@@ -62,7 +62,8 @@ npm install vuescroll -S
 ```javascript
 import Vue from 'vue';
 import vuescroll from 'vuescroll';
-
+// 注意： 从4.6.6开始， 你需要引入 .css 文件了
+import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 
 const vm = new Vue({
@@ -95,13 +96,17 @@ const vm = new Vue({
 </div>
 ```
 
-### API 参考
+### API
 
-[Vuescroll API](http://vuescrolljs.yvescoding.org/zh/guide/api.html)
+[API](http://vuescrolljs.yvescoding.org/zh/guide/api.html)
 
-### Event 参考
+### Event
 
-[Vuescroll Event](http://vuescrolljs.yvescoding.org/zh/guide/event.html)
+[Event](http://vuescrolljs.yvescoding.org/zh/guide/event.html)
+
+### Slot
+
+[Slot](http://vuescrolljs.yvescoding.org/zh/guide/slot.html)
 
 ## 变更日志
 

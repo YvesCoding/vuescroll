@@ -1,7 +1,8 @@
 /*
-    * vuescroll 4.6.5
+    * Vuescroll v4.6.6
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
+    * Github Link: https://github.com/YvesCoding/vuescroll
     */
    
 (function (global, factory) {
@@ -11,6 +12,8 @@
 }(this, (function (Vue) { 'use strict';
 
 Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -80,42 +83,6 @@ function getGutter() {
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
   return scrollBarWidth;
-}
-
-var doneUtil = {
-  refreshDomStyle: false,
-  loadDomStyle: false,
-  hide: false
-};
-function hideSystemBar() {
-  /* istanbul ignore next */
-  {
-    if (doneUtil['hide']) {
-      return;
-    }
-    doneUtil['hide'] = true;
-    var styleDom = document.createElement('style');
-    styleDom.type = 'text/css';
-    styleDom.innerHTML = '.vuescroll-panel::-webkit-scrollbar{width:0;height:0}';
-    document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
-  }
-}
-
-var styleMap = {};
-
-styleMap['refreshDomStyle'] = '\n.vuescroll-refresh {\n    position:absolute;\n    width: 100%;\n    color: black;\n    height: 50px;\n    text-align: center;\n    font-size: 16px;\n    line-height: 50px;\n}\n.vuescroll-refresh svg {\n    margin-right: 10px;\n    width: 25px;\n    height: 25px;\n    vertical-align: sub;\n}\n.vuescroll-refresh svg path,\n.vuescroll-refresh svg rect{\nfill: #FF6700;\n}\n';
-
-styleMap['loadDomStyle'] = '\n.vuescroll-load {\n    position:absolute;\n    width: 100%;\n    color: black;\n    height: 50px;\n    text-align: center;\n    font-size: 16px;\n    line-height: 50px;\n}\n.vuescroll-load svg {\n    margin-right: 10px;\n    width: 25px;\n    height: 25px;\n    vertical-align: sub;\n}\n.vuescroll-load svg path,\n.vuescroll-load svg rect{\nfill: #FF6700;\n}\n';
-
-function createDomStyle(styleType) {
-  if (doneUtil[styleType]) {
-    return;
-  }
-  doneUtil[styleType] = true;
-  var styleDom = document.createElement('style');
-  styleDom.type = 'text/css';
-  styleDom.innerHTML = styleMap[styleType];
-  document.getElementsByTagName('HEAD').item(0).appendChild(styleDom);
 }
 
 function eventCenter(dom, eventName, hander) {
@@ -192,6 +159,45 @@ function isSupportGivenStyle(property, value) {
 function isIE() /* istanbul ignore next */{
   var agent = navigator.userAgent.toLowerCase();
   return agent.indexOf('msie') !== -1 || agent.indexOf('trident') !== -1 || agent.indexOf(' edge/') !== -1;
+}
+
+function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
+  parentVnode = parentVnode[0] ? parentVnode[0] : parentVnode;
+  var tag = parentVnode.componentOptions && parentVnode.componentOptions.tag || parentVnode.tag;
+  // if (!Array.isArray(childVNode)) {
+  //   childVNode = [childVNode];
+  // }
+
+  // // Remove null node
+  // for (let index = 0; index < childVNode.length; index++) {
+  //   const element = childVNode[index];
+  //   if (!element) {
+  //     childVNode.splice(index, 1);
+  //     index--;
+  //   }
+  // }
+  var _data = parentVnode.componentOptions || parentVnode.data || {};
+
+  // If component, use `nativeOn` intead.
+  if (parentVnode.componentOptions) {
+    data.nativeOn = data.on;
+    _data.props = _data.propsData;
+
+    delete data.on;
+    delete data.propsData;
+  }
+
+  return h(tag, _extends({}, data, _data), childVNode);
+}
+
+function getRealParent(ctx) {
+  var parent = ctx.$parent;
+
+  if (!parent._isVuescrollRoot && parent) {
+    parent = parent.$parent;
+  }
+
+  return parent;
 }
 
 // detect content size change
@@ -307,11 +313,7 @@ var GCF = {
   },
   //
   scrollContent: {
-    // customize tag of scrollContent
-    tag: 'div',
-    padding: false,
-    props: {},
-    attrs: {}
+    padding: false
   },
   //
   rail: {
@@ -425,6 +427,9 @@ var hackLifecycle = {
   },
   created: function created() {
     hackPropsData.call(this);
+
+    this._isVuescrollRoot = true;
+
     this.renderError = validateOptions(this.mergedOptions);
   }
 };
@@ -2475,7 +2480,7 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
   return destroy;
 }
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends$1 = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /**
  * @description refresh and load callback
@@ -2586,7 +2591,7 @@ var slideMode = {
         _this.updateBarStateAndEmitEvent('handle-scroll-complete');
       };
       // Initialize Scroller
-      this.scroller = new Scroller(render(this.scrollPanelElm, window, 'px'), _extends({}, this.mergedOptions.vuescroll.scroller, {
+      this.scroller = new Scroller(render(this.scrollPanelElm, window, 'px'), _extends$1({}, this.mergedOptions.vuescroll.scroller, {
         zooming: zooming,
         scrollingY: scrollingY,
         scrollingX: scrollingX && !this.refreshLoad,
@@ -2689,31 +2694,27 @@ var slideMode = {
 
 var scrollMap = {
   vertical: {
-    bar: {
-      size: 'height',
-      opsSize: 'width',
-      posName: 'top',
-      opposName: 'bottom',
-      page: 'pageY',
-      scroll: 'scrollTop',
-      scrollSize: 'scrollHeight',
-      offset: 'offsetHeight',
-      client: 'clientY'
-    },
+    size: 'height',
+    opsSize: 'width',
+    posName: 'top',
+    opposName: 'bottom',
+    page: 'pageY',
+    scroll: 'scrollTop',
+    scrollSize: 'scrollHeight',
+    offset: 'offsetHeight',
+    client: 'clientY',
     axis: 'Y'
   },
   horizontal: {
-    bar: {
-      size: 'width',
-      opsSize: 'height',
-      posName: 'left',
-      opposName: 'right',
-      page: 'pageX',
-      scroll: 'scrollLeft',
-      scrollSize: 'scrollWidth',
-      offset: 'offsetWidth',
-      client: 'clientX'
-    },
+    size: 'width',
+    opsSize: 'height',
+    posName: 'left',
+    opposName: 'right',
+    page: 'pageX',
+    scroll: 'scrollLeft',
+    scrollSize: 'scrollWidth',
+    offset: 'offsetWidth',
+    client: 'clientX',
     axis: 'X'
   }
 };
@@ -2726,6 +2727,8 @@ var extractRgbColor = /rgb\((.*)\)/;
 
 /* istanbul ignore next */
 function createMouseEvent(ctx) {
+  var parent = getRealParent(ctx);
+
   function mousedown(e) {
     e.stopImmediatePropagation();
     document.onselectstart = function () {
@@ -2743,12 +2746,12 @@ function createMouseEvent(ctx) {
     }
     var delta = e[ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
     var percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
-    ctx.$parent.scrollTo(_defineProperty$1({}, ctx.axis.toLowerCase(), ctx.parent['scrollPanel'].$el[ctx.bar.scrollSize] * percent), false);
+    parent.scrollTo(_defineProperty$1({}, ctx.bar.axis.toLowerCase(), parent.$refs['scrollPanel'].$el[ctx.bar.scrollSize] * percent), false);
   }
   function mouseup() {
     ctx.$emit('setBarClick', false);
     document.onselectstart = null;
-    ctx.$parent.hideBar();
+    parent.hideBar();
     ctx.axisStartPos = 0;
     eventCenter(document, 'mousemove', mousemove, false, 'off');
     eventCenter(document, 'mouseup', mouseup, false, 'off');
@@ -2777,7 +2780,7 @@ function createTouchEvent(ctx) {
     }
     var delta = e.touches[0][ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
     var percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
-    ctx.$parent.scrollTo(_defineProperty$1({}, ctx.axis.toLowerCase(), ctx.parent['scrollPanel'].$el[ctx.bar.scrollSize] * percent), false);
+    parent.scrollTo(_defineProperty$1({}, ctx.bar.axis.toLowerCase(), parent.$refs['scrollPanel'].$el[ctx.bar.scrollSize] * percent), false);
   }
   function touchend() {
     ctx.$emit('setBarClick', false);
@@ -2811,17 +2814,20 @@ function getRgbAColor(color, opacity) {
 }
 
 /* istanbul ignore next */
-function handleClickTrack(e, _ref, parentRef, type, parent) {
-  var client = _ref.client,
-      offset = _ref.offset,
-      posName = _ref.posName,
-      scrollSize = _ref.scrollSize;
+function handleClickTrack(e) {
+  var ctx = this;
+  var parent = getRealParent(this);
+  var _ctx$bar = ctx.bar,
+      client = _ctx$bar.client,
+      offset = _ctx$bar.offset,
+      posName = _ctx$bar.posName,
+      axis = _ctx$bar.axis;
 
-  var inner = parentRef[type + 'Bar'].$refs['inner'];
+  var inner = ctx.$refs['inner'];
   var barOffset = inner[offset];
   var percent = (e[client] - e.currentTarget.getBoundingClientRect()[posName] - barOffset / 2) / e.currentTarget[offset];
-  var pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
-  parent.scrollTo(_defineProperty$1({}, scrollMap[type].axis.toLowerCase(), pos));
+
+  parent.scrollTo(_defineProperty$1({}, axis.toLowerCase(), percent * 100 + '%'));
 }
 
 var bar = {
@@ -2842,24 +2848,15 @@ var bar = {
   },
   computed: {
     bar: function bar() {
-      return scrollMap[this.type].bar;
-    },
-    axis: function axis() {
-      /* istanbul ignore next */
-      return scrollMap[this.type].axis;
-    },
-    parent: function parent() {
-      /* istanbul ignore next */
-      return this.$parent.$refs;
+      return scrollMap[this.type];
     }
   },
   render: function render(h) {
     var _style, _style2;
 
     var vm = this;
-    var parentRef = vm.$parent.$refs;
     var railBackgroundColor = getRgbAColor(vm.ops.rail.background, vm.ops.rail.opacity);
-    var style = (_style = {}, _defineProperty$1(_style, vm.bar.posName, 0), _defineProperty$1(_style, vm.bar.opsSize, '100%'), _defineProperty$1(_style, vm.bar.size, vm.state.size), _defineProperty$1(_style, 'borderRadius', 'inherit'), _defineProperty$1(_style, 'background', vm.ops.bar.background), _defineProperty$1(_style, 'opacity', vm.state.opacity), _defineProperty$1(_style, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _defineProperty$1(_style, 'cursor', 'pointer'), _defineProperty$1(_style, 'position', 'relative'), _defineProperty$1(_style, 'transition', 'opacity .5s'), _defineProperty$1(_style, 'userSelect', 'none'), _style);
+    var style = (_style = {}, _defineProperty$1(_style, vm.bar.size, vm.state.size), _defineProperty$1(_style, 'background', vm.ops.bar.background), _defineProperty$1(_style, 'opacity', vm.state.opacity), _defineProperty$1(_style, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _style);
     var bar = {
       style: style,
       class: 'vuescroll-' + vm.type + '-bar',
@@ -2886,14 +2883,12 @@ var bar = {
     var rail = {
       class: 'vuescroll-' + vm.type + '-rail',
       style: (_style2 = {
-        position: 'absolute',
-        zIndex: 1,
         borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor
-      }, _defineProperty$1(_style2, vm.bar.opsSize, vm.ops.rail[vm.bar.opsSize]), _defineProperty$1(_style2, vm.bar.posName, '2px'), _defineProperty$1(_style2, vm.bar.opposName, '2px'), _defineProperty$1(_style2, vm.ops.rail.pos, '2px'), _style2),
+      }, _defineProperty$1(_style2, vm.bar.opsSize, vm.ops.rail[vm.bar.opsSize]), _defineProperty$1(_style2, vm.ops.rail.pos, '2px'), _style2),
       on: {
         click: function click(e) /* istanbul ignore next */{
-          handleClickTrack(e, vm.bar, parentRef, vm.type, vm.$parent);
+          handleClickTrack.call(vm, e);
         }
       }
     };
@@ -2954,12 +2949,11 @@ var scrollContent = {
   },
   render: function render(h, _ref) {
     var props = _ref.props,
-        slots = _ref.slots;
+        slots = _ref.slots,
+        parent = _ref.parent;
 
     var style = deepMerge(props.state.style, {});
     style.position = 'relative';
-    style['min-width'] = '100%';
-    style['min-height'] = '100%';
     var width = isSupportGivenStyle('width', 'fit-content');
     if (width) {
       style.width = width;
@@ -2974,13 +2968,21 @@ var scrollContent = {
     if (props.ops.padding) {
       style[props.ops.paddPos] = props.ops.paddValue;
     }
-    return h(props.ops.tag, {
+
+    var propsData = {
       style: style,
       ref: 'scrollContent',
-      class: 'vuescroll-content',
-      props: props.ops.props,
-      attrs: props.ops.attrs
-    }, slots().default);
+      class: 'vuescroll-content'
+    };
+    var customContent = parent.$slots['scroll-content'];
+    if (customContent) {
+      return insertChildrenIntoSlot(h, customContent, slots().default, propsData);
+    }
+    return h(
+      'div',
+      propsData,
+      [slots().default]
+    );
   }
 };
 
@@ -3016,6 +3018,7 @@ var scrollPanel = {
     updateInitialScroll: function updateInitialScroll() {
       var x = 0;
       var y = 0;
+      var parent = getRealParent(this);
       if (this.ops.initialScrollX) {
         x = this.ops.initialScrollX;
       }
@@ -3023,7 +3026,7 @@ var scrollPanel = {
         y = this.ops.initialScrollY;
       }
       if (x || y) {
-        this.$parent.scrollTo({ x: x, y: y });
+        parent.scrollTo({ x: x, y: y });
       }
     }
   },
@@ -3041,6 +3044,11 @@ var scrollPanel = {
     var data = {
       class: ['vuescroll-panel']
     };
+    var parent = getRealParent(this);
+    var customPanel = parent.$slots['scroll-panel'];
+    if (customPanel) {
+      return insertChildrenIntoSlot(h, customPanel, this.$slots.default, data);
+    }
     return h(
       'div',
       data,
@@ -3060,10 +3068,8 @@ function createPanel(h, vm) {
   // scrollPanel data start
   var scrollPanelData = {
     ref: 'scrollPanel',
-    style: {
-      position: 'relative',
-      height: '100%'
-    },
+    style: {},
+    class: [],
     nativeOn: {
       scroll: vm.handleScroll
     },
@@ -3087,9 +3093,8 @@ function createPanel(h, vm) {
     }
     var gutter = getGutter();
     /* istanbul ignore if */
-    if (!gutter) {
-      hideSystemBar();
-      scrollPanelData.style.height = '100%';
+    if (!gutter && vm.mergedOptions.vuescroll.mode != 'pure-native') {
+      scrollPanelData.class.push('__hidebar');
     } else {
       // hide system bar by use a negative value px
       // gutter should be 0 when manually disable scrollingX #14
@@ -3104,14 +3109,7 @@ function createPanel(h, vm) {
     scrollPanelData.style.transformOrigin = '';
     scrollPanelData.style.transform = '';
   } else if (vm.mode == 'slide') {
-    scrollPanelData.style['transformOrigin'] = 'left top 0px';
-    scrollPanelData.style['userSelect'] = 'none';
-    scrollPanelData.style['height'] = '';
-    // add box-sizing for sile mode because
-    // let's use scrollPanel intead of scrollContent to wrap content
-    scrollPanelData.style['box-sizing'] = 'border-box';
-    scrollPanelData.style['min-width'] = '100%';
-    scrollPanelData.style['min-height'] = '100%';
+    scrollPanelData.class.push('__slide');
     var width = isSupportGivenStyle('width', 'fit-content');
     if (width) {
       scrollPanelData.style['width'] = width;
@@ -3150,7 +3148,6 @@ function createPanelChildren(vm, h) {
     // handle for refresh
     if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
       // use default refresh dom
-      createDomStyle('refreshDomStyle');
       var refreshDom = null;
       refreshDom = createTipDom(h, vm, 'refresh');
       renderChildren.unshift(h(
@@ -3161,7 +3158,6 @@ function createPanelChildren(vm, h) {
     }
     // handle for load
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
-      createDomStyle('loadDomStyle');
       var loadDom = null;
       loadDom = createTipDom(h, vm, 'load');
       // no slot load elm, use default
@@ -3305,7 +3301,9 @@ function findValuesByMode(mode, vm) {
 var vueScrollCore = {
   name: 'vueScroll',
   components: { bar: bar, scrollContent: scrollContent, scrollPanel: scrollPanel },
-  props: { ops: { type: Object } },
+  props: {
+    ops: { type: Object }
+  },
   mixins: [hackLifecycle, api, nativeMode, slideMode],
   mounted: function mounted() {
     var _this = this;
@@ -3389,13 +3387,11 @@ var vueScrollCore = {
     // vuescroll data
     var vuescrollData = {
       style: {
-        position: 'relative',
         height: vm.vuescroll.state.height,
         width: vm.vuescroll.state.width,
-        padding: 0,
-        overflow: 'hidden'
+        padding: 0
       },
-      class: 'vue-scroll'
+      class: 'vuescroll'
     };
     if (!isSupportTouch()) {
       vuescrollData.on = {
@@ -3428,16 +3424,22 @@ var vueScrollCore = {
           }
         };
       }
+    var customContainer = this.$slots['scroll-container'];
+    var ch = [createPanel(h, vm), createBar(h, vm, 'vertical'), createBar(h, vm, 'horizontal')];
+
+    if (customContainer) {
+      return insertChildrenIntoSlot(h, customContainer, ch, vuescrollData);
+    }
     return h(
       'div',
       vuescrollData,
-      [createPanel(h, vm), createBar(h, vm, 'vertical'), createBar(h, vm, 'horizontal')]
+      [ch]
     );
   },
 
   computed: {
     scrollPanelElm: function scrollPanelElm() {
-      return this.$refs.scrollPanel.$el;
+      return this.$refs['scrollPanel']._isVue ? this.$refs['scrollPanel'].$el : this.$refs['scrollPanel'];
     },
     scrollContentElm: function scrollContentElm() {
       return this.$refs['scrollContent']._isVue ? this.$refs['scrollContent'].$el : this.$refs['scrollContent'];
@@ -3731,7 +3733,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.5',
+  version: '4.6.6',
   refreshAll: refreshAll
 };
 

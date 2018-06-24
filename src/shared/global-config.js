@@ -66,11 +66,7 @@ export default {
   },
   //
   scrollContent: {
-    // customize tag of scrollContent
-    tag: 'div',
-    padding: false,
-    props: {},
-    attrs: {}
+    padding: false
   },
   //
   rail: {
@@ -117,9 +113,7 @@ export function validateOptions(ops) {
 
   // validate vuescroll
   if (!~modes.indexOf(vuescroll.mode)) {
-    error(
-      `The vuescroll's option "mode" should be one of the ${modes}`
-    );
+    error(`The vuescroll's option "mode" should be one of the ${modes}`);
     shouldStopRender = true;
   }
 

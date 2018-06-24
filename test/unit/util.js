@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import vuescroll from 'src/index';
 export { vuescroll };
+
 Vue.use(vuescroll);
 
 // https://github.com/ElemeFE/element/blob/dev/test/unit/util.js#L60
@@ -70,7 +71,13 @@ export function trigger(elm, name, ...opts) {
   return elm;
 }
 
-export function makeTemplate(child, parent, templateAttribute = null, num = 1) {
+export function makeTemplate(
+  child,
+  parent,
+  templateAttribute = null,
+  num = 1,
+  extraTmpl = ''
+) {
   return `
     <div style="width:${parent.w}px;height:${parent.h}px">
       <vue-scroll ref="vs" ${templateAttribute || ''} :ops="ops">
@@ -80,6 +87,7 @@ export function makeTemplate(child, parent, templateAttribute = null, num = 1) {
         :id="'d' + i"
         style="width:${child.w}px;height:${child.h}px">
         </div>
+        ${extraTmpl}
       </vue-scroll>
     </div>
   `;
@@ -137,3 +145,5 @@ export function startSchedule(time = 0) {
     wait
   };
 }
+
+export { Vue };

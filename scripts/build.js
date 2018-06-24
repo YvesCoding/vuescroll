@@ -1,18 +1,15 @@
 const fs = require('fs');
 const path = require('path');
-const zlib = require('zlib');
 const rollup = require('rollup');
-const UglifyJS = require('uglify-es');
-let autoBuild = false;
+const { uglify } = require('rollup-plugin-uglify');
+
 if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist');
 }
 
 let builds = require('./config').getAllBuilds();
 
-if (!autoBuild) {
-  build(builds);
-}
+build(builds);
 
 function build(builds) {
   let built = 0;
@@ -35,47 +32,27 @@ function buildEntry(config) {
   const output = config.output;
   const { file } = output;
   const isProd = /min\.js$/.test(file);
-  return rollup
-    .rollup(config)
-    .then(bundle => bundle.generate(output))
-    .then(({ code }) => {
-      if (isProd) {
-        var minified = UglifyJS.minify(code, {
-          output: {
-            comments: 'some'
-          }
-        }).code;
-        return write(file, minified, true);
-      } else {
-        return write(file, code);
-      }
-    });
+  if (isProd) {
+    (config.plugins || (config.plugins = [])).push(
+      uglify({
+        output: {
+          comments: 'some'
+        }
+      })
+    );
+  }
+
+  return rollup.rollup(config).then(async bundle => {
+    const { code } = await bundle.generate(output);
+    const fileName = path.basename(output.file);
+    await report(fileName, code);
+    return bundle.write(output);
+  });
 }
 
-function write(dest, code, zip) {
-  return new Promise((resolve, reject) => {
-    function report(extra) {
-      console.log(
-        blue(path.relative(process.cwd(), dest)) +
-          ' ' +
-          getSize(code) +
-          (extra || '')
-      ); //eslint-disable-line
-      resolve();
-    }
-
-    fs.writeFile(dest, code, err => {
-      if (err) return reject(err);
-      if (zip) {
-        zlib.gzip(code, (err, zipped) => {
-          if (err) return reject(err);
-          report(' (gzipped: ' + getSize(zipped) + ')');
-        });
-      } else {
-        report();
-      }
-    });
-  });
+async function report(fileName, code) {
+  const size = await getSize(code);
+  console.log(blue(path.relative(process.cwd(), fileName)) + ' ' + size);
 }
 
 function getSize(code) {
@@ -83,14 +60,14 @@ function getSize(code) {
 }
 
 function logError(e) {
-  console.log(e); //eslint-disable-line
+  console.log(e);
 }
 
 function blue(str) {
   return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m';
 }
 
-module.exports = function() {
-  autoBuild = true;
-  build(builds);
+module.exports = {
+  build,
+  blue
 };

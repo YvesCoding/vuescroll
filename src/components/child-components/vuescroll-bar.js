@@ -1,5 +1,5 @@
 import scrollMap from '../../shared/scroll-map';
-import { eventCenter, isSupportTouch } from '../../util';
+import { eventCenter, isSupportTouch, getRealParent } from '../../util';
 
 const colorCache = {};
 const rgbReg = /rgb\(/;
@@ -7,6 +7,8 @@ const extractRgbColor = /rgb\((.*)\)/;
 
 /* istanbul ignore next */
 function createMouseEvent(ctx) {
+  const parent = getRealParent(ctx);
+
   function mousedown(e) {
     e.stopImmediatePropagation();
     document.onselectstart = () => false;
@@ -25,10 +27,10 @@ function createMouseEvent(ctx) {
     const delta =
       e[ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
     const percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
-    ctx.$parent.scrollTo(
+    parent.scrollTo(
       {
-        [ctx.axis.toLowerCase()]:
-          ctx.parent['scrollPanel'].$el[ctx.bar.scrollSize] * percent
+        [ctx.bar.axis.toLowerCase()]:
+          parent.$refs['scrollPanel'].$el[ctx.bar.scrollSize] * percent
       },
       false
     );
@@ -36,7 +38,7 @@ function createMouseEvent(ctx) {
   function mouseup() {
     ctx.$emit('setBarClick', false);
     document.onselectstart = null;
-    ctx.$parent.hideBar();
+    parent.hideBar();
     ctx.axisStartPos = 0;
     eventCenter(document, 'mousemove', mousemove, false, 'off');
     eventCenter(document, 'mouseup', mouseup, false, 'off');
@@ -67,10 +69,10 @@ function createTouchEvent(ctx) {
       e.touches[0][ctx.bar.client] -
       ctx.$el.getBoundingClientRect()[ctx.bar.posName];
     const percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
-    ctx.$parent.scrollTo(
+    parent.scrollTo(
       {
-        [ctx.axis.toLowerCase()]:
-          ctx.parent['scrollPanel'].$el[ctx.bar.scrollSize] * percent
+        [ctx.bar.axis.toLowerCase()]:
+          parent.$refs['scrollPanel'].$el[ctx.bar.scrollSize] * percent
       },
       false
     );
@@ -109,22 +111,21 @@ function getRgbAColor(color, opacity) {
 }
 
 /* istanbul ignore next */
-function handleClickTrack(
-  e,
-  { client, offset, posName, scrollSize },
-  parentRef,
-  type,
-  parent
-) {
-  const inner = parentRef[`${type}Bar`].$refs['inner'];
+function handleClickTrack(e) {
+  const ctx = this;
+  const parent = getRealParent(this);
+  const { client, offset, posName, axis } = ctx.bar;
+  const inner = ctx.$refs['inner'];
   const barOffset = inner[offset];
   const percent =
     (e[client] -
       e.currentTarget.getBoundingClientRect()[posName] -
       barOffset / 2) /
     e.currentTarget[offset];
-  const pos = parentRef['scrollPanel'].$el[scrollSize] * percent;
-  parent.scrollTo({ [scrollMap[type].axis.toLowerCase()]: pos });
+
+  parent.scrollTo({
+    [axis.toLowerCase()]: percent * 100 + '%'
+  });
 }
 
 export default {
@@ -145,36 +146,20 @@ export default {
   },
   computed: {
     bar() {
-      return scrollMap[this.type].bar;
-    },
-    axis() {
-      /* istanbul ignore next */
-      return scrollMap[this.type].axis;
-    },
-    parent() {
-      /* istanbul ignore next */
-      return this.$parent.$refs;
+      return scrollMap[this.type];
     }
   },
   render(h) {
     const vm = this;
-    const parentRef = vm.$parent.$refs;
     const railBackgroundColor = getRgbAColor(
       vm.ops.rail.background,
       vm.ops.rail.opacity
     );
     let style = {
-      [vm.bar.posName]: 0,
-      [vm.bar.opsSize]: '100%',
       [vm.bar.size]: vm.state.size,
-      borderRadius: 'inherit',
       background: vm.ops.bar.background,
       opacity: vm.state.opacity,
-      transform: `translate${scrollMap[vm.type].axis}(${vm.state.posValue}%)`,
-      cursor: 'pointer',
-      position: 'relative',
-      transition: 'opacity .5s',
-      userSelect: 'none'
+      transform: `translate${scrollMap[vm.type].axis}(${vm.state.posValue}%)`
     };
     const bar = {
       style: style,
@@ -202,18 +187,14 @@ export default {
     const rail = {
       class: `vuescroll-${vm.type}-rail`,
       style: {
-        position: 'absolute',
-        zIndex: 1,
         borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor,
         [vm.bar.opsSize]: vm.ops.rail[vm.bar.opsSize],
-        [vm.bar.posName]: '2px',
-        [vm.bar.opposName]: '2px',
         [vm.ops.rail.pos]: '2px'
       },
       on: {
         click(e) /* istanbul ignore next */ {
-          handleClickTrack(e, vm.bar, parentRef, vm.type, vm.$parent);
+          handleClickTrack.call(vm, e);
         }
       }
     };
