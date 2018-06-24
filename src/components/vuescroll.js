@@ -18,16 +18,16 @@ import {
 function findValuesByMode(mode, vm) {
   let axis = {};
   switch (mode) {
-    case 'native':
-    case 'pure-native':
-      axis = {
-        x: vm.scrollPanelElm.scrollLeft,
-        y: vm.scrollPanelElm.scrollTop
-      };
-      break;
-    case 'slide':
-      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-      break;
+  case 'native':
+  case 'pure-native':
+    axis = {
+      x: vm.scrollPanelElm.scrollLeft,
+      y: vm.scrollPanelElm.scrollTop
+    };
+    break;
+  case 'slide':
+    axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+    break;
   }
   return axis;
 }
