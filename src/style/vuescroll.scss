@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.6.6
+    * Vuescroll v4.6.7
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -10,8 +10,6 @@
 
   &-panel {
     box-sizing: border-box;
-    width: 100%;
-    height: 100%;
     .vuescroll-content {
       position: relative;
       height: 100%;
