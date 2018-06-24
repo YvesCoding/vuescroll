@@ -72,6 +72,7 @@ export function createPanel(h, vm) {
   };
   // set overflow only if the in native mode
   if (vm.mode == 'native') {
+    scrollPanelData.class.push('__native');
     // dynamic set overflow scroll
     // feat: #11
     if (vm.mergedOptions.scrollPanel.scrollingY) {
@@ -118,7 +119,7 @@ export function createPanel(h, vm) {
       scrollPanelData['display'] = 'inline-block';
     }
   } else if (vm.mode == 'pure-native') {
-    scrollPanelData.style['width'] = '100%';
+    scrollPanelData.class.push('__pure-native');
     if (vm.mergedOptions.scrollPanel.scrollingY) {
       scrollPanelData.style['overflowY'] = 'auto';
     } else {
