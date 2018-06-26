@@ -1,3 +1,26 @@
+<a name="4.6.10"></a>
+## [4.6.10](https://github.com/YvesCoding/vuescroll/compare/v4.6.9...v4.6.10) (2018-06-26)
+
+## Refator
+
+* Tweak the class name of each components.
+
+<a name="4.6.8"></a>
+## [4.6.8](https://github.com/YvesCoding/vuescroll/compare/v4.6.5...v4.6.8) (2018-06-25)
+
+## Features
+
+ ### Slots
+
+ * Add scroll-container, scroll-panel, scroll-content
+
+## Refactor
+ * Build scripts
+
+## Breaking Changes
+* You need to import vuescroll css file now!
+
+
 <a name="4.6.5"></a>
 ## [4.6.5](https://github.com/YvesCoding/vuescroll/compare/v4.6.4...v4.6.5) (2018-06-11)
 

@@ -34,7 +34,7 @@
     "test:cover": "karma start test/unit/karma.conf.js",
     "debug-test": "karma start test/unit/karma.conf.js --no-single-run",
     "report-coverage": "codecov",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+    "gen-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "version": "4.6.10",
   "devDependencies": {
