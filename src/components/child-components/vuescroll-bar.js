@@ -52,10 +52,13 @@ function createTouchEvent(ctx) {
   function touchstart(e) {
     e.stopImmediatePropagation();
     e.preventDefault();
+
     document.onselectstart = () => false;
+
     ctx.axisStartPos =
       e.touches[0][ctx.bar.client] -
       ctx.$refs['inner'].getBoundingClientRect()[ctx.bar.posName];
+
     // tell parent that the mouse has been down.
     ctx.$emit('setBarClick', true);
     eventCenter(document, 'touchmove', touchmove);
@@ -88,6 +91,7 @@ function createTouchEvent(ctx) {
   return touchstart;
 }
 
+// Transform a common color int oa `rgbA` color
 function getRgbAColor(color, opacity) {
   const id = color + '&' + opacity;
   if (colorCache[id]) {
@@ -163,7 +167,7 @@ export default {
     };
     const bar = {
       style: style,
-      class: `vuescroll-${vm.type}-bar`,
+      class: `__bar-is-${vm.type}`,
       ref: 'inner',
       on: {}
     };
@@ -185,7 +189,7 @@ export default {
     }
 
     const rail = {
-      class: `vuescroll-${vm.type}-rail`,
+      class: `__rail-is-${vm.type}`,
       style: {
         borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor,

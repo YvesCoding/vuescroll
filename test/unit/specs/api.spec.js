@@ -52,7 +52,7 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
+        const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollTop } = scrollPanel;
         expect(Math.ceil(scrollTop)).toBe(100);
         // scroll X axis
@@ -66,7 +66,7 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
+        const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollLeft } = scrollPanel;
         expect(Math.ceil(scrollLeft)).toBe(100);
         // scroll X axis
@@ -80,7 +80,7 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
+        const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollLeft } = scrollPanel;
         expect(scrollLeft).toBe(0);
         r();
@@ -122,7 +122,7 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
+        const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollTop, scrollLeft } = scrollPanel;
 
         expect(scrollTop).toBe(50);
@@ -167,8 +167,8 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
+        let vBar = vm.$el.querySelector('.__bar-is-vertical');
+        let hBar = vm.$el.querySelector('.__bar-is-horizontal');
 
         expect(vBar).toBe(null);
         expect(hBar).toBe(null);
@@ -180,8 +180,8 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
+        let vBar = vm.$el.querySelector('.__bar-is-vertical');
+        let hBar = vm.$el.querySelector('.__bar-is-horizontal');
 
         expect(vBar).not.toBe(null);
         expect(hBar).not.toBe(null);
@@ -190,8 +190,8 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        let { clientHeight } = vm.$el.querySelector('.vuescroll-vertical-bar');
-        let { clientWidth } = vm.$el.querySelector('.vuescroll-horizontal-bar');
+        let { clientHeight } = vm.$el.querySelector('.__bar-is-vertical');
+        let { clientWidth } = vm.$el.querySelector('.__bar-is-horizontal');
 
         expect(clientHeight).toBe(24); // (100 - 4 bar-wrap: top:2px bottom: 2px) / 2 / 2
         expect(clientWidth).toBe(24); // (100 - 4) / 2 / 2
@@ -246,7 +246,7 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        const divs = vm.$el.querySelectorAll('.vuescroll-panel div');
+        const divs = vm.$el.querySelectorAll('.__panel div');
         const currentDom = vs.getCurrentviewDom();
         const page = vs.getCurrentPage();
         expect(page.y).toBe(2);
@@ -271,7 +271,7 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        const refreshDom = vs.$el.querySelector('.vuescroll-refresh');
+        const refreshDom = vs.$el.querySelector('.__refresh');
         expect(refreshDom.innerText).toBe('Refreshing...');
         r();
       })
@@ -282,7 +282,7 @@ describe('api', () => {
       })
       .wait(350)
       .then(r => {
-        const loadDom = vs.$el.querySelector('.vuescroll-load');
+        const loadDom = vs.$el.querySelector('.__load');
         expect(loadDom.innerText).toBe('Loading...');
         r();
         done();
@@ -361,16 +361,15 @@ describe('api', () => {
     _vs.refreshAll();
     startSchedule()
       .then(r => {
-        let vsAmout = document.querySelectorAll('.vuescroll-vertical-rail')
-          .length;
+        let vsAmout = document.querySelectorAll('.__rail-is-vertical').length;
         expect(vsAmout).toBe(0);
         vs0.$el.style.display = 'block';
         vs0.refresh();
         r();
       })
       .then(r => {
-        let hRails = document.querySelectorAll('.vuescroll-horizontal-rail');
-        let vRails = document.querySelectorAll('.vuescroll-vertical-rail');
+        let hRails = document.querySelectorAll('.__rail-is-horizontal');
+        let vRails = document.querySelectorAll('.__rail-is-vertical');
         expect(hRails.length).toBe(1);
         expect(vRails.length).toBe(1);
         vs1.$el.style.display = 'block';
@@ -379,8 +378,8 @@ describe('api', () => {
         r();
       })
       .then(r => {
-        let hRails = document.querySelectorAll('.vuescroll-horizontal-rail');
-        let vRails = document.querySelectorAll('.vuescroll-vertical-rail');
+        let hRails = document.querySelectorAll('.__rail-is-horizontal');
+        let vRails = document.querySelectorAll('.__rail-is-vertical');
         expect(hRails.length).toBe(2);
         expect(vRails.length).toBe(2);
         done();

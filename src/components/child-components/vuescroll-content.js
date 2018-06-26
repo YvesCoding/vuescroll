@@ -3,7 +3,7 @@ import {
   isSupportGivenStyle,
   insertChildrenIntoSlot
 } from '../../util';
-// scrollContent
+// ScrollContent, stateless, treat as a functional component
 export default {
   name: 'scrollContent',
   functional: true,
@@ -37,7 +37,7 @@ export default {
     const propsData = {
       style: style,
       ref: 'scrollContent',
-      class: 'vuescroll-content'
+      class: '__view'
     };
     const customContent = parent.$slots['scroll-content'];
     if (customContent) {
@@ -60,7 +60,6 @@ export default {
  * @returns
  */
 export function createContent(h, vm) {
-  // scrollContent data
   const scrollContentData = {
     props: {
       ops: vm.mergedOptions.scrollContent

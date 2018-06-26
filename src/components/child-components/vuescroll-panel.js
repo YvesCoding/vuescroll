@@ -39,7 +39,7 @@ export default {
   render(h) {
     // eslint-disable-line
     let data = {
-      class: ['vuescroll-panel']
+      class: ['__panel']
     };
     const parent = getRealParent(this);
     const customPanel = parent.$slots['scroll-panel'];
@@ -141,24 +141,23 @@ function createPanelChildren(vm, h) {
     return [createContent(h, vm)];
   } else if (vm.mode == 'slide') {
     let renderChildren = [vm.$slots.default];
-    // handle for refresh
+    // handle refresh
     if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
-      // use default refresh dom
       let refreshDom = null;
       refreshDom = createTipDom(h, vm, 'refresh');
       renderChildren.unshift(
-        <div class="vuescroll-refresh" ref="refreshDom" key="refshDom">
+        <div class="__refresh" ref="refreshDom" key="refshDom">
           {[refreshDom, vm.pullRefreshTip]}
         </div>
       );
     }
-    // handle for load
+    // handle load
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
       let loadDom = null;
       loadDom = createTipDom(h, vm, 'load');
-      // no slot load elm, use default
+
       renderChildren.push(
-        <div class="vuescroll-load" ref="loadDom" key="loadDom">
+        <div class="__load" ref="loadDom" key="loadDom">
           {[loadDom, vm.pushLoadTip]}
         </div>
       );
@@ -168,7 +167,9 @@ function createPanelChildren(vm, h) {
     return [vm.$slots.default];
   }
 }
-// create load or refresh tip dom
+
+// Create load or refresh tip dom of each stages
+
 function createTipDom(h, vm, type) {
   const stage = vm.vuescroll.state[`${type}Stage`];
   let dom = null;
@@ -199,7 +200,8 @@ function createTipDom(h, vm, type) {
     );
     break;
   case 'start':
-    // IE seems not supporting animateTransform
+    // IE and edge seem not supporting  tag - `animateTransform`
+    // Just return null.
     /* istanbul ignore if */
     if (isIE()) {
       dom = null;

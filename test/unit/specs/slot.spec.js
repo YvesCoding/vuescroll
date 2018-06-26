@@ -18,7 +18,7 @@ describe('test-slot', () => {
     destroyVM(vm);
   });
 
-  it('contaner\'s dataset id should be container', done => {
+  it("contaner's dataset id should be container", done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -53,7 +53,7 @@ describe('test-slot', () => {
       });
   });
 
-  it('scroll-panel\'s dataset id should be panel', done => {
+  it("scroll-panel's dataset id should be panel", done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -82,9 +82,7 @@ describe('test-slot', () => {
     startSchedule()
       .wait(1)
       .then(r => {
-        expect(vs.$el.querySelector('.vuescroll-panel').dataset.id).toBe(
-          'panel'
-        );
+        expect(vs.$el.querySelector('.__panel').dataset.id).toBe('panel');
         r();
         done();
       });
@@ -119,9 +117,7 @@ describe('test-slot', () => {
     startSchedule()
       .wait(1)
       .then(r => {
-        expect(vs.$el.querySelector('.vuescroll-content').dataset.id).toBe(
-          'content'
-        );
+        expect(vs.$el.querySelector('.__view').dataset.id).toBe('content');
         r();
         done();
       });

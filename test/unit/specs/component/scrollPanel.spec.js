@@ -43,7 +43,7 @@ describe('scroll-panel', () => {
     );
     // time = 1000ms spwed + 100ms error
     startSchedule(1100).then(r => {
-      const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
+      const scrollPanel = vm.$el.querySelector('.__panel');
       const { scrollTop, scrollLeft } = scrollPanel;
       expect(scrollTop).toBe(10);
       expect(scrollLeft).toBe(40); // 200 * 0.4
@@ -79,7 +79,7 @@ describe('scroll-panel', () => {
       },
       true
     );
-    const scrollPanel = vm.$el.querySelector('.vuescroll-panel');
+    const scrollPanel = vm.$el.querySelector('.__panel');
     let overX = scrollPanel.style['overflow-x'];
     let overY;
     expect(overX).toBe('hidden');

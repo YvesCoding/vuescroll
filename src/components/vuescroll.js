@@ -123,7 +123,7 @@ const vueScrollCore = {
         width: vm.vuescroll.state.width,
         padding: 0
       },
-      class: 'vuescroll'
+      class: '__vuescroll'
     };
     if (!isSupportTouch()) {
       vuescrollData.on = {

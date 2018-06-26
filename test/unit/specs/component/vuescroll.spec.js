@@ -95,7 +95,7 @@ describe('vuescroll', () => {
       true
     );
     const vs = vm.$refs['vs'];
-    const tipDom = vs.$el.querySelector('.vuescroll-refresh');
+    const tipDom = vs.$el.querySelector('.__refresh');
     const { clientHeight } = tipDom;
     trigger(vs.$el, 'mousedown');
 
@@ -173,7 +173,7 @@ describe('vuescroll', () => {
       true
     );
     const vs = vm.$refs['vs'];
-    const tipDom = vs.$el.querySelector('.vuescroll-load');
+    const tipDom = vs.$el.querySelector('.__load');
     const { clientHeight } = tipDom;
     trigger(vs.$el, 'mousedown');
 
@@ -374,8 +374,8 @@ describe('vuescroll', () => {
       })
       .wait(520)
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
+        let vBar = vm.$el.querySelector('.__bar-is-vertical');
+        let hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(vBar.style.opacity).toBe('1');
         expect(hBar.style.opacity).toBe('1');
         trigger(vs.$el, 'mouseleave');
@@ -383,8 +383,8 @@ describe('vuescroll', () => {
       })
       .wait(520)
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
+        let vBar = vm.$el.querySelector('.__bar-is-vertical');
+        let hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(vBar.style.opacity).toBe('0');
         expect(hBar.style.opacity).toBe('0');
         vm.ops.bar.vBar.keepShow = true;
@@ -394,7 +394,7 @@ describe('vuescroll', () => {
       })
       .wait(520)
       .then(r => {
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
+        let vBar = vm.$el.querySelector('.__bar-is-vertical');
         expect(vBar.style.opacity).toBe('1');
         r();
         done();

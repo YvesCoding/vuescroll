@@ -8,7 +8,7 @@ describe('scroll-content', () => {
     destroyVM(vm);
   });
   // create a rail and test its style
-  it('scrollContent\'s width and height should be equal to the children\' height and width ', () => {
+  it("scrollContent's width and height should be equal to the children' height and width ", () => {
     vm = createVue(
       {
         template: `
@@ -37,7 +37,7 @@ describe('scroll-content', () => {
       },
       true
     );
-    const contentElm = vm.$el.querySelector('.vuescroll-content');
+    const contentElm = vm.$el.querySelector('.__view');
     const { clientWidth, clientHeight } = contentElm;
     expect(clientWidth).toBe(vm.w);
     expect(clientHeight).toBe(vm.total * vm.h);
@@ -67,7 +67,7 @@ describe('scroll-content', () => {
       },
       true
     );
-    const contentElmSty = vm.$el.querySelector('.vuescroll-content').style;
+    const contentElmSty = vm.$el.querySelector('.__view').style;
     const paddingRight = contentElmSty['padding-right'];
     expect(paddingRight).toBe('10px');
   });

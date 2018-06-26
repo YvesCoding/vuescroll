@@ -2765,10 +2765,13 @@ function createTouchEvent(ctx) {
   function touchstart(e) {
     e.stopImmediatePropagation();
     e.preventDefault();
+
     document.onselectstart = function () {
       return false;
     };
+
     ctx.axisStartPos = e.touches[0][ctx.bar.client] - ctx.$refs['inner'].getBoundingClientRect()[ctx.bar.posName];
+
     // tell parent that the mouse has been down.
     ctx.$emit('setBarClick', true);
     eventCenter(document, 'touchmove', touchmove);
@@ -2793,6 +2796,7 @@ function createTouchEvent(ctx) {
   return touchstart;
 }
 
+// Transform a common color int oa `rgbA` color
 function getRgbAColor(color, opacity) {
   var id = color + '&' + opacity;
   if (colorCache[id]) {
@@ -2859,7 +2863,7 @@ var bar = {
     var style = (_style = {}, _defineProperty$1(_style, vm.bar.size, vm.state.size), _defineProperty$1(_style, 'background', vm.ops.bar.background), _defineProperty$1(_style, 'opacity', vm.state.opacity), _defineProperty$1(_style, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _style);
     var bar = {
       style: style,
-      class: 'vuescroll-' + vm.type + '-bar',
+      class: '__bar-is-' + vm.type,
       ref: 'inner',
       on: {}
     };
@@ -2881,7 +2885,7 @@ var bar = {
     }
 
     var rail = {
-      class: 'vuescroll-' + vm.type + '-rail',
+      class: '__rail-is-' + vm.type,
       style: (_style2 = {
         borderRadius: vm.ops.rail[vm.bar.opsSize],
         background: railBackgroundColor
@@ -2934,7 +2938,7 @@ function createBar(h, vm, type) {
   return h('bar', barData);
 }
 
-// scrollContent
+// ScrollContent, stateless, treat as a functional component
 var scrollContent = {
   name: 'scrollContent',
   functional: true,
@@ -2972,7 +2976,7 @@ var scrollContent = {
     var propsData = {
       style: style,
       ref: 'scrollContent',
-      class: 'vuescroll-content'
+      class: '__view'
     };
     var customContent = parent.$slots['scroll-content'];
     if (customContent) {
@@ -2994,7 +2998,6 @@ var scrollContent = {
  * @returns
  */
 function createContent(h, vm) {
-  // scrollContent data
   var scrollContentData = {
     props: {
       ops: vm.mergedOptions.scrollContent
@@ -3042,7 +3045,7 @@ var scrollPanel = {
   render: function render(h) {
     // eslint-disable-line
     var data = {
-      class: ['vuescroll-panel']
+      class: ['__panel']
     };
     var parent = getRealParent(this);
     var customPanel = parent.$slots['scroll-panel'];
@@ -3146,25 +3149,24 @@ function createPanelChildren(vm, h) {
     return [createContent(h, vm)];
   } else if (vm.mode == 'slide') {
     var renderChildren = [vm.$slots.default];
-    // handle for refresh
+    // handle refresh
     if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
-      // use default refresh dom
       var refreshDom = null;
       refreshDom = createTipDom(h, vm, 'refresh');
       renderChildren.unshift(h(
         'div',
-        { 'class': 'vuescroll-refresh', ref: 'refreshDom', key: 'refshDom' },
+        { 'class': '__refresh', ref: 'refreshDom', key: 'refshDom' },
         [[refreshDom, vm.pullRefreshTip]]
       ));
     }
-    // handle for load
+    // handle load
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
       var loadDom = null;
       loadDom = createTipDom(h, vm, 'load');
-      // no slot load elm, use default
+
       renderChildren.push(h(
         'div',
-        { 'class': 'vuescroll-load', ref: 'loadDom', key: 'loadDom' },
+        { 'class': '__load', ref: 'loadDom', key: 'loadDom' },
         [[loadDom, vm.pushLoadTip]]
       ));
     }
@@ -3173,7 +3175,9 @@ function createPanelChildren(vm, h) {
     return [vm.$slots.default];
   }
 }
-// create load or refresh tip dom
+
+// Create load or refresh tip dom of each stages
+
 function createTipDom(h, vm, type) {
   var stage = vm.vuescroll.state[type + 'Stage'];
   var dom = null;
@@ -3209,7 +3213,8 @@ function createTipDom(h, vm, type) {
       );
       break;
     case 'start':
-      // IE seems not supporting animateTransform
+      // IE and edge seem not supporting  tag - `animateTransform`
+      // Just return null.
       /* istanbul ignore if */
       if (isIE()) {
         dom = null;
@@ -3392,7 +3397,7 @@ var vueScrollCore = {
         width: vm.vuescroll.state.width,
         padding: 0
       },
-      class: 'vuescroll'
+      class: '__vuescroll'
     };
     if (!isSupportTouch()) {
       vuescrollData.on = {

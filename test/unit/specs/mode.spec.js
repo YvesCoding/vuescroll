@@ -36,16 +36,16 @@ describe('mode', () => {
       true
     );
 
-    let content = vm.$el.querySelector('.vuescroll-content');
-    let panel = vm.$el.querySelector('.vuescroll-panel');
+    let content = vm.$el.querySelector('.__view');
+    let panel = vm.$el.querySelector('.__panel');
     expect(content).not.toBe(null);
     expect(content.parentNode).toEqual(panel);
     vm.ops.vuescroll.mode = 'slide';
     startSchedule()
       .wait(1)
       .then(r => {
-        let content = vm.$el.querySelector('.vuescroll-content');
-        let panel = vm.$el.querySelector('.vuescroll-panel');
+        let content = vm.$el.querySelector('.__view');
+        let panel = vm.$el.querySelector('.__panel');
         expect(panel).not.toBe(null);
         expect(content).toBe(null);
         vm.ops.vuescroll.mode = 'pure-native';
@@ -53,13 +53,13 @@ describe('mode', () => {
       })
       .wait(1)
       .then(r => {
-        let content = vm.$el.querySelector('.vuescroll-content');
-        let vBar = vm.$el.querySelector('.vuescroll-vertical-bar');
-        let hBar = vm.$el.querySelector('.vuescroll-horizontal-bar');
-        let vRail = vm.$el.querySelector('.vuescroll-vertical-rail');
-        let hRail = vm.$el.querySelector('.vuescroll-horizontal-rail');
+        let content = vm.$el.querySelector('.__view');
+        let vBar = vm.$el.querySelector('.__bar-is-vertical');
+        let hBar = vm.$el.querySelector('.__bar-is-horizontal');
+        let vRail = vm.$el.querySelector('.__rail-is-vertical');
+        let hRail = vm.$el.querySelector('.__rail-is-horizontal');
 
-        let panel = vm.$el.querySelector('.vuescroll-panel');
+        let panel = vm.$el.querySelector('.__panel');
 
         expect(content).toBe(null);
         expect(vBar).toBe(null);

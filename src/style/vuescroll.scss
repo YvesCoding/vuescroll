@@ -1,19 +1,15 @@
 /*
-    * Vuescroll v4.6.7
+    * Vuescroll v4.6.9
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
     */
-.vuescroll {
+.__vuescroll {
   position: relative;
   overflow: hidden;
 
-  &-panel {
+  .__panel {
     box-sizing: border-box;
-    .vuescroll-content {
-      position: relative;
-      height: 100%;
-    }
     &.__hidebar::-webkit-scrollbar {
       width: 0;
       height: 0;
@@ -33,43 +29,47 @@
     }
   }
 
-  &-content {
+  .__view {
+    position: relative;
     min-width: 100%;
     min-height: 100%;
   }
 
-  &-vertical-rail {
+  .__rail-is-vertical,
+  .__rail-is-horizontal {
     position: absolute;
     z-index: 1;
+  }
+
+  .__bar-is-vertical,
+  .__bar-is-horizontal {
+    cursor: pointer;
+    position: relative;
+    transition: opacity 0.5s;
+    user-select: none;
+    border-radius: inherit;
+  }
+
+  .__rail-is-vertical {
     top: 2px;
     bottom: 2px;
-    .vuescroll-vertical-bar {
+    .__bar-is-vertical {
       top: 0;
       width: 100%;
-      cursor: pointer;
-      position: relative;
-      transition: opacity 0.5s;
-      user-select: none;
-      border-radius: inherit;
-    }
-  }
-  &-horizontal-rail {
-    position: absolute;
-    z-index: 1;
-    right: 2px;
-    left: 2px;
-    .vuescroll-horizontal-bar {
-      left: 0;
-      height: 100%;
-      cursor: pointer;
-      position: relative;
-      transition: opacity 0.5s;
-      user-select: none;
-      border-radius: inherit;
     }
   }
 
-  &-refresh {
+  .__rail-is-horizontal {
+    right: 2px;
+    left: 2px;
+    .__rail-is-horizontal {
+      left: 0;
+      height: 100%;
+    }
+  }
+
+  .__refresh,
+  .__load {
     position: absolute;
     width: 100%;
     color: black;
@@ -77,34 +77,15 @@
     text-align: center;
     font-size: 16px;
     line-height: 50px;
-  }
-  &-refresh svg {
-    margin-right: 10px;
-    width: 25px;
-    height: 25px;
-    vertical-align: sub;
-  }
-  &-refresh svg path,
-  &-refresh svg rect {
-    fill: #ff6700;
-  }
-  &-load {
-    position: absolute;
-    width: 100%;
-    color: black;
-    height: 50px;
-    text-align: center;
-    font-size: 16px;
-    line-height: 50px;
-  }
-  &-load svg {
-    margin-right: 10px;
-    width: 25px;
-    height: 25px;
-    vertical-align: sub;
-  }
-  &-load svg path,
-  &-load svg rect {
-    fill: #ff6700;
+    svg {
+      margin-right: 10px;
+      width: 25px;
+      height: 25px;
+      vertical-align: sub;
+      path,
+      rect {
+        fill: #ff6700;
+      }
+    }
   }
 }
