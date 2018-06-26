@@ -8,7 +8,7 @@ describe('scroll-content', () => {
     destroyVM(vm);
   });
   // create a rail and test its style
-  it("scrollContent's width and height should be equal to the children' height and width ", () => {
+  it('scrollContent\'s width and height should be equal to the children\' height and width ', () => {
     vm = createVue(
       {
         template: `

@@ -18,7 +18,7 @@ describe('test-slot', () => {
     destroyVM(vm);
   });
 
-  it("contaner's dataset id should be container", done => {
+  it('contaner\'s dataset id should be container', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -53,7 +53,7 @@ describe('test-slot', () => {
       });
   });
 
-  it("scroll-panel's dataset id should be panel", done => {
+  it('scroll-panel\'s dataset id should be panel', done => {
     vm = createVue(
       {
         template: makeTemplate(
