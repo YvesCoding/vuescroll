@@ -1,3 +1,13 @@
+<a name="4.6.13"></a>
+## [4.6.13](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.13) (2018-06-27)
+
+
+### Bug Fixes
+
+* files field in  package.json ([ebe101f](https://github.com/YvesCoding/vuescroll/commit/ebe101f))
+
+
+
 <a name="4.6.11"></a>
 ## [4.6.10](https://github.com/YvesCoding/vuescroll/compare/v4.6.9...v4.6.10) (2018-06-27)
 
