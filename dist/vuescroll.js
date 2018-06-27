@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.6.11
+    * Vuescroll v4.6.12
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -3739,7 +3739,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.11',
+  version: '4.6.12',
   refreshAll: refreshAll
 };
 
