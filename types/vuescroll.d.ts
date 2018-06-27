@@ -1,0 +1,104 @@
+import Vue from 'vue';
+
+type Pos = {
+  x: number | string;
+  y: number | string;
+};
+
+type Page = {
+  x: number;
+  y: number;
+};
+
+export declare class vuescroll extends Vue {
+  // ----------------------- Static methods --------------------
+  static install(vue: typeof Vue): void;
+  static refreshAll(): void;
+
+  // ----------------------- Api -------------------------
+
+  /**
+   * @description Refresh the current vuescroll's all states
+   * @memberof vuescroll
+   */
+  refresh(): void;
+  /**
+   * @description
+   * @param {Pos} position The position you want to scroll to
+   * @param {boolean} anmiate Whether to use scrolling Animations, defaults to true
+   * @memberof vuescroll
+   */
+  scrollTo(position: Pos, anmiate?: boolean): void;
+
+  /**
+   * @description
+   * @param {Pos} delta The delta you want to scroll based on current position
+   * @param {boolean} anmiate Whether to use scrolling Animations, defaults to true
+   * @memberof vuescroll
+   */
+  scrollBy(delta: Pos, anmiate?: boolean): void;
+
+  /**
+   * @description zoomby,  only valid in slide mode!
+   * @param {number} factor The factor you want to zoom based on current factor
+   * @param {boolean} [animate]
+   * @param {number} [originLeft]
+   * @param {number} [originTop]
+   * @param {() => void} [callback]
+   * @memberof vuescroll
+   */
+  zoomBy(
+    factor: number,
+    animate?: boolean,
+    originLeft?: number,
+    originTop?: number,
+    callback?: () => void
+  ): void;
+
+  /**
+   * @description zoom to a level, only valid in slide mode !
+   * @param {number} level The level you want to zoom to.
+   * @param {boolean} [animate]
+   * @param {*} [originLeft]
+   * @param {*} [originTop]
+   * @param {*} [callback]
+   * @memberof vuescroll
+   */
+  zoomTo(level: number, animate?: boolean, originLeft?, originTop?, callback?);
+
+  /**
+   * @description Get the current page, only vaild in mode is slide and pagind is true!
+   * @returns {Page}
+   * @memberof vuescroll
+   */
+  getCurrentPage(): Page;
+
+  /**
+   * @description Go to a given page
+   * @param {Page} page
+   * @param {boolean} [animate]
+   * @memberof vuescroll
+   */
+  goToPage(page: Page, animate?: boolean): void;
+
+  /**
+   * @description Trigger refresh or load's start stage directly!
+   * @memberof vuescroll
+   */
+  triggerRefreshOrLoad(type: 'refresh' | 'load'): void;
+
+  /**
+   * @description Get the current doms you can see in the container!
+   * @returns {Array<Element>}
+   * @memberof vuescroll
+   */
+  getCurrentviewDom(): Array<Element>;
+
+  /**
+   * @description Scroll the element of vuescroll to your viewport!
+   * @param {(Element | string)} elm
+   * @param {boolean} [animate]
+   * @memberof vuescroll
+   */
+  scrollIntoView(elm: Element | string, animate?: boolean): void;
+}

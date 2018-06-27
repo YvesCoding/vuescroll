@@ -6,8 +6,14 @@
     "url": "https://github.com/YvesCoding/vuescroll/issues"
   },
   "dependencies": {
-    "vue": "^2.0"
+    "vue": "^2.5.11"
   },
+  "typings": "types/index.d.ts",
+  "files": [
+    "src",
+    "dist/*.js",
+    "types/*.d.ts"
+  ],
   "deprecated": false,
   "description": "A beautiful scrollbar based on Vue.js for PC and mobile.",
   "homepage": "https://github.com/YvesCoding/vuescroll#readme",
