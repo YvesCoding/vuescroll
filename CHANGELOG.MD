@@ -1,3 +1,13 @@
+<a name="4.6.11"></a>
+## [4.6.10](https://github.com/YvesCoding/vuescroll/compare/v4.6.9...v4.6.10) (2018-06-27)
+
+
+### Features
+
+* Add typescript support ([5dcec90](https://github.com/YvesCoding/vuescroll/commit/5dcec90))
+
+
+
 <a name="4.6.10"></a>
 ## [4.6.10](https://github.com/YvesCoding/vuescroll/compare/v4.6.9...v4.6.10) (2018-06-26)
 

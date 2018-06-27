@@ -6,7 +6,7 @@
     "url": "https://github.com/YvesCoding/vuescroll/issues"
   },
   "dependencies": {
-    "vue": "^2.5.11"
+    "vue": "^2.5.16"
   },
   "typings": "types/index.d.ts",
   "files": [
@@ -42,7 +42,7 @@
     "report-coverage": "codecov",
     "gen-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
-  "version": "4.6.10",
+  "version": "4.6.11",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.5",
