@@ -30,7 +30,7 @@ function createMouseEvent(ctx) {
     parent.scrollTo(
       {
         [ctx.bar.axis.toLowerCase()]:
-          parent.$refs['scrollPanel'].$el[ctx.bar.scrollSize] * percent
+          parent.scrollPanelElm[ctx.bar.scrollSize] * percent
       },
       false
     );
@@ -49,6 +49,8 @@ function createMouseEvent(ctx) {
 
 /* istanbul ignore next */
 function createTouchEvent(ctx) {
+  const parent = getRealParent(ctx);
+
   function touchstart(e) {
     e.stopImmediatePropagation();
     e.preventDefault();
@@ -75,7 +77,7 @@ function createTouchEvent(ctx) {
     parent.scrollTo(
       {
         [ctx.bar.axis.toLowerCase()]:
-          parent.$refs['scrollPanel'].$el[ctx.bar.scrollSize] * percent
+          parent.scrollPanelElm[ctx.bar.scrollSize] * percent
       },
       false
     );
@@ -83,7 +85,7 @@ function createTouchEvent(ctx) {
   function touchend() {
     ctx.$emit('setBarClick', false);
     document.onselectstart = null;
-    ctx.$parent.hideBar();
+    parent.hideBar();
     ctx.axisStartPos = 0;
     eventCenter(document, 'touchmove', touchmove, false, 'off');
     eventCenter(document, 'touchend', touchend, false, 'off');

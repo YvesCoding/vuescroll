@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.6.12
+    * Vuescroll v4.6.13
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -2746,7 +2746,7 @@ function createMouseEvent(ctx) {
     }
     var delta = e[ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
     var percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
-    parent.scrollTo(_defineProperty$1({}, ctx.bar.axis.toLowerCase(), parent.$refs['scrollPanel'].$el[ctx.bar.scrollSize] * percent), false);
+    parent.scrollTo(_defineProperty$1({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
   }
   function mouseup() {
     ctx.$emit('setBarClick', false);
@@ -2762,6 +2762,8 @@ function createMouseEvent(ctx) {
 
 /* istanbul ignore next */
 function createTouchEvent(ctx) {
+  var parent = getRealParent(ctx);
+
   function touchstart(e) {
     e.stopImmediatePropagation();
     e.preventDefault();
@@ -2783,12 +2785,12 @@ function createTouchEvent(ctx) {
     }
     var delta = e.touches[0][ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
     var percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
-    parent.scrollTo(_defineProperty$1({}, ctx.bar.axis.toLowerCase(), parent.$refs['scrollPanel'].$el[ctx.bar.scrollSize] * percent), false);
+    parent.scrollTo(_defineProperty$1({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
   }
   function touchend() {
     ctx.$emit('setBarClick', false);
     document.onselectstart = null;
-    ctx.$parent.hideBar();
+    parent.hideBar();
     ctx.axisStartPos = 0;
     eventCenter(document, 'touchmove', touchmove, false, 'off');
     eventCenter(document, 'touchend', touchend, false, 'off');
@@ -3739,7 +3741,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.12',
+  version: '4.6.13',
   refreshAll: refreshAll
 };
 
