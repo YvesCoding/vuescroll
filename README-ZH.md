@@ -10,128 +10,35 @@
 
 [English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
-> 一个基于 Vue.js 的漂亮滚动条， 可以适用于 pc 和手机。
-> [vuescrolljs.yvescoding.org/zh](http://vuescrolljs.yvescoding.org/)
+> 一款基于 Vue.js 的，支持 Pc 和移动端的功能强大的漂亮的滚动条。
+> [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
 
-## 预览
+## Features
 
-<p align="center">
-<img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p3.gif?raw=true" style="max-width:100%"/>
-</p>
-<p align="center">
-<img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p1.gif?raw=true" style="max-width:100%"/>
-</p>
-<p align="center">
-<img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/p2.gif?raw=true" style="max-width:100%"/>
-</p>
-
-## 在线 Demo & 文档
-
-[官方地址](http://vuescrolljs.yvescoding.org/zh/demo/)
-
-## 特点
-
-- 支持移动端和 PC
-- 平滑滚动
-- 可定制的
-- 上拉刷新和下拉加载
+- 支持 Pc 和移动端
+- 支持平滑地滚动
+- 支持自定义滚动条
+- 支持下拉刷新和上推加载
+- 支持 typescript
 - ...
 
-## 快速入门
+## 开始起步
 
-### 安装
-
-用 npm 或者是 yarn 安装
-
-```bash
-npm install vuescroll -S
-# yarn add vuescroll
-```
-
-### 升级
-
-```bash
-   npm i vuescroll@latest
-   # yarn add vuescroll@latest
-```
-
-### 用法
-
-1.  首先在你的入口文件安装 Vuescroll
-
-```javascript
-import Vue from 'vue';
-import vuescroll from 'vuescroll';
-// 注意： 从4.6.6开始， 你需要引入 .css 文件了
-import 'vuescroll/dist/vuescroll.css';
-Vue.use(vuescroll);
-
-const vm = new Vue({
-  el: '#app',
-  data: {
-    ops: {
-      // 下面的配置分别对应Vuescroll的不同部位
-      vuescroll: {},
-      scrollPanel: {},
-      rail: {},
-      bar: {}
-    }
-  }
-});
-```
-
-2.  然后使用 vuescroll 把需要滚动的内容包裹起来即可。
-
-```html
-<div id="app" >
-    <vue-scroll :ops="ops">
-        <div
-        class="content"
-        v-for= "item in 100"
-        :key="item"
-        >
-        <span>{{item}}</span>
-        </div>
-    </vue-scroll>
-</div>
-```
-
-### API
-
-[API](http://vuescrolljs.yvescoding.org/zh/guide/api.html)
-
-### Event
-
-[Event](http://vuescrolljs.yvescoding.org/zh/guide/event.html)
-
-### Slot
-
-[Slot](http://vuescrolljs.yvescoding.org/zh/guide/slot.html)
+- [在线 demo](http://vuescrolljs.yvescoding.org/zh/demo/)
+- [上手指南](http://vuescrolljs.yvescoding.org/zh/guide/getting-started.html)
+- [配置项](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html)
+- [API](http://vuescrolljs.yvescoding.org/zh/guide/api.html)
+- [Event](http://vuescrolljs.yvescoding.org/zh/guide/event.html)
+- [Slot](http://vuescrolljs.yvescoding.org/zh/guide/slot.html)
 
 ## 变更日志
 
-每个版本的详细记录在[发行日志](https://github.com/YvesCoding/releases)里面。
+详细的变更日志在[发行日志里](https://github.com/YvesCoding/releases).
 
 ## 贡献
 
-请查看[CONTRIBUTING](.github/CONTRIBUTING.md)。
-
-## 灵感来源
-
-- [slimscroll](http://rocha.la/jQuery-slimScroll)
-- [element-ui](http://element.eleme.io/#/zh-CN/component/installation)
-- [scroller](http://zynga.github.io/scroller/)
-- [CodePen](https://codepen.io/wangyi7099/pen/YLVBNe)
-- [better-scroll](https://github.com/ustbhuangyi/better-scroll)
+请看[CONTRIBUTING](.github/CONTRIBUTING.md).
 
 ## 许可证
 
 **MIT**
-
-## 微信交流讨论群
-
-扫一个扫加入群里面讨论
-
-<p align="center">
-  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400">
-</p>
