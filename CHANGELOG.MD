@@ -1,3 +1,10 @@
+<a name="4.6.17"></a>
+## [4.6.17](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.17) (2018-06-29)
+
+### Bug Fixes
+
+* A typescript any-imply error.[cf87e45](https://github.com/YvesCoding/vuescroll/commit/cf87e4525c4bb279e9858406d9ffd3535b0c81f0)
+
 <a name="4.6.14"></a>
 ## [4.6.14](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.14) (2018-06-29)
 
