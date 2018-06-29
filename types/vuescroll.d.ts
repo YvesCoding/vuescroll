@@ -64,7 +64,13 @@ export declare class vuescroll extends Vue {
    * @param {*} [callback]
    * @memberof vuescroll
    */
-  zoomTo(level: number, animate?: boolean, originLeft?, originTop?, callback?);
+  zoomTo(
+    level: number,
+    animate?: boolean,
+    originLeft?: number,
+    originTop?: number,
+    callback?: () => void
+  ): void;
 
   /**
    * @description Get the current page, only vaild in mode is slide and pagind is true!

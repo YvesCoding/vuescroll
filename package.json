@@ -6,7 +6,7 @@
     "url": "https://github.com/YvesCoding/vuescroll/issues"
   },
   "dependencies": {
-    "vue": "^2.5.16"
+    "vue": "^2.5.17"
   },
   "typings": "types/index.d.ts",
   "files": [
