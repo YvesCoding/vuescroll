@@ -1,3 +1,14 @@
+<a name="4.6.14"></a>
+## [4.6.14](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.14) (2018-06-29)
+
+
+### Bug Fixes
+
+* files field in  package.json ([ebe101f](https://github.com/YvesCoding/vuescroll/commit/ebe101f))
+
+* A css related bug, that causes horizontal bar not to show.
+([7c8858e](https://github.com/YvesCoding/vuescroll/commit/7c8858e))
+
 <a name="4.6.13"></a>
 ## [4.6.13](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.13) (2018-06-27)
 
