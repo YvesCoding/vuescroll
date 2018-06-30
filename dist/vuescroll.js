@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.6.20
+    * Vuescroll v4.6.21
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -3482,12 +3482,12 @@ var vueScrollCore = {
         this.emitEvent(eventType, nativeEvent);
       }
       if (this.mergedOptions.bar.onlyShowBarOnScroll) {
-        if (eventType == 'handle-scroll' || eventType == 'handle-resize' || eventType == 'refresh-status' || eventType == 'window-resize') {
+        if (eventType == 'handle-scroll' || eventType == 'handle-resize' || eventType == 'refresh-status' || eventType == 'window-resize' || eventType == 'options-change') {
           this.showAndDefferedHideBar(true);
         }
-      } /* istanbul ignore next */else {
-          this.showAndDefferedHideBar();
-        }
+      } else {
+        this.showAndDefferedHideBar();
+      }
     },
     updateMode: function updateMode() {
       var x = this.vuescroll.state.internalScrollLeft;
@@ -3571,15 +3571,18 @@ var vueScrollCore = {
       this.bar.hBar.state.opacity = this.mergedOptions.bar.hBar.opacity;
     },
     hideBar: function hideBar(forceHideBar) {
-      if (forceHideBar) {
-        this.bar.vBar.state.opacity = 0;
-        this.bar.hBar.state.opacity = 0;
-      }
       // when in non-native mode dragging content
       // in slide mode, just return
       /* istanbul ignore next */
       if (this.vuescroll.state.isDragging) {
         return;
+      }
+
+      if (forceHideBar && !this.mergedOptions.bar.hBar.keepShow) {
+        this.bar.hBar.state.opacity = 0;
+      }
+      if (forceHideBar && !this.mergedOptions.bar.vBar.keepShow) {
+        this.bar.vBar.state.opacity = 0;
       }
       // add isClickingBar condition
       // to prevent from hiding bar while dragging the bar
@@ -3706,7 +3709,7 @@ var vueScrollCore = {
         setTimeout(function () {
           if (_this4.isSmallChangeThisTick == true) {
             _this4.isSmallChangeThisTick = false;
-            _this4.updateBarStateAndEmitEvent();
+            _this4.updateBarStateAndEmitEvent('options-change');
             return;
           }
           _this4.refreshInternalStatus();
@@ -3752,7 +3755,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.20',
+  version: '4.6.21',
   refreshAll: refreshAll
 };
 

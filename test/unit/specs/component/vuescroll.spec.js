@@ -357,6 +357,7 @@ describe('vuescroll', () => {
         data: {
           ops: {
             bar: {
+              onlyShowBarOnScroll: false,
               vBar: {
                 keepShow: false
               }

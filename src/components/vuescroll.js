@@ -217,11 +217,12 @@ const vueScrollCore = {
           eventType == 'handle-scroll' ||
           eventType == 'handle-resize' ||
           eventType == 'refresh-status' ||
-          eventType == 'window-resize'
+          eventType == 'window-resize' ||
+          eventType == 'options-change'
         ) {
           this.showAndDefferedHideBar(true);
         }
-      } /* istanbul ignore next */ else {
+      } else {
         this.showAndDefferedHideBar();
       }
     },
@@ -309,15 +310,18 @@ const vueScrollCore = {
       this.bar.hBar.state.opacity = this.mergedOptions.bar.hBar.opacity;
     },
     hideBar(forceHideBar) {
-      if (forceHideBar) {
-        this.bar.vBar.state.opacity = 0;
-        this.bar.hBar.state.opacity = 0;
-      }
       // when in non-native mode dragging content
       // in slide mode, just return
       /* istanbul ignore next */
       if (this.vuescroll.state.isDragging) {
         return;
+      }
+
+      if (forceHideBar && !this.mergedOptions.bar.hBar.keepShow) {
+        this.bar.hBar.state.opacity = 0;
+      }
+      if (forceHideBar && !this.mergedOptions.bar.vBar.keepShow) {
+        this.bar.vBar.state.opacity = 0;
       }
       // add isClickingBar condition
       // to prevent from hiding bar while dragging the bar
@@ -452,7 +456,7 @@ const vueScrollCore = {
           setTimeout(() => {
             if (this.isSmallChangeThisTick == true) {
               this.isSmallChangeThisTick = false;
-              this.updateBarStateAndEmitEvent();
+              this.updateBarStateAndEmitEvent('options-change');
               return;
             }
             this.refreshInternalStatus();
