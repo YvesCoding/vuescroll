@@ -333,6 +333,7 @@ var GCF = {
   },
   bar: {
     showDelay: 500,
+    onlyShowBarOnScroll: true,
     vBar: {
       background: '#00a650',
       keepShow: false,
@@ -3480,7 +3481,13 @@ var vueScrollCore = {
       if (eventType) {
         this.emitEvent(eventType, nativeEvent);
       }
-      this.showAndDefferedHideBar();
+      if (this.mergedOptions.bar.onlyShowBarOnScroll) {
+        if (eventType == 'handle-scroll') {
+          this.showAndDefferedHideBar(true);
+        }
+      } else /* istanbul ignore next */{
+          this.showAndDefferedHideBar();
+        }
     },
     updateMode: function updateMode() {
       var x = this.vuescroll.state.internalScrollLeft;
@@ -3508,7 +3515,7 @@ var vueScrollCore = {
       /* istanbul ignore next */
       this.vuescroll.state.isClickingBar = val;
     },
-    showAndDefferedHideBar: function showAndDefferedHideBar() {
+    showAndDefferedHideBar: function showAndDefferedHideBar(forceHideBar) {
       var _this2 = this;
 
       this.showBar();
@@ -3518,7 +3525,7 @@ var vueScrollCore = {
       }
       this.timeoutId = setTimeout(function () {
         _this2.timeoutId = 0;
-        _this2.hideBar();
+        _this2.hideBar(forceHideBar);
       }, this.mergedOptions.bar.showDelay);
     },
 
@@ -3563,7 +3570,11 @@ var vueScrollCore = {
       this.bar.vBar.state.opacity = this.mergedOptions.bar.vBar.opacity;
       this.bar.hBar.state.opacity = this.mergedOptions.bar.hBar.opacity;
     },
-    hideBar: function hideBar() {
+    hideBar: function hideBar(forceHideBar) {
+      if (forceHideBar) {
+        this.bar.vBar.state.opacity = 0;
+        this.bar.hBar.state.opacity = 0;
+      }
       // when in non-native mode dragging content
       // in slide mode, just return
       /* istanbul ignore next */

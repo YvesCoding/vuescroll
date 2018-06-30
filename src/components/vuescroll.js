@@ -212,7 +212,13 @@ const vueScrollCore = {
       if (eventType) {
         this.emitEvent(eventType, nativeEvent);
       }
-      this.showAndDefferedHideBar();
+      if(this.mergedOptions.bar.onlyShowBarOnScroll) {
+        if(eventType == 'handle-scroll') {
+          this.showAndDefferedHideBar(true);
+        }
+      } else /* istanbul ignore next */ {
+        this.showAndDefferedHideBar();
+      } 
     },
     updateMode() {
       const x = this.vuescroll.state.internalScrollLeft;
@@ -240,7 +246,7 @@ const vueScrollCore = {
       /* istanbul ignore next */
       this.vuescroll.state.isClickingBar = val;
     },
-    showAndDefferedHideBar() {
+    showAndDefferedHideBar(forceHideBar) {
       this.showBar();
       if (this.timeoutId) {
         clearTimeout(this.timeoutId);
@@ -248,7 +254,7 @@ const vueScrollCore = {
       }
       this.timeoutId = setTimeout(() => {
         this.timeoutId = 0;
-        this.hideBar();
+        this.hideBar(forceHideBar);
       }, this.mergedOptions.bar.showDelay);
     },
     /**
@@ -297,7 +303,11 @@ const vueScrollCore = {
       this.bar.vBar.state.opacity = this.mergedOptions.bar.vBar.opacity;
       this.bar.hBar.state.opacity = this.mergedOptions.bar.hBar.opacity;
     },
-    hideBar() {
+    hideBar(forceHideBar) {
+      if(forceHideBar) {
+        this.bar.vBar.state.opacity = 0;
+        this.bar.hBar.state.opacity = 0;
+      }
       // when in non-native mode dragging content
       // in slide mode, just return
       /* istanbul ignore next */

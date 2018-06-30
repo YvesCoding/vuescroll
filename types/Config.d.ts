@@ -100,6 +100,7 @@ interface BarType {
 
 interface bar {
   showDelay?: number;
+  onlyShowBarOnScroll?:boolean;
   VBar?: BarType;
   HBar?: BarType;
 }

@@ -86,6 +86,7 @@ export default {
   },
   bar: {
     showDelay: 500,
+    onlyShowBarOnScroll: true,
     vBar: {
       background: '#00a650',
       keepShow: false,
