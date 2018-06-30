@@ -10,6 +10,7 @@
 
   .__panel {
     box-sizing: border-box;
+    position: relative;
     &.__hidebar::-webkit-scrollbar {
       width: 0;
       height: 0;
