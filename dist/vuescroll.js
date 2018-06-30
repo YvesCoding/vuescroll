@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.6.19
+    * Vuescroll v4.6.20
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -3482,10 +3482,10 @@ var vueScrollCore = {
         this.emitEvent(eventType, nativeEvent);
       }
       if (this.mergedOptions.bar.onlyShowBarOnScroll) {
-        if (eventType == 'handle-scroll') {
+        if (eventType == 'handle-scroll' || eventType == 'handle-resize' || eventType == 'refresh-status' || eventType == 'window-resize') {
           this.showAndDefferedHideBar(true);
         }
-      } else /* istanbul ignore next */{
+      } /* istanbul ignore next */else {
           this.showAndDefferedHideBar();
         }
     },
@@ -3607,7 +3607,7 @@ var vueScrollCore = {
         contentElm = this.scrollContentElm;
       }
       var handleWindowResize = function handleWindowResize() /* istanbul ignore next */{
-        _this3.updateBarStateAndEmitEvent();
+        _this3.updateBarStateAndEmitEvent('window-resize');
         if (_this3.mode == 'slide') {
           _this3.updateScroller();
         }
@@ -3691,7 +3691,7 @@ var vueScrollCore = {
       // or remove 'transform origin' is the mode is not `slide`
       this.updateMode();
       // 4. update scrollbar's height/width
-      this.updateBarStateAndEmitEvent();
+      this.updateBarStateAndEmitEvent('refresh-status');
     },
     initWatchOpsChange: function initWatchOpsChange() {
       var _this4 = this;
@@ -3752,7 +3752,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.19',
+  version: '4.6.20',
   refreshAll: refreshAll
 };
 

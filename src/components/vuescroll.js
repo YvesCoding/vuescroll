@@ -212,13 +212,18 @@ const vueScrollCore = {
       if (eventType) {
         this.emitEvent(eventType, nativeEvent);
       }
-      if(this.mergedOptions.bar.onlyShowBarOnScroll) {
-        if(eventType == 'handle-scroll') {
+      if (this.mergedOptions.bar.onlyShowBarOnScroll) {
+        if (
+          eventType == 'handle-scroll' ||
+          eventType == 'handle-resize' ||
+          eventType == 'refresh-status' ||
+          eventType == 'window-resize'
+        ) {
           this.showAndDefferedHideBar(true);
         }
-      } else /* istanbul ignore next */ {
+      } /* istanbul ignore next */ else {
         this.showAndDefferedHideBar();
-      } 
+      }
     },
     updateMode() {
       const x = this.vuescroll.state.internalScrollLeft;
@@ -304,7 +309,7 @@ const vueScrollCore = {
       this.bar.hBar.state.opacity = this.mergedOptions.bar.hBar.opacity;
     },
     hideBar(forceHideBar) {
-      if(forceHideBar) {
+      if (forceHideBar) {
         this.bar.vBar.state.opacity = 0;
         this.bar.hBar.state.opacity = 0;
       }
@@ -346,7 +351,7 @@ const vueScrollCore = {
         contentElm = this.scrollContentElm;
       }
       const handleWindowResize = () => /* istanbul ignore next */ {
-        this.updateBarStateAndEmitEvent();
+        this.updateBarStateAndEmitEvent('window-resize');
         if (this.mode == 'slide') {
           this.updateScroller();
         }
@@ -432,7 +437,7 @@ const vueScrollCore = {
       // or remove 'transform origin' is the mode is not `slide`
       this.updateMode();
       // 4. update scrollbar's height/width
-      this.updateBarStateAndEmitEvent();
+      this.updateBarStateAndEmitEvent('refresh-status');
     },
     initWatchOpsChange() {
       const watchOpts = {
