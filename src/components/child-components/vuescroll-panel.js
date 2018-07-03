@@ -155,9 +155,13 @@ function createPanelChildren(vm, h) {
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
       let loadDom = null;
       loadDom = createTipDom(h, vm, 'load');
-
+      const enableLoad = vm.isEnableLoad();
       renderChildren.push(
-        <div class="__load" ref="loadDom" key="loadDom">
+        <div
+          ref="loadDom"
+          key="loadDom"
+          class={{ __load: true, '__load-disabled': !enableLoad }}
+        >
           {[loadDom, vm.pushLoadTip]}
         </div>
       );

@@ -289,7 +289,8 @@ var members = {
     clientHeight,
     contentWidth,
     contentHeight,
-    animate = trye
+    animate,
+    noScroll = false
   ) {
     var self = this;
 
@@ -313,8 +314,10 @@ var members = {
     // Refresh maximums
     self.__computeScrollMax();
 
-    // Refresh scroll position
-    self.scrollTo(self.__scrollLeft, self.__scrollTop, animate);
+    if (!noScroll) {
+      // Refresh scroll position
+      self.scrollTo(self.__scrollLeft, self.__scrollTop, animate);
+    }
   },
 
   /**
@@ -537,8 +540,9 @@ var members = {
     self.__computeScrollMax(level);
 
     // Recompute left and top coordinates based on new zoom level
-    var left = (originLeft + self.__scrollLeft) * level / oldLevel - originLeft;
-    var top = (originTop + self.__scrollTop) * level / oldLevel - originTop;
+    var left =
+      ((originLeft + self.__scrollLeft) * level) / oldLevel - originLeft;
+    var top = ((originTop + self.__scrollTop) * level) / oldLevel - originTop;
 
     // Limit x-axis
     if (left > self.__maxScrollLeft) {
@@ -842,7 +846,7 @@ var members = {
         var oldLevel = level;
 
         // Recompute level based on previous scale and new scale
-        level = level / self.__lastScale * scale;
+        level = (level / self.__lastScale) * scale;
 
         // Limit level according to configuration
         level = Math.max(
@@ -858,10 +862,10 @@ var members = {
 
           // Recompute left and top coordinates based on new zoom level
           scrollLeft =
-            (currentTouchLeftRel + scrollLeft) * level / oldLevel -
+            ((currentTouchLeftRel + scrollLeft) * level) / oldLevel -
             currentTouchLeftRel;
           scrollTop =
-            (currentTouchTopRel + scrollTop) * level / oldLevel -
+            ((currentTouchTopRel + scrollTop) * level) / oldLevel -
             currentTouchTopRel;
 
           // Recompute max scroll values
@@ -876,7 +880,7 @@ var members = {
         if (scrollLeft > maxScrollLeft || scrollLeft < 0) {
           // Slow down on the edges
           if (self.options.bouncing) {
-            scrollLeft += moveX / 2 * this.options.speedMultiplier;
+            scrollLeft += (moveX / 2) * this.options.speedMultiplier;
           } else if (scrollLeft > maxScrollLeft) {
             scrollLeft = maxScrollLeft;
           } else {
@@ -893,7 +897,7 @@ var members = {
         if (scrollTop > maxScrollTop || scrollTop < 0) {
           // Slow down on the edges
           if (self.options.bouncing) {
-            scrollTop += moveY / 2 * this.options.speedMultiplier;
+            scrollTop += (moveY / 2) * this.options.speedMultiplier;
 
             // Support pull-to-refresh (only when only y is scrollable)
             if (
@@ -1041,8 +1045,8 @@ var members = {
           var movedTop = self.__scrollTop - positions[startPos - 1];
 
           // Based on 50ms compute the movement to apply for each render step
-          self.__decelerationVelocityX = movedLeft / timeOffset * (1000 / 60);
-          self.__decelerationVelocityY = movedTop / timeOffset * (1000 / 60);
+          self.__decelerationVelocityX = (movedLeft / timeOffset) * (1000 / 60);
+          self.__decelerationVelocityY = (movedTop / timeOffset) * (1000 / 60);
 
           // How much velocity is required to start the deceleration
           var minVelocityToStartDeceleration =

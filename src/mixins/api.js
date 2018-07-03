@@ -156,7 +156,7 @@ export default {
         warn('refresh must be enabled!');
         return;
       } else if (type == 'load' && !isLoad) {
-        warn('load must be enabled!');
+        warn('load must be enabled and content\'s height > container\'s height!');
         return;
       } else if (type !== 'refresh' && type !== 'load') {
         warn('param must be one of load and refresh!');

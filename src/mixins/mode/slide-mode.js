@@ -73,8 +73,14 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
 
 export default {
   methods: {
-    // update scrollbar's size and pos  while in slide mode.
+    // Update:
+    // 1. update height/width
+    // 2. update refresh or load
     updateScroller() {
+      this.updateDimesion();
+      this.registryRefreshLoad();
+    },
+    updateDimesion() {
       const clientWidth = this.$el.clientWidth;
       const clientHeight = this.$el.clientHeight;
       let contentWidth = this.scrollPanelElm.scrollWidth;
@@ -93,18 +99,33 @@ export default {
         }
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        const loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
-        loadHeight = loadDom.offsetHeight;
-        //  hide the trailing load dom..
-        contentHeight -= loadHeight;
+        const enableLoad = this.isEnableLoad();
+        if (enableLoad) {
+          const loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
+          loadHeight = loadDom.offsetHeight;
+          //  hide the trailing load dom..
+          contentHeight -= loadHeight;
+        }
       }
-      this.scroller.setDimensions(
-        clientWidth,
-        clientHeight,
-        contentWidth,
-        contentHeight,
-        false
-      );
+      if (this.scroller) {
+        this.scroller.setDimensions(
+          clientWidth,
+          clientHeight,
+          contentWidth,
+          contentHeight,
+          false
+        );
+      }
+    },
+    registryRefreshLoad() {
+      // registry refresh
+      if (this.mergedOptions.vuescroll.pullRefresh.enable) {
+        this.registryEvent('refresh');
+      }
+      // registry load
+      if (this.mergedOptions.vuescroll.pushLoad.enable) {
+        this.registryEvent('load');
+      }
     },
     registryScroller() {
       const preventDefault = this.mergedOptions.vuescroll.scroller
@@ -118,6 +139,7 @@ export default {
         !snapping &&
         this.mergedOptions.vuescroll.zooming;
       const { scrollingY, scrollingX } = this.mergedOptions.scrollPanel;
+
       // hadnle for scroll complete
       const scrollingComplete = () => {
         this.updateBarStateAndEmitEvent('handle-scroll-complete');
@@ -133,8 +155,8 @@ export default {
         snapping,
         scrollingComplete
       });
-      // if snapping enabled
-      // we should set snap size
+
+      // Set snap
       if (snapping) {
         this.scroller.setSnapSize(
           this.mergedOptions.vuescroll.snapping.width,
@@ -146,6 +168,8 @@ export default {
         rect.left + this.$el.clientLeft,
         rect.top + this.$el.clientTop
       );
+
+      // Get destroy callback
       const cb = listenContainer(
         this.$el,
         this.scroller,
@@ -167,15 +191,9 @@ export default {
         zooming,
         preventDefault
       );
-      // registry refresh
-      if (this.mergedOptions.vuescroll.pullRefresh.enable) {
-        this.registryEvent('refresh');
-      }
-      // registry load
-      if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        this.registryEvent('load');
-      }
+
       this.updateScroller();
+
       return cb;
     },
     updateSlideModeBarState() {

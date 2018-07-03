@@ -172,47 +172,50 @@ describe('vuescroll', () => {
       },
       true
     );
-    const vs = vm.$refs['vs'];
-    const tipDom = vs.$el.querySelector('.__load');
-    const { clientHeight } = tipDom;
-    trigger(vs.$el, 'mousedown');
+    startSchedule().then(r => {
+      const vs = vm.$refs['vs'];
+      const tipDom = vs.$el.querySelector('.__load');
+      const { clientHeight } = tipDom;
+      trigger(vs.$el, 'mousedown');
 
-    // deactive
-    expect(tipDom.innerText).toBe('load deactive tip');
+      // deactive
+      expect(tipDom.innerText).toBe('load deactive tip');
 
-    // scroll to bottom first
-    vs.scrollTo(
-      {
-        y: '100%'
-      },
-      false
-    );
-    vs.scroller.__publish(
-      vs.scroller.__scrollLeft,
-      clientHeight * 2,
-      1, // zoom level
-      false // animate?
-    );
-    vs.scroller.__loadActivate();
-    vs.scroller.__loadActive = true;
-    vm.$nextTick(() => {
-      expect(tipDom.innerText).toBe('load active tip');
-      trigger(document, 'mouseup');
-      // start
-      vs.scroller.triggerRefreshOrLoad('load');
+      // scroll to bottom first
+      vs.scrollTo(
+        {
+          y: '100%'
+        },
+        false
+      );
+      vs.scroller.__publish(
+        vs.scroller.__scrollLeft,
+        clientHeight * 2,
+        1, // zoom level
+        false // animate?
+      );
+      vs.scroller.__loadActivate();
+      vs.scroller.__loadActive = true;
       vm.$nextTick(() => {
-        expect(tipDom.innerText).toBe('load start tip');
-        startSchedule(2010)
-          .then(r => {
-            expect(tipDom.innerText).toBe('load before deactive tip');
-            r();
-          })
-          .wait(510)
-          .then(() => {
-            expect(tipDom.innerText).toBe('load deactive tip');
-            done();
-          });
+        expect(tipDom.innerText).toBe('load active tip');
+        trigger(document, 'mouseup');
+        // start
+        vs.scroller.triggerRefreshOrLoad('load');
+        vm.$nextTick(() => {
+          expect(tipDom.innerText).toBe('load start tip');
+          startSchedule(2010)
+            .then(r => {
+              expect(tipDom.innerText).toBe('load before deactive tip');
+              r();
+            })
+            .wait(510)
+            .then(() => {
+              expect(tipDom.innerText).toBe('load deactive tip');
+              done();
+            });
+        });
       });
+      r();
     });
   });
 

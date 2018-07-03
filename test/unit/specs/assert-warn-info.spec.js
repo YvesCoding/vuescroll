@@ -317,7 +317,9 @@ describe('assert-warn-info', () => {
         vs.triggerRefreshOrLoad('refresh');
         expect('refresh must be enabled!').toHaveBeenTipped();
         vs.triggerRefreshOrLoad('load');
-        expect('load must be enabled!').toHaveBeenTipped();
+        expect(
+          'load must be enabled and content\'s height > container\'s height!'
+        ).toHaveBeenTipped();
         r();
         done();
       });
