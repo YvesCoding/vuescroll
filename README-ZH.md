@@ -13,6 +13,10 @@
 > 一款基于 Vue.js 的，支持 Pc 和移动端的功能强大的漂亮的滚动条。
 > [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
 
+<p align="center">
+  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo">
+</p>
+
 ## Features
 
 - 支持 Pc 和移动端
