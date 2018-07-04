@@ -6,6 +6,12 @@ about: Create a report to help us improve
 
 **Your config**
 
-**Your version(Try to update to the latest version)**
+**Your Workaround**
+
+- Browser:
+
+- Vuescroll Version(Try to update to the latest version may solve your problem):
+
+- OS:
 
 **What happened?**
