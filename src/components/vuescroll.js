@@ -14,7 +14,6 @@ import hackLifecycle from '../mixins/hack-lifecycle';
 /**
  *  Init
  */
-
 import init from '../mixins/init';
 
 /**
@@ -35,25 +34,21 @@ import eventHelper from '../mixins/event-handler';
 /**
  *  Helper
  */
-
 import helper from '../mixins/helper';
 
 /**
  *  Event Emitter
  */
-
 import eventEmitter from '../mixins/event-emitter';
 
 /**
  *  Refresh Mechanism
  */
-
 import refresh from '../mixins/refresh';
 
 /**
  *  Detect Resize Mechanism
  */
-
 import resize from '../mixins/resize';
 
 /* ------------------- Mix End ---------------- */
@@ -64,6 +59,11 @@ import resize from '../mixins/resize';
 import bar, { createBar } from './child-components/vuescroll-bar';
 import scrollContent from './child-components/vuescroll-content';
 import scrollPanel, { createPanel } from './child-components/vuescroll-panel';
+
+/**
+ *  Util
+ */
+import { isSupportTouch, insertChildrenIntoSlot } from '../util';
 
 const vueScrollCore = {
   name: 'vueScroll',
