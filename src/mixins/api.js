@@ -209,9 +209,8 @@ export default {
       if (this.mode == 'native' || this.mode == 'pure-native') {
         if (animate) {
           // hadnle for scroll complete
-          const scrollingComplete = () => {
-            this.updateBarStateAndEmitEvent('handle-scroll-complete');
-          };
+          const scrollingComplete = this.scrollingComplete.bind(this);
+
           goScrolling(
             this.$refs['scrollPanel'].$el,
             destX - this.$refs['scrollPanel'].$el.scrollLeft,
@@ -259,6 +258,14 @@ export default {
     },
     refresh() {
       this.refreshInternalStatus();
+    },
+    // Get the times you have scrolled!
+    getScrollingTimes() {
+      return this.vuescroll.state.scrollingTimes;
+    },
+    // Clear the times you have scrolled!
+    clearScrollingTimes() {
+      this.vuescroll.state.scrollingTimes = 0;
     }
   }
 };

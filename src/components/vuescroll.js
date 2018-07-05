@@ -145,7 +145,8 @@ const vueScrollCore = {
           refreshStage: 'deactive',
           loadStage: 'deactive',
           height: '100%',
-          width: '100%'
+          width: '100%',
+          scrollingTimes: 0
         },
         updatedCbs: []
       },

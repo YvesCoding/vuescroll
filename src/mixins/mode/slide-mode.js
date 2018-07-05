@@ -140,10 +140,8 @@ export default {
         this.mergedOptions.vuescroll.zooming;
       const { scrollingY, scrollingX } = this.mergedOptions.scrollPanel;
 
-      // hadnle for scroll complete
-      const scrollingComplete = () => {
-        this.updateBarStateAndEmitEvent('handle-scroll-complete');
-      };
+      const scrollingComplete = this.scrollingComplete.bind(this);
+
       // Initialize Scroller
       this.scroller = new Scroller(render(this.scrollPanelElm, window, 'px'), {
         ...this.mergedOptions.vuescroll.scroller,

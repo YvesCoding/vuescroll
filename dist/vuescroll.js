@@ -2124,11 +2124,9 @@ var slideMode = {
           scrollingY = _mergedOptions$scroll.scrollingY,
           scrollingX = _mergedOptions$scroll.scrollingX;
 
-      // hadnle for scroll complete
 
-      var scrollingComplete = function scrollingComplete() {
-        _this.updateBarStateAndEmitEvent('handle-scroll-complete');
-      };
+      var scrollingComplete = this.scrollingComplete.bind(this);
+
       // Initialize Scroller
       this.scroller = new Scroller(render(this.scrollPanelElm, window, 'px'), _extends$1({}, this.mergedOptions.vuescroll.scroller, {
         zooming: zooming,
@@ -2415,6 +2413,61 @@ var hackLifecycle = {
   }
 };
 
+var init = {
+  methods: {
+    initWatchOpsChange: function initWatchOpsChange() {
+      var _this = this;
+
+      var watchOpts = {
+        deep: true,
+        sync: true
+      };
+      this.$watch('mergedOptions', function () {
+        // record current position
+        _this.recordCurrentPos();
+        setTimeout(function () {
+          if (_this.isSmallChangeThisTick == true) {
+            _this.isSmallChangeThisTick = false;
+            _this.updateBarStateAndEmitEvent('options-change');
+            return;
+          }
+          _this.refreshInternalStatus();
+        }, 0);
+      }, watchOpts);
+
+      smallChangeArray.forEach(function (opts) {
+        _this.$watch(opts, function () {
+          // when small changes changed,
+          // we need not to updateMode or registryResize
+          _this.isSmallChangeThisTick = true;
+        }, watchOpts);
+      });
+    },
+
+    // scrollTo hash-anchor while mounted
+    scrollToAnchor: function scrollToAnchor() /* istanbul ignore next */{
+      var validateHashSelector = function validateHashSelector(hash) {
+        return (/^#[a-zA-Z_]\d*$/.test(hash)
+        );
+      };
+      var hash = window.location.hash;
+      if (!hash || (hash = hash.slice(hash.lastIndexOf('#'))) && !validateHashSelector(hash)) {
+        return;
+      }
+      var elm = document.querySelector(hash);
+      if (!isChildInParent(elm, this.$el) || this.mergedOptions.scrollPanel.initialScrollY || this.mergedOptions.scrollPanel.initialScrollX) {
+        return;
+      }
+      this.scrollIntoView(elm);
+    },
+    initVariables: function initVariables() {
+      this.lastMode = this.mode;
+      this.$el._isVuescroll = true;
+      this.clearScrollingTimes();
+    }
+  }
+};
+
 var vsInstances = {};
 
 function refreshAll() {
@@ -2617,14 +2670,11 @@ var api = {
 
     // private api
     internalScrollTo: function internalScrollTo(destX, destY, animate, force) {
-      var _this2 = this;
-
       if (this.mode == 'native' || this.mode == 'pure-native') {
         if (animate) {
           // hadnle for scroll complete
-          var scrollingComplete = function scrollingComplete() {
-            _this2.updateBarStateAndEmitEvent('handle-scroll-complete');
-          };
+          var scrollingComplete = this.scrollingComplete.bind(this);
+
           goScrolling(this.$refs['scrollPanel'].$el, destX - this.$refs['scrollPanel'].$el.scrollLeft, destY - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing, scrollingComplete);
         } else {
           this.$refs['scrollPanel'].$el.scrollTop = destY;
@@ -2669,6 +2719,16 @@ var api = {
     },
     refresh: function refresh() {
       this.refreshInternalStatus();
+    },
+
+    // Get your scroll times!
+    getScrollingTimes: function getScrollingTimes() {
+      return this.vuescroll.state.scrollingTimes;
+    },
+
+    // Clear your scroll times!
+    clearScrollingTimes: function clearScrollingTimes() {
+      this.vuescroll.state.scrollingTimes = 0;
     }
   }
 };
@@ -2702,9 +2762,139 @@ var eventHelper = {
       this.recordCurrentPos();
       this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
     },
+    scrollingComplete: function scrollingComplete() {
+      this.vuescroll.state.scrollingTimes++;
+      this.updateBarStateAndEmitEvent('handle-scroll-complete');
+    },
     setBarClick: function setBarClick(val) {
       /* istanbul ignore next */
       this.vuescroll.state.isClickingBar = val;
+    }
+  }
+};
+
+function findValuesByMode(mode, vm) {
+  var axis = {};
+  switch (mode) {
+    case 'native':
+    case 'pure-native':
+      axis = {
+        x: vm.scrollPanelElm.scrollLeft,
+        y: vm.scrollPanelElm.scrollTop
+      };
+      break;
+    case 'slide':
+      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+      break;
+  }
+  return axis;
+}
+
+var helper = {
+  methods: {
+    isEnableLoad: function isEnableLoad() {
+      // Enable load only when clientHeight <= scrollHeight
+      if (!this._isMounted) return false;
+      var panelElm = this.scrollPanelElm;
+      var containerElm = this.$el;
+
+      /* istanbul ignore if */
+      if (!this.mergedOptions.vuescroll.pushLoad.enable) {
+        return false;
+      }
+      var loadDom = null;
+      if (this.$refs['loadDom']) {
+        loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
+      }
+      var loadHeight = loadDom && loadDom.offsetHeight || 0;
+      /* istanbul ignore if */
+      if (panelElm.scrollHeight - loadHeight <= containerElm.clientHeight) {
+        return false;
+      }
+      return true;
+    },
+    showAndDefferedHideBar: function showAndDefferedHideBar(forceHideBar) {
+      var _this = this;
+
+      this.showBar();
+      if (this.timeoutId) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = 0;
+      }
+      this.timeoutId = setTimeout(function () {
+        _this.timeoutId = 0;
+        _this.hideBar(forceHideBar);
+      }, this.mergedOptions.bar.showDelay);
+    },
+    showBar: function showBar() {
+      this.bar.vBar.state.opacity = this.mergedOptions.bar.vBar.opacity;
+      this.bar.hBar.state.opacity = this.mergedOptions.bar.hBar.opacity;
+    },
+    hideBar: function hideBar(forceHideBar) {
+      // when in non-native mode dragging content
+      // in slide mode, just return
+      /* istanbul ignore next */
+      if (this.vuescroll.state.isDragging) {
+        return;
+      }
+
+      if (forceHideBar && !this.mergedOptions.bar.hBar.keepShow) {
+        this.bar.hBar.state.opacity = 0;
+      }
+      if (forceHideBar && !this.mergedOptions.bar.vBar.keepShow) {
+        this.bar.vBar.state.opacity = 0;
+      }
+      // add isClickingBar condition
+      // to prevent from hiding bar while dragging the bar
+      if (!this.mergedOptions.bar.vBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
+        this.bar.vBar.state.opacity = 0;
+      }
+      if (!this.mergedOptions.bar.hBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
+        this.bar.hBar.state.opacity = 0;
+      }
+    },
+    recordCurrentPos: function recordCurrentPos() {
+      var mode = this.mode;
+      if (this.mode !== this.lastMode) {
+        mode = this.lastMode;
+        this.lastMode = this.mode;
+      }
+      var state = this.vuescroll.state;
+      var axis = findValuesByMode(mode, this);
+      var oldX = state.internalScrollLeft;
+      var oldY = state.internalScrollTop;
+      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
+      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
+      state.internalScrollLeft = axis.x;
+      state.internalScrollTop = axis.y;
+    },
+    useNumbericSize: function useNumbericSize() {
+      var parentElm = this.$el.parentNode;
+      var position = parentElm.style.position;
+
+      if (!position || position == 'static') {
+        this.$el.parentNode.style.position = 'relative';
+      }
+      this.vuescroll.state.height = parentElm.offsetHeight + 'px';
+      this.vuescroll.state.width = parentElm.offsetWidth + 'px';
+    },
+    usePercentSize: function usePercentSize() {
+      this.vuescroll.state.height = '100%';
+      this.vuescroll.state.width = '100%';
+    },
+
+    // set its size to be equal to its parentNode
+    setVsSize: function setVsSize() {
+      if (this.mergedOptions.vuescroll.sizeStrategy == 'number') {
+        this.useNumbericSize();
+        this.registryParentResize();
+      } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
+        if (this.destroyParentDomResize) {
+          this.destroyParentDomResize();
+          this.destroyParentDomResize = null;
+        }
+        this.usePercentSize();
+      }
     }
   }
 };
@@ -2770,60 +2960,6 @@ var eventEmitter = {
       vertical['directionY'] = this.vuescroll.state.posY;
       horizontal['directionX'] = this.vuescroll.state.posX;
       this.$emit(eventType, vertical, horizontal, nativeEvent);
-    }
-  }
-};
-
-var init = {
-  methods: {
-    initWatchOpsChange: function initWatchOpsChange() {
-      var _this = this;
-
-      var watchOpts = {
-        deep: true,
-        sync: true
-      };
-      this.$watch('mergedOptions', function () {
-        // record current position
-        _this.recordCurrentPos();
-        setTimeout(function () {
-          if (_this.isSmallChangeThisTick == true) {
-            _this.isSmallChangeThisTick = false;
-            _this.updateBarStateAndEmitEvent('options-change');
-            return;
-          }
-          _this.refreshInternalStatus();
-        }, 0);
-      }, watchOpts);
-
-      smallChangeArray.forEach(function (opts) {
-        _this.$watch(opts, function () {
-          // when small changes changed,
-          // we need not to updateMode or registryResize
-          _this.isSmallChangeThisTick = true;
-        }, watchOpts);
-      });
-    },
-
-    // scrollTo hash-anchor while mounted
-    scrollToAnchor: function scrollToAnchor() /* istanbul ignore next */{
-      var validateHashSelector = function validateHashSelector(hash) {
-        return (/^#[a-zA-Z_]\d*$/.test(hash)
-        );
-      };
-      var hash = window.location.hash;
-      if (!hash || (hash = hash.slice(hash.lastIndexOf('#'))) && !validateHashSelector(hash)) {
-        return;
-      }
-      var elm = document.querySelector(hash);
-      if (!isChildInParent(elm, this.$el) || this.mergedOptions.scrollPanel.initialScrollY || this.mergedOptions.scrollPanel.initialScrollX) {
-        return;
-      }
-      this.scrollIntoView(elm);
-    },
-    initVariables: function initVariables() {
-      this.lastMode = this.mode;
-      this.$el._isVuescroll = true;
     }
   }
 };
@@ -3561,132 +3697,6 @@ function createTipDom(h, vm, type) {
   return dom;
 }
 
-function findValuesByMode(mode, vm) {
-  var axis = {};
-  switch (mode) {
-    case 'native':
-    case 'pure-native':
-      axis = {
-        x: vm.scrollPanelElm.scrollLeft,
-        y: vm.scrollPanelElm.scrollTop
-      };
-      break;
-    case 'slide':
-      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-      break;
-  }
-  return axis;
-}
-
-var helper = {
-  methods: {
-    isEnableLoad: function isEnableLoad() {
-      // Enable load only when clientHeight <= scrollHeight
-      if (!this._isMounted) return false;
-      var panelElm = this.scrollPanelElm;
-      var containerElm = this.$el;
-
-      /* istanbul ignore if */
-      if (!this.mergedOptions.vuescroll.pushLoad.enable) {
-        return false;
-      }
-      var loadDom = null;
-      if (this.$refs['loadDom']) {
-        loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
-      }
-      var loadHeight = loadDom && loadDom.offsetHeight || 0;
-      /* istanbul ignore if */
-      if (panelElm.scrollHeight - loadHeight <= containerElm.clientHeight) {
-        return false;
-      }
-      return true;
-    },
-    showAndDefferedHideBar: function showAndDefferedHideBar(forceHideBar) {
-      var _this = this;
-
-      this.showBar();
-      if (this.timeoutId) {
-        clearTimeout(this.timeoutId);
-        this.timeoutId = 0;
-      }
-      this.timeoutId = setTimeout(function () {
-        _this.timeoutId = 0;
-        _this.hideBar(forceHideBar);
-      }, this.mergedOptions.bar.showDelay);
-    },
-    showBar: function showBar() {
-      this.bar.vBar.state.opacity = this.mergedOptions.bar.vBar.opacity;
-      this.bar.hBar.state.opacity = this.mergedOptions.bar.hBar.opacity;
-    },
-    hideBar: function hideBar(forceHideBar) {
-      // when in non-native mode dragging content
-      // in slide mode, just return
-      /* istanbul ignore next */
-      if (this.vuescroll.state.isDragging) {
-        return;
-      }
-
-      if (forceHideBar && !this.mergedOptions.bar.hBar.keepShow) {
-        this.bar.hBar.state.opacity = 0;
-      }
-      if (forceHideBar && !this.mergedOptions.bar.vBar.keepShow) {
-        this.bar.vBar.state.opacity = 0;
-      }
-      // add isClickingBar condition
-      // to prevent from hiding bar while dragging the bar
-      if (!this.mergedOptions.bar.vBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
-        this.bar.vBar.state.opacity = 0;
-      }
-      if (!this.mergedOptions.bar.hBar.keepShow && !this.vuescroll.state.isClickingBar && this.vuescroll.state.pointerLeave) {
-        this.bar.hBar.state.opacity = 0;
-      }
-    },
-    recordCurrentPos: function recordCurrentPos() {
-      var mode = this.mode;
-      if (this.mode !== this.lastMode) {
-        mode = this.lastMode;
-        this.lastMode = this.mode;
-      }
-      var state = this.vuescroll.state;
-      var axis = findValuesByMode(mode, this);
-      var oldX = state.internalScrollLeft;
-      var oldY = state.internalScrollTop;
-      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
-      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
-      state.internalScrollLeft = axis.x;
-      state.internalScrollTop = axis.y;
-    },
-    useNumbericSize: function useNumbericSize() {
-      var parentElm = this.$el.parentNode;
-      var position = parentElm.style.position;
-
-      if (!position || position == 'static') {
-        this.$el.parentNode.style.position = 'relative';
-      }
-      this.vuescroll.state.height = parentElm.offsetHeight + 'px';
-      this.vuescroll.state.width = parentElm.offsetWidth + 'px';
-    },
-    usePercentSize: function usePercentSize() {
-      this.vuescroll.state.height = '100%';
-      this.vuescroll.state.width = '100%';
-    },
-
-    // set its size to be equal to its parentNode
-    setVsSize: function setVsSize() {
-      if (this.mergedOptions.vuescroll.sizeStrategy == 'number') {
-        this.useNumbericSize();
-        this.registryParentResize();
-      } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
-        if (this.destroyParentDomResize) {
-          this.destroyParentDomResize();
-          this.destroyParentDomResize = null;
-        }
-        this.usePercentSize();
-      }
-    }
-  }
-};
-
 /* ------------------- Mix Start ---------------- */
 
 /**
@@ -3696,30 +3706,29 @@ var helper = {
  *  Lifecycle mix
  */
 /**
+ *  Init
+ */
+/**
  *  Api
  */
 /**
  *  Computed
  */
 /**
- *  Event Helper
+ *  Event Hander
+ */
+/**
+ *  Helper
  */
 /**
  *  Event Emitter
  */
-
-/**
- *  Init
- */
-
 /**
  *  Refresh Mechanism
  */
-
 /**
  *  Detect Resize Mechanism
  */
-
 /* ------------------- Mix End ---------------- */
 
 /**
@@ -3800,7 +3809,8 @@ var vueScrollCore = {
           refreshStage: 'deactive',
           loadStage: 'deactive',
           height: '100%',
-          width: '100%'
+          width: '100%',
+          scrollingTimes: 0
         },
         updatedCbs: []
       },

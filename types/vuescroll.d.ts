@@ -107,4 +107,18 @@ export declare class vuescroll extends Vue {
    * @memberof vuescroll
    */
   scrollIntoView(elm: Element | string, animate?: boolean): void;
+
+  /**
+   * @description Get the times you have scrolled
+   * @author wangyi7099
+   * @memberof vuescroll
+   */
+  getScrollingTimes(): void;
+
+  /**
+   * @description Clear the times you have scrolled
+   * @author wangyi7099
+   * @memberof vuescroll
+   */
+  clearScrollingTimes(): void;
 }

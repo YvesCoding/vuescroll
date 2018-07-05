@@ -63,6 +63,7 @@ export default {
     initVariables() {
       this.lastMode = this.mode;
       this.$el._isVuescroll = true;
+      this.clearScrollingTimes();
     }
   }
 };

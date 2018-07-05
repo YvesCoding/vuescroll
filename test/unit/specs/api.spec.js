@@ -386,4 +386,58 @@ describe('api', () => {
         r();
       });
   });
+
+  // Scrolling times test
+
+  it('Api: getScrollingTimes, clearScrollingTimes', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 100,
+            h: 100
+          },
+          {
+            w: 100,
+            h: 100
+          },
+          '',
+          3
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'slide'
+            }
+          }
+        }
+      },
+      true
+    );
+
+    const vs = vm.$refs['vs'];
+
+    startSchedule()
+      .then(r => {
+        const times = vs.getScrollingTimes();
+        expect(times).toBe(0);
+        vs.scrollTo({ y: '10%' });
+        r();
+      })
+      .wait(520)
+      .then(r => {
+        let times = vs.getScrollingTimes();
+        expect(times).toBe(1);
+
+        vs.clearScrollingTimes();
+
+        times = vs.getScrollingTimes();
+
+        expect(times).toBe(0);
+
+        done();
+
+        r();
+      });
+  });
 });
