@@ -1,30 +1,21 @@
-  <p align="center"><a href="http://vuescrolljs.yvescoding.org/zh/"><img width="100" src="http://vuescrolljs.yvescoding.org/logo.png" /></a></p>
-  <h3 align="center">Vuescroll</h4>
 <p align="center">
+  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo">
+</p>
+<p>
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/YvesCoding/vuescroll/tree/dev"><img src="https://img.shields.io/circleci/project/YvesCoding/vuescroll/dev.svg" alt="Build Status"></a>
   <a href="https://codecov.io/github/YvesCoding/vuescroll?branch=dev"><img src="https://img.shields.io/codecov/c/github/YvesCoding/vuescroll/dev.svg" alt="Coverage"></a>
-  <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/l/vuescroll.svg" alt="License"></a>
-<a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/dm/vuescroll.svg" alt="Download"></a>
-<a href="https://github.com/YvesCoding/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
 
 [English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
-> 一款基于 Vue.js 的，支持 Pc 和移动端的功能强大的漂亮的滚动条。
-> [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
-
-<p align="center">
-  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo">
-</p>
-
 ## Features
 
-- 支持 Pc 和移动端
-- 支持平滑地滚动
-- 支持自定义滚动条
-- 支持下拉刷新和上推加载
-- 支持 typescript
-- ...
+- 支持 通过改变[mode](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#vuescroll)来支持 Pc 和移动端
+- 支持通过改变[easing](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#bar)来平滑地滚动
+- 支持[自定义滚动条](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#bar)
+- 支持[下拉刷新和上推加载](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#explanation)
+- 支持 [typescript](http://vuescrolljs.yvescoding.org/zh/guide/typescript.html)
+- 还有[更多](http://vuescrolljs.yvescoding.org/zh/guide/#features)！
 
 ## 开始起步
 
