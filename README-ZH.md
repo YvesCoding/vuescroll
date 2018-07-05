@@ -28,7 +28,7 @@
 - 支持 [typescript](http://vuescrolljs.yvescoding.org/zh/guide/typescript.html)
 - 还有[更多](http://vuescrolljs.yvescoding.org/zh/guide/#features)！
 
-## 开始起步
+## 导航列表
 
 - [在线 demo](http://vuescrolljs.yvescoding.org/zh/demo/)
 - [上手指南](http://vuescrolljs.yvescoding.org/zh/guide/getting-started.html)

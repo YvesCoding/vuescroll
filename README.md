@@ -28,7 +28,7 @@ A powerful and beautiful scrollbar based on Vue.js for PC and mobile.
 - Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html)
 - And [more](http://vuescrolljs.yvescoding.org/guide/#features) !
 
-## Get Started
+## Guide List
 
 - [Online Demo](http://vuescrolljs.yvescoding.org/demo/)
 - [Get Started Guide](http://vuescrolljs.yvescoding.org/guide/getting-started.html)
