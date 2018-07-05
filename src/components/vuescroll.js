@@ -12,6 +12,12 @@ import slideMode from '../mixins/mode/slide-mode';
 import hackLifecycle from '../mixins/hack-lifecycle';
 
 /**
+ *  Init
+ */
+
+import init from '../mixins/init';
+
+/**
  *  Api
  */
 import api from '../mixins/api';
@@ -22,21 +28,21 @@ import api from '../mixins/api';
 import computed from '../mixins/computed';
 
 /**
- *  Event Helper
+ *  Event Hander
  */
 import eventHelper from '../mixins/event-handler';
+
+/**
+ *  Helper
+ */
+
+import helper from '../mixins/helper';
 
 /**
  *  Event Emitter
  */
 
 import eventEmitter from '../mixins/event-emitter';
-
-/**
- *  Init
- */
-
-import init from '../mixins/init';
 
 /**
  *  Refresh Mechanism
@@ -58,12 +64,6 @@ import resize from '../mixins/resize';
 import bar, { createBar } from './child-components/vuescroll-bar';
 import scrollContent from './child-components/vuescroll-content';
 import scrollPanel, { createPanel } from './child-components/vuescroll-panel';
-
-/**
- *  Util
- */
-import { isSupportTouch, insertChildrenIntoSlot } from '../util';
-import helper from '../mixins/helper';
 
 const vueScrollCore = {
   name: 'vueScroll',
