@@ -1,15 +1,15 @@
 /*
-    * Vuescroll v4.6.22
+    * Vuescroll v4.6.23
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
     */
    
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue'), require('util')) :
-	typeof define === 'function' && define.amd ? define(['vue', 'util'], factory) :
-	(global.vuescroll = factory(global.Vue,global.util));
-}(this, (function (Vue,util) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue')) :
+	typeof define === 'function' && define.amd ? define(['vue'], factory) :
+	(global.vuescroll = factory(global.Vue));
+}(this, (function (Vue) { 'use strict';
 
 Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
@@ -3520,10 +3520,9 @@ function createPanel(h, vm) {
     if (width) {
       scrollPanelData.style['width'] = width;
     } /* istanbul ignore next */else {
-        // fallback to inline block while
-        // doesn't support 'fit-content',
-        // this may cause some issues, but this
-        // can make `resize` event work...
+        /* 
+         * Fallback to inline-block while doesn't support fit-content
+         */
         scrollPanelData['display'] = 'inline-block';
       }
   } else if (vm.mode == 'pure-native') {
@@ -3558,12 +3557,13 @@ function createPanelChildren(vm, h) {
      */
     var _customPanel = vm.$slots['scroll-panel'];
     if (_customPanel) {
-      if (_customPanel.length > 0) {
+      /* istanbul ignore if */
+      if (_customPanel.length > 1) {
         renderChildren = _customPanel.concat(renderChildren);
       } else {
         _customPanel = _customPanel[0];
         var ch = _customPanel.children;
-        if (util.isArray(ch)) {
+        if (Array.isArray(ch)) {
           renderChildren = ch.concat(renderChildren);
         }
       }
@@ -3917,7 +3917,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.22',
+  version: '4.6.23',
   refreshAll: refreshAll
 };
 

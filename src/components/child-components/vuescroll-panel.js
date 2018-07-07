@@ -7,7 +7,6 @@ import {
   getRealParent
 } from '../../util';
 import { createContent } from './vuescroll-content';
-import { isArray } from 'util';
 // vueScrollPanel
 export default {
   name: 'scrollPanel',
@@ -116,10 +115,9 @@ export function createPanel(h, vm) {
     if (width) {
       scrollPanelData.style['width'] = width;
     } /* istanbul ignore next */ else {
-      // fallback to inline block while
-      // doesn't support 'fit-content',
-      // this may cause some issues, but this
-      // can make `resize` event work...
+      /* 
+       * Fallback to inline-block while doesn't support fit-content
+       */
       scrollPanelData['display'] = 'inline-block';
     }
   } else if (vm.mode == 'pure-native') {
@@ -152,12 +150,13 @@ function createPanelChildren(vm, h) {
      */
     let _customPanel = vm.$slots['scroll-panel'];
     if (_customPanel) {
-      if (_customPanel.length > 0) {
+      /* istanbul ignore if */
+      if (_customPanel.length > 1) {
         renderChildren = _customPanel.concat(renderChildren);
       } else {
         _customPanel = _customPanel[0];
         const ch = _customPanel.children;
-        if (isArray(ch)) {
+        if (Array.isArray(ch)) {
           renderChildren = ch.concat(renderChildren);
         }
       }
