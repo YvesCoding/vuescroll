@@ -1,3 +1,11 @@
+<a name="4.6.24"></a>
+## [4.6.24](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.24) (2018-07-07)
+
+### Bug Fixes
+
+* Push load related bug.([2a3cf2c](https://github.com/YvesCoding/vuescroll/commit/2a3cf2c))
+
+
 <a name="4.6.23"></a>
 ## [4.6.23](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.23) (2018-07-07)
 
