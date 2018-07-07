@@ -16,7 +16,7 @@ A powerful and beautiful scrollbar based on Vue.js for PC and mobile.
 ## Demo
 
 <p align="center">
-  <a href="vs-issue-list-demo" target="_blank"><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo"/></a>
+  <a href="https://github.com/YvesCoding/vuescroll-issue-list-demo" target="_blank"><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo"/></a>
 </p>
 
 ## Features
