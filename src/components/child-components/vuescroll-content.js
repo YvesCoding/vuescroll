@@ -39,15 +39,17 @@ export default {
       ref: 'scrollContent',
       class: '__view'
     };
-    const customContent = parent.$slots['scroll-content'];
-    if (customContent) {
+
+    const _customContent = parent.$slots['scroll-content'];
+    if (_customContent) {
       return insertChildrenIntoSlot(
         h,
-        customContent,
+        _customContent,
         slots().default,
         propsData
       );
     }
+
     return <div {...propsData}>{slots().default}</div>;
   }
 };

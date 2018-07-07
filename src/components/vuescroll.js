@@ -214,16 +214,19 @@ const vueScrollCore = {
         }
       };
     }
-    const customContainer = this.$slots['scroll-container'];
+
+    const _customContainer = this.$slots['scroll-container'];
+
     const ch = [
       createPanel(h, vm),
       createBar(h, vm, 'vertical'),
       createBar(h, vm, 'horizontal')
     ];
 
-    if (customContainer) {
-      return insertChildrenIntoSlot(h, customContainer, ch, vuescrollData);
+    if (_customContainer) {
+      return insertChildrenIntoSlot(h, _customContainer, ch, vuescrollData);
     }
+
     return <div {...vuescrollData}>{ch}</div>;
   }
 };

@@ -6,10 +6,10 @@
     */
    
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue')) :
-	typeof define === 'function' && define.amd ? define(['vue'], factory) :
-	(global.vuescroll = factory(global.Vue));
-}(this, (function (Vue) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue'), require('util')) :
+	typeof define === 'function' && define.amd ? define(['vue', 'util'], factory) :
+	(global.vuescroll = factory(global.Vue,global.util));
+}(this, (function (Vue,util) { 'use strict';
 
 Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
@@ -163,23 +163,14 @@ function isIE() /* istanbul ignore next */{
 
 function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
   parentVnode = parentVnode[0] ? parentVnode[0] : parentVnode;
-  var tag = parentVnode.componentOptions && parentVnode.componentOptions.tag || parentVnode.tag;
-  // if (!Array.isArray(childVNode)) {
-  //   childVNode = [childVNode];
-  // }
 
-  // // Remove null node
-  // for (let index = 0; index < childVNode.length; index++) {
-  //   const element = childVNode[index];
-  //   if (!element) {
-  //     childVNode.splice(index, 1);
-  //     index--;
-  //   }
-  // }
+  var isComponent = !!parentVnode.componentOptions;
+
+  var tag = isComponent ? parentVnode.componentOptions.tag : parentVnode.tag;
+
   var _data = parentVnode.componentOptions || parentVnode.data || {};
 
-  // If component, use `nativeOn` intead.
-  if (parentVnode.componentOptions) {
+  if (isComponent) {
     data.nativeOn = data.on;
     _data.props = _data.propsData;
 
@@ -2721,12 +2712,12 @@ var api = {
       this.refreshInternalStatus();
     },
 
-    // Get your scroll times!
+    // Get the times you have scrolled!
     getScrollingTimes: function getScrollingTimes() {
       return this.vuescroll.state.scrollingTimes;
     },
 
-    // Clear your scroll times!
+    // Clear the times you have scrolled!
     clearScrollingTimes: function clearScrollingTimes() {
       this.vuescroll.state.scrollingTimes = 0;
     }
@@ -3384,10 +3375,12 @@ var scrollContent = {
       ref: 'scrollContent',
       class: '__view'
     };
-    var customContent = parent.$slots['scroll-content'];
-    if (customContent) {
-      return insertChildrenIntoSlot(h, customContent, slots().default, propsData);
+
+    var _customContent = parent.$slots['scroll-content'];
+    if (_customContent) {
+      return insertChildrenIntoSlot(h, _customContent, slots().default, propsData);
     }
+
     return h(
       'div',
       propsData,
@@ -3453,11 +3446,14 @@ var scrollPanel = {
     var data = {
       class: ['__panel']
     };
+
     var parent = getRealParent(this);
-    var customPanel = parent.$slots['scroll-panel'];
-    if (customPanel) {
-      return insertChildrenIntoSlot(h, customPanel, this.$slots.default, data);
+
+    var _customPanel = parent.$slots['scroll-panel'];
+    if (_customPanel) {
+      return insertChildrenIntoSlot(h, _customPanel, this.$slots.default, data);
     }
+
     return h(
       'div',
       data,
@@ -3555,6 +3551,24 @@ function createPanelChildren(vm, h) {
     return [createContent(h, vm)];
   } else if (vm.mode == 'slide') {
     var renderChildren = [vm.$slots.default];
+
+    /**
+     *  Keep the children-rendered-order in case of the style crash
+     *  when push-load or pull-refresh is enable
+     */
+    var _customPanel = vm.$slots['scroll-panel'];
+    if (_customPanel) {
+      if (_customPanel.length > 0) {
+        renderChildren = _customPanel.concat(renderChildren);
+      } else {
+        _customPanel = _customPanel[0];
+        var ch = _customPanel.children;
+        if (util.isArray(ch)) {
+          renderChildren = ch.concat(renderChildren);
+        }
+      }
+    }
+
     // handle refresh
     if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
       var refreshDom = null;
@@ -3565,6 +3579,7 @@ function createPanelChildren(vm, h) {
         [[refreshDom, vm.pullRefreshTip]]
       ));
     }
+
     // handle load
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
       var loadDom = null;
@@ -3878,12 +3893,15 @@ var vueScrollCore = {
           }
         };
       }
-    var customContainer = this.$slots['scroll-container'];
+
+    var _customContainer = this.$slots['scroll-container'];
+
     var ch = [createPanel(h, vm), createBar(h, vm, 'vertical'), createBar(h, vm, 'horizontal')];
 
-    if (customContainer) {
-      return insertChildrenIntoSlot(h, customContainer, ch, vuescrollData);
+    if (_customContainer) {
+      return insertChildrenIntoSlot(h, _customContainer, ch, vuescrollData);
     }
+
     return h(
       'div',
       vuescrollData,

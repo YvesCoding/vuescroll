@@ -7,6 +7,7 @@ import {
   getRealParent
 } from '../../util';
 import { createContent } from './vuescroll-content';
+import { isArray } from 'util';
 // vueScrollPanel
 export default {
   name: 'scrollPanel',
@@ -41,11 +42,14 @@ export default {
     let data = {
       class: ['__panel']
     };
+
     const parent = getRealParent(this);
-    const customPanel = parent.$slots['scroll-panel'];
-    if (customPanel) {
-      return insertChildrenIntoSlot(h, customPanel, this.$slots.default, data);
+
+    const _customPanel = parent.$slots['scroll-panel'];
+    if (_customPanel) {
+      return insertChildrenIntoSlot(h, _customPanel, this.$slots.default, data);
     }
+
     return <div {...data}>{[this.$slots.default]}</div>;
   }
 };
@@ -141,6 +145,24 @@ function createPanelChildren(vm, h) {
     return [createContent(h, vm)];
   } else if (vm.mode == 'slide') {
     let renderChildren = [vm.$slots.default];
+
+    /**
+     *  Keep the children-rendered-order in case of the style crash
+     *  when push-load or pull-refresh is enable
+     */
+    let _customPanel = vm.$slots['scroll-panel'];
+    if (_customPanel) {
+      if (_customPanel.length > 0) {
+        renderChildren = _customPanel.concat(renderChildren);
+      } else {
+        _customPanel = _customPanel[0];
+        const ch = _customPanel.children;
+        if (isArray(ch)) {
+          renderChildren = ch.concat(renderChildren);
+        }
+      }
+    }
+
     // handle refresh
     if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
       let refreshDom = null;
@@ -151,6 +173,7 @@ function createPanelChildren(vm, h) {
         </div>
       );
     }
+
     // handle load
     if (vm.mergedOptions.vuescroll.pushLoad.enable) {
       let loadDom = null;

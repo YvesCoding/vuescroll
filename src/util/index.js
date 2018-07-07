@@ -169,25 +169,14 @@ export function isIE() /* istanbul ignore next */ {
 
 export function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
   parentVnode = parentVnode[0] ? parentVnode[0] : parentVnode;
-  const tag =
-    (parentVnode.componentOptions && parentVnode.componentOptions.tag) ||
-    parentVnode.tag;
-  // if (!Array.isArray(childVNode)) {
-  //   childVNode = [childVNode];
-  // }
 
-  // // Remove null node
-  // for (let index = 0; index < childVNode.length; index++) {
-  //   const element = childVNode[index];
-  //   if (!element) {
-  //     childVNode.splice(index, 1);
-  //     index--;
-  //   }
-  // }
+  const isComponent = !!parentVnode.componentOptions;
+
+  const tag = isComponent ? parentVnode.componentOptions.tag : parentVnode.tag;
+
   const _data = parentVnode.componentOptions || parentVnode.data || {};
 
-  // If component, use `nativeOn` intead.
-  if (parentVnode.componentOptions) {
+  if (isComponent) {
     data.nativeOn = data.on;
     _data.props = _data.propsData;
 
