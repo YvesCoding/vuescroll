@@ -16,7 +16,7 @@
 ## Demo
 
 <p align="center">
-  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo">
+   <a href="vs-issue-list-demo" target="_blank"><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo"/></a>
 </p>
 
 ## 特点
