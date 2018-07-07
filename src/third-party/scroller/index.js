@@ -921,14 +921,15 @@ var members = {
               // handle for push-load
               else if (
                 !self.__loadActive &&
-                scrollTop >= self.__maxScrollTop + self.__loadHeight
+                scrollTop >= self.__maxScrollTop + self.__loadHeight &&
+                self.__loadHeight > 0
               ) {
                 self.__loadActive = true;
                 if (self.__loadActivate) {
                   self.__loadActivate();
                 }
               } else if (
-                self.__refreshActive &&
+                self.__loadActive &&
                 scrollTop < self.__maxScrollTop + self.__loadHeight
               ) {
                 self.__loadActive = false;

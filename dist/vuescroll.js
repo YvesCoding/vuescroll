@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.6.23
+    * Vuescroll v4.6.24
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -1338,12 +1338,12 @@ var members = {
                 }
               }
               // handle for push-load
-              else if (!self.__loadActive && scrollTop >= self.__maxScrollTop + self.__loadHeight) {
+              else if (!self.__loadActive && scrollTop >= self.__maxScrollTop + self.__loadHeight && self.__loadHeight > 0) {
                   self.__loadActive = true;
                   if (self.__loadActivate) {
                     self.__loadActivate();
                   }
-                } else if (self.__refreshActive && scrollTop < self.__maxScrollTop + self.__loadHeight) {
+                } else if (self.__loadActive && scrollTop < self.__maxScrollTop + self.__loadHeight) {
                   self.__loadActive = false;
                   if (self.__loadDeactivate) {
                     self.__loadDeactivate();
@@ -3917,7 +3917,7 @@ var Vuescroll = {
     Vue$$1.prototype.$vuescrollConfig = deepMerge(GCF, {});
   },
 
-  version: '4.6.23',
+  version: '4.6.24',
   refreshAll: refreshAll
 };
 

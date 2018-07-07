@@ -141,6 +141,7 @@ describe('vuescroll slot test', () => {
           1,
           `
             <ul slot="scroll-panel">
+              <li>1</li>
             </ul>
           `
         ),
