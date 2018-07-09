@@ -10,8 +10,7 @@
 
 English Version | [中文版](https://github.com/YvesCoding/vuescroll/blob/dev/README-ZH.md)
 
-A powerful and beautiful scrollbar based on Vue.js for PC and mobile.
-[vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
+A customizable virtual scrollbar based on Vue.js - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
 
 ## Demo
 
@@ -44,7 +43,7 @@ Vue.use(vuescroll);
 
 ### Usage
 
-Wrap the content you need to scroll by `vuescroll` !
+Wrap the content you need to scroll by `vuescroll`
 
 ```html
   <template>

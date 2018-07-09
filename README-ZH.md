@@ -10,8 +10,7 @@
 
 [English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
-一款基于 Vue.js 的，支持 Pc 和移动端的功能强大的漂亮的滚动条。
-[vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
+一个可定制的基于 Vue.js 的虚拟滚动条 - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
 
 ## Demo
 
@@ -44,7 +43,7 @@ Vue.use(vuescroll);
 
 ### 用法
 
-把你需要滚动的内容用`vuescroll`包裹起来！
+把你需要滚动的内容用`vuescroll`包裹起来
 
 ```html
   <template>
