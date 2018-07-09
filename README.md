@@ -28,6 +28,47 @@ A powerful and beautiful scrollbar based on Vue.js for PC and mobile.
 - Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html)
 - And [more](http://vuescrolljs.yvescoding.org/guide/#features) !
 
+## Quick Start
+
+### Import
+
+In your entry file:
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
+### Usage
+
+Wrap the content you need to scroll by `vuescroll` !
+
+```html
+  <template>
+    <div class='your-container'>
+        <!-- bind your configurations -->
+        <vue-scroll :ops="ops">
+            <div class='your-content'>
+            </div>
+        </vue-scroll>
+    </div>
+  </template>
+  <script>
+    export default {
+      data() {
+        return {
+          ops: {
+            // some configs....
+          }
+        }
+      }
+    }
+  </script>
+```
+
 ## Guide List
 
 - [Online Demo](http://vuescrolljs.yvescoding.org/demo/)

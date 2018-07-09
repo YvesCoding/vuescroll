@@ -28,7 +28,48 @@
 - 支持 [typescript](http://vuescrolljs.yvescoding.org/zh/guide/typescript.html)
 - 还有[更多](http://vuescrolljs.yvescoding.org/zh/guide/#features)！
 
-## 导航列表
+## 快速开始
+
+### 引入
+
+在你的入口文件处：
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
+### 用法
+
+把你需要滚动的内容用`vuescroll`包裹起来！
+
+```html
+  <template>
+    <div class='your-container'>
+        <!-- bind your configurations -->
+        <vue-scroll :ops="ops">
+            <div class='your-content'>
+            </div>
+        </vue-scroll>
+    </div>
+  </template>
+  <script>
+    export default {
+      data() {
+        return {
+          ops: {
+            // some configs....
+          }
+        }
+      }
+    }
+  </script>
+```
+
+## 指南列表
 
 - [在线 demo](http://vuescrolljs.yvescoding.org/zh/demo/)
 - [上手指南](http://vuescrolljs.yvescoding.org/zh/guide/getting-started.html)
