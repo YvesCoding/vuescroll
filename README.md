@@ -10,7 +10,7 @@
 
 English Version | [中文版](https://github.com/YvesCoding/vuescroll/blob/dev/README-ZH.md)
 
-A customizable virtual scrollbar based on Vue.js - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
+A powerful, customizable scrollbar. - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
 
 ## Demo
 
@@ -23,6 +23,7 @@ A customizable virtual scrollbar based on Vue.js - [vuescrolljs.yvescoding.org](
 - Support mobile and pc by changing [mode](http://vuescrolljs.yvescoding.org/guide/configuration.html#vuescroll)
 - Support smooth scroll by choosing [easing](http://vuescrolljs.yvescoding.org/guide/configuration.html#detailed-options-2)
 - Support [customize scrollbar](http://vuescrolljs.yvescoding.org/guide/configuration.html#bar)
+- Support [customize scroll container](http://vuescrolljs.yvescoding.org/guide/slot.html#customize-container-panel-content)
 - Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#explanation)
 - Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html)
 - And [more](http://vuescrolljs.yvescoding.org/guide/#features) !
@@ -72,10 +73,10 @@ Wrap the content you need to scroll by `vuescroll`
 
 - [Online Demo](http://vuescrolljs.yvescoding.org/demo/)
 - [Get Started Guide](http://vuescrolljs.yvescoding.org/guide/getting-started.html)
-- [Contribution](http://vuescrolljs.yvescoding.org/guide/configuration.html)
-- [API](http://vuescrolljs.yvescoding.org/guide/api.html)
-- [Event](http://vuescrolljs.yvescoding.org/guide/event.html)
-- [Slot](http://vuescrolljs.yvescoding.org/guide/slot.html)
+- [Configurations](http://vuescrolljs.yvescoding.org/guide/configuration.html)
+- [API Reference](http://vuescrolljs.yvescoding.org/guide/api.html)
+- [Event Reference](http://vuescrolljs.yvescoding.org/guide/event.html)
+- [Slot Reference](http://vuescrolljs.yvescoding.org/guide/slot.html)
 
 ## Changelog
 

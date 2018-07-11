@@ -10,7 +10,7 @@
 
 [English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
-一个可定制的基于 Vue.js 的虚拟滚动条 - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
+一个可定制的， 功能强大的滚动条 - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
 
 ## Demo
 
@@ -23,6 +23,7 @@
 - 支持 通过改变[mode](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#vuescroll)来支持 Pc 和移动端
 - 支持通过改变[easing](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#bar)来平滑地滚动
 - 支持[自定义滚动条](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#bar)
+- 支持[自定义滚动容器](http://vuescrolljs.yvescoding.org/zh/guide/slot.html#customize-container-panel-content)
 - 支持[下拉刷新和上推加载](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#explanation)
 - 支持 [typescript](http://vuescrolljs.yvescoding.org/zh/guide/typescript.html)
 - 还有[更多](http://vuescrolljs.yvescoding.org/zh/guide/#features)！
@@ -73,9 +74,9 @@ Vue.use(vuescroll);
 - [在线 demo](http://vuescrolljs.yvescoding.org/zh/demo/)
 - [上手指南](http://vuescrolljs.yvescoding.org/zh/guide/getting-started.html)
 - [配置项](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html)
-- [API](http://vuescrolljs.yvescoding.org/zh/guide/api.html)
-- [Event](http://vuescrolljs.yvescoding.org/zh/guide/event.html)
-- [Slot](http://vuescrolljs.yvescoding.org/zh/guide/slot.html)
+- [API 参考](http://vuescrolljs.yvescoding.org/zh/guide/api.html)
+- [Event 参考](http://vuescrolljs.yvescoding.org/zh/guide/event.html)
+- [Slot 参考](http://vuescrolljs.yvescoding.org/zh/guide/slot.html)
 
 ## 变更日志
 
