@@ -10,7 +10,7 @@
 
 [English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
-一个可定制的， 功能强大的滚动条 - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
+一个可定制的， 功能强大的基于 Vue.js 的滚动条插件 - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
 
 ## Demo
 
@@ -26,6 +26,7 @@
 - 支持[自定义滚动容器](http://vuescrolljs.yvescoding.org/zh/guide/slot.html#customize-container-panel-content)
 - 支持[下拉刷新和上推加载](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#explanation)
 - 支持 [typescript](http://vuescrolljs.yvescoding.org/zh/guide/typescript.html)
+- 支持 SSR
 - 还有[更多](http://vuescrolljs.yvescoding.org/zh/guide/#features)！
 
 ## 快速开始

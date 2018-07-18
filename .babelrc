@@ -1,6 +1,9 @@
 {
-    "presets": [
-      ["es2015",  {"modules": false}]
-    ],
-    "plugins": ["transform-vue-jsx", "transform-object-rest-spread"]
+  "presets": [["env", { "modules": false }]],
+  "plugins": ["transform-vue-jsx", "transform-object-rest-spread"],
+  "env": {
+    "build": {
+      "plugins": ["external-helpers"]
+    }
   }
+}

@@ -1,5 +1,8 @@
 import Vue from 'vue';
 
+/* istanbul ignore next */
+export const isServer = () => Vue.prototype.$isServer;
+
 export function deepCopy(source, target) {
   target = (typeof target === 'object' && target) || {};
   for (var key in source) {
@@ -11,7 +14,7 @@ export function deepCopy(source, target) {
   return target;
 }
 
-export function deepMerge(from, to) {
+export function deepMerge(from, to, force) {
   to = to || {};
   for (var key in from) {
     if (typeof from[key] === 'object') {
@@ -22,7 +25,7 @@ export function deepMerge(from, to) {
         deepMerge(from[key], to[key]);
       }
     } else {
-      if (typeof to[key] === 'undefined') to[key] = from[key];
+      if (typeof to[key] === 'undefined' || force) to[key] = from[key];
     }
   }
   return to;
@@ -52,7 +55,7 @@ let scrollBarWidth;
 
 export function getGutter() {
   /* istanbul ignore next */
-  if (Vue.prototype.$isServer) return 0;
+  if (isServer()) return 0;
   if (scrollBarWidth !== undefined) return scrollBarWidth;
   const outer = document.createElement('div');
   outer.style.visibility = 'hidden';
@@ -116,8 +119,13 @@ export function extractNumberFromPx(value) {
   return _return && _return[1];
 }
 
-export function isSupportTouch() {
+function _isSupportTouch() {
   return 'ontouchstart' in window;
+}
+export function isSupportTouch() {
+  /* istanbul ignore if */
+  if (isServer()) return false;
+  return _isSupportTouch();
 }
 
 export function getPrefix(global) {
@@ -147,7 +155,7 @@ export function getPrefix(global) {
   return vendorPrefix;
 }
 
-export function isSupportGivenStyle(property, value) {
+export function _isSupportGivenStyle(property, value) {
   const compatibleValue = `-${getPrefix(window)}-${value}`;
   const testElm = document.createElement('div');
   testElm.style[property] = compatibleValue;
@@ -157,14 +165,24 @@ export function isSupportGivenStyle(property, value) {
   /* istanbul ignore next */
   return false;
 }
+export function isSupportGivenStyle(property, value) {
+  /* istanbul ignore if */
+  if (isServer()) return false;
+  return _isSupportGivenStyle(property, value);
+}
 
-export function isIE() /* istanbul ignore next */ {
+export function _isIE() /* istanbul ignore next */ {
   var agent = navigator.userAgent.toLowerCase();
   return (
     agent.indexOf('msie') !== -1 ||
     agent.indexOf('trident') !== -1 ||
     agent.indexOf(' edge/') !== -1
   );
+}
+export function isIE() {
+  /* istanbul ignore if */
+  if (isServer()) return false;
+  return _isIE();
 }
 
 export function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {

@@ -10,7 +10,7 @@
 
 English Version | [中文版](https://github.com/YvesCoding/vuescroll/blob/dev/README-ZH.md)
 
-A powerful, customizable scrollbar. - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
+A powerful, customizable scrollbar plugin based on Vue.js. - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
 
 ## Demo
 
@@ -26,6 +26,7 @@ A powerful, customizable scrollbar. - [vuescrolljs.yvescoding.org](http://vuescr
 - Support [customize scroll container](http://vuescrolljs.yvescoding.org/guide/slot.html#customize-container-panel-content)
 - Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#explanation)
 - Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html)
+- Support SSR
 - And [more](http://vuescrolljs.yvescoding.org/guide/#features) !
 
 ## Quick Start

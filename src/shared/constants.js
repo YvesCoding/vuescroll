@@ -1,5 +1,5 @@
 // all modes
-export const modes = ['slide', 'native', 'pure-native'];
+export const modes = ['slide', 'native'];
 // do nothing
 export const NOOP = () => {};
 // some small changes.
