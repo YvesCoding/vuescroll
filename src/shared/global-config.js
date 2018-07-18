@@ -1,5 +1,6 @@
 import { modes } from './constants';
-import { error } from '../util';
+import { error, warn } from '../util';
+
 export default {
   // vuescroll
   vuescroll: {
@@ -8,6 +9,8 @@ export default {
     // or be a number that is equal to its parentNode's width or
     // height ?
     sizeStrategy: 'percent',
+    /** Whether to detect dom resize or not */
+    detectResize: true,
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
       enable: false,
@@ -34,7 +37,7 @@ export default {
       width: 100,
       height: 100
     },
-    // some scroller options
+    /* shipped scroll options */
     scroller: {
       /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
       bouncing: true,
@@ -70,36 +73,24 @@ export default {
   },
   //
   rail: {
-    vRail: {
-      width: '6px',
-      pos: 'right',
-      background: '#01a99a',
-      opacity: 0
-    },
-    //
-    hRail: {
-      height: '6px',
-      pos: 'bottom',
-      background: '#01a99a',
-      opacity: 0
-    }
+    background: '#01a99a',
+    opacity: 0,
+    /** Rail's size(Height/Width) , default -> 6px */
+    size: '6px'
   },
   bar: {
+    /** How long to hide bar after mouseleave, default -> 500 */
     showDelay: 500,
+    /** Whether to show bar on scrolling, default -> true */
     onlyShowBarOnScroll: true,
-    vBar: {
-      background: '#00a650',
-      keepShow: false,
-      opacity: 1,
-      hover: false
-    },
-    //
-    hBar: {
-      background: '#00a650',
-      keepShow: false,
-      opacity: 1,
-      hover: false
-    }
+    /** Whether to keep show or not, default -> false */
+    keepShow: false,
+    /** Bar's background , default -> #00a650 */
+    background: '#c1c1c1',
+    /** Bar's opacity, default -> 1  */
+    opacity: 1,
+    /** Styles when you hover scrollbar, it will merge into the current style */
+    hoverStyle: false
   }
 };
 /**
@@ -111,13 +102,20 @@ export default {
 export function validateOptions(ops) {
   let shouldStopRender = false;
   const { vuescroll, scrollPanel } = ops;
+  const { vBar, hBar } = ops.bar;
+  const { vRail, hRail } = ops.rail;
 
-  // validate vuescroll
+  // validate modes
   if (!~modes.indexOf(vuescroll.mode)) {
-    error(`The vuescroll's option "mode" should be one of the ${modes}`);
+    error(
+      `Unknown mode: ${
+        vuescroll.mode
+      },the vuescroll's option "mode" should be one of the ${modes}`
+    );
     shouldStopRender = true;
   }
 
+  // validate pushLoad, pullReresh, snapping
   if (
     vuescroll.paging == vuescroll.snapping.enable &&
     vuescroll.paging &&
@@ -127,19 +125,27 @@ export function validateOptions(ops) {
       'paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.'
     );
   }
+
   // validate scrollPanel
   const initialScrollY = scrollPanel['initialScrollY'];
   const initialScrollX = scrollPanel['initialScrollX'];
 
   if (initialScrollY && !String(initialScrollY).match(/^\d+(\.\d+)?(%)?$/)) {
-    error(
-      'The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
+    warn(
+      'The prop `initialScrollY` or `initialScrollX` should be a percent number like `10%` or an exact number that greater than or equal to 0 like `100`.'
+    );
+  }
+  if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
+    warn(
+      'The prop `initialScrollY` or `initialScrollX` should be a percent number like `10%` or an exact number that greater than or equal to 0 like `100`.'
     );
   }
 
-  if (initialScrollX && !String(initialScrollX).match(/^\d+(\.\d+)?(%)?$/)) {
-    error(
-      'The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
+  // validate deprecated vBar/hBar vRail/hRail
+  if (vBar || hBar || vRail || hRail) {
+    warn(
+      'The options: vRail, hRail, vBar, hBar have been deprecated since v4.7.0,' +
+        'please use corresponing rail/bar instead!'
     );
   }
 

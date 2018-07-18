@@ -1,5 +1,10 @@
 import scrollMap from '../../shared/scroll-map';
-import { eventCenter, isSupportTouch, getRealParent } from '../../util';
+import {
+  eventCenter,
+  isSupportTouch,
+  getRealParent,
+  deepMerge
+} from '../../util';
 
 const colorCache = {};
 const rgbReg = /rgb\(/;
@@ -14,16 +19,19 @@ function createMouseEvent(ctx) {
     document.onselectstart = () => false;
     ctx.axisStartPos =
       e[ctx.bar.client] -
-      ctx.$refs['inner'].getBoundingClientRect()[ctx.bar.posName];
-    // tell parent that the mouse has been down.
-    ctx.$emit('setBarClick', true);
+      ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
+
+    // Tell parent that the mouse has been down.
+    ctx.$emit('setBarDrag', true);
     eventCenter(document, 'mousemove', mousemove);
     eventCenter(document, 'mouseup', mouseup);
   }
+
   function mousemove(e) {
     if (!ctx.axisStartPos) {
       return;
     }
+
     const delta =
       e[ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
     const percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
@@ -35,11 +43,14 @@ function createMouseEvent(ctx) {
       false
     );
   }
+
   function mouseup() {
-    ctx.$emit('setBarClick', false);
-    document.onselectstart = null;
+    ctx.$emit('setBarDrag', false);
     parent.hideBar();
+
+    document.onselectstart = null;
     ctx.axisStartPos = 0;
+
     eventCenter(document, 'mousemove', mousemove, false, 'off');
     eventCenter(document, 'mouseup', mouseup, false, 'off');
   }
@@ -59,10 +70,10 @@ function createTouchEvent(ctx) {
 
     ctx.axisStartPos =
       e.touches[0][ctx.bar.client] -
-      ctx.$refs['inner'].getBoundingClientRect()[ctx.bar.posName];
+      ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
 
-    // tell parent that the mouse has been down.
-    ctx.$emit('setBarClick', true);
+    // Tell parent that the mouse has been down.
+    ctx.$emit('setBarDrag', true);
     eventCenter(document, 'touchmove', touchmove);
     eventCenter(document, 'touchend', touchend);
   }
@@ -70,10 +81,12 @@ function createTouchEvent(ctx) {
     if (!ctx.axisStartPos) {
       return;
     }
+
     const delta =
       e.touches[0][ctx.bar.client] -
       ctx.$el.getBoundingClientRect()[ctx.bar.posName];
     const percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
+
     parent.scrollTo(
       {
         [ctx.bar.axis.toLowerCase()]:
@@ -83,10 +96,12 @@ function createTouchEvent(ctx) {
     );
   }
   function touchend() {
-    ctx.$emit('setBarClick', false);
-    document.onselectstart = null;
+    ctx.$emit('setBarDrag', false);
     parent.hideBar();
+
+    document.onselectstart = null;
     ctx.axisStartPos = 0;
+
     eventCenter(document, 'touchmove', touchmove, false, 'off');
     eventCenter(document, 'touchend', touchend, false, 'off');
   }
@@ -119,10 +134,13 @@ function getRgbAColor(color, opacity) {
 /* istanbul ignore next */
 function handleClickTrack(e) {
   const ctx = this;
-  const parent = getRealParent(this);
+  const parent = getRealParent(ctx);
+
   const { client, offset, posName, axis } = ctx.bar;
-  const inner = ctx.$refs['inner'];
-  const barOffset = inner[offset];
+  const thumb = ctx.$refs['thumb'];
+
+  const barOffset = thumb[offset];
+
   const percent =
     (e[client] -
       e.currentTarget.getBoundingClientRect()[posName] -
@@ -157,10 +175,8 @@ export default {
   },
   render(h) {
     const vm = this;
-    const railBackgroundColor = getRgbAColor(
-      vm.ops.rail.background,
-      vm.ops.rail.opacity
-    );
+
+    /** Scrollbar style */
     let style = {
       [vm.bar.size]: vm.state.size,
       background: vm.ops.bar.background,
@@ -170,19 +186,33 @@ export default {
     const bar = {
       style: style,
       class: `__bar-is-${vm.type}`,
-      ref: 'inner',
+      ref: 'thumb',
       on: {}
     };
 
-    /* istanbul ignore if */
-    if (vm.ops.bar.hover) {
+    let originBarStyle = {};
+    let hoverBarStyle = vm.ops.bar.hoverStyle;
+    if (hoverBarStyle) {
       bar.on['mouseenter'] = () => {
-        vm.$el.style.background = vm.ops.hover;
+        /* istanbul ignore next */
+        if (!hoverBarStyle) return;
+
+        Object.keys(hoverBarStyle).forEach(key => {
+          originBarStyle[key] = vm.$refs.thumb.style[key];
+        });
+
+        deepMerge(hoverBarStyle, vm.$refs.thumb.style, true);
       };
       bar.on['mouseleave'] = () => {
-        vm.$el.style.background = vm.ops.background;
+        /* istanbul ignore next */
+        if (!hoverBarStyle) return;
+
+        Object.keys(hoverBarStyle).forEach(key => {
+          vm.$refs.thumb.style[key] = originBarStyle[key];
+        });
       };
     }
+
     /* istanbul ignore if */
     if (isSupportTouch()) {
       bar.on['touchstart'] = createTouchEvent(this);
@@ -190,13 +220,19 @@ export default {
       bar.on['mousedown'] = createMouseEvent(this);
     }
 
+    /** Get rgbA format background color */
+    const railBackgroundColor = getRgbAColor(
+      vm.ops.rail.background,
+      vm.ops.rail.opacity
+    );
+
+    /** Rail Data */
     const rail = {
       class: `__rail-is-${vm.type}`,
       style: {
-        borderRadius: vm.ops.rail[vm.bar.opsSize],
+        borderRadius: vm.ops.rail.size,
         background: railBackgroundColor,
-        [vm.bar.opsSize]: vm.ops.rail[vm.bar.opsSize],
-        [vm.ops.rail.pos]: '2px'
+        [vm.bar.opsSize]: vm.ops.rail.size
       },
       on: {
         click(e) /* istanbul ignore next */ {
@@ -220,14 +256,13 @@ export default {
  * @param {any} type
  */
 export function createBar(h, vm, type) {
-  const axis = type === 'vertical' ? 'Y' : 'X';
+  const axis = scrollMap[type].axis;
+  /** type.charAt(0) = vBar/hBar */
   const barType = `${type.charAt(0)}Bar`;
-  const railType = `${type.charAt(0)}Rail`;
 
   if (
     !vm.bar[barType].state.size ||
     !vm.mergedOptions.scrollPanel['scrolling' + axis] ||
-    vm.mode == 'pure-native' ||
     (vm.refreshLoad && type !== 'vertical' && vm.mode === 'slide')
   ) {
     return null;
@@ -237,13 +272,13 @@ export function createBar(h, vm, type) {
     props: {
       type: type,
       ops: {
-        bar: vm.mergedOptions.bar[barType],
-        rail: vm.mergedOptions.rail[railType]
+        bar: vm.mergedOptions.bar,
+        rail: vm.mergedOptions.rail
       },
       state: vm.bar[barType].state
     },
     on: {
-      setBarClick: vm.setBarClick
+      setBarDrag: vm.setBarDrag
     },
     ref: `${type}Bar`
   };

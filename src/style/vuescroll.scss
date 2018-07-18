@@ -32,6 +32,7 @@
 
   .__view {
     position: relative;
+    box-sizing: border-box;
     min-width: 100%;
     min-height: 100%;
   }
@@ -54,6 +55,7 @@
   .__rail-is-vertical {
     top: 2px;
     bottom: 2px;
+    right: 2px;
     .__bar-is-vertical {
       top: 0;
       width: 100%;
@@ -63,6 +65,7 @@
   .__rail-is-horizontal {
     right: 2px;
     left: 2px;
+    bottom: 2px;
     .__bar-is-horizontal {
       left: 0;
       height: 100%;
