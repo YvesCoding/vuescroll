@@ -48,46 +48,40 @@ describe('handle-resize', () => {
     );
     let hBar;
     let content = vm.$el.querySelector('.__view > div');
-    startSchedule(10)
+    startSchedule()
       .then(r => {
         hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(hBar).not.toBe(null);
         content.style.width = '99px';
         _r = r;
       })
-      .wait(1)
       .then(r => {
         hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(hBar).toBe(null);
         content.style.width = '198px';
         _r = r;
       })
-      .wait(1)
-      .then(r => {
+      .then(() => {
         hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(hBar).not.toBe(null);
         // test slide mode
         vm.ops.vuescroll.mode = 'slide';
-        r();
       })
-      .wait(1)
+      .wait(5)
       .then(r => {
         content = vm.$el.querySelector('.__panel > div');
         content.style.width = '99px';
         _r = r;
       })
-      .wait(1)
       .then(r => {
         hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(hBar).toBe(null);
         content.style.width = '198px';
         _r = r;
       })
-      .wait(1)
-      .then(r => {
+      .then(() => {
         hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(hBar).not.toBe(null);
-        r();
         done();
       });
   });

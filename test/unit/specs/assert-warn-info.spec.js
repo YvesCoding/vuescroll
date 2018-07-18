@@ -5,6 +5,8 @@ import {
   makeTemplate,
   startSchedule
 } from 'test/unit/util';
+import { modes } from 'src/shared/constants';
+
 function noop() {}
 
 if (typeof console === 'undefined') {
@@ -101,7 +103,7 @@ describe('assert-warn-info', () => {
       true
     );
     expect(
-      'The vuescroll\'s option "mode" should be one of the'
+      `Unknown mode: error-mode,the vuescroll's option "mode" should be one of the ${modes}`
     ).toHaveBeenWarned();
   });
 
@@ -165,11 +167,8 @@ describe('assert-warn-info', () => {
       true
     );
     expect(
-      'The prop `initialScrollY` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
-    ).toHaveBeenWarned();
-    expect(
-      'The prop `initialScrollX` should be a percent number like 10% or an exact number that greater than or equal to 0 like 100.'
-    ).toHaveBeenWarned();
+      'The prop `initialScrollY` or `initialScrollX` should be a percent number like `10%` or an exact number that greater than or equal to 0 like `100`.'
+    ).toHaveBeenTipped();
   });
 
   it('paging, snapping  pull to refresh/push to load all true', () => {
@@ -309,19 +308,52 @@ describe('assert-warn-info', () => {
       'You can only use triggerRefreshOrLoad in slide mode!'
     ).toHaveBeenTipped();
     vm.ops.vuescroll.mode = 'slide';
-    startSchedule()
-      .wait(1)
-      .then(r => {
-        vs.triggerRefreshOrLoad();
-        expect('param must be one of load and refresh!').toHaveBeenTipped();
-        vs.triggerRefreshOrLoad('refresh');
-        expect('refresh must be enabled!').toHaveBeenTipped();
-        vs.triggerRefreshOrLoad('load');
-        expect(
-          'load must be enabled and content\'s height > container\'s height!'
-        ).toHaveBeenTipped();
-        r();
-        done();
-      });
+    startSchedule().then(() => {
+      vs.triggerRefreshOrLoad();
+      expect('param must be one of load and refresh!').toHaveBeenTipped();
+      vs.triggerRefreshOrLoad('refresh');
+      expect('refresh must be enabled!').toHaveBeenTipped();
+      vs.triggerRefreshOrLoad('load');
+      expect(
+        'load must be enabled and content\'s height > container\'s height!'
+      ).toHaveBeenTipped();
+      done();
+    });
+  });
+
+  // Test deprecated options warning
+  it('Should warn when use vBar,hBar,vRail,hRail', () => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 200,
+            h: 200
+          },
+          {
+            w: 100,
+            h: 100
+          }
+        ),
+        data: {
+          ops: {
+            bar: {
+              vBar: {
+                foo: 1
+              },
+              hBar: {
+                baz: 1
+              }
+            }
+          }
+        }
+      },
+      true
+    );
+
+    expect(
+      'The options: vRail, hRail, vBar, hBar have been deprecated since v4.7.0,' +
+        'please use corresponing rail/bar instead!'
+    ).toHaveBeenTipped();
   });
 });

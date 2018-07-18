@@ -41,17 +41,16 @@ describe('api', () => {
     // scroll Y axis
 
     startSchedule()
-      .then(r => {
+      .then(() => {
         vs.scrollTo(
           {
             y: 300
           },
           true
         );
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollTop } = scrollPanel;
         expect(Math.ceil(scrollTop)).toBe(100);
@@ -62,10 +61,9 @@ describe('api', () => {
           },
           true
         );
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollLeft } = scrollPanel;
         expect(Math.ceil(scrollLeft)).toBe(100);
@@ -76,14 +74,12 @@ describe('api', () => {
           },
           true
         );
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollLeft } = scrollPanel;
         expect(scrollLeft).toBe(0);
-        r();
         done();
       });
   });
@@ -110,7 +106,7 @@ describe('api', () => {
     const vs = vm.$refs['vs'];
 
     startSchedule()
-      .then(r => {
+      .then(() => {
         vs.scrollBy(
           {
             dy: 50,
@@ -118,16 +114,14 @@ describe('api', () => {
           },
           true
         );
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollTop, scrollLeft } = scrollPanel;
 
         expect(scrollTop).toBe(50);
         expect(scrollLeft).toBe(50);
-        r();
         done();
       });
   });
@@ -158,15 +152,14 @@ describe('api', () => {
     const vs = vm.$refs['vs'];
 
     startSchedule()
-      .then(r => {
+      .then(() => {
         vs.zoomBy(
           0.5, // factor self.__zoomLevel = self.__zoomLevel * factor
           true
         );
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         let vBar = vm.$el.querySelector('.__bar-is-vertical');
         let hBar = vm.$el.querySelector('.__bar-is-horizontal');
 
@@ -176,26 +169,23 @@ describe('api', () => {
           2, // factor self.__zoomLevel = self.__zoomLevel * factor
           true
         );
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         let vBar = vm.$el.querySelector('.__bar-is-vertical');
         let hBar = vm.$el.querySelector('.__bar-is-horizontal');
 
         expect(vBar).not.toBe(null);
         expect(hBar).not.toBe(null);
         vs.zoomTo(2, true); // now level 1 * 2 = 2;
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         let { clientHeight } = vm.$el.querySelector('.__bar-is-vertical');
         let { clientWidth } = vm.$el.querySelector('.__bar-is-horizontal');
 
         expect(clientHeight).toBe(24); // (100 - 4 bar-wrap: top:2px bottom: 2px) / 2 / 2
         expect(clientWidth).toBe(24); // (100 - 4) / 2 / 2
-        r();
         done();
       });
   });
@@ -235,17 +225,16 @@ describe('api', () => {
     const vs = vm.$refs['vs'];
 
     startSchedule()
-      .then(r => {
+      .then(() => {
         vs.goToPage(
           {
             y: 2
           },
           true
         );
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         const divs = vm.$el.querySelectorAll('.__panel div');
         const currentDom = vs.getCurrentviewDom();
         const page = vs.getCurrentPage();
@@ -253,38 +242,32 @@ describe('api', () => {
         expect(currentDom.length).toBe(1);
         expect(currentDom[0]).toEqual(divs[1]);
         vs.scrollIntoView('#d3');
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         const currentDom = vs.getCurrentviewDom();
         expect(currentDom[0].id).toBe('d3');
         vm.ops.vuescroll.paging = false;
         vm.ops.vuescroll.pullRefresh.enable = true;
         vm.ops.vuescroll.pushLoad.enable = true;
-        r();
       })
-      .wait(1)
-      .then(r => {
+
+      .then(() => {
         vs.triggerRefreshOrLoad('refresh');
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         const refreshDom = vs.$el.querySelector('.__refresh');
         expect(refreshDom.innerText).toBe('Refreshing...');
-        r();
       })
       .wait(2550)
-      .then(r => {
+      .then(() => {
         vs.triggerRefreshOrLoad('load');
-        r();
       })
       .wait(350)
-      .then(r => {
+      .then(() => {
         const loadDom = vs.$el.querySelector('.__load');
         expect(loadDom.innerText).toBe('Loading...');
-        r();
         done();
       });
   });
@@ -360,14 +343,13 @@ describe('api', () => {
     vs1.$el.style.display = 'none';
     _vs.refreshAll();
     startSchedule()
-      .then(r => {
+      .then(() => {
         let vsAmout = document.querySelectorAll('.__rail-is-vertical').length;
         expect(vsAmout).toBe(0);
         vs0.$el.style.display = 'block';
         vs0.refresh();
-        r();
       })
-      .then(r => {
+      .then(() => {
         let hRails = document.querySelectorAll('.__rail-is-horizontal');
         let vRails = document.querySelectorAll('.__rail-is-vertical');
         expect(hRails.length).toBe(1);
@@ -375,15 +357,13 @@ describe('api', () => {
         vs1.$el.style.display = 'block';
 
         _vs.refreshAll();
-        r();
       })
-      .then(r => {
+      .then(() => {
         let hRails = document.querySelectorAll('.__rail-is-horizontal');
         let vRails = document.querySelectorAll('.__rail-is-vertical');
         expect(hRails.length).toBe(2);
         expect(vRails.length).toBe(2);
         done();
-        r();
       });
   });
 
@@ -418,14 +398,13 @@ describe('api', () => {
     const vs = vm.$refs['vs'];
 
     startSchedule()
-      .then(r => {
+      .then(() => {
         const times = vs.getScrollingTimes();
         expect(times).toBe(0);
         vs.scrollTo({ y: '10%' });
-        r();
       })
       .wait(520)
-      .then(r => {
+      .then(() => {
         let times = vs.getScrollingTimes();
         expect(times).toBe(1);
 
@@ -436,8 +415,6 @@ describe('api', () => {
         expect(times).toBe(0);
 
         done();
-
-        r();
       });
   });
 });

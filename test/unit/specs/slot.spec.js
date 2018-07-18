@@ -46,13 +46,10 @@ describe('vuescroll slot test', () => {
       true
     );
     const vs = vm.$refs['vs'];
-    startSchedule()
-      .wait(1)
-      .then(r => {
-        expect(vs.$el.dataset.name).toBe('container');
-        r();
-        done();
-      });
+    startSchedule().then(() => {
+      expect(vs.$el.dataset.name).toBe('container');
+      done();
+    });
   });
 
   it('data-name should be `panel`', done => {
@@ -81,13 +78,10 @@ describe('vuescroll slot test', () => {
       true
     );
     const vs = vm.$refs['vs'];
-    startSchedule()
-      .wait(1)
-      .then(r => {
-        expect(vs.$el.querySelector('.__panel').dataset.name).toBe('panel');
-        r();
-        done();
-      });
+    startSchedule().then(() => {
+      expect(vs.$el.querySelector('.__panel').dataset.name).toBe('panel');
+      done();
+    });
   });
 
   it('data-name should be `content`', done => {
@@ -116,13 +110,10 @@ describe('vuescroll slot test', () => {
       true
     );
     const vs = vm.$refs['vs'];
-    startSchedule()
-      .wait(1)
-      .then(r => {
-        expect(vs.$el.querySelector('.__view').dataset.name).toBe('content');
-        r();
-        done();
-      });
+    startSchedule().then(() => {
+      expect(vs.$el.querySelector('.__view').dataset.name).toBe('content');
+      done();
+    });
   });
 
   it('The dom\'s tag should be ul', done => {
@@ -156,14 +147,9 @@ describe('vuescroll slot test', () => {
       true
     );
     const vs = vm.$refs['vs'];
-    startSchedule()
-      .wait(1)
-      .then(r => {
-        expect(vs.$el.querySelector('.__panel').tagName.toLowerCase()).toBe(
-          'ul'
-        );
-        r();
-        done();
-      });
+    startSchedule().then(() => {
+      expect(vs.$el.querySelector('.__panel').tagName.toLowerCase()).toBe('ul');
+      done();
+    });
   });
 });

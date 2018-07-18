@@ -1,3 +1,5 @@
+import { CssSyntaxError } from 'postcss';
+
 interface Tips {
   deactive?: string;
   active?: string;
@@ -36,8 +38,9 @@ interface Scroller {
 }
 
 interface Container {
-  mode?: 'native' | 'pure-native' | 'slide';
+  mode?: 'native' | 'slide';
   sizeStrategy?: 'percent' | 'number';
+  detectResize?: boolean;
   pullRefresh?: PullRefreshOrPushLoad;
   pushLoad?: PullRefreshOrPushLoad;
   paging?: boolean;
@@ -72,37 +75,31 @@ interface scrollConent {
   padding?: boolean;
 }
 
-interface vRail {
-  width?: string;
-  pos?: string;
-  background?: string;
-  opacity?: number;
-}
-
-interface hRail {
-  height?: string;
-  pos?: string;
-  background?: string;
-  opacity?: number;
-}
-
 interface rail {
-  VRail?: vRail;
-  HRail?: hRail;
+  /** Rail's background , default -> #01a99a */
+  background?: string;
+  /** Rail's opacity, default -> 0  */
+  opacity?: number;
+  /** Rail's size(Height/Width) , default -> 6px */
+  size?: string;
 }
 
-interface BarType {
-  background?: string;
-  keepShow?: boolean;
-  opacity?: number;
-  hover?: false | string;
-}
+type Partial<T> = { [P in keyof T]?: T[P] };
+type Style = Partial<CSSStyleDeclaration>;
 
 interface bar {
+  /** How long to hide bar after mouseleave, default -> 500 */
   showDelay?: number;
-  onlyShowBarOnScroll?:boolean;
-  VBar?: BarType;
-  HBar?: BarType;
+  /** Whether to keep show or not, default -> false */
+  keepShow?: boolean;
+  /** Whether to show bar on scrolling, default -> true */
+  onlyShowBarOnScroll?: boolean;
+  /** Bar's background , default -> #00a650 */
+  background?: string;
+  /** Bar's opacity, default -> 1  */
+  opacity?: number;
+  /** Styles when you hover scrollbar, it will merge into the current style */
+  hoverStyle?: false | Style;
 }
 
 export default interface Config {
