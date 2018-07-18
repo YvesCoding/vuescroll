@@ -92,6 +92,7 @@ export function makeTemplate(
     </div>
   `;
 }
+
 export function startSchedule(time = 0) {
   let queue = [];
   function wait(time = 0) {
@@ -118,27 +119,37 @@ export function startSchedule(time = 0) {
     if (!queue.length) {
       return;
     }
+
     let current = queue.shift();
     if (current.type == 'wait') {
       setTimeout(() => {
         loopSchedule();
       }, current.value);
     } else if (current.type == 'then') {
-      let timeId = setTimeout(() => {
-        loopSchedule();
-      }, 5000); // timeout 5s
-      current.value(() => {
-        clearTimeout(timeId);
+      if (current.value.length > 0) {
+        let timeId = setTimeout(() => {
+          loopSchedule();
+        }, 5000); // timeout 5s
+        current.value(() => {
+          clearTimeout(timeId);
+          setTimeout(() => {
+            loopSchedule();
+          }, 0);
+        });
+      } else {
+        current.value();
         setTimeout(() => {
           loopSchedule();
         }, 0);
-      });
+      }
     }
   }
+
   queue.push({
     type: 'wait',
     value: time
   });
+
   loopSchedule();
   return {
     then,

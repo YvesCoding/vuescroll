@@ -1,8 +1,9 @@
 import Vue from 'vue';
-import vuescroll from './components/vuescroll';
+import vuescroll from './core/vuescroll';
 import GCF from './shared/global-config';
+
 import { deepMerge } from './util';
-import { refreshAll } from './mixins/api';
+import { refreshAll } from './core/mixins/api';
 
 import './style/vuescroll.scss';
 
