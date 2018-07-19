@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import vuescroll from './core/vuescroll';
 import GCF from './shared/global-config';
 

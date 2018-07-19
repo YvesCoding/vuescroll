@@ -5,9 +5,8 @@
   "bugs": {
     "url": "https://github.com/YvesCoding/vuescroll/issues"
   },
-  "dependencies": {
-    "vue": "^2.5.16",
-    "vue-server-renderer": "^2.5.16"
+  "peerDependencies": {
+    "vue": "^2.5.16"
   },
   "typings": "types/index.d.ts",
   "files": [
