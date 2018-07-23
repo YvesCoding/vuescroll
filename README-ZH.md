@@ -79,6 +79,10 @@ Vue.use(vuescroll);
 - [Event 参考](http://vuescrolljs.yvescoding.org/zh/guide/event.html)
 - [Slot 参考](http://vuescrolljs.yvescoding.org/zh/guide/slot.html)
 
+## 代办列表
+
+- 把 `vuescroll` 分成两部分 : `Native 模式` 和 `Slide 模式`(正在进行中)
+
 ## 变更日志
 
 详细的变更日志在[发行日志里](https://github.com/YvesCoding/releases).

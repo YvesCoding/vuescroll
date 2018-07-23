@@ -79,6 +79,10 @@ Wrap the content you need to scroll by `vuescroll`
 - [Event Reference](http://vuescrolljs.yvescoding.org/guide/event.html)
 - [Slot Reference](http://vuescrolljs.yvescoding.org/guide/slot.html)
 
+## Todo
+
+- Separate `vuescroll` into two parts : `Native mode` and `Slide mode`(WIP)
+
 ## Changelog
 
 Detailed changes for each release are documented in the [release notes](https://github.com/YvesCoding/releases).

@@ -1,27 +1,39 @@
+<a name="4.7.0"></a>
+
+# [4.7.0](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.7.0) (2018-07-23)
+
+### Features
+
+(https://github.com/YvesCoding/vuescroll/commit/0b7b7e2))
+
+- **bar:** Merge configurations vBar, hBar, vRail, hRail ([dc40aa9](https://github.com/YvesCoding/vuescroll/commit/dc40aa9))
+- Support SSR ([12f5158](https://github.com/YvesCoding/vuescroll/commit/12f5158)), closes [#42](https://github.com/YvesCoding/vuescroll/issues/42)
+
+### BREAKING CHANGES
+
+- **bar:** The vBar, hBar,vRail, hRail are not avilable now. Use rail, bar that works for both vertical and horizontal. [Relative address](http://vuescrolljs.yvescoding.org/guide/configuration.html#bar)
+
 <a name="4.6.24"></a>
+
 ## [4.6.24](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.24) (2018-07-07)
 
 ### Bug Fixes
 
-* Push load related bug.([2a3cf2c](https://github.com/YvesCoding/vuescroll/commit/2a3cf2c))
-
+- Push load related bug.([2a3cf2c](https://github.com/YvesCoding/vuescroll/commit/2a3cf2c))
 
 <a name="4.6.23"></a>
-## [4.6.23](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.23) (2018-07-07)
 
+## [4.6.23](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.6.23) (2018-07-07)
 
 ### Bug Fixes
 
-* Add children of slot-panel to render list ([df417ae](https://github.com/YvesCoding/vuescroll/commit/df417ae))
-* files field in  package.json ([ebe101f](https://github.com/YvesCoding/vuescroll/commit/ebe101f))
-
+- Add children of slot-panel to render list ([df417ae](https://github.com/YvesCoding/vuescroll/commit/df417ae))
+- files field in package.json ([ebe101f](https://github.com/YvesCoding/vuescroll/commit/ebe101f))
 
 ### Features
 
-* **api:** Add scrollingTimes and clearScrollingTimes to control the times you have scrolled ([0b7b7e2](https://github.com/YvesCoding/vuescroll/commit/0b7b7e2))
-* **config:** Add onlyShowBarOnScroll to show bar only when scrolling ([e8c3ffe](https://github.com/YvesCoding/vuescroll/commit/e8c3ffe))
-
-
+- **api:** Add scrollingTimes and clearScrollingTimes to control the times you have scrolled ([0b7b7e2](https://github.com/YvesCoding/vuescroll/commit/0b7b7e2))
+- **config:** Add onlyShowBarOnScroll to show bar only when scrolling ([e8c3ffe](https://github.com/YvesCoding/vuescroll/commit/e8c3ffe))
 
 <a name="4.6.22"></a>
 
