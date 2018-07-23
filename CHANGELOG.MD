@@ -4,8 +4,6 @@
 
 ### Features
 
-(https://github.com/YvesCoding/vuescroll/commit/0b7b7e2))
-
 - **bar:** Merge configurations vBar, hBar, vRail, hRail ([dc40aa9](https://github.com/YvesCoding/vuescroll/commit/dc40aa9))
 - Support SSR ([12f5158](https://github.com/YvesCoding/vuescroll/commit/12f5158)), closes [#42](https://github.com/YvesCoding/vuescroll/issues/42)
 
