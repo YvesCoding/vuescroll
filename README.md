@@ -79,7 +79,7 @@ Wrap the content you need to scroll by `vuescroll`
 - [Event Reference](http://vuescrolljs.yvescoding.org/guide/event.html)
 - [Slot Reference](http://vuescrolljs.yvescoding.org/guide/slot.html)
 
-## Todo
+## Todo List
 
 - Separate `vuescroll` into two parts : `Native mode` and `Slide mode`(WIP)
 
