@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <a href="https://vuescroll-issue-list-demo-zdizhghthq.now.sh">在线 Demo(建议使用移动端访问))</a>
+  <a href="https://vuescroll-issue-list-demo-zdizhghthq.now.sh">在线 Demo(建议使用移动端访问)</a>
 </p>
 
 ## 特点
