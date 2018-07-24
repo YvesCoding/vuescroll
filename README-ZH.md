@@ -18,6 +18,10 @@
    <a href="https://github.com/YvesCoding/vuescroll-issue-list-demo" target="_blank"><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo"/></a>
 </p>
 
+<p align="center">
+  <a href="https://vuescroll-issue-list-demo-zdizhghthq.now.sh">在线 Demo(建议使用移动端访问))</a>
+</p>
+
 ## 特点
 
 - 支持 通过改变[mode](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#vuescroll)来支持 Pc 和移动端
@@ -72,7 +76,7 @@ Vue.use(vuescroll);
 
 ## 指南列表
 
-- [在线 demo](http://vuescrolljs.yvescoding.org/zh/demo/)
+- [在线例子](http://vuescrolljs.yvescoding.org/zh/demo/)
 - [上手指南](http://vuescrolljs.yvescoding.org/zh/guide/getting-started.html)
 - [配置项](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html)
 - [API 参考](http://vuescrolljs.yvescoding.org/zh/guide/api.html)
