@@ -114,6 +114,22 @@ function defineReactive(target, key, source, souceKey) {
   });
 }
 
+function getAccurateSize(dom) {
+  var clientWidth = void 0;
+  var clientHeight = void 0;
+  try {
+    clientWidth = +window.getComputedStyle(dom).width.slice(0, -2);
+    clientHeight = +window.getComputedStyle(dom).height.slice(0, -2);
+  } catch (error) /* istanbul ignore next */{
+    clientWidth = dom.clientWidth;
+    clientHeight = dom.clientHeight;
+  }
+  return {
+    clientHeight: clientHeight,
+    clientWidth: clientWidth
+  };
+}
+
 var scrollBarWidth = void 0;
 function getGutter() {
   /* istanbul ignore next */
@@ -130,16 +146,13 @@ function getGutter() {
   var offsetWidth = outer.offsetWidth;
   /**
    * We don't use clientWith directly because we want to make
-   * the gutter more accurate (#48)
+   * the gutter more accurate, see issues (#48)
    */
 
-  var clientWith = void 0;
-  try {
-    clientWith = window.getComputedStyle(outer).width.slice(0, -2);
-  } catch (error) /* istanbul ignore next */{
-    clientWith = window.clientWith;
-  }
-  scrollBarWidth = offsetWidth - clientWith;
+  var _getAccurateSize = getAccurateSize(outer),
+      clientWidth = _getAccurateSize.clientWidth;
+
+  scrollBarWidth = offsetWidth - clientWidth;
   document.body.removeChild(outer);
   return scrollBarWidth;
 }
@@ -170,12 +183,6 @@ function isChildInParent(child, parent) {
     flag = true;
   }
   return flag;
-}
-
-var pxValueReg = /(.*?)px/;
-function extractNumberFromPx(value) {
-  var _return = pxValueReg.exec(value);
-  return _return && _return[1];
 }
 
 function isSupportTouch() {
@@ -4002,8 +4009,9 @@ var slideMix = {
       var outerLeft = 0;
       var outerTop = 0;
 
-      var clientWidth = this.$el.clientHeight;
-      var clientHeight = this.$el.clientHeight;
+      var _getAccurateSize = getAccurateSize(this.$el),
+          clientWidth = _getAccurateSize.clientWidth,
+          clientHeight = _getAccurateSize.clientHeight;
 
       var contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       var contentHeight = clientHeight + this.scroller.__maxScrollTop;
@@ -4066,12 +4074,12 @@ var slideMix = {
 var nativeMix = {
   methods: {
     updateNativeModeBarState: function updateNativeModeBarState() {
-      var scrollPanel = this.scrollPanelElm;
       var vuescroll = this.$el;
+      var scrollPanel = this.scrollPanelElm;
       var isPercent = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
-
-      var clientWidth = isPercent ? vuescroll.clientWidth : extractNumberFromPx(this.vuescroll.state.width);
-      var clientHeight = isPercent ? vuescroll.clientHeight : extractNumberFromPx(this.vuescroll.state.height);
+      var accurateSize = getAccurateSize(vuescroll);
+      var clientWidth = isPercent ? accurateSize.clientWidth : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
+      var clientHeight = isPercent ? accurateSize.clientHeight : this.vuescroll.state.height.slice(0, -2);
 
       var heightPercentage = clientHeight * 100 / scrollPanel.scrollHeight;
       var widthPercentage = clientWidth * 100 / scrollPanel.scrollWidth;

@@ -1,18 +1,18 @@
-import { extractNumberFromPx } from 'shared/util';
+import { getAccurateSize } from 'shared/util';
 
 export default {
   methods: {
     updateNativeModeBarState() {
-      const scrollPanel = this.scrollPanelElm;
       const vuescroll = this.$el;
+      const scrollPanel = this.scrollPanelElm;
       const isPercent = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
-
+      const accurateSize = getAccurateSize(vuescroll);
       const clientWidth = isPercent
-        ? vuescroll.clientWidth
-        : extractNumberFromPx(this.vuescroll.state.width);
+        ? accurateSize.clientWidth
+        : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
       const clientHeight = isPercent
-        ? vuescroll.clientHeight
-        : extractNumberFromPx(this.vuescroll.state.height);
+        ? accurateSize.clientHeight
+        : this.vuescroll.state.height.slice(0, -2);
 
       let heightPercentage = (clientHeight * 100) / scrollPanel.scrollHeight;
       let widthPercentage = (clientWidth * 100) / scrollPanel.scrollWidth;

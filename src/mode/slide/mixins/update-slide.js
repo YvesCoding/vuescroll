@@ -1,6 +1,7 @@
 import Scroller from 'core/third-party/scroller/index';
 import { render } from 'core/third-party/scroller/render';
 import { listenContainer } from 'core/third-party/scroller/listener';
+import { getAccurateSize } from 'shared/util';
 
 /**
  * @description refresh and load callback
@@ -203,8 +204,7 @@ export default {
       let outerLeft = 0;
       let outerTop = 0;
 
-      const clientWidth = this.$el.clientHeight;
-      const clientHeight = this.$el.clientHeight;
+      const { clientWidth, clientHeight } = getAccurateSize(this.$el);
 
       const contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       const contentHeight = clientHeight + this.scroller.__maxScrollTop;

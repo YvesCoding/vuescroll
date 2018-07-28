@@ -51,6 +51,22 @@ export function defineReactive(target, key, source, souceKey) {
   });
 }
 
+export function getAccurateSize(dom) {
+  let clientWidth;
+  let clientHeight;
+  try {
+    clientWidth = +window.getComputedStyle(dom).width.slice(0, -2);
+    clientHeight = +window.getComputedStyle(dom).height.slice(0, -2);
+  } catch (error) /* istanbul ignore next */ {
+    clientWidth = dom.clientWidth;
+    clientHeight = dom.clientHeight;
+  }
+  return {
+    clientHeight,
+    clientWidth
+  };
+}
+
 let scrollBarWidth;
 export function getGutter() {
   /* istanbul ignore next */
@@ -67,15 +83,11 @@ export function getGutter() {
   const { offsetWidth } = outer;
   /**
    * We don't use clientWith directly because we want to make
-   * the gutter more accurate (#48)
+   * the gutter more accurate, see issues (#48)
    */
-  let clientWith;
-  try {
-    clientWith = window.getComputedStyle(outer).width.slice(0, -2);
-  } catch (error) /* istanbul ignore next */ {
-    clientWith = window.clientWith;
-  }
-  scrollBarWidth = offsetWidth - clientWith;
+  let { clientWidth } = getAccurateSize(outer);
+
+  scrollBarWidth = offsetWidth - clientWidth;
   document.body.removeChild(outer);
   return scrollBarWidth;
 }
@@ -115,12 +127,6 @@ export function isChildInParent(child, parent) {
     flag = true;
   }
   return flag;
-}
-
-const pxValueReg = /(.*?)px/;
-export function extractNumberFromPx(value) {
-  const _return = pxValueReg.exec(value);
-  return _return && _return[1];
 }
 
 export function isSupportTouch() {
