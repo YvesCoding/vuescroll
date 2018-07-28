@@ -1,5 +1,5 @@
 import { modes } from './constants';
-import { error, warn } from '../util';
+import { error, warn } from './util';
 
 export default {
   // vuescroll

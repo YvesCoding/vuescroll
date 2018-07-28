@@ -1,10 +1,10 @@
-import scrollMap from '../../shared/scroll-map';
+import scrollMap from 'shared/scroll-map';
 import {
   eventCenter,
   isSupportTouch,
   getRealParent,
   deepMerge
-} from '../../util';
+} from 'shared/util';
 
 const colorCache = {};
 const rgbReg = /rgb\(/;
@@ -263,7 +263,7 @@ export function createBar(h, vm, type) {
   if (
     !vm.bar[barType].state.size ||
     !vm.mergedOptions.scrollPanel['scrolling' + axis] ||
-    (vm.refreshLoad && type !== 'vertical' && vm.mode === 'slide')
+    (vm.refreshLoad && type !== 'vertical')
   ) {
     return null;
   }

@@ -1,4 +1,4 @@
-import {getPrefix} from '../../util';
+import { getPrefix } from 'shared/util';
 
 /* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
 export function render(content, global, suffix, value) {

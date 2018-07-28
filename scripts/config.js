@@ -3,7 +3,7 @@ const resolveNode = require('rollup-plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
 const replace = require('rollup-plugin-replace');
 const scss = require('rollup-plugin-scss');
-
+const alias = require('rollup-plugin-alias');
 const path = require('path');
 const version = process.env.VERSION || require('../package.json').version;
 
@@ -26,23 +26,13 @@ const resolve = p => {
   }
 };
 
-const root = aliases.src;
-
 const builds = {
   umd: {
-    entry: resolve(root + '/index.js'),
+    entry: resolve('mode/entry-mix.js'),
     dest: resolve('dist/vuescroll.js'),
     format: 'umd',
     external: ['vue'],
     banner
-  },
-  'umd-min': {
-    entry: resolve(root + '/index.js'),
-    dest: resolve('dist/vuescroll.min.js'),
-    format: 'umd',
-    external: ['vue'],
-    banner,
-    sourcemap: true
   }
 };
 
@@ -73,7 +63,8 @@ function genConfig(name) {
       replace({
         'process.env.NODE_FORMAT': JSON.stringify(opts.format),
         __version__: version
-      })
+      }),
+      alias(Object.assign({}, aliases, opts.alias))
     ]
   };
   return config;

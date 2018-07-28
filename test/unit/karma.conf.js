@@ -17,7 +17,7 @@ var webpack = {
             [
               'istanbul',
               {
-                exclude: ['src/third-party/**/*.js', 'test/**/*.js']
+                exclude: ['src/core/third-party/**/*.js', 'test/**/*.js']
               }
             ]
           ]

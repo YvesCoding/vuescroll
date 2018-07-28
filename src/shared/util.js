@@ -52,7 +52,6 @@ export function defineReactive(target, key, source, souceKey) {
 }
 
 let scrollBarWidth;
-
 export function getGutter() {
   /* istanbul ignore next */
   if (isServer()) return 0;
@@ -62,17 +61,22 @@ export function getGutter() {
   outer.style.width = '100px';
   outer.style.position = 'absolute';
   outer.style.top = '-9999px';
+  outer.style.overflow = 'scroll';
   document.body.appendChild(outer);
 
-  const widthNoScroll = outer.offsetWidth;
-  outer.style.overflow = 'scroll';
-  const inner = document.createElement('div');
-  inner.style.width = '100%';
-  outer.appendChild(inner);
-
-  const widthWithScroll = inner.offsetWidth;
-  outer.parentNode.removeChild(outer);
-  scrollBarWidth = widthNoScroll - widthWithScroll;
+  const { offsetWidth } = outer;
+  /**
+   * We don't use clientWith directly because we want to make
+   * the gutter more accurate (#48)
+   */
+  let clientWith;
+  try {
+    clientWith = window.getComputedStyle(outer).width.slice(0, -2);
+  } catch (error) /* istanbul ignore next */ {
+    clientWith = window.clientWith;
+  }
+  scrollBarWidth = offsetWidth - clientWith;
+  document.body.removeChild(outer);
   return scrollBarWidth;
 }
 
@@ -119,13 +123,10 @@ export function extractNumberFromPx(value) {
   return _return && _return[1];
 }
 
-function _isSupportTouch() {
-  return 'ontouchstart' in window;
-}
 export function isSupportTouch() {
   /* istanbul ignore if */
   if (isServer()) return false;
-  return _isSupportTouch();
+  return 'ontouchstart' in window;
 }
 
 export function getPrefix(global) {
@@ -155,7 +156,10 @@ export function getPrefix(global) {
   return vendorPrefix;
 }
 
-export function _isSupportGivenStyle(property, value) {
+export function isSupportGivenStyle(property, value) {
+  /* istanbul ignore if */
+  if (isServer()) return false;
+
   const compatibleValue = `-${getPrefix(window)}-${value}`;
   const testElm = document.createElement('div');
   testElm.style[property] = compatibleValue;
@@ -165,13 +169,11 @@ export function _isSupportGivenStyle(property, value) {
   /* istanbul ignore next */
   return false;
 }
-export function isSupportGivenStyle(property, value) {
+
+export function isIE() {
   /* istanbul ignore if */
   if (isServer()) return false;
-  return _isSupportGivenStyle(property, value);
-}
 
-export function _isIE() /* istanbul ignore next */ {
   var agent = navigator.userAgent.toLowerCase();
   return (
     agent.indexOf('msie') !== -1 ||
@@ -179,19 +181,15 @@ export function _isIE() /* istanbul ignore next */ {
     agent.indexOf(' edge/') !== -1
   );
 }
-export function isIE() {
-  /* istanbul ignore if */
-  if (isServer()) return false;
-  return _isIE();
-}
 
+/**
+ * Insert children into user-passed slot at vnode level
+ */
 export function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
   parentVnode = parentVnode[0] ? parentVnode[0] : parentVnode;
 
   const isComponent = !!parentVnode.componentOptions;
-
   const tag = isComponent ? parentVnode.componentOptions.tag : parentVnode.tag;
-
   const _data = parentVnode.componentOptions || parentVnode.data || {};
 
   if (isComponent) {
@@ -212,12 +210,14 @@ export function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
   );
 }
 
+/**
+ * Get the vuescroll instance instead of
+ * user pass component like slot.
+ */
 export function getRealParent(ctx) {
   let parent = ctx.$parent;
-
   if (!parent._isVuescrollRoot && parent) {
     parent = parent.$parent;
   }
-
   return parent;
 }

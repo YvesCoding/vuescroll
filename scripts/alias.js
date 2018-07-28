@@ -1,12 +1,19 @@
 const path = require('path');
+const fs = require('fs');
 
 const resolve = p => path.resolve(__dirname, '../', p);
-
-const src = 'src';
-
-module.exports = {
-  vuescroll: resolve(src + '/index'),
-  src: resolve(src),
+const alias = {
+  src: resolve('src'),
   test: resolve('./test'),
   vue$: 'vue/dist/vue.js'
 };
+
+const extend = alias => {
+  const dirs = fs.readdirSync(alias.src);
+  dirs.forEach(dir => {
+    alias[dir] = `${alias.src}/${dir}`;
+  });
+};
+extend(alias);
+
+module.exports = alias;

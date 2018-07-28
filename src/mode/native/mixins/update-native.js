@@ -1,4 +1,4 @@
-import { extractNumberFromPx } from '../../util';
+import { extractNumberFromPx } from 'shared/util';
 
 export default {
   methods: {
