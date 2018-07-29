@@ -41,7 +41,7 @@ export default {
     }
 
     if (props.ops.padding) {
-      style.paddingRight = props.ops.paddingValue;
+      style.paddingRight = parent.mergedOptions.rail.size; //props.ops.paddingValue;
     }
 
     const propsData = {

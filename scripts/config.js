@@ -27,9 +27,16 @@ const resolve = p => {
 };
 
 const builds = {
-  umd: {
+  'mix-umd': {
     entry: resolve('mode/entry-mix.js'),
     dest: resolve('dist/vuescroll.js'),
+    format: 'umd',
+    external: ['vue'],
+    banner
+  },
+  'mix-umd-prod': {
+    entry: resolve('mode/entry-mix.js'),
+    dest: resolve('dist/vuescroll.min.js'),
     format: 'umd',
     external: ['vue'],
     banner

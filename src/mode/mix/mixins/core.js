@@ -23,7 +23,7 @@ function resolveOffset(mode, vm) {
 export default {
   mounted() {
     this.$nextTick(() => {
-      if (!this._isDestroyed) {
+      if (!this._isDestroyed && !this.renderError) {
         // update again to ensure bar's size is correct.
         this.updateBarStateAndEmitEvent();
         // update scroller again since we get real dom.

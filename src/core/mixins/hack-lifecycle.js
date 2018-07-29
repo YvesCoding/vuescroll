@@ -3,7 +3,6 @@ import { deepMerge, defineReactive } from 'shared/util';
 
 /**
  * hack the lifeCycle
- *
  * to merge the global data into user-define data
  */
 function hackPropsData() {
@@ -19,10 +18,6 @@ function hackPropsData() {
   });
   // from ops to mergedOptions
   deepMerge(ops, vm.mergedOptions);
-
-  defineReactive(vm.mergedOptions.scrollContent, 'paddingValue', () => {
-    return vm.mergedOptions.rail.size;
-  });
 }
 export default {
   data() {

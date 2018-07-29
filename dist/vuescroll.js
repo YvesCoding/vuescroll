@@ -97,24 +97,23 @@ function deepMerge(from, to, force) {
 }
 
 function defineReactive(target, key, source, souceKey) {
-  var getter = null;
   /* istanbul ignore if */
   if (!source[key] && typeof source !== 'function') {
     return;
   }
   souceKey = souceKey || key;
-  if (typeof source === 'function') {
-    getter = source;
-  }
   Object.defineProperty(target, key, {
-    get: getter || function () {
+    get: function get$$1() {
       return source[souceKey];
     },
+
     configurable: true
   });
 }
 
 function getAccurateSize(dom) {
+  var vague = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
   var clientWidth = void 0;
   var clientHeight = void 0;
   try {
@@ -123,6 +122,10 @@ function getAccurateSize(dom) {
   } catch (error) /* istanbul ignore next */{
     clientWidth = dom.clientWidth;
     clientHeight = dom.clientHeight;
+  }
+  if (vague) {
+    clientHeight = Math.round(clientHeight);
+    clientWidth = Math.round(clientWidth);
   }
   return {
     clientHeight: clientHeight,
@@ -267,6 +270,10 @@ function getRealParent(ctx) {
   }
   return parent;
 }
+
+var isArray = function isArray(_) {
+  return Array.isArray(_);
+};
 
 var vsInstances = {};
 
@@ -764,7 +771,7 @@ var scrollContent = {
       }
 
     if (props.ops.padding) {
-      style.paddingRight = props.ops.paddingValue;
+      style.paddingRight = parent.mergedOptions.rail.size; //props.ops.paddingValue;
     }
 
     var propsData = {
@@ -886,7 +893,7 @@ function createPanelChildren$1(h, vm) {
       _customPanel = _customPanel[0];
       var ch = _customPanel.children;
 
-      if (Array.isArray(ch)) {
+      if (isArray(ch)) {
         renderChildren = ch.concat(renderChildren);
       }
     }
@@ -1324,68 +1331,15 @@ core.effect.Animate = {
   }
 };
 
-// all modes
-var modes = ['slide', 'native'];
-// do nothing
-var NOOP = function NOOP() {};
-// some small changes.
-var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
-
-var GCF = {
+var baseConfig = {
   // vuescroll
   vuescroll: {
-    mode: 'native',
     // vuescroll's size(height/width) should be a percent(100%)
     // or be a number that is equal to its parentNode's width or
     // height ?
     sizeStrategy: 'percent',
     /** Whether to detect dom resize or not */
-    detectResize: true,
-    // pullRefresh or pushLoad is only for the slide mode...
-    pullRefresh: {
-      enable: false,
-      tips: {
-        deactive: 'Pull to Refresh',
-        active: 'Release to Refresh',
-        start: 'Refreshing...',
-        beforeDeactive: 'Refresh Successfully!'
-      }
-    },
-    pushLoad: {
-      enable: false,
-      tips: {
-        deactive: 'Push to Load',
-        active: 'Release to Load',
-        start: 'Loading...',
-        beforeDeactive: 'Load Successfully!'
-      }
-    },
-    paging: false,
-    zooming: true,
-    snapping: {
-      enable: false,
-      width: 100,
-      height: 100
-    },
-    /* shipped scroll options */
-    scroller: {
-      /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
-      bouncing: true,
-      /** Enable locking to the main axis if user moves only slightly on one of them at start */
-      locking: true,
-      /** Minimum zoom level */
-      minZoom: 0.5,
-      /** Maximum zoom level */
-      maxZoom: 3,
-      /** Multiply or decrease scrolling speed **/
-      speedMultiplier: 1,
-      /** This configures the amount of change applied to deceleration when reaching boundaries  **/
-      penetrationDeceleration: 0.03,
-      /** This configures the amount of change applied to acceleration when reaching boundaries  **/
-      penetrationAcceleration: 0.08,
-      /** Whether call e.preventDefault event when sliding the content or not */
-      preventDefault: true
-    }
+    detectResize: true
   },
   scrollPanel: {
     // when component mounted.. it will automatically scrolls.
@@ -1397,10 +1351,7 @@ var GCF = {
     speed: 300,
     easing: undefined
   },
-  //
-  scrollContent: {
-    padding: false
-  },
+
   //
   rail: {
     background: '#01a99a',
@@ -1425,14 +1376,12 @@ var GCF = {
 };
 /**
  * validate the options
- *
  * @export
  * @param {any} ops
  */
 function validateOptions(ops) {
-  var shouldStopRender = false;
-  var vuescroll = ops.vuescroll,
-      scrollPanel = ops.scrollPanel;
+  var renderError = false;
+  var scrollPanel = ops.scrollPanel;
   var _ops$bar = ops.bar,
       vBar = _ops$bar.vBar,
       hBar = _ops$bar.hBar;
@@ -1440,19 +1389,8 @@ function validateOptions(ops) {
       vRail = _ops$rail.vRail,
       hRail = _ops$rail.hRail;
 
-  // validate modes
-
-  if (!~modes.indexOf(vuescroll.mode)) {
-    error('Unknown mode: ' + vuescroll.mode + ',the vuescroll\'s option "mode" should be one of the ' + modes);
-    shouldStopRender = true;
-  }
-
-  // validate pushLoad, pullReresh, snapping
-  if (vuescroll.paging == vuescroll.snapping.enable && vuescroll.paging && (vuescroll.pullRefresh || vuescroll.pushLoad)) {
-    error('paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.');
-  }
-
   // validate scrollPanel
+
   var initialScrollY = scrollPanel['initialScrollY'];
   var initialScrollX = scrollPanel['initialScrollX'];
 
@@ -1468,18 +1406,35 @@ function validateOptions(ops) {
     warn('The options: vRail, hRail, vBar, hBar have been deprecated since v4.7.0,' + 'please use corresponing rail/bar instead!');
   }
 
-  return shouldStopRender;
+  if (_extraValidate) {
+    _extraValidate = [].concat(_extraValidate);
+    _extraValidate.forEach(function (hasError) {
+      if (hasError(ops)) {
+        renderError = true;
+      }
+    });
+  }
+  return renderError;
 }
+
+var _extraValidate = null;
+var extendOpts = function extendOpts(extraOpts, extraValidate) {
+  extraOpts = [].concat(extraOpts);
+  extraOpts.forEach(function (opts) {
+    deepMerge(opts, baseConfig);
+  });
+
+  _extraValidate = extraValidate;
+};
 
 /**
  * hack the lifeCycle
- *
  * to merge the global data into user-define data
  */
 function hackPropsData() {
   var vm = this;
   var _gfc = deepMerge(vm.$vuescrollConfig || {}, {});
-  var ops = deepMerge(GCF, _gfc);
+  var ops = deepMerge(baseConfig, _gfc);
 
   vm.$options.propsData.ops = vm.$options.propsData.ops || {};
   Object.keys(vm.$options.propsData.ops).forEach(function (key) {
@@ -1489,10 +1444,6 @@ function hackPropsData() {
   });
   // from ops to mergedOptions
   deepMerge(ops, vm.mergedOptions);
-
-  defineReactive(vm.mergedOptions.scrollContent, 'paddingValue', function () {
-    return vm.mergedOptions.rail.size;
-  });
 }
 var hackLifecycle = {
   data: function data() {
@@ -1513,6 +1464,13 @@ var hackLifecycle = {
     this.renderError = validateOptions(this.mergedOptions);
   }
 };
+
+// all modes
+var modes = ['slide', 'native'];
+// do nothing
+var NOOP = function NOOP() {};
+// some small changes.
+var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
 
 // detect content size change
 function installResizeDetection(element, callback) {
@@ -1554,9 +1512,9 @@ function injectObject(element, callback) {
   };
 }
 
-var withBase = function withBase(createPanel, opts, Vue$$1) {
+var withBase = function withBase(createPanel, Vue$$1, components, opts) {
   return Vue$$1.component(opts.name || 'vueScroll', {
-    components: opts.components,
+    components: components,
     props: {
       ops: { type: Object }
     },
@@ -1701,9 +1659,6 @@ var withBase = function withBase(createPanel, opts, Vue$$1) {
     computed: {
       scrollPanelElm: function scrollPanelElm() {
         return this.$refs['scrollPanel']._isVue ? this.$refs['scrollPanel'].$el : this.$refs['scrollPanel'];
-      },
-      scrollContentElm: function scrollContentElm() {
-        return this.$refs['scrollContent']._isVue ? this.$refs['scrollContent'].$el : this.$refs['scrollContent'];
       }
     },
 
@@ -1866,6 +1821,9 @@ var withBase = function withBase(createPanel, opts, Vue$$1) {
   });
 };
 
+/**
+ * Start to scroll to a position
+ */
 function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
   var startLocationY = elm['scrollTop'];
   var startLocationX = elm['scrollLeft'];
@@ -1905,22 +1863,39 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
   core.effect.Animate.start(stepCallback, verifyCallback, scrollingComplete, speed, easingMethod);
 }
 
+/**
+ * Init following things
+ * 1. Component
+ * 2. Render
+ * 3. Mix
+ * 4. Config
+ */
 function _init() {
   var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var _components = opts._components,
+      render = opts.render,
+      Vue$$1 = opts.Vue,
+      _opts$components = opts.components,
+      components = _opts$components === undefined ? {} : _opts$components,
+      _opts$config = opts.config,
+      config = _opts$config === undefined ? {} : _opts$config,
+      validator = opts.validator;
 
-  var comp = opts._components = opts._components || {};
-  opts.components = {};
+  // Init component
+
+  var comp = _components = _components || {};
   comp.forEach(function (_c) {
-    opts.components[_c.name] = _c;
+    components[_c.name] = _c;
   });
 
-  var vsCtor = withBase(opts.render, opts, opts.Vue);
+  // Init render
+  var vsCtor = withBase(render, Vue$$1, components, opts);
+
+  // Init Mix
   initMix(vsCtor, opts.mixins);
 
-  delete opts._components;
-  delete opts.mixins;
-  delete opts.render;
-  delete opts.Vue;
+  // Init Config
+  extendOpts(config, validator);
 }
 
 function initMix(ctor, mix) {
@@ -1932,7 +1907,7 @@ function initMix(ctor, mix) {
 
 function flatArray(arr) {
   return arr.reduce(function (pre, cur) {
-    return pre.concat(Array.isArray(cur) ? flatMap(cur) : cur);
+    return pre.concat(isArray(cur) ? flatMap(cur) : cur);
   }, []);
 }
 
@@ -1964,12 +1939,10 @@ function getCurrentViewportDom(parent, container) {
 
   for (var i = 0; i < children.length; i++) {
     var dom = children.item(i);
-
     if (isCurrentview(dom) && !dom.isResizeElm) {
       domFragment.push(dom);
     }
   }
-
   return domFragment;
 }
 
@@ -2092,7 +2065,7 @@ var core$1 = {
     var _this = this;
 
     this.$nextTick(function () {
-      if (!_this._isDestroyed) {
+      if (!_this._isDestroyed && !_this.renderError) {
         // update again to ensure bar's size is correct.
         _this.updateBarStateAndEmitEvent();
         // update scroller again since we get real dom.
@@ -3833,6 +3806,10 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
 }
 
 /**
+ * These mixes is exclusive for slide mode
+ */
+
+/**
  * @description refresh and load callback
  */
 function createStateCallbacks(type, stageName, vm, tipDom) {
@@ -3850,14 +3827,14 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
     vm.vuescroll.state[stageName] = 'start';
     setTimeout(function () {
       vm.scroller.finishRefreshOrLoad();
-    }, 2000);
+    }, 2000); // Default start stage duration
   };
 
   var beforeDeactivateCallback = function beforeDeactivateCallback(done) {
     vm.vuescroll.state[stageName] = 'beforeDeactive';
     setTimeout(function () {
       done();
-    }, 500);
+    }, 500); // Default before-deactivated stage duration
   };
   /* istanbul ignore if */
   if (listeners[type + '-activate']) {
@@ -4009,7 +3986,8 @@ var slideMix = {
       var outerLeft = 0;
       var outerTop = 0;
 
-      var _getAccurateSize = getAccurateSize(this.$el),
+      var _getAccurateSize = getAccurateSize(this.$el, true /* Use Math.round */
+      ),
           clientWidth = _getAccurateSize.clientWidth,
           clientHeight = _getAccurateSize.clientHeight;
 
@@ -4071,13 +4049,17 @@ var slideMix = {
   }
 };
 
+/**
+ * These mixes is exclusive for native mode
+ */
+
 var nativeMix = {
   methods: {
     updateNativeModeBarState: function updateNativeModeBarState() {
       var vuescroll = this.$el;
       var scrollPanel = this.scrollPanelElm;
       var isPercent = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
-      var accurateSize = getAccurateSize(vuescroll);
+      var accurateSize = getAccurateSize(vuescroll, true);
       var clientWidth = isPercent ? accurateSize.clientWidth : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
       var clientHeight = isPercent ? accurateSize.clientHeight : this.vuescroll.state.height.slice(0, -2);
 
@@ -4090,10 +4072,134 @@ var nativeMix = {
       this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
       this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
     }
+  },
+  computed: {
+    scrollContentElm: function scrollContentElm() {
+      return this.$refs['scrollContent']._isVue ? this.$refs['scrollContent'].$el : this.$refs['scrollContent'];
+    }
   }
 };
 
 var mixins = [api$1, core$1, slideMix, nativeMix];
+
+/**
+ * The slide mode config
+ */
+var config = {
+  // vuescroll
+  vuescroll: {
+    // pullRefresh or pushLoad is only for the slide mode...
+    pullRefresh: {
+      enable: false,
+      tips: {
+        deactive: 'Pull to Refresh',
+        active: 'Release to Refresh',
+        start: 'Refreshing...',
+        beforeDeactive: 'Refresh Successfully!'
+      }
+    },
+    pushLoad: {
+      enable: false,
+      tips: {
+        deactive: 'Push to Load',
+        active: 'Release to Load',
+        start: 'Loading...',
+        beforeDeactive: 'Load Successfully!'
+      }
+    },
+    paging: false,
+    zooming: true,
+    snapping: {
+      enable: false,
+      width: 100,
+      height: 100
+    },
+    /* shipped scroll options */
+    scroller: {
+      /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
+      bouncing: true,
+      /** Enable locking to the main axis if user moves only slightly on one of them at start */
+      locking: true,
+      /** Minimum zoom level */
+      minZoom: 0.5,
+      /** Maximum zoom level */
+      maxZoom: 3,
+      /** Multiply or decrease scrolling speed **/
+      speedMultiplier: 1,
+      /** This configures the amount of change applied to deceleration when reaching boundaries  **/
+      penetrationDeceleration: 0.03,
+      /** This configures the amount of change applied to acceleration when reaching boundaries  **/
+      penetrationAcceleration: 0.08,
+      /** Whether call e.preventDefault event when sliding the content or not */
+      preventDefault: true
+    }
+  }
+};
+/**
+ * validate the options
+ * @export
+ * @param {any} ops
+ */
+function validator(ops) {
+  var renderError = false;
+  var vuescroll = ops.vuescroll;
+
+  // validate pushLoad, pullReresh, snapping
+
+  if (vuescroll.paging == vuescroll.snapping.enable && vuescroll.paging && (vuescroll.pullRefresh || vuescroll.pushLoad)) {
+    error('paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.');
+  }
+
+  return renderError;
+}
+
+/**
+ * The native mode config
+ */
+
+var config$1 = {
+  //
+  scrollContent: {
+    padding: false
+  }
+};
+/**
+ * validate the options
+ * @export
+ * @param {any} ops
+ */
+function validator$1() {
+  var renderError = false;
+  return renderError;
+}
+
+var config$2 = {
+  // vuescroll
+  vuescroll: {
+    mode: 'native'
+  }
+};
+/**
+ * validate the options
+ * @export
+ * @param {any} ops
+ */
+function validator$2(ops) {
+  var renderError = false;
+  var vuescroll = ops.vuescroll;
+
+  // validate modes
+
+  if (!~modes.indexOf(vuescroll.mode)) {
+    error('Unknown mode: ' + vuescroll.mode + ',the vuescroll\'s option "mode" should be one of the ' + modes);
+    renderError = true;
+  }
+
+  return renderError;
+}
+
+var configs = [config$2, config, config$1];
+var validators = [validator$2, validator, validator$1];
 
 function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -4102,7 +4208,8 @@ function install(Vue$$1) {
   opts.mixins = mixins;
   opts.render = createPanel;
   opts.Vue = Vue$$1;
-
+  opts.config = configs;
+  opts.validator = validators;
   _init(opts);
 }
 

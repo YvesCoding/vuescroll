@@ -1,3 +1,7 @@
+/**
+ * These mixes is exclusive for slide mode
+ */
+
 import Scroller from 'core/third-party/scroller/index';
 import { render } from 'core/third-party/scroller/render';
 import { listenContainer } from 'core/third-party/scroller/listener';
@@ -21,14 +25,14 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
     vm.vuescroll.state[stageName] = 'start';
     setTimeout(() => {
       vm.scroller.finishRefreshOrLoad();
-    }, 2000);
+    }, 2000); // Default start stage duration
   };
 
   let beforeDeactivateCallback = done => {
     vm.vuescroll.state[stageName] = 'beforeDeactive';
     setTimeout(function() {
       done();
-    }, 500);
+    }, 500); // Default before-deactivated stage duration
   };
   /* istanbul ignore if */
   if (listeners[type + '-activate']) {
@@ -204,7 +208,10 @@ export default {
       let outerLeft = 0;
       let outerTop = 0;
 
-      const { clientWidth, clientHeight } = getAccurateSize(this.$el);
+      const { clientWidth, clientHeight } = getAccurateSize(
+        this.$el,
+        true /* Use Math.round */
+      );
 
       const contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       const contentHeight = clientHeight + this.scroller.__maxScrollTop;

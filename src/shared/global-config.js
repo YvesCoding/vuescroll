@@ -1,61 +1,14 @@
-import { modes } from './constants';
-import { error, warn } from './util';
+import { warn, deepMerge } from './util';
 
-export default {
+const baseConfig = {
   // vuescroll
   vuescroll: {
-    mode: 'native',
     // vuescroll's size(height/width) should be a percent(100%)
     // or be a number that is equal to its parentNode's width or
     // height ?
     sizeStrategy: 'percent',
     /** Whether to detect dom resize or not */
-    detectResize: true,
-    // pullRefresh or pushLoad is only for the slide mode...
-    pullRefresh: {
-      enable: false,
-      tips: {
-        deactive: 'Pull to Refresh',
-        active: 'Release to Refresh',
-        start: 'Refreshing...',
-        beforeDeactive: 'Refresh Successfully!'
-      }
-    },
-    pushLoad: {
-      enable: false,
-      tips: {
-        deactive: 'Push to Load',
-        active: 'Release to Load',
-        start: 'Loading...',
-        beforeDeactive: 'Load Successfully!'
-      }
-    },
-    paging: false,
-    zooming: true,
-    snapping: {
-      enable: false,
-      width: 100,
-      height: 100
-    },
-    /* shipped scroll options */
-    scroller: {
-      /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
-      bouncing: true,
-      /** Enable locking to the main axis if user moves only slightly on one of them at start */
-      locking: true,
-      /** Minimum zoom level */
-      minZoom: 0.5,
-      /** Maximum zoom level */
-      maxZoom: 3,
-      /** Multiply or decrease scrolling speed **/
-      speedMultiplier: 1,
-      /** This configures the amount of change applied to deceleration when reaching boundaries  **/
-      penetrationDeceleration: 0.03,
-      /** This configures the amount of change applied to acceleration when reaching boundaries  **/
-      penetrationAcceleration: 0.08,
-      /** Whether call e.preventDefault event when sliding the content or not */
-      preventDefault: true
-    }
+    detectResize: true
   },
   scrollPanel: {
     // when component mounted.. it will automatically scrolls.
@@ -67,10 +20,7 @@ export default {
     speed: 300,
     easing: undefined
   },
-  //
-  scrollContent: {
-    padding: false
-  },
+
   //
   rail: {
     background: '#01a99a',
@@ -93,38 +43,18 @@ export default {
     hoverStyle: false
   }
 };
+export default baseConfig;
+
 /**
  * validate the options
- *
  * @export
  * @param {any} ops
  */
 export function validateOptions(ops) {
-  let shouldStopRender = false;
-  const { vuescroll, scrollPanel } = ops;
+  let renderError = false;
+  const { scrollPanel } = ops;
   const { vBar, hBar } = ops.bar;
   const { vRail, hRail } = ops.rail;
-
-  // validate modes
-  if (!~modes.indexOf(vuescroll.mode)) {
-    error(
-      `Unknown mode: ${
-        vuescroll.mode
-      },the vuescroll's option "mode" should be one of the ${modes}`
-    );
-    shouldStopRender = true;
-  }
-
-  // validate pushLoad, pullReresh, snapping
-  if (
-    vuescroll.paging == vuescroll.snapping.enable &&
-    vuescroll.paging &&
-    (vuescroll.pullRefresh || vuescroll.pushLoad)
-  ) {
-    error(
-      'paging, snapping, (pullRefresh with pushLoad) can only one of them to be true.'
-    );
-  }
 
   // validate scrollPanel
   const initialScrollY = scrollPanel['initialScrollY'];
@@ -149,5 +79,23 @@ export function validateOptions(ops) {
     );
   }
 
-  return shouldStopRender;
+  if (_extraValidate) {
+    _extraValidate = [].concat(_extraValidate);
+    _extraValidate.forEach(hasError => {
+      if (hasError(ops)) {
+        renderError = true;
+      }
+    });
+  }
+  return renderError;
 }
+
+let _extraValidate = null;
+export const extendOpts = (extraOpts, extraValidate) => {
+  extraOpts = [].concat(extraOpts);
+  extraOpts.forEach(opts => {
+    deepMerge(opts, baseConfig);
+  });
+
+  _extraValidate = extraValidate;
+};

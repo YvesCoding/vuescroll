@@ -32,26 +32,20 @@ export function deepMerge(from, to, force) {
 }
 
 export function defineReactive(target, key, source, souceKey) {
-  let getter = null;
   /* istanbul ignore if */
   if (!source[key] && typeof source !== 'function') {
     return;
   }
   souceKey = souceKey || key;
-  if (typeof source === 'function') {
-    getter = source;
-  }
   Object.defineProperty(target, key, {
-    get:
-      getter ||
-      function() {
-        return source[souceKey];
-      },
+    get() {
+      return source[souceKey];
+    },
     configurable: true
   });
 }
 
-export function getAccurateSize(dom) {
+export function getAccurateSize(dom, vague = false) {
   let clientWidth;
   let clientHeight;
   try {
@@ -60,6 +54,10 @@ export function getAccurateSize(dom) {
   } catch (error) /* istanbul ignore next */ {
     clientWidth = dom.clientWidth;
     clientHeight = dom.clientHeight;
+  }
+  if (vague) {
+    clientHeight = Math.round(clientHeight);
+    clientWidth = Math.round(clientWidth);
   }
   return {
     clientHeight,
@@ -227,3 +225,5 @@ export function getRealParent(ctx) {
   }
   return parent;
 }
+
+export const isArray = _ => Array.isArray(_);

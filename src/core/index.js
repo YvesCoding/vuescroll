@@ -11,9 +11,9 @@ import { installResizeDetection } from 'core/third-party/resize-detector/index';
 
 import { createBar } from 'mode/shared/bar';
 
-const withBase = (createPanel, opts, Vue) => {
+const withBase = (createPanel, Vue, components, opts) => {
   return Vue.component(opts.name || 'vueScroll', {
-    components: opts.components,
+    components,
     props: {
       ops: { type: Object }
     },
@@ -160,11 +160,6 @@ const withBase = (createPanel, opts, Vue) => {
         return this.$refs['scrollPanel']._isVue
           ? this.$refs['scrollPanel'].$el
           : this.$refs['scrollPanel'];
-      },
-      scrollContentElm() {
-        return this.$refs['scrollContent']._isVue
-          ? this.$refs['scrollContent'].$el
-          : this.$refs['scrollContent'];
       }
     },
 

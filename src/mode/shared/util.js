@@ -4,7 +4,11 @@ import {
 } from 'core/third-party/easingPattern/index';
 import { core } from 'core/third-party/scroller/animate';
 import withBase from 'core/index';
-
+import { extendOpts } from 'shared/global-config';
+import { isArray } from 'shared/util';
+/**
+ * Start to scroll to a position
+ */
 export function goScrolling(
   elm,
   deltaX,
@@ -60,30 +64,47 @@ export function goScrolling(
   );
 }
 
+/**
+ * Init following things
+ * 1. Component
+ * 2. Render
+ * 3. Mix
+ * 4. Config
+ */
 export function _init(opts = {}) {
-  const comp = (opts._components = opts._components || {});
-  opts.components = {};
+  let {
+    _components,
+    render,
+    Vue,
+    components = {},
+    config = {},
+    validator
+  } = opts;
+
+  // Init component
+  const comp = (_components = _components || {});
   comp.forEach(_c => {
-    opts.components[_c.name] = _c;
+    components[_c.name] = _c;
   });
 
-  let vsCtor = withBase(opts.render, opts, opts.Vue);
+  // Init render
+  let vsCtor = withBase(render, Vue, components, opts);
+
+  // Init Mix
   initMix(vsCtor, opts.mixins);
 
-  delete opts._components;
-  delete opts.mixins;
-  delete opts.render;
-  delete opts.Vue;
+  // Init Config
+  extendOpts(config, validator);
 }
 
-export function initMix(ctor, mix) {
+function initMix(ctor, mix) {
   const _mixedArr = flatArray(mix);
   _mixedArr.forEach(_ => ctor.mixin(_));
 }
 
-export function flatArray(arr) {
+function flatArray(arr) {
   return arr.reduce((pre, cur) => {
-    return pre.concat(Array.isArray(cur) ? flatMap(cur) : cur);
+    return pre.concat(isArray(cur) ? flatMap(cur) : cur);
   }, []);
 }
 
@@ -115,11 +136,9 @@ export function getCurrentViewportDom(parent, container) {
 
   for (let i = 0; i < children.length; i++) {
     const dom = children.item(i);
-
     if (isCurrentview(dom) && !dom.isResizeElm) {
       domFragment.push(dom);
     }
   }
-
   return domFragment;
 }

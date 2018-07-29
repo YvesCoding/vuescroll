@@ -1,4 +1,4 @@
-import { isSupportGivenStyle, isIE } from 'shared/util';
+import { isSupportGivenStyle, isIE, isArray } from 'shared/util';
 
 export function processPanelData(vm) {
   // scrollPanel data start
@@ -45,7 +45,7 @@ export function createPanelChildren(h, vm) {
       _customPanel = _customPanel[0];
       const ch = _customPanel.children;
 
-      if (Array.isArray(ch)) {
+      if (isArray(ch)) {
         renderChildren = ch.concat(renderChildren);
       }
     }
