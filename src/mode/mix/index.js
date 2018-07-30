@@ -15,5 +15,6 @@ export default function install(Vue, opts = {}) {
   opts.Vue = Vue;
   opts.config = configs;
   opts.validator = validators;
+
   _init(opts);
 }

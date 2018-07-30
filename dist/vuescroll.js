@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.7.0
+    * Vuescroll v4.7.1-rc.1
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -850,6 +850,25 @@ function processPanelData(vm) {
   return scrollPanelData;
 }
 
+/**
+ * create a scrollPanel
+ *
+ * @param {any} size
+ * @param {any} vm
+ * @returns
+ */
+function createPanel(h, vm) {
+  var scrollPanelData = {};
+
+  scrollPanelData = processPanelData(vm);
+
+  return h(
+    'scrollPanel',
+    scrollPanelData,
+    [createPanelChildren(h, vm)]
+  );
+}
+
 function createPanelChildren(h, vm) {
   return createContent(h, vm);
 }
@@ -1044,6 +1063,23 @@ function createTipDom(h, vm, type) {
   return dom;
 }
 
+/**
+ * create a scrollPanel
+ *
+ * @param {any} size
+ * @param {any} vm
+ * @returns
+ */
+function createPanel$1(h, vm) {
+  var scrollPanelData = processPanelData$1(vm);
+
+  return h(
+    'scrollPanel',
+    scrollPanelData,
+    [createPanelChildren$1(h, vm)]
+  );
+}
+
 // begin importing
 /**
  * create a scrollPanel
@@ -1052,27 +1088,11 @@ function createTipDom(h, vm, type) {
  * @param {any} vm
  * @returns
  */
-function createPanel(h, vm) {
-  var scrollPanelData = {};
-
+function createPanel$2(h, vm) {
   if (vm.mode == 'native') {
-    scrollPanelData = processPanelData(vm);
+    return createPanel(h, vm);
   } else if (vm.mode == 'slide') {
-    scrollPanelData = processPanelData$1(vm);
-  }
-
-  return h(
-    'scrollPanel',
-    scrollPanelData,
-    [createPanelChildren$2(vm, h)]
-  );
-}
-
-function createPanelChildren$2(vm, h) {
-  if (vm.mode == 'native') {
-    return createPanelChildren(h, vm);
-  } else if (vm.mode == 'slide') {
-    return createPanelChildren$1(h, vm);
+    return createPanel$1(h, vm);
   }
 }
 
@@ -4210,16 +4230,17 @@ function install(Vue$$1) {
 
   opts._components = [scrollPanel, scrollContent, bar];
   opts.mixins = mixins;
-  opts.render = createPanel;
+  opts.render = createPanel$2;
   opts.Vue = Vue$$1;
   opts.config = configs;
   opts.validator = validators;
+
   _init(opts);
 }
 
 var Vuescroll = {
   install: install,
-  version: '4.7.0',
+  version: '4.7.1-rc.1',
   refreshAll: refreshAll
 };
 

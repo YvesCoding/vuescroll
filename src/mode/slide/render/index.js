@@ -1,1 +1,2 @@
-export { createPanelChildren } from './slide-panel';
+import { createPanel } from './slide-panel';
+export default createPanel;

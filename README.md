@@ -74,6 +74,28 @@ Wrap the content you need to scroll by `vuescroll`
   </script>
 ```
 
+### import vuescroll according to your needs
+
+#### import silde-mode file
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll/dist/vuescroll-slide';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
+#### import native-mode file
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll/dist/vuescroll-native';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
 ## Guide List
 
 - [Online Examples](http://vuescrolljs.yvescoding.org/demo/)
@@ -85,7 +107,7 @@ Wrap the content you need to scroll by `vuescroll`
 
 ## Todo List
 
-- Separate `vuescroll` into two parts : `Native mode` and `Slide mode`(WIP)
+- ~~Separate `vuescroll` into two parts : `Native mode` and `Slide mode`(Achieved)~~
 
 ## Changelog
 

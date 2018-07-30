@@ -1,6 +1,5 @@
 import { refreshAll } from 'core/mixins/api';
-import install from 'mode/native/index';
-import '../style/vuescroll.scss';
+import install from './native/index';
 
 const Vuescroll = {
   install,

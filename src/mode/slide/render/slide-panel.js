@@ -171,3 +171,18 @@ function createTipDom(h, vm, type) {
   }
   return dom;
 }
+
+/**
+ * create a scrollPanel
+ *
+ * @param {any} size
+ * @param {any} vm
+ * @returns
+ */
+export function createPanel(h, vm) {
+  let scrollPanelData = processPanelData(vm);
+
+  return (
+    <scrollPanel {...scrollPanelData}>{createPanelChildren(h, vm)}</scrollPanel>
+  );
+}

@@ -74,6 +74,28 @@ Vue.use(vuescroll);
   </script>
 ```
 
+### 按需引入 vuescroll
+
+#### 引入 silde 模式的文件（配置跟 slide 完全一样，具体请到官网查看）
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll/dist/vuescroll-slide';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
+#### 引入 native 模式的文件（配置跟 native 完全一样，具体请到官网查看）
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll/dist/vuescroll-native';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
 ## 指南列表
 
 - [在线例子](http://vuescrolljs.yvescoding.org/zh/demo/)
@@ -85,7 +107,7 @@ Vue.use(vuescroll);
 
 ## 代办列表
 
-- 把 `vuescroll` 分成两部分 : `Native 模式` 和 `Slide 模式`(正在进行中)
+- ~~把 `vuescroll` 分成两部分 : `Native 模式` 和 `Slide 模式`(已完成)~~
 
 ## 变更日志
 

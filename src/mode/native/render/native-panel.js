@@ -46,6 +46,23 @@ export function processPanelData(vm) {
   return scrollPanelData;
 }
 
+/**
+ * create a scrollPanel
+ *
+ * @param {any} size
+ * @param {any} vm
+ * @returns
+ */
+export function createPanel(h, vm) {
+  let scrollPanelData = {};
+
+  scrollPanelData = processPanelData(vm);
+
+  return (
+    <scrollPanel {...scrollPanelData}>{createPanelChildren(h, vm)}</scrollPanel>
+  );
+}
+
 export function createPanelChildren(h, vm) {
   return createContent(h, vm);
 }

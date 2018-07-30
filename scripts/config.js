@@ -6,6 +6,7 @@ const scss = require('rollup-plugin-scss');
 const alias = require('rollup-plugin-alias');
 const path = require('path');
 const version = process.env.VERSION || require('../package.json').version;
+const fs = require('fs');
 
 const banner = `/*
     * Vuescroll v${version}
@@ -27,22 +28,51 @@ const resolve = p => {
 };
 
 const builds = {
-  'mix-umd': {
+  mix: {
     entry: resolve('mode/entry-mix.js'),
     dest: resolve('dist/vuescroll.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
-  'mix-umd-prod': {
+  'mix-prod': {
     entry: resolve('mode/entry-mix.js'),
     dest: resolve('dist/vuescroll.min.js'),
+    format: 'umd',
+    external: ['vue'],
+    banner
+  },
+  native: {
+    entry: resolve('mode/entry-native.js'),
+    dest: resolve('dist/vuescroll-native.js'),
+    format: 'umd',
+    external: ['vue'],
+    banner
+  },
+  'native-prod': {
+    entry: resolve('mode/entry-native.js'),
+    dest: resolve('dist/vuescroll-native.min.js'),
+    format: 'umd',
+    external: ['vue'],
+    banner
+  },
+  slide: {
+    entry: resolve('mode/entry-slide.js'),
+    dest: resolve('dist/vuescroll-slide.js'),
+    format: 'umd',
+    external: ['vue'],
+    banner
+  },
+  'slide-prod': {
+    entry: resolve('mode/entry-slide.js'),
+    dest: resolve('dist/vuescroll-slide.min.js'),
     format: 'umd',
     external: ['vue'],
     banner
   }
 };
 
+let hasGenrateCss = false;
 function genConfig(name) {
   const opts = builds[name];
   const config = {
@@ -61,7 +91,12 @@ function genConfig(name) {
     plugins: [
       resolveNode(),
       scss({
-        output: 'dist/vuescroll.css',
+        output: function(styles) {
+          if (!hasGenrateCss) {
+            hasGenrateCss = true;
+            fs.writeFileSync(resolve('dist/vuescroll.css'), styles);
+          }
+        },
         outputStyle: 'compressed'
       }),
       babel({
