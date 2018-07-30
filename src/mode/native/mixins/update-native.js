@@ -2,8 +2,6 @@
  * These mixes is exclusive for native mode
  */
 
-import { getAccurateSize } from 'shared/util';
-
 export default {
   methods: {
     updateNativeModeBarState() {
