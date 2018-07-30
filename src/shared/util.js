@@ -85,7 +85,9 @@ export function getGutter() {
    */
   let { clientWidth } = getAccurateSize(outer);
 
-  scrollBarWidth = offsetWidth - clientWidth;
+  scrollBarWidth =
+    Math.round((offsetWidth * 10000 - clientWidth * 10000) / 100) / 100;
+
   document.body.removeChild(outer);
   return scrollBarWidth;
 }

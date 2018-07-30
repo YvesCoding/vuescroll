@@ -44,9 +44,9 @@ describe('scroll-panel', () => {
     // time = 1000ms spwed + 100ms error
     startSchedule(1100).then(() => {
       const scrollPanel = vm.$el.querySelector('.__panel');
-      const { scrollTop, scrollLeft } = scrollPanel;
+      const { scrollTop, scrollLeft, scrollHeight, scrollWidth } = scrollPanel;
       expect(scrollTop).toBe(10);
-      expect(scrollLeft).toBe(40); // 200 * 0.4
+      expect(scrollLeft).toBe(Math.floor(scrollWidth * 0.2));
       done();
     });
   });

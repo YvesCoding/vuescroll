@@ -1,4 +1,8 @@
-import { isSupportGivenStyle, insertChildrenIntoSlot } from 'shared/util';
+import {
+  isSupportGivenStyle,
+  insertChildrenIntoSlot,
+  getGutter
+} from 'shared/util';
 
 /**
  * create scroll content
@@ -27,6 +31,8 @@ export default {
   render(h, { props, slots, parent }) {
     let style = {};
     let width = isSupportGivenStyle('width', 'fit-content');
+    let gutter = getGutter();
+    const _class = ['__view'];
 
     if (width) {
       style.width = width;
@@ -44,10 +50,19 @@ export default {
       style.paddingRight = parent.mergedOptions.rail.size; //props.ops.paddingValue;
     }
 
+    if (gutter) {
+      style['margin-bottom'] = -gutter + 'px';
+      style['border-right-width'] = 30 - gutter + 'px';
+      _class.push('__gutter');
+      if (!parent.bar.hBar.state.size) {
+        _class.push('__no-hbar');
+      }
+    }
+
     const propsData = {
-      style: style,
+      style,
       ref: 'scrollContent',
-      class: '__view'
+      class: _class
     };
 
     const _customContent = parent.$slots['scroll-content'];

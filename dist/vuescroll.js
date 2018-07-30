@@ -155,7 +155,8 @@ function getGutter() {
   var _getAccurateSize = getAccurateSize(outer),
       clientWidth = _getAccurateSize.clientWidth;
 
-  scrollBarWidth = offsetWidth - clientWidth;
+  scrollBarWidth = Math.round((offsetWidth * 10000 - clientWidth * 10000) / 100) / 100;
+
   document.body.removeChild(outer);
   return scrollBarWidth;
 }
@@ -757,6 +758,8 @@ var scrollContent = {
 
     var style = {};
     var width = isSupportGivenStyle('width', 'fit-content');
+    var gutter = getGutter();
+    var _class = ['__view'];
 
     if (width) {
       style.width = width;
@@ -774,10 +777,19 @@ var scrollContent = {
       style.paddingRight = parent.mergedOptions.rail.size; //props.ops.paddingValue;
     }
 
+    if (gutter) {
+      style['margin-bottom'] = -gutter + 'px';
+      style['border-right-width'] = 30 - gutter + 'px';
+      _class.push('__gutter');
+      if (!parent.bar.hBar.state.size) {
+        _class.push('__no-hbar');
+      }
+    }
+
     var propsData = {
       style: style,
       ref: 'scrollContent',
-      class: '__view'
+      class: _class
     };
 
     var _customContent = parent.$slots['scroll-content'];
@@ -827,14 +839,8 @@ function processPanelData(vm) {
   if (!gutter) {
     scrollPanelData.class.push('__hidebar');
   } else {
-    // hide system bar by use a negative value px
-    // gutter should be 0 when manually disable scrollingX #14
-    if (vm.bar.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style.marginRight = '-' + gutter + 'px';
-    }
-    if (vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
-    }
+    //__gutter
+    scrollPanelData.class.push('__gutter');
   }
 
   // clear legency styles of slide mode...
@@ -4056,18 +4062,16 @@ var slideMix = {
 var nativeMix = {
   methods: {
     updateNativeModeBarState: function updateNativeModeBarState() {
-      var vuescroll = this.$el;
-      var scrollPanel = this.scrollPanelElm;
+      var container = this.scrollPanelElm;
       var isPercent = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
-      var accurateSize = getAccurateSize(vuescroll, true);
-      var clientWidth = isPercent ? accurateSize.clientWidth : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
-      var clientHeight = isPercent ? accurateSize.clientHeight : this.vuescroll.state.height.slice(0, -2);
+      var clientWidth = isPercent ? container.clientWidth : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
+      var clientHeight = isPercent ? container.clientHeight : this.vuescroll.state.height.slice(0, -2);
 
-      var heightPercentage = clientHeight * 100 / scrollPanel.scrollHeight;
-      var widthPercentage = clientWidth * 100 / scrollPanel.scrollWidth;
+      var heightPercentage = clientHeight * 100 / container.scrollHeight;
+      var widthPercentage = clientWidth * 100 / container.scrollWidth;
 
-      this.bar.vBar.state.posValue = scrollPanel.scrollTop * 100 / clientHeight;
-      this.bar.hBar.state.posValue = scrollPanel.scrollLeft * 100 / clientWidth;
+      this.bar.vBar.state.posValue = container.scrollTop * 100 / clientHeight;
+      this.bar.hBar.state.posValue = container.scrollLeft * 100 / clientWidth;
 
       this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
       this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
