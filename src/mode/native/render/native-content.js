@@ -54,7 +54,10 @@ export default {
       style['margin-bottom'] = -gutter + 'px';
       style['border-right-width'] = 30 - gutter + 'px';
       _class.push('__gutter');
-      if (!parent.bar.hBar.state.size) {
+      if (
+        !parent.bar.hBar.state.size ||
+        !parent.mergedOptions.scrollPanel.scrollingX
+      ) {
         _class.push('__no-hbar');
       }
     }
