@@ -60,7 +60,7 @@ export default {
       ) {
         _class.push('__no-hbar');
       }
-    } else {
+    } /* istanbul ignore next */ else {
       _class.push('__no-hbar');
     }
 
