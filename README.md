@@ -47,6 +47,28 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
+### Import vuescroll separately
+
+#### If you only want slide mode, and you don't want native mode, you can import this way (You don't need to set mode in option, your option should only work in slide mode):
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll/dist/vuescroll-slide';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
+#### If you only want native mode, and you don't want slide mode, you can import this way (You don't need to set mode in option, your option should only work in native mode):
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll/dist/vuescroll-native';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
 ### Usage
 
 Wrap the content you need to scroll by `vuescroll`
@@ -72,28 +94,6 @@ Wrap the content you need to scroll by `vuescroll`
       }
     }
   </script>
-```
-
-### Import vuescroll separately
-
-#### import silde-mode file
-
-```javascript
-import Vue from 'vue';
-import vuescroll from 'vuescroll/dist/vuescroll-slide';
-import 'vuescroll/dist/vuescroll.css';
-
-Vue.use(vuescroll);
-```
-
-#### import native-mode file
-
-```javascript
-import Vue from 'vue';
-import vuescroll from 'vuescroll/dist/vuescroll-native';
-import 'vuescroll/dist/vuescroll.css';
-
-Vue.use(vuescroll);
 ```
 
 ## Guide List

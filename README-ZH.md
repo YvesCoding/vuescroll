@@ -47,6 +47,28 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
+### 分开地引入 vuescroll
+
+#### 如果你只想要 slide 模式，而不想要 native 模式，可以这么引用（不用在配置里面设置 mode，你的配置应该只在 slide 模式下工作）：
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll/dist/vuescroll-slide';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
+#### 如果你只想要 native 模式，而不想要 slide 模式，可以这么引用（不用在配置里面设置 mode，你的配置应该只在 native 模式下工作）：
+
+```javascript
+import Vue from 'vue';
+import vuescroll from 'vuescroll/dist/vuescroll-native';
+import 'vuescroll/dist/vuescroll.css';
+
+Vue.use(vuescroll);
+```
+
 ### 用法
 
 把你需要滚动的内容用`vuescroll`包裹起来
@@ -72,28 +94,6 @@ Vue.use(vuescroll);
       }
     }
   </script>
-```
-
-### 按需引入 vuescroll
-
-#### 引入 silde 模式的文件（配置跟 slide 完全一样，具体请到官网查看）
-
-```javascript
-import Vue from 'vue';
-import vuescroll from 'vuescroll/dist/vuescroll-slide';
-import 'vuescroll/dist/vuescroll.css';
-
-Vue.use(vuescroll);
-```
-
-#### 引入 native 模式的文件（配置跟 native 完全一样，具体请到官网查看）
-
-```javascript
-import Vue from 'vue';
-import vuescroll from 'vuescroll/dist/vuescroll-native';
-import 'vuescroll/dist/vuescroll.css';
-
-Vue.use(vuescroll);
 ```
 
 ## 指南列表
