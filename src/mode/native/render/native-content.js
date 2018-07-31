@@ -60,6 +60,8 @@ export default {
       ) {
         _class.push('__no-hbar');
       }
+    } else {
+      _class.push('__no-hbar');
     }
 
     const propsData = {

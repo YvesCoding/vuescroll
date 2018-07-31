@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.7.1-rc.3
+    * Vuescroll v4.7.1-rc.4
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -784,6 +784,8 @@ var scrollContent = {
       if (!parent.bar.hBar.state.size || !parent.mergedOptions.scrollPanel.scrollingX) {
         _class.push('__no-hbar');
       }
+    } else {
+      _class.push('__no-hbar');
     }
 
     var propsData = {
@@ -4242,7 +4244,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.7.1-rc.3',
+  version: '4.7.1-rc.4',
   refreshAll: refreshAll
 };
 
