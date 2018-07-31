@@ -74,7 +74,7 @@ Wrap the content you need to scroll by `vuescroll`
   </script>
 ```
 
-### import vuescroll according to your needs
+### Import vuescroll separately
 
 #### import silde-mode file
 
