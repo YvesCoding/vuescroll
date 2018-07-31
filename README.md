@@ -19,7 +19,7 @@ A powerful, customizable scrollbar plugin based on Vue.js. - [vuescrolljs.yvesco
 </p>
 
 <p align="center">
-  <a href="https://vuescroll-issue-list-demo-zdizhghthq.now.sh">Online Demo(It is recommended to use mobile)</a>
+  <a href="https://vuescroll-issue-list-demo-zdizhghthq.now.sh">Online Demo(Recommend to use mobile)</a>
 </p>
 
 ## Features
