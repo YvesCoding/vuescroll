@@ -78,6 +78,7 @@ export function _init(opts = {}) {
     Vue,
     components = {},
     config = {},
+    ops = {},
     validator
   } = opts;
 
@@ -89,12 +90,12 @@ export function _init(opts = {}) {
 
   // Init render
   let vsCtor = withBase(render, Vue, components, opts);
-
   // Init Mix
   initMix(vsCtor, opts.mixins);
-
   // Init Config
   extendOpts(config, validator);
+  // Inject global config
+  Vue.prototype.$vuescrollConfig = ops;
 }
 
 function initMix(ctor, mix) {

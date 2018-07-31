@@ -1835,6 +1835,8 @@ function _init() {
       components = _opts$components === undefined ? {} : _opts$components,
       _opts$config = opts.config,
       config = _opts$config === undefined ? {} : _opts$config,
+      _opts$ops = opts.ops,
+      ops = _opts$ops === undefined ? {} : _opts$ops,
       validator = opts.validator;
 
   // Init component
@@ -1846,12 +1848,12 @@ function _init() {
 
   // Init render
   var vsCtor = withBase(render, Vue$$1, components, opts);
-
   // Init Mix
   initMix(vsCtor, opts.mixins);
-
   // Init Config
   extendOpts(config, validator);
+  // Inject global config
+  Vue$$1.prototype.$vuescrollConfig = ops;
 }
 
 function initMix(ctor, mix) {
