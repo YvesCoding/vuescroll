@@ -778,11 +778,12 @@ var scrollContent = {
     }
 
     if (gutter) {
-      style['margin-bottom'] = -gutter + 'px';
-      style['border-right-width'] = 30 - gutter + 'px';
+      var noHbar = !parent.bar.hBar.state.size || !parent.mergedOptions.scrollPanel.scrollingX;
       _class.push('__gutter');
-      if (!parent.bar.hBar.state.size || !parent.mergedOptions.scrollPanel.scrollingX) {
+      if (noHbar) {
         _class.push('__no-hbar');
+      } else {
+        // style['border-right-width'] = 30 - gutter + 'px';
       }
     } else {
       _class.push('__no-hbar');
@@ -843,6 +844,9 @@ function processPanelData(vm) {
   } else {
     //__gutter
     scrollPanelData.class.push('__gutter');
+    if (vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
+      scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
+    }
   }
 
   // clear legency styles of slide mode...

@@ -37,6 +37,9 @@ export function processPanelData(vm) {
   } else {
     //__gutter
     scrollPanelData.class.push('__gutter');
+    if (vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
+      scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
+    }
   }
 
   // clear legency styles of slide mode...
