@@ -61,10 +61,15 @@ export default {
         parent.mergedOptions.scrollPanel.scrollingX;
 
       if (noHbar) {
-        if (isVbar) {
-          style['min-width'] = `calc(100% - ${BORDER_RIGHT_WIDTH - gutter}px)`;
+        if (!parent.mergedOptions.scrollPanel.scrollingX) {
+          _class.push('__no-hbar');
         } else {
-          style['min-width'] = `calc(100% - ${BORDER_RIGHT_WIDTH}px)`;
+          if (isVbar) {
+            style['min-width'] = `calc(100% - ${BORDER_RIGHT_WIDTH -
+              gutter}px)`;
+          } else {
+            style['min-width'] = `calc(100% - ${BORDER_RIGHT_WIDTH}px)`;
+          }
         }
       }
 
