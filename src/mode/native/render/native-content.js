@@ -57,10 +57,14 @@ export default {
       _class.push('__gutter');
       if (noHbar) {
         _class.push('__no-hbar');
-      } else {
-        // style['border-right-width'] = 30 - gutter + 'px';
       }
-    } else {
+      if (
+        parent.bar.vBar.state.size &&
+        parent.mergedOptions.scrollPanel.scrollingX
+      ) {
+        style['border-right-width'] = 30 - gutter + 'px';
+      }
+    } /* istanbul ignore next */ else {
       _class.push('__no-hbar');
     }
 

@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.7.1-rc.5
+    * Vuescroll v4.7.1-rc.6
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -782,12 +782,13 @@ var scrollContent = {
       _class.push('__gutter');
       if (noHbar) {
         _class.push('__no-hbar');
-      } else {
-        // style['border-right-width'] = 30 - gutter + 'px';
       }
-    } else {
-      _class.push('__no-hbar');
-    }
+      if (parent.bar.vBar.state.size && parent.mergedOptions.scrollPanel.scrollingX) {
+        style['border-right-width'] = 30 - gutter + 'px';
+      }
+    } /* istanbul ignore next */else {
+        _class.push('__no-hbar');
+      }
 
     var propsData = {
       style: style,
@@ -4248,7 +4249,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.7.1-rc.5',
+  version: '4.7.1-rc.6',
   refreshAll: refreshAll
 };
 
