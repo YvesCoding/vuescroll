@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.7.1-rc.6
+    * Vuescroll v4.7.1-rc.5
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -1173,6 +1173,7 @@ core.effect.Animate = {
 var NOOP = function NOOP() {};
 // some small changes.
 var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
+// border width
 
 /*
  * Scroller
@@ -3848,7 +3849,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.7.1-rc.6',
+  version: '4.7.1-rc.5',
   refreshAll: refreshAll
 };
 

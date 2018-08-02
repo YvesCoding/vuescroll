@@ -3,7 +3,7 @@ import {
   insertChildrenIntoSlot,
   getGutter
 } from 'shared/util';
-
+import { BORDER_RIGHT_WIDTH } from 'shared/constants';
 /**
  * create scroll content
  *
@@ -55,14 +55,21 @@ export default {
         !parent.bar.hBar.state.size ||
         !parent.mergedOptions.scrollPanel.scrollingX;
       _class.push('__gutter');
-      if (noHbar) {
-        _class.push('__no-hbar');
-      }
-      if (
+
+      const isVbar =
         parent.bar.vBar.state.size &&
-        parent.mergedOptions.scrollPanel.scrollingX
-      ) {
-        style['border-right-width'] = 30 - gutter + 'px';
+        parent.mergedOptions.scrollPanel.scrollingX;
+
+      if (noHbar) {
+        if (isVbar) {
+          style['min-width'] = `calc(100% - ${BORDER_RIGHT_WIDTH - gutter}px)`;
+        } else {
+          style['min-width'] = `calc(100% - ${BORDER_RIGHT_WIDTH}px)`;
+        }
+      }
+
+      if (isVbar) {
+        style['border-right-width'] = BORDER_RIGHT_WIDTH - gutter + 'px';
       }
     } /* istanbul ignore next */ else {
       _class.push('__no-hbar');

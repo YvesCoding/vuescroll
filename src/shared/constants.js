@@ -9,3 +9,5 @@ export const smallChangeArray = [
   'mergedOptions.rail',
   'mergedOptions.bar'
 ];
+// border width
+export const BORDER_RIGHT_WIDTH = 30;

@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.7.1-rc.6
+    * Vuescroll v4.7.1-rc.8
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -725,6 +725,15 @@ function createBar(h, vm, type) {
   return h('bar', barData);
 }
 
+// all modes
+var modes = ['slide', 'native'];
+// do nothing
+var NOOP = function NOOP() {};
+// some small changes.
+var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
+// border width
+var BORDER_RIGHT_WIDTH = 30;
+
 /**
  * create scroll content
  *
@@ -780,11 +789,19 @@ var scrollContent = {
     if (gutter) {
       var noHbar = !parent.bar.hBar.state.size || !parent.mergedOptions.scrollPanel.scrollingX;
       _class.push('__gutter');
+
+      var isVbar = parent.bar.vBar.state.size && parent.mergedOptions.scrollPanel.scrollingX;
+
       if (noHbar) {
-        _class.push('__no-hbar');
+        if (isVbar) {
+          style['min-width'] = 'calc(100% - ' + (BORDER_RIGHT_WIDTH - gutter) + 'px)';
+        } else {
+          style['min-width'] = 'calc(100% - ' + BORDER_RIGHT_WIDTH + 'px)';
+        }
       }
-      if (parent.bar.vBar.state.size && parent.mergedOptions.scrollPanel.scrollingX) {
-        style['border-right-width'] = 30 - gutter + 'px';
+
+      if (isVbar) {
+        style['border-right-width'] = BORDER_RIGHT_WIDTH - gutter + 'px';
       }
     } /* istanbul ignore next */else {
         _class.push('__no-hbar');
@@ -1497,13 +1514,6 @@ var hackLifecycle = {
     this.renderError = validateOptions(this.mergedOptions);
   }
 };
-
-// all modes
-var modes = ['slide', 'native'];
-// do nothing
-var NOOP = function NOOP() {};
-// some small changes.
-var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
 
 // detect content size change
 function installResizeDetection(element, callback) {
@@ -4249,7 +4259,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.7.1-rc.6',
+  version: '4.7.1-rc.8',
   refreshAll: refreshAll
 };
 

@@ -36,6 +36,9 @@
       border-right: 30px solid transparent;
       box-sizing: content-box;
     }
+    &.__no-hbar {
+      min-width: 100% !important;
+    }
   }
 
   .__rail-is-vertical,
