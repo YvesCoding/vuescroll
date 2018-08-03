@@ -24,14 +24,22 @@
 
 ## 特点
 
-- 支持 通过改变[mode](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#vuescroll)来支持 Pc 和移动端
-- 支持通过改变[easing](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#bar)来平滑地滚动
-- 支持[自定义滚动条](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#bar)
-- 支持[自定义滚动容器](http://vuescrolljs.yvescoding.org/zh/guide/slot.html#customize-container-panel-content)
-- 支持[下拉刷新和上推加载](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#explanation)
+### 基本特点
+
+- 支持[自定义滚动条](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#bar)，包括可以设置滚动条/轨道的`颜色`、`透明度`。可以设置滚动条`是否保持显示`。
+- 支持平滑滚动，可以通过设置[easing](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#bar)来获得不同的滚动动画。
+- 支持自动检测内容是否发生变化，可以查看这个[demo](http://vuescrolljs.yvescoding.org/zh/demo/#_3-%E6%A3%80%E6%B5%8B%E5%86%85%E5%AE%B9%E5%8F%91%E7%94%9F%E5%8F%98%E5%8A%A8)。
+
+### 只在 slide 模式下有效的特点
+
+- 支持[下拉刷新和上推加载](http://vuescrolljs.yvescoding.org/zh/guide/configuration.html#pullrefresh)，具体可以查看这个[demo](http://vuescrolljs.yvescoding.org/zh/demo/#vuescroll-%E6%94%AF%E6%8C%81%E4%B8%8B%E6%9D%A5%E5%88%B7%E6%96%B0%E5%92%8C%E4%B8%8A%E6%8E%A8%E5%8A%A0%E8%BD%BD-%E5%9C%A8%E4%BD%A0%E6%83%B3%E5%B1%95%E7%A4%BA%E4%B8%80%E4%B8%AA%E5%88%97%E8%A1%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%9A%84%E6%97%B6%E5%80%99%E5%BE%88%E6%9C%89%E7%94%A8%E3%80%82)和这个 SSR 版本的[demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/)。
+- 支持截断配置,每次滚动固定的距离。可以查看这个 [demo](http://vuescrolljs.yvescoding.org/zh/demo/#_2-%E6%97%B6%E9%97%B4%E9%80%89%E6%8B%A9%E5%99%A8)
+- 支持分页。可以查看这个 [demo](http://vuescrolljs.yvescoding.org/zh/demo/#_1-%E8%BD%AE%E6%92%AD%E5%9B%BE)
+
+### 其他特点
+
 - 支持 [typescript](http://vuescrolljs.yvescoding.org/zh/guide/typescript.html)
-- 支持 SSR
-- 还有[更多](http://vuescrolljs.yvescoding.org/zh/guide/#features)！
+- 支持 SSR, 可以查看这个 [demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/)
 
 ## 快速开始
 
@@ -47,9 +55,9 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
-### 分开地引入 vuescroll
+### 为了去掉不会用到的部分，可以分开地引入 vuescroll
 
-#### 如果你只想要 slide 模式，而不想要 native 模式，可以这么引用（不用在配置里面设置 mode，你的配置应该只在 slide 模式下工作）：
+#### 只引入 slide 模式的特性
 
 ```javascript
 import Vue from 'vue';
@@ -59,7 +67,7 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
-#### 如果你只想要 native 模式，而不想要 slide 模式，可以这么引用（不用在配置里面设置 mode，你的配置应该只在 native 模式下工作）：
+#### 只引入 native 模式的特性：
 
 ```javascript
 import Vue from 'vue';
@@ -71,7 +79,7 @@ Vue.use(vuescroll);
 
 ### 用法
 
-把你需要滚动的内容用`vuescroll`包裹起来
+把你需要滚动的内容用`vuescroll`包裹起来即可
 
 ```html
   <template>

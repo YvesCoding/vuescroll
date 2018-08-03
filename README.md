@@ -24,14 +24,22 @@ A powerful, customizable scrollbar plugin specially designed for Vue.js - [vuesc
 
 ## Features
 
-- Support mobile and pc by changing [mode](http://vuescrolljs.yvescoding.org/guide/configuration.html#vuescroll)
-- Support smooth scroll by choosing [easing](http://vuescrolljs.yvescoding.org/guide/configuration.html#detailed-options-2)
-- Support [customize scrollbar](http://vuescrolljs.yvescoding.org/guide/configuration.html#bar)
-- Support [customize scroll container](http://vuescrolljs.yvescoding.org/guide/slot.html#customize-container-panel-content)
-- Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#explanation)
+### Basic Features
+
+- Support [customize scrollbar](http://vuescrolljs.yvescoding.org/guide/configuration.html#bar), including setting rail/bar's `backgroundColor` , `opacity`,and setting bar's `keepShow or not`.
+- Support smoothly scroll, You can set [easing](http://vuescrolljs.yvescoding.org/guide/configuration.html#detailed-options-2) to get different scroll animations.
+- Support detecting the size of scrolled content, You can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_3-detect-size-changes).
+
+### Features only for slide mode
+
+- Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#pullrefresh), for detail, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_4-pull-refresh-or-push-load-supported), and this [demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/) of SSR version.
+- Support snap config, scroll same distance at each time, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_2-timepicker)
+- Support paging. You can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_1-carousel)
+
+### Other features
+
 - Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html)
-- Support SSR
-- And [more](http://vuescrolljs.yvescoding.org/guide/#features) !
+- Support SSR, you can checkout this [demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/)
 
 ## Quick Start
 
@@ -47,9 +55,9 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
-### Import vuescroll separately
+### In order to remove parts that are not used, you can import vuescroll separately
 
-#### If you only want slide mode, and you don't want native mode, you can import this way (You don't need to set mode in option, your option should only work in slide mode):
+#### Only import the features of slide mode:
 
 ```javascript
 import Vue from 'vue';
@@ -59,7 +67,7 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
-#### If you only want native mode, and you don't want slide mode, you can import this way (You don't need to set mode in option, your option should only work in native mode):
+#### Only import the features of native mode:
 
 ```javascript
 import Vue from 'vue';
