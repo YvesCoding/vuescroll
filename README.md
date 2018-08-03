@@ -27,8 +27,8 @@ A powerful, customizable scrollbar plugin specially designed for Vue.js - [vuesc
 ### Basic Features
 
 - Support [customize scrollbar](http://vuescrolljs.yvescoding.org/guide/configuration.html#bar), including setting rail/bar's `backgroundColor` , `opacity`,and setting bar's `keepShow or not`.
-- Support smoothly scroll, You can set [easing](http://vuescrolljs.yvescoding.org/guide/configuration.html#detailed-options-2) to get different scroll animations.
-- Support detecting the size of scrolled content, You can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_3-detect-size-changes).
+- Support smoothly scroll, you can set [easing](http://vuescrolljs.yvescoding.org/guide/configuration.html#detailed-options-2) to get different scroll animations.
+- Support detecting the size of scrolled content, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_3-detect-size-changes).
 
 ### Features only for slide mode
 
