@@ -1,5 +1,3 @@
-import { CssSyntaxError } from 'postcss';
-
 interface Tips {
   deactive?: string;
   active?: string;

@@ -20,6 +20,8 @@ function build(builds) {
         built++;
         if (built < total) {
           next();
+        } else {
+          copyOtherFiles();
         }
       })
       .catch(logError);
@@ -65,6 +67,19 @@ function logError(e) {
 
 function blue(str) {
   return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m';
+}
+
+const resolve = dir => path.resolve(__dirname, '../', dir);
+const copyFilesArr = [
+  resolve('types/vuescroll-native.d.ts'),
+  resolve('types/vuescroll-slide.d.ts')
+];
+function copyOtherFiles() {
+  copyFilesArr.forEach(f => {
+    const file = fs.readFileSync(f, 'utf8');
+    report(f, file);
+    fs.writeFileSync(resolve(`dist/${path.basename(f)}`), file, 'utf8');
+  });
 }
 
 module.exports = {
