@@ -1,3 +1,34 @@
+<a name="4.7.1-rc.10"></a>
+## [4.7.1-rc.10](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.7.1-rc.10) (2018-08-05)
+
+
+### Bug Fixes
+
+* add __no-hbar when scrollingX is false ([8dca8e3](https://github.com/YvesCoding/vuescroll/commit/8dca8e3))
+* Add children of slot-panel to render list ([df417ae](https://github.com/YvesCoding/vuescroll/commit/df417ae))
+* Cannot hide native scrollbar in FireFox ([208f759](https://github.com/YvesCoding/vuescroll/commit/208f759))
+* files field in  package.json ([ebe101f](https://github.com/YvesCoding/vuescroll/commit/ebe101f))
+* Flinker when child size equals parent size ([41f33b9](https://github.com/YvesCoding/vuescroll/commit/41f33b9))
+* Get gutter more accurately ([f3392f6](https://github.com/YvesCoding/vuescroll/commit/f3392f6))
+* Remove import Vue in index.js, move Vue to peerDep ([60ef2fc](https://github.com/YvesCoding/vuescroll/commit/60ef2fc)), closes [#45](https://github.com/YvesCoding/vuescroll/issues/45)
+
+
+### Features
+
+* **api:** Add scrollingTimes and clearScrollingTimes to control the times you have scrolled ([0b7b7e2](https://github.com/YvesCoding/vuescroll/commit/0b7b7e2))
+* **bar:** Merge configurations vBar, hBar, vRail, hRail ([dc40aa9](https://github.com/YvesCoding/vuescroll/commit/dc40aa9))
+* **config:** Add onlyShowBarOnScroll to show bar only when scrolling ([e8c3ffe](https://github.com/YvesCoding/vuescroll/commit/e8c3ffe))
+* Add typescript for separate modes ([d2a1adf](https://github.com/YvesCoding/vuescroll/commit/d2a1adf))
+* Can pass global config via Vue.use ([2cd8b12](https://github.com/YvesCoding/vuescroll/commit/2cd8b12))
+* Support SSR ([12f5158](https://github.com/YvesCoding/vuescroll/commit/12f5158)), closes [#42](https://github.com/YvesCoding/vuescroll/issues/42)
+
+
+### BREAKING CHANGES
+
+* **bar:** The vBar, hBar,vRail, hRail are not avilable now. Use rail, bar that works for both vertical and horizontal.
+
+
+
 <a name="4.7.0"></a>
 
 # [4.7.0](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.7.0) (2018-07-23)
