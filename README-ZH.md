@@ -10,7 +10,7 @@
 
 [English Version](https://github.com/YvesCoding/vuescroll/blob/dev/README.md) | 中文版
 
-一个可定制的， 功能强大专为 Vue.js 设计的滚动条插件 - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
+一个可定制的， 功能强大， 多模式的基于 Vue.js 设计的滚动条插件 - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/zh)
 
 ## Demo
 
