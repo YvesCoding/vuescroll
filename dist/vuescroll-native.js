@@ -111,27 +111,7 @@ function defineReactive(target, key, source, souceKey) {
   });
 }
 
-function getAccurateSize(dom) {
-  var vague = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  var clientWidth = void 0;
-  var clientHeight = void 0;
-  try {
-    clientWidth = +window.getComputedStyle(dom).width.slice(0, -2);
-    clientHeight = +window.getComputedStyle(dom).height.slice(0, -2);
-  } catch (error) /* istanbul ignore next */{
-    clientWidth = dom.clientWidth;
-    clientHeight = dom.clientHeight;
-  }
-  if (vague) {
-    clientHeight = Math.round(clientHeight);
-    clientWidth = Math.round(clientWidth);
-  }
-  return {
-    clientHeight: clientHeight,
-    clientWidth: clientWidth
-  };
-}
 
 var scrollBarWidth = void 0;
 function getGutter() {
@@ -146,16 +126,11 @@ function getGutter() {
   outer.style.overflow = 'scroll';
   document.body.appendChild(outer);
 
-  var offsetWidth = outer.offsetWidth;
-  /**
-   * We don't use clientWith directly because we want to make
-   * the gutter more accurate, see issues (#48)
-   */
+  var offsetWidth = outer.offsetWidth,
+      clientWidth = outer.clientWidth;
 
-  var _getAccurateSize = getAccurateSize(outer),
-      clientWidth = _getAccurateSize.clientWidth;
 
-  scrollBarWidth = Math.round((offsetWidth * 10000 - clientWidth * 10000) / 100) / 100;
+  scrollBarWidth = offsetWidth - clientWidth;
 
   document.body.removeChild(outer);
   return scrollBarWidth;

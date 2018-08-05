@@ -78,15 +78,9 @@ export function getGutter() {
   outer.style.overflow = 'scroll';
   document.body.appendChild(outer);
 
-  const { offsetWidth } = outer;
-  /**
-   * We don't use clientWith directly because we want to make
-   * the gutter more accurate, see issues (#48)
-   */
-  let { clientWidth } = getAccurateSize(outer);
+  const { offsetWidth, clientWidth } = outer;
 
-  scrollBarWidth =
-    Math.round((offsetWidth * 10000 - clientWidth * 10000) / 100) / 100;
+  scrollBarWidth = offsetWidth - clientWidth;
 
   document.body.removeChild(outer);
   return scrollBarWidth;
