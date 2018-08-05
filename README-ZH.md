@@ -125,6 +125,12 @@ Vue.use(vuescroll);
 
 请看[CONTRIBUTING](.github/CONTRIBUTING.md).
 
+## 交流群, 微信扫一扫进群
+
+<p align="center">
+    <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400"  alt="Communication QR code"/>
+</p>
+
 ## 许可证
 
 **MIT**
