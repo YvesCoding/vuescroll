@@ -32,8 +32,8 @@ describe('scroll-panel', () => {
         data: {
           ops: {
             scrollPanel: {
-              initialScrollY: 10,
-              initialScrollX: '20%',
+              initialScrollY: '20%',
+              initialScrollX: 10,
               speed: 1000
             }
           }
@@ -44,9 +44,9 @@ describe('scroll-panel', () => {
     // time = 1000ms spwed + 100ms error
     startSchedule(1100).then(() => {
       const scrollPanel = vm.$el.querySelector('.__panel');
-      const { scrollTop, scrollLeft, scrollWidth } = scrollPanel;
-      expect(scrollTop).toBe(10);
-      expect(scrollLeft).toBe(Math.floor(scrollWidth * 0.2));
+      const { scrollTop, scrollLeft, scrollHeight, clientHeight } = scrollPanel;
+      expect(scrollLeft).toBe(10);
+      expect(scrollTop).toBe(Math.floor((scrollHeight - clientHeight) * 0.2));
       done();
     });
   });
