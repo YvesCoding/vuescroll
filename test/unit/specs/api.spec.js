@@ -417,4 +417,45 @@ describe('api', () => {
         done();
       });
   });
+
+  // ScrollTop should be 50 #51
+  it('scrollTop should be 50', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 200,
+            h: 200
+          },
+          {
+            w: 100,
+            h: 100
+          }
+        ),
+        data: {
+          ops: {}
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+    // scroll Y axis
+
+    startSchedule()
+      .then(() => {
+        vs.scrollTo(
+          {
+            y: '50%'
+          },
+          true
+        );
+      })
+      .wait(350)
+      .then(() => {
+        const scrollPanel = vm.$el.querySelector('.__panel');
+        const { scrollTop } = scrollPanel;
+        expect(Math.ceil(scrollTop)).toBe(50);
+        done();
+      });
+  });
 });

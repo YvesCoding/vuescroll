@@ -32,12 +32,18 @@ export default {
       if (typeof x === 'undefined') {
         x = this.vuescroll.state.internalScrollLeft || 0;
       } else {
-        x = getNumericValue(x, this.scrollPanelElm.scrollWidth);
+        x = getNumericValue(
+          x,
+          this.scrollPanelElm.scrollWidth - this.$el.clientWidth
+        );
       }
       if (typeof y === 'undefined') {
         y = this.vuescroll.state.internalScrollTop || 0;
       } else {
-        y = getNumericValue(y, this.scrollPanelElm.scrollHeight);
+        y = getNumericValue(
+          y,
+          this.scrollPanelElm.scrollHeight - this.$el.clientHeight
+        );
       }
       this.internalScrollTo(x, y, animate, force);
     },
@@ -49,13 +55,13 @@ export default {
       if (dx) {
         internalScrollLeft += getNumericValue(
           dx,
-          this.scrollPanelElm.scrollWidth
+          this.scrollPanelElm.scrollWidth - this.$el.clientWidth
         );
       }
       if (dy) {
         internalScrollTop += getNumericValue(
           dy,
-          this.scrollPanelElm.scrollHeight
+          this.scrollPanelElm.scrollHeight - this.$el.clientHeight
         );
       }
       this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
