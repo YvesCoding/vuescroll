@@ -720,15 +720,6 @@ function createBar(h, vm, type) {
   return h('bar', barData);
 }
 
-// all modes
-var modes = ['slide', 'native'];
-// do nothing
-var NOOP = function NOOP() {};
-// some small changes.
-var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
-// border width
-var BORDER_RIGHT_WIDTH = 30;
-
 /**
  * create scroll content
  *
@@ -762,8 +753,6 @@ var scrollContent = {
 
     var style = {};
     var width = isSupportGivenStyle('width', 'fit-content');
-    var gutter = getGutter();
-    var _class = ['__view'];
 
     if (width) {
       style.width = width;
@@ -781,35 +770,10 @@ var scrollContent = {
       style.paddingRight = parent.mergedOptions.rail.size; //props.ops.paddingValue;
     }
 
-    if (gutter) {
-      var noHbar = !parent.bar.hBar.state.size || !parent.mergedOptions.scrollPanel.scrollingX;
-      _class.push('__gutter');
-
-      var isVbar = parent.bar.vBar.state.size && parent.mergedOptions.scrollPanel.scrollingX;
-
-      if (noHbar) {
-        if (!parent.mergedOptions.scrollPanel.scrollingX) {
-          _class.push('__no-hbar');
-        } else {
-          if (isVbar) {
-            style['min-width'] = 'calc(100% - ' + (BORDER_RIGHT_WIDTH - gutter) + 'px)';
-          } else {
-            style['min-width'] = 'calc(100% - ' + BORDER_RIGHT_WIDTH + 'px)';
-          }
-        }
-      }
-
-      if (isVbar) {
-        style['border-right-width'] = BORDER_RIGHT_WIDTH - gutter + 'px';
-      }
-    } /* istanbul ignore next */else {
-        _class.push('__no-hbar');
-      }
-
     var propsData = {
       style: style,
       ref: 'scrollContent',
-      class: _class
+      class: '__view'
     };
 
     var _customContent = parent.$slots['scroll-content'];
@@ -838,7 +802,6 @@ function processPanelData(vm) {
       ops: vm.mergedOptions.scrollPanel
     }
   };
-
   scrollPanelData.class.push('__native');
   // dynamic set overflow scroll
   // feat: #11
@@ -859,8 +822,11 @@ function processPanelData(vm) {
   if (!gutter) {
     scrollPanelData.class.push('__hidebar');
   } else {
-    //__gutter
-    scrollPanelData.class.push('__gutter');
+    // hide system bar by use a negative value px
+    // gutter should be 0 when manually disable scrollingX #14
+    if (vm.bar.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
+      scrollPanelData.style.marginRight = '-' + gutter + 'px';
+    }
     if (vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
       scrollPanelData.style.height = 'calc(100% + ' + gutter + 'px)';
     }
@@ -1513,6 +1479,13 @@ var hackLifecycle = {
     this.renderError = validateOptions(this.mergedOptions);
   }
 };
+
+// all modes
+var modes = ['slide', 'native'];
+// do nothing
+var NOOP = function NOOP() {};
+// some small changes.
+var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
 
 // detect content size change
 function installResizeDetection(element, callback) {

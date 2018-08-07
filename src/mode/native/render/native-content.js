@@ -1,9 +1,4 @@
-import {
-  isSupportGivenStyle,
-  insertChildrenIntoSlot,
-  getGutter
-} from 'shared/util';
-import { BORDER_RIGHT_WIDTH } from 'shared/constants';
+import { isSupportGivenStyle, insertChildrenIntoSlot } from 'shared/util';
 /**
  * create scroll content
  *
@@ -31,8 +26,6 @@ export default {
   render(h, { props, slots, parent }) {
     let style = {};
     let width = isSupportGivenStyle('width', 'fit-content');
-    let gutter = getGutter();
-    const _class = ['__view'];
 
     if (width) {
       style.width = width;
@@ -50,40 +43,10 @@ export default {
       style.paddingRight = parent.mergedOptions.rail.size; //props.ops.paddingValue;
     }
 
-    if (gutter) {
-      const noHbar =
-        !parent.bar.hBar.state.size ||
-        !parent.mergedOptions.scrollPanel.scrollingX;
-      _class.push('__gutter');
-
-      const isVbar =
-        parent.bar.vBar.state.size &&
-        parent.mergedOptions.scrollPanel.scrollingX;
-
-      if (noHbar) {
-        if (!parent.mergedOptions.scrollPanel.scrollingX) {
-          _class.push('__no-hbar');
-        } else {
-          if (isVbar) {
-            style['min-width'] = `calc(100% - ${BORDER_RIGHT_WIDTH -
-              gutter}px)`;
-          } else {
-            style['min-width'] = `calc(100% - ${BORDER_RIGHT_WIDTH}px)`;
-          }
-        }
-      }
-
-      if (isVbar) {
-        style['border-right-width'] = BORDER_RIGHT_WIDTH - gutter + 'px';
-      }
-    } /* istanbul ignore next */ else {
-      _class.push('__no-hbar');
-    }
-
     const propsData = {
-      style,
+      style: style,
       ref: 'scrollContent',
-      class: _class
+      class: '__view'
     };
 
     const _customContent = parent.$slots['scroll-content'];

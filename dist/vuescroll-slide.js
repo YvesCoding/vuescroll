@@ -1173,7 +1173,6 @@ core.effect.Animate = {
 var NOOP = function NOOP() {};
 // some small changes.
 var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
-// border width
 
 /*
  * Scroller

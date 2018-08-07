@@ -1,9 +1,3 @@
-/*
-    * Vuescroll v4.6.10
-    * (c) 2018-2018 Yi(Yves) Wang
-    * Released under the MIT License
-    * Github Link: https://github.com/YvesCoding/vuescroll
-    */
 .__vuescroll {
   position: relative;
   overflow: hidden;
@@ -17,9 +11,6 @@
     }
     &.__native {
       height: 100%;
-      &.__gutter {
-        margin-right: -30px;
-      }
     }
     &.__slide {
       transform-origin: left top 0px;
@@ -27,18 +18,17 @@
       min-width: 100%;
       min-height: 100%;
     }
+    &.__pure-native {
+      width: 100%;
+      height: 100%;
+    }
   }
 
   .__view {
     position: relative;
     box-sizing: border-box;
-    &.__gutter {
-      border-right: 30px solid transparent;
-      box-sizing: content-box;
-    }
-    &.__no-hbar {
-      min-width: 100% !important;
-    }
+    min-width: 100%;
+    min-height: 100%;
   }
 
   .__rail-is-vertical,
