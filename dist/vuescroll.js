@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.7.1-rc.11
+    * Vuescroll v4.7.2
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -946,11 +946,13 @@ function createPanelChildren$1(h, vm) {
 function createTipDom(h, vm, type) {
   var stage = vm.vuescroll.state[type + 'Stage'];
   var dom = null;
+  // If has user defined dom, just return it.
   /* istanbul ignore if */
   if (dom = vm.$slots[type + '-' + stage]) {
     return dom[0];
   }
   switch (stage) {
+    // The dom will show at deactive stage
     case 'deactive':
       dom = h(
         'svg',
@@ -978,48 +980,16 @@ function createTipDom(h, vm, type) {
       );
       break;
     case 'start':
-      // IE and edge seem not supporting  tag - `animateTransform`
-      // Just return null.
-      /* istanbul ignore if */
-      if (isIE()) {
-        dom = null;
-        break;
-      }
       dom = h(
         'svg',
         {
-          attrs: {
-            version: '1.1',
-            id: 'loader-1',
-            xmlns: 'http://www.w3.org/2000/svg',
-            xmlnsXlink: 'http://www.w3.org/1999/xlink',
-            x: '0px',
-            y: '0px',
-            viewBox: '0 0 50 50',
-
-            xmlSpace: 'preserve'
-          },
-          style: 'enable-background:new 0 0 50 50;' },
-        [h(
-          'path',
-          {
-            attrs: {
-              fill: '#000',
-              d: 'M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z'
-            }
-          },
-          [h('animateTransform', {
-            attrs: {
-              attributeType: 'xml',
-              attributeName: 'transform',
-              type: 'rotate',
-              from: '0 25 25',
-              to: '360 25 25',
-              dur: '0.6s',
-              repeatCount: 'indefinite'
-            }
-          })]
-        )]
+          attrs: { viewBox: '0 0 50 50' },
+          'class': 'start' },
+        [h('circle', {
+          attrs: { stroke: 'true', cx: '25', cy: '25', r: '20' },
+          'class': 'bg-path' }), h('circle', {
+          attrs: { cx: '25', cy: '25', r: '20' },
+          'class': 'active-path' })]
       );
       break;
     case 'active':
@@ -1382,7 +1352,7 @@ var baseConfig = {
     /** Whether to keep show or not, default -> false */
     keepShow: false,
     /** Bar's background , default -> #00a650 */
-    background: '#c1c1c1',
+    background: 'rgb(3, 185, 118)',
     /** Bar's opacity, default -> 1  */
     opacity: 1,
     /** Styles when you hover scrollbar, it will merge into the current style */
@@ -4231,7 +4201,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.7.1-rc.11',
+  version: '4.7.2',
   refreshAll: refreshAll
 };
 

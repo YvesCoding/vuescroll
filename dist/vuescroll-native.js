@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.7.1-rc.11
+    * Vuescroll v4.7.2
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -1332,7 +1332,7 @@ var baseConfig = {
     /** Whether to keep show or not, default -> false */
     keepShow: false,
     /** Bar's background , default -> #00a650 */
-    background: '#c1c1c1',
+    background: 'rgb(3, 185, 118)',
     /** Bar's opacity, default -> 1  */
     opacity: 1,
     /** Styles when you hover scrollbar, it will merge into the current style */
@@ -1911,7 +1911,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.7.1-rc.11',
+  version: '4.7.2',
   refreshAll: refreshAll
 };
 
