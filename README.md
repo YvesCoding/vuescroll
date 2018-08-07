@@ -24,18 +24,18 @@
 
 - Support [customize scrollbar](http://vuescrolljs.yvescoding.org/guide/configuration.html#bar), including setting rail/bar's `backgroundColor` , `opacity`,and setting bar's `keepShow or not`.
 - Support smoothly scroll, you can set [easing](http://vuescrolljs.yvescoding.org/guide/configuration.html#detailed-options-2) to get different scroll animations.
-- Support detecting the size of scrolled content, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_3-detect-size-changes).
+- Support [detecting the size change](http://vuescrolljs.yvescoding.org/demo/#_3-detect-size-changes) of scrolled content.
 
 ### Features only for slide mode
 
 - Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#pullrefresh), for detail, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_4-pull-refresh-or-push-load-supported), and this [demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/) of SSR version.
-- Support snap config, scroll same distance at each time, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_2-timepicker)
-- Support paging. You can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_1-carousel)
+- Support [snapping](http://vuescrolljs.yvescoding.org/demo/#_2-timepicker) to make a picker, scroll same distance at each time.
+- Support [paging](http://vuescrolljs.yvescoding.org/demo/#_1-carousel).
 
 ### Other features
 
 - Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html)
-- Support SSR, you can checkout this [demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/)
+- Support [SSR(Server-Side Rendering)](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/).
 
 ## Quick Start
 
@@ -123,7 +123,7 @@ Please check out [CONTRIBUTING](.github/CONTRIBUTING.md).
 
 ## Communication
 
-[Twitter@wangyi70991](https://twitter.com/wangyi70991?s=01)
+For bug report or feature request, you can raise an issue or twitter me [@wangyi70991](https://twitter.com/wangyi70991?s=01)
 
 ## License
 
