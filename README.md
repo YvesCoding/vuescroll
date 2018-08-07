@@ -8,11 +8,7 @@
 <a href="https://github.com/YvesCoding/vuescroll"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="prettier"></a>
 </p>
 
-English Version | [中文版](https://github.com/YvesCoding/vuescroll/blob/dev/README-ZH.md)
-
-A powerful, customizable, multi-mode scrollbar plugin based on Vue.js - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
-
-## Demo
+> Vuescroll is a powerful, customizable, multi-mode scrollbar plugin based on Vue.js - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
 
 <p align="center">
   <a href="https://github.com/YvesCoding/vuescroll-issue-list-demo" target="_blank"><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo"/></a>
