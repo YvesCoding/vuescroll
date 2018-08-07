@@ -123,7 +123,7 @@ Please check out [CONTRIBUTING](.github/CONTRIBUTING.md).
 
 ## Communication
 
-For bug report or feature request, you can raise an issue or twitter me [@wangyi70991](https://twitter.com/wangyi70991?s=01)
+For bug report or feature request, you can raise an issue or twitter [@wangyi70991](https://twitter.com/wangyi70991?s=01)
 
 ## License
 
