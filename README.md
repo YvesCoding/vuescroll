@@ -19,6 +19,7 @@
 ## Introduction
 
 > Vuescroll is a powerful, customizable, multi-mode scrollbar plugin based on Vue.js - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
+
 > It can not only scroll on PC and mobile phone like native scrollbar but also can scroll smoothly with many animations, scroll out of boundaries, and the features of pull to refresh and push to load.
 
 ## Features
