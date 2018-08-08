@@ -228,14 +228,12 @@ const withBase = (createPanel, Vue, components, opts) => {
         }
       },
       useNumbericSize() {
-        const parentElm = this.$el.parentNode;
-        const { position } = parentElm.style;
-        if (!position || position == 'static') {
-          this.$el.parentNode.style.position = 'relative';
-        }
-
-        this.vuescroll.state.height = parentElm.offsetHeight + 'px';
-        this.vuescroll.state.width = parentElm.offsetWidth + 'px';
+        this.usePercentSize();
+        setTimeout(() => {
+          const el = this.$el;
+          this.vuescroll.state.height = el.offsetHeight + 'px';
+          this.vuescroll.state.width = el.offsetWidth + 'px';
+        }, 0);
       },
       usePercentSize() {
         this.vuescroll.state.height = '100%';
@@ -266,14 +264,14 @@ const withBase = (createPanel, Vue, components, opts) => {
           () => {
             // record current position
             this.recordCurrentPos();
-            setTimeout(() => {
+            this.$nextTick(() => {
               if (this.isSmallChangeThisTick == true) {
                 this.isSmallChangeThisTick = false;
                 this.updateBarStateAndEmitEvent('options-change');
                 return;
               }
               this.refreshInternalStatus();
-            }, 0);
+            });
           },
           watchOpts
         );

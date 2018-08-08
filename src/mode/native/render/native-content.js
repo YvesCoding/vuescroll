@@ -10,7 +10,8 @@ export function createContent(h, vm) {
   const scrollContentData = {
     props: {
       ops: vm.mergedOptions.scrollContent
-    }
+    },
+    ref: 'scrollContent'
   };
   return (
     <scrollContent {...scrollContentData}>{[vm.$slots.default]}</scrollContent>
@@ -19,28 +20,19 @@ export function createContent(h, vm) {
 
 export default {
   name: 'scrollContent',
-  functional: true,
   props: {
     ops: { type: Object }
   },
-  render(h, { props, slots, parent }) {
+  render(h) {
     let style = {};
     let width = isSupportGivenStyle('width', 'fit-content');
-
+    const vm = this;
     if (width) {
       style.width = width;
-    } /* istanbul ignore next */ else {
-      /*
-      * fallback to inline block while
-      * doesn't support 'fit-content',
-      * this may cause some issues, but this
-      * can make `resize` event work...
-      */
-      style['display'] = 'inline-block';
     }
 
-    if (props.ops.padding) {
-      style.paddingRight = parent.mergedOptions.rail.size; //props.ops.paddingValue;
+    if (vm.ops.padding) {
+      style.paddingRight = vm.$parent.$parent.mergedOptions.rail.size; //props.ops.paddingValue;
     }
 
     const propsData = {
@@ -49,16 +41,16 @@ export default {
       class: '__view'
     };
 
-    const _customContent = parent.$slots['scroll-content'];
+    const _customContent = vm.$parent.$parent.$slots['scroll-content'];
     if (_customContent) {
       return insertChildrenIntoSlot(
         h,
         _customContent,
-        slots().default,
+        vm.$slots.default,
         propsData
       );
     }
 
-    return <div {...propsData}>{slots().default}</div>;
+    return <div {...propsData}>{vm.$slots.default}</div>;
   }
 };

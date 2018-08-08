@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.7.2
+    * Vuescroll v4.7.3
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -64,6 +64,50 @@ var _extends = Object.assign || function (target) {
   }
 
   return target;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var toConsumableArray = function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  } else {
+    return Array.from(arr);
+  }
 };
 
 /* istanbul ignore next */
@@ -243,6 +287,9 @@ function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
   var isComponent = !!parentVnode.componentOptions;
   var tag = isComponent ? parentVnode.componentOptions.tag : parentVnode.tag;
   var _data = parentVnode.componentOptions || parentVnode.data || {};
+  childVNode = childVNode || [];
+  parentVnode.children = parentVnode.children || [];
+  childVNode = [].concat(toConsumableArray(childVNode), toConsumableArray(parentVnode.children));
 
   if (isComponent) {
     data.nativeOn = data.on;
@@ -731,7 +778,8 @@ function createContent(h, vm) {
   var scrollContentData = {
     props: {
       ops: vm.mergedOptions.scrollContent
-    }
+    },
+    ref: 'scrollContent'
   };
   return h(
     'scrollContent',
@@ -742,32 +790,19 @@ function createContent(h, vm) {
 
 var scrollContent = {
   name: 'scrollContent',
-  functional: true,
   props: {
     ops: { type: Object }
   },
-  render: function render(h, _ref) {
-    var props = _ref.props,
-        slots = _ref.slots,
-        parent = _ref.parent;
-
+  render: function render(h) {
     var style = {};
     var width = isSupportGivenStyle('width', 'fit-content');
-
+    var vm = this;
     if (width) {
       style.width = width;
-    } /* istanbul ignore next */else {
-        /*
-        * fallback to inline block while
-        * doesn't support 'fit-content',
-        * this may cause some issues, but this
-        * can make `resize` event work...
-        */
-        style['display'] = 'inline-block';
-      }
+    }
 
-    if (props.ops.padding) {
-      style.paddingRight = parent.mergedOptions.rail.size; //props.ops.paddingValue;
+    if (vm.ops.padding) {
+      style.paddingRight = vm.$parent.$parent.mergedOptions.rail.size; //props.ops.paddingValue;
     }
 
     var propsData = {
@@ -776,15 +811,15 @@ var scrollContent = {
       class: '__view'
     };
 
-    var _customContent = parent.$slots['scroll-content'];
+    var _customContent = vm.$parent.$parent.$slots['scroll-content'];
     if (_customContent) {
-      return insertChildrenIntoSlot(h, _customContent, slots().default, propsData);
+      return insertChildrenIntoSlot(h, _customContent, vm.$slots.default, propsData);
     }
 
     return h(
       'div',
       propsData,
-      [slots().default]
+      [vm.$slots.default]
     );
   }
 };
@@ -1711,15 +1746,14 @@ var withBase = function withBase(createPanel, Vue$$1, components, opts) {
         }
       },
       useNumbericSize: function useNumbericSize() {
-        var parentElm = this.$el.parentNode;
-        var position = parentElm.style.position;
+        var _this3 = this;
 
-        if (!position || position == 'static') {
-          this.$el.parentNode.style.position = 'relative';
-        }
-
-        this.vuescroll.state.height = parentElm.offsetHeight + 'px';
-        this.vuescroll.state.width = parentElm.offsetWidth + 'px';
+        this.usePercentSize();
+        setTimeout(function () {
+          var el = _this3.$el;
+          _this3.vuescroll.state.height = el.offsetHeight + 'px';
+          _this3.vuescroll.state.width = el.offsetWidth + 'px';
+        }, 0);
       },
       usePercentSize: function usePercentSize() {
         this.vuescroll.state.height = '100%';
@@ -1743,7 +1777,7 @@ var withBase = function withBase(createPanel, Vue$$1, components, opts) {
 
       /** ------------------------ Init --------------------------- */
       initWatchOpsChange: function initWatchOpsChange() {
-        var _this3 = this;
+        var _this4 = this;
 
         var watchOpts = {
           deep: true,
@@ -1751,15 +1785,15 @@ var withBase = function withBase(createPanel, Vue$$1, components, opts) {
         };
         this.$watch('mergedOptions', function () {
           // record current position
-          _this3.recordCurrentPos();
-          setTimeout(function () {
-            if (_this3.isSmallChangeThisTick == true) {
-              _this3.isSmallChangeThisTick = false;
-              _this3.updateBarStateAndEmitEvent('options-change');
+          _this4.recordCurrentPos();
+          _this4.$nextTick(function () {
+            if (_this4.isSmallChangeThisTick == true) {
+              _this4.isSmallChangeThisTick = false;
+              _this4.updateBarStateAndEmitEvent('options-change');
               return;
             }
-            _this3.refreshInternalStatus();
-          }, 0);
+            _this4.refreshInternalStatus();
+          });
         }, watchOpts);
 
         /**
@@ -1769,8 +1803,8 @@ var withBase = function withBase(createPanel, Vue$$1, components, opts) {
          * 2. we don't need to registry scroller.
          */
         smallChangeArray.forEach(function (opts) {
-          _this3.$watch(opts, function () {
-            _this3.isSmallChangeThisTick = true;
+          _this4.$watch(opts, function () {
+            _this4.isSmallChangeThisTick = true;
           }, watchOpts);
         });
       },
@@ -4201,7 +4235,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.7.2',
+  version: '4.7.3',
   refreshAll: refreshAll
 };
 

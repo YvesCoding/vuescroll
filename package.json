@@ -16,7 +16,7 @@
     "types/*.d.ts"
   ],
   "deprecated": false,
-  "description": "A powerful beautiful scrollbar based on Vue.js for PC and mobile",
+  "description": "A powerful, customizable, multi-mode scrollbar plugin based on Vue.js",
   "homepage": "https://github.com/YvesCoding/vuescroll#readme",
   "keywords": [
     "vuescroll",
@@ -43,7 +43,7 @@
     "report-coverage": "codecov",
     "gen-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
-  "version": "4.7.2",
+  "version": "4.7.3",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.5",

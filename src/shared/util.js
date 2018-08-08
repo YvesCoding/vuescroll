@@ -191,6 +191,9 @@ export function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
   const isComponent = !!parentVnode.componentOptions;
   const tag = isComponent ? parentVnode.componentOptions.tag : parentVnode.tag;
   const _data = parentVnode.componentOptions || parentVnode.data || {};
+  childVNode = childVNode || [];
+  parentVnode.children = parentVnode.children || [];
+  childVNode = [...childVNode, ...parentVnode.children];
 
   if (isComponent) {
     data.nativeOn = data.on;
