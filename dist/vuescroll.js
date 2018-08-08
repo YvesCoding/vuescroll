@@ -1786,14 +1786,14 @@ var withBase = function withBase(createPanel, Vue$$1, components, opts) {
         this.$watch('mergedOptions', function () {
           // record current position
           _this4.recordCurrentPos();
-          _this4.$nextTick(function () {
+          setTimeout(function () {
             if (_this4.isSmallChangeThisTick == true) {
               _this4.isSmallChangeThisTick = false;
               _this4.updateBarStateAndEmitEvent('options-change');
               return;
             }
             _this4.refreshInternalStatus();
-          });
+          }, 0);
         }, watchOpts);
 
         /**
