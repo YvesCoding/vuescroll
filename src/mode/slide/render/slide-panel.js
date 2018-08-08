@@ -1,4 +1,4 @@
-import { isSupportGivenStyle, isIE, isArray } from 'shared/util';
+import { isSupportGivenStyle, isArray } from 'shared/util';
 
 export function processPanelData(vm) {
   // scrollPanel data start
@@ -84,11 +84,13 @@ export function createPanelChildren(h, vm) {
 function createTipDom(h, vm, type) {
   const stage = vm.vuescroll.state[`${type}Stage`];
   let dom = null;
+  // If has user defined dom, just return it.
   /* istanbul ignore if */
   if ((dom = vm.$slots[`${type}-${stage}`])) {
     return dom[0];
   }
   switch (stage) {
+  // The dom will show at deactive stage
   case 'deactive':
     dom = (
       <svg
@@ -111,39 +113,10 @@ function createTipDom(h, vm, type) {
     );
     break;
   case 'start':
-    // IE and edge seem not supporting  tag - `animateTransform`
-    // Just return null.
-    /* istanbul ignore if */
-    if (isIE()) {
-      dom = null;
-      break;
-    }
     dom = (
-      <svg
-        version="1.1"
-        id="loader-1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        x="0px"
-        y="0px"
-        viewBox="0 0 50 50"
-        style="enable-background:new 0 0 50 50;"
-        xmlSpace="preserve"
-      >
-        <path
-          fill="#000"
-          d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"
-        >
-          <animateTransform
-            attributeType="xml"
-            attributeName="transform"
-            type="rotate"
-            from="0 25 25"
-            to="360 25 25"
-            dur="0.6s"
-            repeatCount="indefinite"
-          />
-        </path>
+      <svg viewBox="0 0 50 50" class="start">
+        <circle stroke="true" cx="25" cy="25" r="20" class="bg-path" />
+        <circle cx="25" cy="25" r="20" class="active-path" />
       </svg>
     );
     break;

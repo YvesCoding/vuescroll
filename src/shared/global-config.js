@@ -36,7 +36,7 @@ const baseConfig = {
     /** Whether to keep show or not, default -> false */
     keepShow: false,
     /** Bar's background , default -> #00a650 */
-    background: '#c1c1c1',
+    background: 'rgb(3, 185, 118)',
     /** Bar's opacity, default -> 1  */
     opacity: 1,
     /** Styles when you hover scrollbar, it will merge into the current style */

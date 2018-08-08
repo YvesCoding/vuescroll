@@ -14,7 +14,6 @@ export function processPanelData(vm) {
       ops: vm.mergedOptions.scrollPanel
     }
   };
-
   scrollPanelData.class.push('__native');
   // dynamic set overflow scroll
   // feat: #11
@@ -35,8 +34,11 @@ export function processPanelData(vm) {
   if (!gutter) {
     scrollPanelData.class.push('__hidebar');
   } else {
-    //__gutter
-    scrollPanelData.class.push('__gutter');
+    // hide system bar by use a negative value px
+    // gutter should be 0 when manually disable scrollingX #14
+    if (vm.bar.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
+      scrollPanelData.style.marginRight = `-${gutter}px`;
+    }
     if (vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
       scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
     }
