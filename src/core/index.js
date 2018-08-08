@@ -264,14 +264,14 @@ const withBase = (createPanel, Vue, components, opts) => {
           () => {
             // record current position
             this.recordCurrentPos();
-            this.$nextTick(() => {
+            setTimeout(() => {
               if (this.isSmallChangeThisTick == true) {
                 this.isSmallChangeThisTick = false;
                 this.updateBarStateAndEmitEvent('options-change');
                 return;
               }
               this.refreshInternalStatus();
-            });
+            }, 0);
           },
           watchOpts
         );

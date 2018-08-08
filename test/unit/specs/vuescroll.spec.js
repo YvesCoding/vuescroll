@@ -41,7 +41,7 @@ describe('vuescroll', () => {
       true
     );
 
-    vm.$nextTick(() => {
+    startSchedule().then(() => {
       const vs = vm.$refs['vs'].$el;
       const _vm = vm.$el;
       const { height, width } = vs.style;
