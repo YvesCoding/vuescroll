@@ -639,7 +639,7 @@ function handleClickTrack(e) {
 
   var barOffset = thumb[offset];
 
-  var percent = (e[client] - e.currentTarget.getBoundingClientRect()[posName] - barOffset / 2) / e.currentTarget[offset];
+  var percent = (e[client] - e.currentTarget.getBoundingClientRect()[posName] - barOffset / 2) / (e.currentTarget[offset] - barOffset);
 
   parent.scrollTo(defineProperty({}, axis.toLowerCase(), percent * 100 + '%'));
 }

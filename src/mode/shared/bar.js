@@ -131,7 +131,6 @@ function getRgbAColor(color, opacity) {
   }, ${opacity})`);
 }
 
-/* istanbul ignore next */
 function handleClickTrack(e) {
   const ctx = this;
   const parent = getRealParent(ctx);
@@ -145,7 +144,7 @@ function handleClickTrack(e) {
     (e[client] -
       e.currentTarget.getBoundingClientRect()[posName] -
       barOffset / 2) /
-    e.currentTarget[offset];
+    (e.currentTarget[offset] - barOffset);
 
   parent.scrollTo({
     [axis.toLowerCase()]: percent * 100 + '%'
@@ -235,7 +234,7 @@ export default {
         [vm.bar.opsSize]: vm.ops.rail.size
       },
       on: {
-        click(e) /* istanbul ignore next */ {
+        click(e) {
           handleClickTrack.call(vm, e);
         }
       }
