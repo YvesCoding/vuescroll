@@ -50,7 +50,7 @@ export default baseConfig;
  * @export
  * @param {any} ops
  */
-export function validateOptions(ops) {
+export function validateOps(ops) {
   let renderError = false;
   const { scrollPanel } = ops;
   const { vBar, hBar } = ops.bar;

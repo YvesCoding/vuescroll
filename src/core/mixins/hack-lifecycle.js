@@ -1,4 +1,4 @@
-import GCF, { validateOptions } from 'shared/global-config';
+import GCF, { validateOps } from 'shared/global-config';
 import { deepMerge, defineReactive } from 'shared/util';
 
 /**
@@ -35,6 +35,6 @@ export default {
   created() {
     hackPropsData.call(this);
     this._isVuescrollRoot = true;
-    this.renderError = validateOptions(this.mergedOptions);
+    this.renderError = validateOps(this.mergedOptions);
   }
 };

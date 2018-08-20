@@ -34,7 +34,8 @@ export default {
   render(h) {
     // eslint-disable-line
     let data = {
-      class: ['__panel']
+      class: ['__panel'],
+      style: {}
     };
 
     const parent = getRealParent(this);

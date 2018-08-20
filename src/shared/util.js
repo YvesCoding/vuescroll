@@ -3,31 +3,67 @@ import Vue from 'vue';
 /* istanbul ignore next */
 export const isServer = () => Vue.prototype.$isServer;
 
-export function deepCopy(source, target) {
-  target = (typeof target === 'object' && target) || {};
-  for (var key in source) {
-    target[key] =
-      typeof source[key] === 'object'
-        ? deepCopy(source[key], (target[key] = {}))
-        : source[key];
+export function deepCopy(from, to, shallow) {
+  if (shallow && isUndef(to)) {
+    return from;
   }
-  return target;
-}
 
-export function deepMerge(from, to, force) {
-  to = to || {};
-  for (var key in from) {
-    if (typeof from[key] === 'object') {
-      if (typeof to[key] === 'undefined') {
-        to[key] = {};
-        deepCopy(from[key], to[key]);
-      } else {
-        deepMerge(from[key], to[key]);
-      }
-    } else {
-      if (typeof to[key] === 'undefined' || force) to[key] = from[key];
+  if (isArray(from)) {
+    to = [];
+    from.forEach((item, index) => {
+      to[index] = deepCopy(item, to[index]);
+    });
+  } else if (from) {
+    if (!isPlainObj(from)) {
+      return from;
+    }
+    to = {};
+    for (let key in from) {
+      to[key] =
+        typeof from[key] === 'object'
+          ? deepCopy(from[key], to[key])
+          : from[key];
     }
   }
+  return to;
+}
+
+export function deepMerge(from, to, force, shallow) {
+  if (shallow && isUndef(to)) {
+    return from;
+  }
+
+  to = to || {};
+
+  if (isArray(from)) {
+    if (!isArray(to) && force) {
+      to = [];
+    }
+    if (isArray(to)) {
+      from.forEach((item, index) => {
+        to[index] = deepMerge(item, to[index], force, shallow);
+      });
+    }
+  } else if (from) {
+    if (!isPlainObj(from)) {
+      if (force) {
+        to = from;
+      }
+    } else {
+      for (var key in from) {
+        if (typeof from[key] === 'object') {
+          if (isUndef(to[key])) {
+            to[key] = deepCopy(from[key], to[key], shallow);
+          } else {
+            to[key] = deepMerge(from[key], to[key], force, shallow);
+          }
+        } else {
+          if (isUndef(to[key]) || force) to[key] = from[key];
+        }
+      }
+    }
+  }
+
   return to;
 }
 
@@ -156,7 +192,7 @@ export function getPrefix(global) {
   return vendorPrefix;
 }
 
-export function isSupportGivenStyle(property, value) {
+export function getComplitableStyle(property, value) {
   /* istanbul ignore if */
   if (isServer()) return false;
 
@@ -187,30 +223,27 @@ export function isIE() {
  */
 export function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
   parentVnode = parentVnode[0] ? parentVnode[0] : parentVnode;
-
   const isComponent = !!parentVnode.componentOptions;
-  const tag = isComponent ? parentVnode.componentOptions.tag : parentVnode.tag;
-  const _data = parentVnode.componentOptions || parentVnode.data || {};
-  childVNode = childVNode || [];
-  parentVnode.children = parentVnode.children || [];
-  childVNode = [...childVNode, ...parentVnode.children];
+  let ch;
+  let tag;
 
   if (isComponent) {
-    data.nativeOn = data.on;
-    _data.props = _data.propsData;
-
-    delete data.on;
-    delete data.propsData;
+    ch = parentVnode.componentOptions.children;
+    tag = parentVnode.componentOptions.tag;
+    parentVnode.data = deepMerge(
+      { attrs: parentVnode.componentOptions.propsData },
+      parentVnode.data,
+      false, // false
+      true // shallow
+    );
+  } else {
+    ch = parentVnode.children;
+    tag = parentVnode.tag;
   }
 
-  return h(
-    tag,
-    {
-      ...data,
-      ..._data
-    },
-    childVNode
-  );
+  ch = [...(ch || []), ...(childVNode || [])];
+  delete parentVnode.data.slot;
+  return h(tag, deepMerge(data, parentVnode.data, false, true), ch);
 }
 
 /**
@@ -226,3 +259,6 @@ export function getRealParent(ctx) {
 }
 
 export const isArray = _ => Array.isArray(_);
+export const isPlainObj = _ =>
+  Object.prototype.toString.call(_) == '[object Object]';
+export const isUndef = _ => typeof _ === 'undefined';

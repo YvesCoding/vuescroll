@@ -77,9 +77,6 @@ interface scrollPanel {
   scrollingY?: boolean;
   speed?: number;
   easing?: easing | undefined;
-}
-
-interface scrollConent {
   padding?: boolean;
 }
 

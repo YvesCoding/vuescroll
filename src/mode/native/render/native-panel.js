@@ -1,73 +1,103 @@
-import { createContent } from './native-content';
-import { getGutter } from 'shared/util';
+import {
+  getGutter,
+  getComplitableStyle,
+  insertChildrenIntoSlot
+} from 'shared/util';
 
-export function processPanelData(vm) {
+export function getPanelData(context) {
   // scrollPanel data start
-  const scrollPanelData = {
+  const data = {
     ref: 'scrollPanel',
     style: {},
     class: [],
     nativeOn: {
-      scroll: vm.handleScroll
+      scroll: context.handleScroll
     },
     props: {
-      ops: vm.mergedOptions.scrollPanel
+      ops: context.mergedOptions.scrollPanel
     }
   };
-  scrollPanelData.class.push('__native');
+  data.class.push('__native');
   // dynamic set overflow scroll
   // feat: #11
-  if (vm.mergedOptions.scrollPanel.scrollingY) {
-    scrollPanelData.style['overflowY'] = vm.bar.vBar.state.size ? 'scroll' : '';
+  if (context.mergedOptions.scrollPanel.scrollingY) {
+    data.style['overflowY'] = context.bar.vBar.state.size ? 'scroll' : '';
   } else {
-    scrollPanelData.style['overflowY'] = 'hidden';
+    data.style['overflowY'] = 'hidden';
   }
 
-  if (vm.mergedOptions.scrollPanel.scrollingX) {
-    scrollPanelData.style['overflowX'] = vm.bar.hBar.state.size ? 'scroll' : '';
+  if (context.mergedOptions.scrollPanel.scrollingX) {
+    data.style['overflowX'] = context.bar.hBar.state.size ? 'scroll' : '';
   } else {
-    scrollPanelData.style['overflowX'] = 'hidden';
+    data.style['overflowX'] = 'hidden';
   }
 
   let gutter = getGutter();
   /* istanbul ignore if */
   if (!gutter) {
-    scrollPanelData.class.push('__hidebar');
+    data.class.push('__hidebar');
   } else {
     // hide system bar by use a negative value px
     // gutter should be 0 when manually disable scrollingX #14
-    if (vm.bar.vBar.state.size && vm.mergedOptions.scrollPanel.scrollingY) {
-      scrollPanelData.style.marginRight = `-${gutter}px`;
+    if (
+      context.bar.vBar.state.size &&
+      context.mergedOptions.scrollPanel.scrollingY
+    ) {
+      data.style.marginRight = `-${gutter}px`;
     }
-    if (vm.bar.hBar.state.size && vm.mergedOptions.scrollPanel.scrollingX) {
-      scrollPanelData.style.height = `calc(100% + ${gutter}px)`;
+    if (
+      context.bar.hBar.state.size &&
+      context.mergedOptions.scrollPanel.scrollingX
+    ) {
+      data.style.height = `calc(100% + ${gutter}px)`;
     }
   }
 
   // clear legency styles of slide mode...
-  scrollPanelData.style.transformOrigin = '';
-  scrollPanelData.style.transform = '';
+  data.style.transformOrigin = '';
+  data.style.transform = '';
 
-  return scrollPanelData;
+  return data;
 }
 
 /**
  * create a scrollPanel
  *
  * @param {any} size
- * @param {any} vm
+ * @param {any} context
  * @returns
  */
-export function createPanel(h, vm) {
-  let scrollPanelData = {};
+export function createPanel(h, context) {
+  let data = {};
 
-  scrollPanelData = processPanelData(vm);
+  data = getPanelData(context);
 
-  return (
-    <scrollPanel {...scrollPanelData}>{createPanelChildren(h, vm)}</scrollPanel>
-  );
+  return <scrollPanel {...data}>{getPanelChildren(h, context)}</scrollPanel>;
 }
 
-export function createPanelChildren(h, vm) {
-  return createContent(h, vm);
+export function getPanelChildren(h, context) {
+  let viewStyle = {};
+  const data = {
+    style: viewStyle,
+    ref: 'scrollContent',
+    class: '__view'
+  };
+  const _customContent = context.$slots['scroll-content'];
+
+  viewStyle.width = getComplitableStyle('width', 'fit-content');
+
+  if (context.mergedOptions.scrollPanel.padding) {
+    data.style.paddingRight = context.mergedOptions.rail.size;
+  }
+
+  if (_customContent) {
+    return insertChildrenIntoSlot(
+      h,
+      _customContent,
+      context.$slots.default,
+      data
+    );
+  }
+
+  return <div {...data}>{context.$slots.default}</div>;
 }

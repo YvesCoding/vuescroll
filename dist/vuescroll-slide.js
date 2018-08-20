@@ -115,28 +115,62 @@ var isServer = function isServer() {
   return Vue.prototype.$isServer;
 };
 
-function deepCopy(source, target) {
-  target = (typeof target === 'undefined' ? 'undefined' : _typeof(target)) === 'object' && target || {};
-  for (var key in source) {
-    target[key] = _typeof(source[key]) === 'object' ? deepCopy(source[key], target[key] = {}) : source[key];
+function deepCopy(from, to, shallow) {
+  if (shallow && isUndef(to)) {
+    return from;
   }
-  return target;
-}
 
-function deepMerge(from, to, force) {
-  to = to || {};
-  for (var key in from) {
-    if (_typeof(from[key]) === 'object') {
-      if (typeof to[key] === 'undefined') {
-        to[key] = {};
-        deepCopy(from[key], to[key]);
-      } else {
-        deepMerge(from[key], to[key]);
-      }
-    } else {
-      if (typeof to[key] === 'undefined' || force) to[key] = from[key];
+  if (isArray(from)) {
+    to = [];
+    from.forEach(function (item, index) {
+      to[index] = deepCopy(item, to[index]);
+    });
+  } else if (from) {
+    if (!isPlainObj(from)) {
+      return from;
+    }
+    to = {};
+    for (var key in from) {
+      to[key] = _typeof(from[key]) === 'object' ? deepCopy(from[key], to[key]) : from[key];
     }
   }
+  return to;
+}
+
+function deepMerge(from, to, force, shallow) {
+  to = to || {};
+
+  if (shallow && isUndef(to)) {
+    return from;
+  }
+
+  if (isArray(from)) {
+    if (!isArray(to) && force) {
+      to = [];
+    }
+    if (isArray(to)) {
+      from.forEach(function (item, index) {
+        to[index] = deepMerge(item, to[index], force, shallow);
+      });
+    }
+  } else if (from) {
+    if (!isPlainObj(from) && (force || isUndef(to))) {
+      to = from;
+    } else {
+      for (var key in from) {
+        if (_typeof(from[key]) === 'object') {
+          if (isUndef(to[key])) {
+            to[key] = deepCopy(from[key], to[key], shallow);
+          } else {
+            to[key] = deepMerge(from[key], to[key], force, shallow);
+          }
+        } else {
+          if (isUndef(to[key]) || force) to[key] = from[key];
+        }
+      }
+    }
+  }
+
   return to;
 }
 
@@ -235,7 +269,7 @@ function getPrefix(global) {
   return vendorPrefix;
 }
 
-function isSupportGivenStyle(property, value) {
+function getComplitableStyle(property, value) {
   /* istanbul ignore if */
   if (isServer()) return false;
 
@@ -262,23 +296,24 @@ function isIE() {
  */
 function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
   parentVnode = parentVnode[0] ? parentVnode[0] : parentVnode;
-
   var isComponent = !!parentVnode.componentOptions;
-  var tag = isComponent ? parentVnode.componentOptions.tag : parentVnode.tag;
-  var _data = parentVnode.componentOptions || parentVnode.data || {};
-  childVNode = childVNode || [];
-  parentVnode.children = parentVnode.children || [];
-  childVNode = [].concat(toConsumableArray(childVNode), toConsumableArray(parentVnode.children));
+  var ch = void 0;
+  var tag = void 0;
 
   if (isComponent) {
-    data.nativeOn = data.on;
-    _data.props = _data.propsData;
-
-    delete data.on;
-    delete data.propsData;
+    ch = parentVnode.componentOptions.children;
+    tag = parentVnode.componentOptions.tag;
+    parentVnode.data = deepMerge({ attrs: parentVnode.componentOptions.propsData }, parentVnode.data, false, // false
+    true // shallow
+    );
+  } else {
+    ch = parentVnode.children;
+    tag = parentVnode.tag;
   }
 
-  return h(tag, _extends({}, data, _data), childVNode);
+  ch = [].concat(toConsumableArray(ch || []), toConsumableArray(childVNode || []));
+  delete parentVnode.data.slot;
+  return h(tag, deepMerge(data, parentVnode.data, false, true), ch);
 }
 
 /**
@@ -295,6 +330,12 @@ function getRealParent(ctx) {
 
 var isArray = function isArray(_) {
   return Array.isArray(_);
+};
+var isPlainObj = function isPlainObj(_) {
+  return Object.prototype.toString.call(_) == '[object Object]';
+};
+var isUndef = function isUndef(_) {
+  return typeof _ === 'undefined';
 };
 
 var vsInstances = {};
@@ -450,10 +491,15 @@ var scrollPanel = {
   render: function render(h) {
     // eslint-disable-line
     var data = {
-      class: ['__panel']
+      class: ['__panel'],
+      style: {}
     };
 
     var parent = getRealParent(this);
+
+    if (parent.mergedOptions.scrollPanel.padding) {
+      data.style['padding-right'] = parent.mergedOptions.rail.size;
+    }
 
     var _customPanel = parent.$slots['scroll-panel'];
     if (_customPanel) {
@@ -603,7 +649,6 @@ function getRgbAColor(color, opacity) {
   return colorCache[id] = 'rgba(' + extractRgbColor.exec(computedColor)[1] + ', ' + opacity + ')';
 }
 
-/* istanbul ignore next */
 function handleClickTrack(e) {
   var ctx = this;
   var parent = getRealParent(ctx);
@@ -699,7 +744,7 @@ var bar = {
         background: railBackgroundColor
       }, vm.bar.opsSize, vm.ops.rail.size),
       on: {
-        click: function click(e) /* istanbul ignore next */{
+        click: function click(e) {
           handleClickTrack.call(vm, e);
         }
       }
@@ -746,43 +791,40 @@ function createBar(h, vm, type) {
   return h('bar', barData);
 }
 
-function processPanelData(vm) {
+function getPanelData(context) {
   // scrollPanel data start
-  var scrollPanelData = {
+  var data = {
     ref: 'scrollPanel',
     style: {},
     class: [],
     nativeOn: {
-      scroll: vm.handleScroll
+      scroll: context.handleScroll
     },
     props: {
-      ops: vm.mergedOptions.scrollPanel
+      ops: context.mergedOptions.scrollPanel
     }
   };
 
-  scrollPanelData.class.push('__slide');
+  data.class.push('__slide');
 
-  var width = isSupportGivenStyle('width', 'fit-content');
+  var width = getComplitableStyle('width', 'fit-content');
   if (width) {
-    scrollPanelData.style['width'] = width;
+    data.style['width'] = width;
   } /* istanbul ignore next */else {
-      /* 
-               * Fallback to inline-block while browser doesn't support fit-content
-               */
-      scrollPanelData['display'] = 'inline-block';
+      data['display'] = 'inline-block';
     }
 
-  return scrollPanelData;
+  return data;
 }
 
-function createPanelChildren(h, vm) {
-  var renderChildren = [vm.$slots.default];
+function getPanelChildren(h, context) {
+  var renderChildren = [context.$slots.default];
 
   /**
    *  Keep the children-rendered-order in case of the style crash
    *  when push-load or pull-refresh is enable
    */
-  var _customPanel = vm.$slots['scroll-panel'];
+  var _customPanel = context.$slots['scroll-panel'];
   if (_customPanel) {
     /* istanbul ignore if */
     if (_customPanel.length > 1) {
@@ -798,19 +840,19 @@ function createPanelChildren(h, vm) {
   }
 
   // handle refresh
-  if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
-    var refreshDom = createTipDom(h, vm, 'refresh');
+  if (context.mergedOptions.vuescroll.pullRefresh.enable) {
+    var refreshDom = createTipDom(h, context, 'refresh');
     renderChildren.unshift(h(
       'div',
       { 'class': '__refresh', ref: 'refreshDom', key: 'refshDom' },
-      [[refreshDom, vm.pullRefreshTip]]
+      [[refreshDom, context.pullRefreshTip]]
     ));
   }
 
   // handle load
-  if (vm.mergedOptions.vuescroll.pushLoad.enable) {
-    var loadDom = createTipDom(h, vm, 'load');
-    var enableLoad = vm.isEnableLoad();
+  if (context.mergedOptions.vuescroll.pushLoad.enable) {
+    var loadDom = createTipDom(h, context, 'load');
+    var enableLoad = context.isEnableLoad();
 
     renderChildren.push(h(
       'div',
@@ -819,7 +861,7 @@ function createPanelChildren(h, vm) {
         key: 'loadDom',
         'class': { __load: true, '__load-disabled': !enableLoad }
       },
-      [[loadDom, vm.pushLoadTip]]
+      [[loadDom, context.pushLoadTip]]
     ));
   }
 
@@ -827,14 +869,15 @@ function createPanelChildren(h, vm) {
 }
 
 // Create load or refresh tip dom of each stages
-function createTipDom(h, vm, type) {
-  var stage = vm.vuescroll.state[type + 'Stage'];
+function createTipDom(h, context, type) {
+  var stage = context.vuescroll.state[type + 'Stage'];
   var dom = null;
-  // If has user defined dom, just return it.
+  // Return user specified animation dom
   /* istanbul ignore if */
-  if (dom = vm.$slots[type + '-' + stage]) {
+  if (dom = context.$slots[type + '-' + stage]) {
     return dom[0];
   }
+
   switch (stage) {
     // The dom will show at deactive stage
     case 'deactive':
@@ -910,16 +953,16 @@ function createTipDom(h, vm, type) {
  * create a scrollPanel
  *
  * @param {any} size
- * @param {any} vm
+ * @param {any} context
  * @returns
  */
-function createPanel(h, vm) {
-  var scrollPanelData = processPanelData(vm);
+function createPanel(h, context) {
+  var data = getPanelData(context);
 
   return h(
     'scrollPanel',
-    scrollPanelData,
-    [createPanelChildren(h, vm)]
+    data,
+    [getPanelChildren(h, context)]
   );
 }
 
@@ -3228,7 +3271,7 @@ var baseConfig = {
  * @export
  * @param {any} ops
  */
-function validateOptions(ops) {
+function validateOps(ops) {
   var renderError = false;
   var scrollPanel = ops.scrollPanel;
   var _ops$bar = ops.bar,
@@ -3310,7 +3353,7 @@ var hackLifecycle = {
   created: function created() {
     hackPropsData.call(this);
     this._isVuescrollRoot = true;
-    this.renderError = validateOptions(this.mergedOptions);
+    this.renderError = validateOps(this.mergedOptions);
   }
 };
 

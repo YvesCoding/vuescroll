@@ -1,42 +1,43 @@
-import { isSupportGivenStyle, isArray } from 'shared/util';
+import { getComplitableStyle, isArray } from 'shared/util';
 
-export function processPanelData(vm) {
+export function getPanelData(context) {
   // scrollPanel data start
-  const scrollPanelData = {
+  const data = {
     ref: 'scrollPanel',
     style: {},
     class: [],
     nativeOn: {
-      scroll: vm.handleScroll
+      scroll: context.handleScroll
     },
     props: {
-      ops: vm.mergedOptions.scrollPanel
+      ops: context.mergedOptions.scrollPanel
     }
   };
 
-  scrollPanelData.class.push('__slide');
+  data.class.push('__slide');
 
-  let width = isSupportGivenStyle('width', 'fit-content');
+  let width = getComplitableStyle('width', 'fit-content');
   if (width) {
-    scrollPanelData.style['width'] = width;
+    data.style['width'] = width;
   } /* istanbul ignore next */ else {
-    /* 
-             * Fallback to inline-block while browser doesn't support fit-content
-             */
-    scrollPanelData['display'] = 'inline-block';
+    data['display'] = 'inline-block';
   }
 
-  return scrollPanelData;
+  if (context.mergedOptions.scrollPanel.padding) {
+    data.style.paddingRight = context.mergedOptions.rail.size;
+  }
+
+  return data;
 }
 
-export function createPanelChildren(h, vm) {
-  let renderChildren = [vm.$slots.default];
+export function getPanelChildren(h, context) {
+  let renderChildren = [context.$slots.default];
 
   /**
    *  Keep the children-rendered-order in case of the style crash
    *  when push-load or pull-refresh is enable
    */
-  let _customPanel = vm.$slots['scroll-panel'];
+  let _customPanel = context.$slots['scroll-panel'];
   if (_customPanel) {
     /* istanbul ignore if */
     if (_customPanel.length > 1) {
@@ -52,19 +53,19 @@ export function createPanelChildren(h, vm) {
   }
 
   // handle refresh
-  if (vm.mergedOptions.vuescroll.pullRefresh.enable) {
-    let refreshDom = createTipDom(h, vm, 'refresh');
+  if (context.mergedOptions.vuescroll.pullRefresh.enable) {
+    let refreshDom = createTipDom(h, context, 'refresh');
     renderChildren.unshift(
       <div class="__refresh" ref="refreshDom" key="refshDom">
-        {[refreshDom, vm.pullRefreshTip]}
+        {[refreshDom, context.pullRefreshTip]}
       </div>
     );
   }
 
   // handle load
-  if (vm.mergedOptions.vuescroll.pushLoad.enable) {
-    let loadDom = createTipDom(h, vm, 'load');
-    const enableLoad = vm.isEnableLoad();
+  if (context.mergedOptions.vuescroll.pushLoad.enable) {
+    let loadDom = createTipDom(h, context, 'load');
+    const enableLoad = context.isEnableLoad();
 
     renderChildren.push(
       <div
@@ -72,7 +73,7 @@ export function createPanelChildren(h, vm) {
         key="loadDom"
         class={{ __load: true, '__load-disabled': !enableLoad }}
       >
-        {[loadDom, vm.pushLoadTip]}
+        {[loadDom, context.pushLoadTip]}
       </div>
     );
   }
@@ -81,14 +82,15 @@ export function createPanelChildren(h, vm) {
 }
 
 // Create load or refresh tip dom of each stages
-function createTipDom(h, vm, type) {
-  const stage = vm.vuescroll.state[`${type}Stage`];
+function createTipDom(h, context, type) {
+  const stage = context.vuescroll.state[`${type}Stage`];
   let dom = null;
-  // If has user defined dom, just return it.
+  // Return user specified animation dom
   /* istanbul ignore if */
-  if ((dom = vm.$slots[`${type}-${stage}`])) {
+  if ((dom = context.$slots[`${type}-${stage}`])) {
     return dom[0];
   }
+
   switch (stage) {
   // The dom will show at deactive stage
   case 'deactive':
@@ -149,13 +151,11 @@ function createTipDom(h, vm, type) {
  * create a scrollPanel
  *
  * @param {any} size
- * @param {any} vm
+ * @param {any} context
  * @returns
  */
-export function createPanel(h, vm) {
-  let scrollPanelData = processPanelData(vm);
+export function createPanel(h, context) {
+  let data = getPanelData(context);
 
-  return (
-    <scrollPanel {...scrollPanelData}>{createPanelChildren(h, vm)}</scrollPanel>
-  );
+  return <scrollPanel {...data}>{getPanelChildren(h, context)}</scrollPanel>;
 }

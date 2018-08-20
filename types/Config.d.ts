@@ -67,9 +67,6 @@ interface scrollPanel {
   scrollingY?: boolean;
   speed?: number;
   easing?: easing | undefined;
-}
-
-interface scrollConent {
   padding?: boolean;
 }
 
@@ -103,7 +100,6 @@ interface bar {
 export default interface Config {
   vuescroll?: Container;
   scrollPanel?: scrollPanel;
-  scrollConent?: scrollConent;
   bar?: bar;
   rail?: rail;
 }

@@ -4,11 +4,7 @@ import {
   makeTemplate,
   startSchedule
 } from 'test/unit/util';
-/**
- * we won't test push-refresh and
- * push-load here, we will test them in vuescroll.spec.js.
- * we only test the options belong to scrollPanel
- */
+
 describe('scroll-panel', () => {
   let vm;
 
@@ -88,5 +84,50 @@ describe('scroll-panel', () => {
       expect(overY).toBe('hidden');
       done();
     });
+  });
+
+  // hover style
+  it('Padding', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 800,
+            h: 800
+          },
+          {
+            w: 400,
+            h: 400
+          }
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'native'
+            },
+            rail: {
+              size: '10px'
+            },
+            scrollPanel: {
+              padding: true
+            }
+          }
+        }
+      },
+      true
+    );
+
+    const vsElm = vm.$refs['vs'].$el;
+    startSchedule()
+      .then(() => {
+        const contentElm = vsElm.querySelector('.__view');
+        expect(contentElm.style.paddingRight).toBe('10px');
+        vm.ops.vuescroll.mode = 'slide';
+      })
+      .then(() => {
+        const contentElm = vsElm.querySelector('.__panel');
+        expect(contentElm.style.paddingRight).toBe('10px');
+        done();
+      });
   });
 });
