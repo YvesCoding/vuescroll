@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.7.4
+    * Vuescroll v4.7.5
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github Link: https://github.com/YvesCoding/vuescroll
@@ -124,11 +124,11 @@ function deepCopy(from, to, shallow) {
 }
 
 function deepMerge(from, to, force, shallow) {
-  to = to || {};
-
   if (shallow && isUndef(to)) {
     return from;
   }
+
+  to = to || {};
 
   if (isArray(from)) {
     if (!isArray(to) && force) {
@@ -140,8 +140,10 @@ function deepMerge(from, to, force, shallow) {
       });
     }
   } else if (from) {
-    if (!isPlainObj(from) && (force || isUndef(to))) {
-      to = from;
+    if (!isPlainObj(from)) {
+      if (force) {
+        to = from;
+      }
     } else {
       for (var key in from) {
         if (_typeof(from[key]) === 'object') {
@@ -481,10 +483,6 @@ var scrollPanel = {
     };
 
     var parent = getRealParent(this);
-
-    if (parent.mergedOptions.scrollPanel.padding) {
-      data.style['padding-right'] = parent.mergedOptions.rail.size;
-    }
 
     var _customPanel = parent.$slots['scroll-panel'];
     if (_customPanel) {
@@ -855,8 +853,9 @@ function getPanelChildren(h, context) {
   var _customContent = context.$slots['scroll-content'];
 
   viewStyle.width = getComplitableStyle('width', 'fit-content');
-  if (context.ops.padding) {
-    style.paddingRight = context.$parent.$parent.mergedOptions.rail.size; //props.ops.paddingValue;
+
+  if (context.mergedOptions.scrollPanel.padding) {
+    data.style.paddingRight = context.mergedOptions.rail.size;
   }
 
   if (_customContent) {
@@ -1940,7 +1939,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.7.4',
+  version: '4.7.5',
   refreshAll: refreshAll
 };
 
