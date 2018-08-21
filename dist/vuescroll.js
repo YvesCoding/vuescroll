@@ -164,7 +164,7 @@ function deepMerge(from, to, force, shallow) {
           if (isUndef(to[key])) {
             to[key] = deepCopy(from[key], to[key], shallow);
           } else {
-            to[key] = deepMerge(from[key], to[key], force, shallow);
+            deepMerge(from[key], to[key], force, shallow);
           }
         } else {
           if (isUndef(to[key]) || force) to[key] = from[key];
