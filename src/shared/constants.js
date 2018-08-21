@@ -9,3 +9,6 @@ export const smallChangeArray = [
   'mergedOptions.rail',
   'mergedOptions.bar'
 ];
+// refresh/load dom ref/key...
+export const __REFRESH_DOM_NAME = 'refreshDom';
+export const __LOAD_DOM_NAME = 'loadDom';

@@ -28,7 +28,7 @@ export function deepCopy(from, to, shallow) {
   return to;
 }
 
-export function deepMerge(from, to, force, shallow) {
+export function mergeObject(from, to, force, shallow) {
   if (shallow && isUndef(to)) {
     return from;
   }
@@ -41,7 +41,7 @@ export function deepMerge(from, to, force, shallow) {
     }
     if (isArray(to)) {
       from.forEach((item, index) => {
-        to[index] = deepMerge(item, to[index], force, shallow);
+        to[index] = mergeObject(item, to[index], force, shallow);
       });
     }
   } else if (from) {
@@ -55,7 +55,7 @@ export function deepMerge(from, to, force, shallow) {
           if (isUndef(to[key])) {
             to[key] = deepCopy(from[key], to[key], shallow);
           } else {
-            deepMerge(from[key], to[key], force, shallow);
+            mergeObject(from[key], to[key], force, shallow);
           }
         } else {
           if (isUndef(to[key]) || force) to[key] = from[key];
@@ -221,29 +221,60 @@ export function isIE() {
 /**
  * Insert children into user-passed slot at vnode level
  */
-export function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
-  parentVnode = parentVnode[0] ? parentVnode[0] : parentVnode;
-  const isComponent = !!parentVnode.componentOptions;
+export function insertChildrenIntoSlot(
+  h,
+  parentVnode = [],
+  childVNode = [],
+  data = {},
+  swapChildren
+) {
+  if (parentVnode && parentVnode.length > 1) {
+    return swapChildren
+      ? [...childVNode, ...parentVnode]
+      : [...parentVnode, ...childVNode];
+  }
+
+  parentVnode = parentVnode[0];
+  let { ch, tag, isComponent } = getVnodeInfo(parentVnode);
+  if (isComponent) {
+    parentVnode.data = mergeObject(
+      { attrs: parentVnode.componentOptions.propsData },
+      parentVnode.data,
+      false, // force: false
+      true // shallow: true
+    );
+  }
+  ch = swapChildren ? [...childVNode, ...ch] : [...ch, ...childVNode];
+  delete parentVnode.data.slot;
+
+  return h(tag, mergeObject(data, parentVnode.data, false, true), ch);
+}
+
+/**
+ *  Get the info of a vnode,
+ * vnode must be parentVnode
+ */
+export function getVnodeInfo(vnode) {
+  if (!vnode || vnode.length > 1) return {};
+
+  vnode = vnode[0] ? vnode[0] : vnode;
+  const isComponent = !!vnode.componentOptions;
   let ch;
   let tag;
 
   if (isComponent) {
-    ch = parentVnode.componentOptions.children;
-    tag = parentVnode.componentOptions.tag;
-    parentVnode.data = deepMerge(
-      { attrs: parentVnode.componentOptions.propsData },
-      parentVnode.data,
-      false, // false
-      true // shallow
-    );
+    ch = vnode.componentOptions.children || [];
+    tag = vnode.componentOptions.tag;
   } else {
-    ch = parentVnode.children;
-    tag = parentVnode.tag;
+    ch = vnode.children || [];
+    tag = vnode.tag;
   }
 
-  ch = [...(ch || []), ...(childVNode || [])];
-  delete parentVnode.data.slot;
-  return h(tag, deepMerge(data, parentVnode.data, false, true), ch);
+  return {
+    isComponent,
+    ch,
+    tag
+  };
 }
 
 /**

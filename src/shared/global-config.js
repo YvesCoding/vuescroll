@@ -1,4 +1,4 @@
-import { warn, deepMerge } from './util';
+import { warn, mergeObject } from './util';
 
 const baseConfig = {
   // vuescroll
@@ -94,7 +94,7 @@ let _extraValidate = null;
 export const extendOpts = (extraOpts, extraValidate) => {
   extraOpts = [].concat(extraOpts);
   extraOpts.forEach(opts => {
-    deepMerge(opts, baseConfig);
+    mergeObject(opts, baseConfig);
   });
 
   _extraValidate = extraValidate;

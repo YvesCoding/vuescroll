@@ -6,6 +6,7 @@ import Scroller from 'core/third-party/scroller/index';
 import { render } from 'core/third-party/scroller/render';
 import { listenContainer } from 'core/third-party/scroller/listener';
 import { getAccurateSize } from 'shared/util';
+import { __REFRESH_DOM_NAME, __LOAD_DOM_NAME } from 'shared/constants';
 
 /**
  * @description refresh and load callback
@@ -97,7 +98,7 @@ export default {
       // refresh.
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
         const refreshDom =
-          this.$refs['refreshDom'].elm || this.$refs['refreshDom'];
+          this.$refs[__REFRESH_DOM_NAME].elm || this.$refs[__REFRESH_DOM_NAME];
         refreshHeight = refreshDom.offsetHeight;
         if (!refreshDom.style.marginTop) {
           refreshDom.style.marginTop = -refreshHeight + 'px';
@@ -106,7 +107,8 @@ export default {
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
         const enableLoad = this.isEnableLoad();
         if (enableLoad) {
-          const loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
+          const loadDom =
+            this.$refs[__LOAD_DOM_NAME].elm || this.$refs[__LOAD_DOM_NAME];
           loadHeight = loadDom.offsetHeight;
           //  hide the trailing load dom..
           contentHeight -= loadHeight;
@@ -274,7 +276,7 @@ export default {
         widthPercentage < 100 ? widthPercentage + '%' : 0;
     },
     registryEvent(type) {
-      const domName = type == 'refresh' ? 'refreshDom' : 'loadDom';
+      const domName = type == 'refresh' ? __REFRESH_DOM_NAME : __LOAD_DOM_NAME;
       const activateFunc =
         type == 'refresh'
           ? this.scroller.activatePullToRefresh

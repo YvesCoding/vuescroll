@@ -123,7 +123,7 @@ function deepCopy(from, to, shallow) {
   return to;
 }
 
-function deepMerge(from, to, force, shallow) {
+function mergeObject(from, to, force, shallow) {
   if (shallow && isUndef(to)) {
     return from;
   }
@@ -136,7 +136,7 @@ function deepMerge(from, to, force, shallow) {
     }
     if (isArray(to)) {
       from.forEach(function (item, index) {
-        to[index] = deepMerge(item, to[index], force, shallow);
+        to[index] = mergeObject(item, to[index], force, shallow);
       });
     }
   } else if (from) {
@@ -150,7 +150,7 @@ function deepMerge(from, to, force, shallow) {
           if (isUndef(to[key])) {
             to[key] = deepCopy(from[key], to[key], shallow);
           } else {
-            deepMerge(from[key], to[key], force, shallow);
+            mergeObject(from[key], to[key], force, shallow);
           }
         } else {
           if (isUndef(to[key]) || force) to[key] = from[key];
@@ -281,26 +281,59 @@ function isIE() {
 /**
  * Insert children into user-passed slot at vnode level
  */
-function insertChildrenIntoSlot(h, parentVnode, childVNode, data) {
-  parentVnode = parentVnode[0] ? parentVnode[0] : parentVnode;
-  var isComponent = !!parentVnode.componentOptions;
+function insertChildrenIntoSlot(h) {
+  var parentVnode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var childVNode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var data = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+  var swapChildren = arguments[4];
+
+  if (parentVnode && parentVnode.length > 1) {
+    return swapChildren ? [].concat(toConsumableArray(childVNode), toConsumableArray(parentVnode)) : [].concat(toConsumableArray(parentVnode), toConsumableArray(childVNode));
+  }
+
+  parentVnode = parentVnode[0];
+
+  var _getVnodeInfo = getVnodeInfo(parentVnode),
+      ch = _getVnodeInfo.ch,
+      tag = _getVnodeInfo.tag,
+      isComponent = _getVnodeInfo.isComponent;
+
+  if (isComponent) {
+    parentVnode.data = mergeObject({ attrs: parentVnode.componentOptions.propsData }, parentVnode.data, false, // force: false
+    true // shallow: true
+    );
+  }
+  ch = swapChildren ? [].concat(toConsumableArray(childVNode), toConsumableArray(ch)) : [].concat(toConsumableArray(ch), toConsumableArray(childVNode));
+  delete parentVnode.data.slot;
+
+  return h(tag, mergeObject(data, parentVnode.data, false, true), ch);
+}
+
+/**
+ *  Get the info of a vnode,
+ * vnode must be parentVnode
+ */
+function getVnodeInfo(vnode) {
+  if (!vnode || vnode.length > 1) return {};
+
+  vnode = vnode[0] ? vnode[0] : vnode;
+  var isComponent = !!vnode.componentOptions;
   var ch = void 0;
   var tag = void 0;
 
   if (isComponent) {
-    ch = parentVnode.componentOptions.children;
-    tag = parentVnode.componentOptions.tag;
-    parentVnode.data = deepMerge({ attrs: parentVnode.componentOptions.propsData }, parentVnode.data, false, // false
-    true // shallow
-    );
+    ch = vnode.componentOptions.children || [];
+    tag = vnode.componentOptions.tag;
   } else {
-    ch = parentVnode.children;
-    tag = parentVnode.tag;
+    ch = vnode.children || [];
+    tag = vnode.tag;
   }
 
-  ch = [].concat(toConsumableArray(ch || []), toConsumableArray(childVNode || []));
-  delete parentVnode.data.slot;
-  return h(tag, deepMerge(data, parentVnode.data, false, true), ch);
+  return {
+    isComponent: isComponent,
+    ch: ch,
+    tag: tag
+  };
 }
 
 /**
@@ -697,7 +730,7 @@ var bar = {
           originBarStyle[key] = vm.$refs.thumb.style[key];
         });
 
-        deepMerge(hoverBarStyle, vm.$refs.thumb.style, true);
+        mergeObject(hoverBarStyle, vm.$refs.thumb.style, true);
       };
       bar.on['mouseleave'] = function () {
         /* istanbul ignore next */
@@ -1415,7 +1448,7 @@ var _extraValidate = null;
 var extendOpts = function extendOpts(extraOpts, extraValidate) {
   extraOpts = [].concat(extraOpts);
   extraOpts.forEach(function (opts) {
-    deepMerge(opts, baseConfig);
+    mergeObject(opts, baseConfig);
   });
 
   _extraValidate = extraValidate;
@@ -1427,8 +1460,8 @@ var extendOpts = function extendOpts(extraOpts, extraValidate) {
  */
 function hackPropsData() {
   var vm = this;
-  var _gfc = deepMerge(vm.$vuescrollConfig || {}, {});
-  var ops = deepMerge(baseConfig, _gfc);
+  var _gfc = mergeObject(vm.$vuescrollConfig || {}, {});
+  var ops = mergeObject(baseConfig, _gfc);
 
   vm.$options.propsData.ops = vm.$options.propsData.ops || {};
   Object.keys(vm.$options.propsData.ops).forEach(function (key) {
@@ -1437,7 +1470,7 @@ function hackPropsData() {
     }
   });
   // from ops to mergedOptions
-  deepMerge(ops, vm.mergedOptions);
+  mergeObject(ops, vm.mergedOptions);
 }
 var hackLifecycle = {
   data: function data() {
@@ -1465,6 +1498,7 @@ var hackLifecycle = {
 
 // some small changes.
 var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
+// refresh/load dom ref/key...
 
 var withBase = function withBase(createPanel, Vue$$1, components, opts) {
   return Vue$$1.component(opts.name || 'vueScroll', {

@@ -1,5 +1,5 @@
 import GCF, { validateOps } from 'shared/global-config';
-import { deepMerge, defineReactive } from 'shared/util';
+import { mergeObject, defineReactive } from 'shared/util';
 
 /**
  * hack the lifeCycle
@@ -7,8 +7,8 @@ import { deepMerge, defineReactive } from 'shared/util';
  */
 function hackPropsData() {
   const vm = this;
-  const _gfc = deepMerge(vm.$vuescrollConfig || {}, {});
-  const ops = deepMerge(GCF, _gfc);
+  const _gfc = mergeObject(vm.$vuescrollConfig || {}, {});
+  const ops = mergeObject(GCF, _gfc);
 
   vm.$options.propsData.ops = vm.$options.propsData.ops || {};
   Object.keys(vm.$options.propsData.ops).forEach(key => {
@@ -17,7 +17,7 @@ function hackPropsData() {
     }
   });
   // from ops to mergedOptions
-  deepMerge(ops, vm.mergedOptions);
+  mergeObject(ops, vm.mergedOptions);
 }
 export default {
   data() {

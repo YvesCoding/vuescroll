@@ -3,7 +3,7 @@ import {
   eventCenter,
   isSupportTouch,
   getRealParent,
-  deepMerge
+  mergeObject
 } from 'shared/util';
 
 const colorCache = {};
@@ -200,7 +200,7 @@ export default {
           originBarStyle[key] = vm.$refs.thumb.style[key];
         });
 
-        deepMerge(hoverBarStyle, vm.$refs.thumb.style, true);
+        mergeObject(hoverBarStyle, vm.$refs.thumb.style, true);
       };
       bar.on['mouseleave'] = () => {
         /* istanbul ignore next */

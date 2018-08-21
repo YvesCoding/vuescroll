@@ -1,5 +1,5 @@
-import { getComplitableStyle, isArray } from 'shared/util';
-
+import { getComplitableStyle, getVnodeInfo } from 'shared/util';
+import { __REFRESH_DOM_NAME, __LOAD_DOM_NAME } from 'shared/constants';
 export function getPanelData(context) {
   // scrollPanel data start
   const data = {
@@ -31,24 +31,14 @@ export function getPanelData(context) {
 }
 
 export function getPanelChildren(h, context) {
-  let renderChildren = [context.$slots.default];
+  let renderChildren =
+    getVnodeInfo(context.$slots['scroll-panel']).ch || context.$slots.default;
 
-  /**
-   *  Keep the children-rendered-order in case of the style crash
-   *  when push-load or pull-refresh is enable
-   */
-  let _customPanel = context.$slots['scroll-panel'];
-  if (_customPanel) {
-    /* istanbul ignore if */
-    if (_customPanel.length > 1) {
-      renderChildren = _customPanel.concat(renderChildren);
-    } else {
-      _customPanel = _customPanel[0];
-      const ch = _customPanel.children;
-
-      if (isArray(ch)) {
-        renderChildren = ch.concat(renderChildren);
-      }
+  for (let i = 0; i < renderChildren.length; i++) {
+    const key = renderChildren[i].key;
+    if (key === __LOAD_DOM_NAME || key === __REFRESH_DOM_NAME) {
+      renderChildren.splice(i, 1);
+      i--;
     }
   }
 
@@ -56,7 +46,7 @@ export function getPanelChildren(h, context) {
   if (context.mergedOptions.vuescroll.pullRefresh.enable) {
     let refreshDom = createTipDom(h, context, 'refresh');
     renderChildren.unshift(
-      <div class="__refresh" ref="refreshDom" key="refshDom">
+      <div class="__refresh" ref={__REFRESH_DOM_NAME} key={__REFRESH_DOM_NAME}>
         {[refreshDom, context.pullRefreshTip]}
       </div>
     );
@@ -66,11 +56,10 @@ export function getPanelChildren(h, context) {
   if (context.mergedOptions.vuescroll.pushLoad.enable) {
     let loadDom = createTipDom(h, context, 'load');
     const enableLoad = context.isEnableLoad();
-
     renderChildren.push(
       <div
-        ref="loadDom"
-        key="loadDom"
+        ref={__LOAD_DOM_NAME}
+        key={__LOAD_DOM_NAME}
         class={{ __load: true, '__load-disabled': !enableLoad }}
       >
         {[loadDom, context.pushLoadTip]}
@@ -78,7 +67,7 @@ export function getPanelChildren(h, context) {
     );
   }
 
-  return renderChildren;
+  return context.$slots.default;
 }
 
 // Create load or refresh tip dom of each stages
