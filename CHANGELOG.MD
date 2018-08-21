@@ -1,3 +1,23 @@
+<a name="4.7.5"></a>
+## [4.7.5](https://github.com/YvesCoding/vuescroll/compare/v4.7.1-rc.10...v4.7.5) (2018-08-21)
+
+
+### Bug Fixes
+
+* Correct scroll position when use scrollTo ([7a98fb4](https://github.com/YvesCoding/vuescroll/commit/7a98fb4)), closes [#51](https://github.com/YvesCoding/vuescroll/issues/51)
+* Incorrect bar size in sometimes on Edge ([b04e62c](https://github.com/YvesCoding/vuescroll/commit/b04e62c)), closes [#52](https://github.com/YvesCoding/vuescroll/issues/52)
+* Some test cases and use setTimeout to update scroll status ([c98ff18](https://github.com/YvesCoding/vuescroll/commit/c98ff18))
+* **rail:** After clicking middle of rail doesn't scroll to the center of content ([1019063](https://github.com/YvesCoding/vuescroll/commit/1019063))
+
+## Breaking Changes
+
+- Remove **scrollContent** in options and put `padding` to **scrollPanel**
+
+## Refactor
+
+- Remove **scrollContent** component which only exists in native mode, and merge its part into **scrollPanel**. 
+
+
 <a name="4.7.1-rc.10"></a>
 ## [4.7.1-rc.10](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.7.1-rc.10) (2018-08-05)
 
