@@ -287,6 +287,35 @@ export default {
       const height = tipDom.offsetHeight;
 
       activateFunc.bind(this.scroller)(height, cbs);
+    },
+    /**
+     * We don't want it to be computed because computed
+     * will cache the result and we don't want to cache the result and always
+     * get the fresh.
+     */
+    isEnableLoad() {
+      // Enable load only when clientHeight <= scrollHeight
+      if (!this._isMounted) return false;
+      const panelElm = this.scrollPanelElm;
+      const containerElm = this.$el;
+
+      /* istanbul ignore if */
+      if (!this.mergedOptions.vuescroll.pushLoad.enable) {
+        return false;
+      }
+
+      let loadDom = null;
+      if (this.$refs['loadDom']) {
+        loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
+      }
+
+      const loadHeight = (loadDom && loadDom.offsetHeight) || 0;
+      /* istanbul ignore if */
+      if (panelElm.scrollHeight - loadHeight <= containerElm.clientHeight) {
+        return false;
+      }
+
+      return true;
     }
   }
 };
