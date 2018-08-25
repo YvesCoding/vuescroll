@@ -1,6 +1,9 @@
 import { installResizeDetection } from 'core/third-party/resize-detector/index';
+import api from './api';
+import updateSlide from './update-slide';
 
 export default {
+  mixins: [api, updateSlide],
   mounted() {
     this.$nextTick(() => {
       if (!this._isDestroyed && !this.renderError) {
@@ -31,6 +34,12 @@ export default {
     }
   },
   methods: {
+    getCurrentviewDom() {
+      this.getCurrentviewDomSlide();
+    },
+    internalScrollTo(destX, destY, animate, force) {
+      this.slideScrollTo(destX, destY, animate, undefined, force);
+    },
     updateBarStateAndEmitEvent(eventType, nativeEvent = null) {
       if (!this.scroller) {
         return;

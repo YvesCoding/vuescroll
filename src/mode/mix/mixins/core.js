@@ -1,4 +1,8 @@
 import { installResizeDetection } from 'core/third-party/resize-detector/index';
+import api from './api';
+import slideMix from 'mode/slide/mixins/update-slide';
+import nativeMix from 'mode/native/mixins/update-native';
+
 /**
  * Resolve coordinate by mode
  * @param {*} mode
@@ -21,6 +25,7 @@ function resolveOffset(mode, vm) {
 }
 
 export default {
+  mixins: [api, slideMix, nativeMix],
   mounted() {
     this.$nextTick(() => {
       if (!this._isDestroyed && !this.renderError) {

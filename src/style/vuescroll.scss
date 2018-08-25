@@ -79,7 +79,7 @@
       margin-right: 10px;
       width: 25px;
       height: 25px;
-      vertical-align: middle;
+      vertical-align: sub;
       path,
       rect {
         fill: #20a0ff;
@@ -105,7 +105,7 @@
       }
     }
   }
-  .__load-disabled {
+  .__none {
     display: none;
   }
   @-webkit-keyframes loading-rotate {

@@ -228,6 +228,7 @@ export function insertChildrenIntoSlot(
   data = {},
   swapChildren
 ) {
+  /* istanbul ignore if */
   if (parentVnode && parentVnode.length > 1) {
     return swapChildren
       ? [...childVNode, ...parentVnode]

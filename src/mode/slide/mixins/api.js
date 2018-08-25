@@ -3,35 +3,47 @@ import { warn } from 'shared/util';
 
 export default {
   methods: {
-    // private api
-    internalScrollTo(destX, destY, animate, force) {
+    slideScrollTo(destX, destY, animate, force) {
       this.scroller.scrollTo(destX, destY, animate, undefined, force);
     },
     zoomBy(factor, animate, originLeft, originTop, callback) {
+      if (!this.scroller) {
+        warn('zoomBy and zoomTo are only for slide mode!');
+        return;
+      }
       this.scroller.zoomBy(factor, animate, originLeft, originTop, callback);
     },
     zoomTo(level, animate = false, originLeft, originTop, callback) {
+      if (!this.scroller) {
+        warn('zoomBy and zoomTo are only for slide mode!');
+        return;
+      }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
     getCurrentPage() {
-      if (!this.mergedOptions.vuescroll.paging) {
+      if (!this.scroller || !this.mergedOptions.vuescroll.paging) {
         warn(
-          'getCurrentPage and goToPage are only available when paging is enble!'
+          'getCurrentPage and goToPage are only for slide mode and paging is enble!'
         );
         return;
       }
       return this.scroller.getCurrentPage();
     },
     goToPage(dest, animate = false) {
-      if (!this.mergedOptions.vuescroll.paging) {
+      if (!this.scroller || !this.mergedOptions.vuescroll.paging) {
         warn(
-          'getCurrentPage and goToPage are only available when paging is enble!'
+          'getCurrentPage and goToPage are only for slide mode and paging is enble!'
         );
         return;
       }
       this.scroller.goToPage(dest, animate);
     },
     triggerRefreshOrLoad(type) {
+      if (!this.scroller) {
+        warn('You can only use triggerRefreshOrLoad in slide mode!');
+        return;
+      }
+
       const isRefresh = this.mergedOptions.vuescroll.pullRefresh.enable;
       const isLoad = this.mergedOptions.vuescroll.pushLoad.enable;
 
@@ -54,7 +66,7 @@ export default {
       this.scroller.triggerRefreshOrLoad(type);
       return true;
     },
-    getCurrentviewDom() {
+    getCurrentviewDomSlide() {
       const parent = this.scrollPanelElm;
       const domFragment = getCurrentViewportDom(parent, this.$el);
       return domFragment;

@@ -44,25 +44,26 @@ export function getPanelChildren(h, context) {
 
   // handle refresh
   if (context.mergedOptions.vuescroll.pullRefresh.enable) {
-    let refreshDom = createTipDom(h, context, 'refresh');
     renderChildren.unshift(
-      <div class="__refresh" ref={__REFRESH_DOM_NAME} key={__REFRESH_DOM_NAME}>
-        {[refreshDom, context.pullRefreshTip]}
+      <div
+        class={{ __refresh: true, __none: !context.isEnableRefresh() }}
+        ref={__REFRESH_DOM_NAME}
+        key={__REFRESH_DOM_NAME}
+      >
+        {[createTipDom(h, context, 'refresh'), context.pullRefreshTip]}
       </div>
     );
   }
 
   // handle load
   if (context.mergedOptions.vuescroll.pushLoad.enable) {
-    let loadDom = createTipDom(h, context, 'load');
-    const enableLoad = context.isEnableLoad();
     renderChildren.push(
       <div
         ref={__LOAD_DOM_NAME}
         key={__LOAD_DOM_NAME}
-        class={{ __load: true, '__load-disabled': !enableLoad }}
+        class={{ __load: true, __none: !context.isEnableLoad() }}
       >
-        {[loadDom, context.pushLoadTip]}
+        {[createTipDom(h, context, 'load'), context.pushLoadTip]}
       </div>
     );
   }
@@ -129,6 +130,22 @@ function createTipDom(h, context, type) {
             <path d="M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z" />
           </g>
         </g>
+      </svg>
+    );
+    break;
+  case 'beforeDeactive':
+    dom = (
+      <svg
+        viewBox="0 0 1024 1024"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        p-id="3562"
+      >
+        <path
+          d="M512 0C229.706831 0 0 229.667446 0 512s229.667446 512 512 512c282.293169 0 512-229.667446 512-512S794.332554 0 512 0z m282.994215 353.406031L433.2544 715.145846a31.484062 31.484062 0 0 1-22.275938 9.231754h-0.4096a31.586462 31.586462 0 0 1-22.449231-9.814646L228.430769 546.327631a31.507692 31.507692 0 0 1 45.701908-43.386093l137.4208 144.785724L750.442338 308.854154a31.507692 31.507692 0 1 1 44.551877 44.551877z"
+          fill=""
+          p-id="3563"
+        />
       </svg>
     );
     break;

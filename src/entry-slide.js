@@ -1,5 +1,5 @@
 import { refreshAll } from 'core/mixins/api';
-import install from './slide/index';
+import install from 'mode/slide/index';
 
 const Vuescroll = {
   install,

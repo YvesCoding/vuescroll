@@ -12,7 +12,8 @@ const banner = `/*
     * Vuescroll v${version}
     * (c) 2018-${new Date().getFullYear()} Yi(Yves) Wang
     * Released under the MIT License
-    * Github Link: https://github.com/YvesCoding/vuescroll
+    * Github: https://github.com/YvesCoding/vuescroll
+    * Website: https://github.com/YvesCoding/vuescroll
     */
    `;
 
@@ -29,42 +30,42 @@ const resolve = p => {
 
 const builds = {
   mix: {
-    entry: resolve('mode/entry-mix.js'),
+    entry: resolve('entry-mix.js'),
     dest: resolve('dist/vuescroll.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   'mix-prod': {
-    entry: resolve('mode/entry-mix.js'),
+    entry: resolve('entry-mix.js'),
     dest: resolve('dist/vuescroll.min.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   native: {
-    entry: resolve('mode/entry-native.js'),
+    entry: resolve('entry-native.js'),
     dest: resolve('dist/vuescroll-native.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   'native-prod': {
-    entry: resolve('mode/entry-native.js'),
+    entry: resolve('entry-native.js'),
     dest: resolve('dist/vuescroll-native.min.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   slide: {
-    entry: resolve('mode/entry-slide.js'),
+    entry: resolve('entry-slide.js'),
     dest: resolve('dist/vuescroll-slide.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   'slide-prod': {
-    entry: resolve('mode/entry-slide.js'),
+    entry: resolve('entry-slide.js'),
     dest: resolve('dist/vuescroll-slide.min.js'),
     format: 'umd',
     external: ['vue'],

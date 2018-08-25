@@ -5,7 +5,7 @@ import render from './render';
 import mixins from './mixins';
 import { config, validator } from './config';
 
-import { _init } from 'mode/shared/util';
+import { _install } from 'mode/shared/util';
 
 export default function install(Vue, opts = {}) {
   opts._components = [scrollPanel, bar];
@@ -15,5 +15,5 @@ export default function install(Vue, opts = {}) {
   opts.config = config;
   opts.validator = validator;
 
-  _init(opts);
+  _install(opts);
 }

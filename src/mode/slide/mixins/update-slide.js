@@ -97,16 +97,16 @@ export default {
       // the refresh-tip dom. let it to be invisible when doesn't trigger
       // refresh.
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
-        const refreshDom =
-          this.$refs[__REFRESH_DOM_NAME].elm || this.$refs[__REFRESH_DOM_NAME];
-        refreshHeight = refreshDom.offsetHeight;
-        if (!refreshDom.style.marginTop) {
+        if (this.isEnableRefresh()) {
+          const refreshDom =
+            this.$refs[__REFRESH_DOM_NAME].elm ||
+            this.$refs[__REFRESH_DOM_NAME];
+          refreshHeight = refreshDom.offsetHeight;
           refreshDom.style.marginTop = -refreshHeight + 'px';
         }
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        const enableLoad = this.isEnableLoad();
-        if (enableLoad) {
+        if (this.isEnableLoad()) {
           const loadDom =
             this.$refs[__LOAD_DOM_NAME].elm || this.$refs[__LOAD_DOM_NAME];
           loadHeight = loadDom.offsetHeight;
@@ -294,15 +294,9 @@ export default {
      * get the fresh.
      */
     isEnableLoad() {
-      // Enable load only when clientHeight <= scrollHeight
       if (!this._isMounted) return false;
       const panelElm = this.scrollPanelElm;
       const containerElm = this.$el;
-
-      /* istanbul ignore if */
-      if (!this.mergedOptions.vuescroll.pushLoad.enable) {
-        return false;
-      }
 
       let loadDom = null;
       if (this.$refs['loadDom']) {
@@ -310,11 +304,16 @@ export default {
       }
 
       const loadHeight = (loadDom && loadDom.offsetHeight) || 0;
+      // Enable load only when clientHeight <= scrollHeight
       /* istanbul ignore if */
       if (panelElm.scrollHeight - loadHeight <= containerElm.clientHeight) {
         return false;
       }
 
+      return true;
+    },
+    isEnableRefresh() {
+      if (!this._isMounted) return false;
       return true;
     }
   }

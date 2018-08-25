@@ -2,7 +2,8 @@
     * Vuescroll v4.7.5
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
-    * Github Link: https://github.com/YvesCoding/vuescroll
+    * Github: https://github.com/YvesCoding/vuescroll
+    * Website: https://github.com/YvesCoding/vuescroll
     */
    
 (function (global, factory) {
@@ -323,6 +324,7 @@ function insertChildrenIntoSlot(h) {
   var data = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
   var swapChildren = arguments[4];
 
+  /* istanbul ignore if */
   if (parentVnode && parentVnode.length > 1) {
     return swapChildren ? [].concat(toConsumableArray(childVNode), toConsumableArray(parentVnode)) : [].concat(toConsumableArray(parentVnode), toConsumableArray(childVNode));
   }
@@ -991,26 +993,27 @@ function getPanelChildren$1(h, context) {
 
   // handle refresh
   if (context.mergedOptions.vuescroll.pullRefresh.enable) {
-    var refreshDom = createTipDom(h, context, 'refresh');
     renderChildren.unshift(h(
       'div',
-      { 'class': '__refresh', ref: __REFRESH_DOM_NAME, key: __REFRESH_DOM_NAME },
-      [[refreshDom, context.pullRefreshTip]]
+      {
+        'class': { __refresh: true, __none: !context.isEnableRefresh() },
+        ref: __REFRESH_DOM_NAME,
+        key: __REFRESH_DOM_NAME
+      },
+      [[createTipDom(h, context, 'refresh'), context.pullRefreshTip]]
     ));
   }
 
   // handle load
   if (context.mergedOptions.vuescroll.pushLoad.enable) {
-    var loadDom = createTipDom(h, context, 'load');
-    var enableLoad = context.isEnableLoad();
     renderChildren.push(h(
       'div',
       {
         ref: __LOAD_DOM_NAME,
         key: __LOAD_DOM_NAME,
-        'class': { __load: true, '__load-disabled': !enableLoad }
+        'class': { __load: true, __none: !context.isEnableLoad() }
       },
-      [[loadDom, context.pushLoadTip]]
+      [[createTipDom(h, context, 'load'), context.pushLoadTip]]
     ));
   }
 
@@ -1094,6 +1097,26 @@ function createTipDom(h, context, type) {
         )])]
       );
       break;
+    case 'beforeDeactive':
+      dom = h(
+        'svg',
+        {
+          attrs: {
+            viewBox: '0 0 1024 1024',
+            version: '1.1',
+            xmlns: 'http://www.w3.org/2000/svg',
+            'p-id': '3562'
+          }
+        },
+        [h('path', {
+          attrs: {
+            d: 'M512 0C229.706831 0 0 229.667446 0 512s229.667446 512 512 512c282.293169 0 512-229.667446 512-512S794.332554 0 512 0z m282.994215 353.406031L433.2544 715.145846a31.484062 31.484062 0 0 1-22.275938 9.231754h-0.4096a31.586462 31.586462 0 0 1-22.449231-9.814646L228.430769 546.327631a31.507692 31.507692 0 0 1 45.701908-43.386093l137.4208 144.785724L750.442338 308.854154a31.507692 31.507692 0 1 1 44.551877 44.551877z',
+            fill: '',
+            'p-id': '3563'
+          }
+        })]
+      );
+      break;
   }
   return dom;
 }
@@ -1129,6 +1152,46 @@ function createPanel$2(h, vm) {
   } else if (vm.mode == 'slide') {
     return createPanel$1(h, vm);
   }
+}
+
+// detect content size change
+function installResizeDetection(element, callback) {
+  return injectObject(element, callback);
+}
+
+function injectObject(element, callback) {
+  if (element.hasResized) {
+    return;
+  }
+
+  var OBJECT_STYLE = 'display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;';
+  // define a wrap due to ie's zIndex bug
+  var objWrap = document.createElement('div');
+  objWrap.style.cssText = OBJECT_STYLE;
+  var object = document.createElement('object');
+  object.style.cssText = OBJECT_STYLE;
+  object.type = 'text/html';
+  object.tabIndex = -1;
+  object.onload = function () {
+    eventCenter(object.contentDocument.defaultView, 'resize', callback);
+  };
+  // https://github.com/wnr/element-resize-detector/blob/aafe9f7ea11d1eebdab722c7c5b86634e734b9b8/src/detection-strategy/object.js#L159
+  if (!isIE()) {
+    object.data = 'about:blank';
+  }
+  objWrap.isResizeElm = true;
+  objWrap.appendChild(object);
+  element.appendChild(objWrap);
+  if (isIE()) {
+    object.data = 'about:blank';
+  }
+  return function destroy() {
+    if (object.contentDocument) {
+      eventCenter(object.contentDocument.defaultView, 'resize', callback, 'off');
+    }
+    element.removeChild(objWrap);
+    element.hasResized = false;
+  };
 }
 
 /**
@@ -1526,46 +1589,6 @@ var hackLifecycle = {
   }
 };
 
-// detect content size change
-function installResizeDetection(element, callback) {
-  return injectObject(element, callback);
-}
-
-function injectObject(element, callback) {
-  if (element.hasResized) {
-    return;
-  }
-
-  var OBJECT_STYLE = 'display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;';
-  // define a wrap due to ie's zIndex bug
-  var objWrap = document.createElement('div');
-  objWrap.style.cssText = OBJECT_STYLE;
-  var object = document.createElement('object');
-  object.style.cssText = OBJECT_STYLE;
-  object.type = 'text/html';
-  object.tabIndex = -1;
-  object.onload = function () {
-    eventCenter(object.contentDocument.defaultView, 'resize', callback);
-  };
-  // https://github.com/wnr/element-resize-detector/blob/aafe9f7ea11d1eebdab722c7c5b86634e734b9b8/src/detection-strategy/object.js#L159
-  if (!isIE()) {
-    object.data = 'about:blank';
-  }
-  objWrap.isResizeElm = true;
-  objWrap.appendChild(object);
-  element.appendChild(objWrap);
-  if (isIE()) {
-    object.data = 'about:blank';
-  }
-  return function destroy() {
-    if (object.contentDocument) {
-      eventCenter(object.contentDocument.defaultView, 'resize', callback, 'off');
-    }
-    element.removeChild(objWrap);
-    element.hasResized = false;
-  };
-}
-
 var withBase = function withBase(createPanel, Vue$$1, components, opts) {
   return Vue$$1.component(opts.name || 'vueScroll', {
     components: components,
@@ -1923,7 +1946,7 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
  * 3. Mix
  * 4. Config
  */
-function _init() {
+function _install() {
   var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var _components = opts._components,
       render = opts.render,
@@ -2001,28 +2024,34 @@ function getCurrentViewportDom(parent, container) {
   return domFragment;
 }
 
-var api$1 = {
+var nativeApi = {
   methods: {
-    // private api
-    internalScrollTo: function internalScrollTo(destX, destY, animate, force) {
-      if (this.mode == 'native') {
-        if (animate) {
-          // hadnle for scroll complete
-          var scrollingComplete = this.scrollingComplete.bind(this);
+    nativeScrollTo: function nativeScrollTo(destX, destY, animate) {
+      if (animate) {
+        // hadnle for scroll complete
+        var scrollingComplete = this.scrollingComplete.bind(this);
 
-          goScrolling(this.$refs['scrollPanel'].$el, destX - this.$refs['scrollPanel'].$el.scrollLeft, destY - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing, scrollingComplete);
-        } else {
-          this.$refs['scrollPanel'].$el.scrollTop = destY;
-          this.$refs['scrollPanel'].$el.scrollLeft = destX;
-        }
+        goScrolling(this.$refs['scrollPanel'].$el, destX - this.$refs['scrollPanel'].$el.scrollLeft, destY - this.$refs['scrollPanel'].$el.scrollTop, this.mergedOptions.scrollPanel.speed, this.mergedOptions.scrollPanel.easing, scrollingComplete);
+      } else {
+        this.$refs['scrollPanel'].$el.scrollTop = destY;
+        this.$refs['scrollPanel'].$el.scrollLeft = destX;
       }
-      // for non-native we use scroller's scorllTo
-      else if (this.mode == 'slide') {
-          this.scroller.scrollTo(destX, destY, animate, undefined, force);
-        }
+    },
+    getCurrentviewDomNative: function getCurrentviewDomNative() {
+      var parent = this.scrollContentElm;
+      var domFragment = getCurrentViewportDom(parent, this.$el);
+      return domFragment;
+    }
+  }
+};
+
+var slideApi = {
+  methods: {
+    slideScrollTo: function slideScrollTo(destX, destY, animate, force) {
+      this.scroller.scrollTo(destX, destY, animate, undefined, force);
     },
     zoomBy: function zoomBy(factor, animate, originLeft, originTop, callback) {
-      if (this.mode != 'slide') {
+      if (!this.scroller) {
         warn('zoomBy and zoomTo are only for slide mode!');
         return;
       }
@@ -2034,14 +2063,14 @@ var api$1 = {
       var originTop = arguments[3];
       var callback = arguments[4];
 
-      if (this.mode != 'slide') {
+      if (!this.scroller) {
         warn('zoomBy and zoomTo are only for slide mode!');
         return;
       }
       this.scroller.zoomTo(level, animate, originLeft, originTop, callback);
     },
     getCurrentPage: function getCurrentPage() {
-      if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
+      if (!this.scroller || !this.mergedOptions.vuescroll.paging) {
         warn('getCurrentPage and goToPage are only for slide mode and paging is enble!');
         return;
       }
@@ -2050,14 +2079,14 @@ var api$1 = {
     goToPage: function goToPage(dest) {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-      if (this.mode != 'slide' || !this.mergedOptions.vuescroll.paging) {
+      if (!this.scroller || !this.mergedOptions.vuescroll.paging) {
         warn('getCurrentPage and goToPage are only for slide mode and paging is enble!');
         return;
       }
       this.scroller.goToPage(dest, animate);
     },
     triggerRefreshOrLoad: function triggerRefreshOrLoad(type) {
-      if (this.mode != 'slide') {
+      if (!this.scroller) {
         warn('You can only use triggerRefreshOrLoad in slide mode!');
         return;
       }
@@ -2082,240 +2111,31 @@ var api$1 = {
       }
 
       this.scroller.triggerRefreshOrLoad(type);
-
       return true;
     },
-    getCurrentviewDom: function getCurrentviewDom() {
-      var parent = this.mode == 'slide' ? this.scrollPanelElm : this.scrollContentElm;
-
+    getCurrentviewDomSlide: function getCurrentviewDomSlide() {
+      var parent = this.scrollPanelElm;
       var domFragment = getCurrentViewportDom(parent, this.$el);
       return domFragment;
     }
   }
 };
 
-/**
- * Resolve coordinate by mode
- * @param {*} mode
- * @param {*} vm
- */
-function resolveOffset(mode, vm) {
-  var axis = {};
-  switch (mode) {
-    case 'native':
-      axis = {
-        x: vm.scrollPanelElm.scrollLeft,
-        y: vm.scrollPanelElm.scrollTop
-      };
-      break;
-    case 'slide':
-      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-      break;
-  }
-  return axis;
-}
-
-var core$1 = {
-  mounted: function mounted() {
-    var _this = this;
-
-    this.$nextTick(function () {
-      if (!_this._isDestroyed && !_this.renderError) {
-        // update again to ensure bar's size is correct.
-        _this.updateBarStateAndEmitEvent();
-        // update scroller again since we get real dom.
-        if (_this.mode == 'slide') {
-          _this.updateScroller();
-        }
-        _this.scrollToAnchor();
-      }
-    });
-  },
-
-  computed: {
-    mode: function mode() {
-      return this.mergedOptions.vuescroll.mode;
-    },
-    pullRefreshTip: function pullRefreshTip() {
-      return this.mergedOptions.vuescroll.pullRefresh.tips[this.vuescroll.state.refreshStage];
-    },
-    pushLoadTip: function pushLoadTip() {
-      return this.mergedOptions.vuescroll.pushLoad.tips[this.vuescroll.state.loadStage];
-    },
-    refreshLoad: function refreshLoad() {
-      return this.mergedOptions.vuescroll.pullRefresh.enable || this.mergedOptions.vuescroll.pushLoad.enable;
-    }
-  },
+var api$1 = {
+  mixins: [slideApi, nativeApi],
   methods: {
-    updateBarStateAndEmitEvent: function updateBarStateAndEmitEvent(eventType) {
-      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
+    // private api
+    internalScrollTo: function internalScrollTo(destX, destY, animate, force) {
       if (this.mode == 'native') {
-        this.updateNativeModeBarState();
-      } else if (this.mode == 'slide') {
-        if (!this.scroller) {
-          return;
+        this.nativeScrollTo(destX, destY, animate);
+      }
+      // for non-native we use scroller's scorllTo
+      else if (this.mode == 'slide') {
+          this.slideScrollTo(destX, destY, animate, force);
         }
-
-        this.updateSlideModeBarState();
-      }
-      if (eventType) {
-        this.emitEvent(eventType, nativeEvent);
-      }
-      if (this.mergedOptions.bar.onlyShowBarOnScroll) {
-        if (eventType == 'handle-scroll' || eventType == 'handle-resize' || eventType == 'refresh-status' || eventType == 'window-resize' || eventType == 'options-change') {
-          this.showAndDefferedHideBar(true /* forceHideBar: true */);
-        }
-      } else {
-        this.showAndDefferedHideBar();
-      }
     },
-    emitEvent: function emitEvent(eventType) {
-      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      var _scrollPanelElm = this.scrollPanelElm,
-          scrollHeight = _scrollPanelElm.scrollHeight,
-          scrollWidth = _scrollPanelElm.scrollWidth,
-          clientHeight = _scrollPanelElm.clientHeight,
-          clientWidth = _scrollPanelElm.clientWidth,
-          scrollTop = _scrollPanelElm.scrollTop,
-          scrollLeft = _scrollPanelElm.scrollLeft;
-
-
-      var vertical = {
-        type: 'vertical'
-      };
-      var horizontal = {
-        type: 'horizontal'
-      };
-
-      if (this.mode == 'slide') {
-        scrollHeight = this.scroller.__contentHeight;
-        scrollWidth = this.scroller.__contentWidth;
-        scrollTop = this.scroller.__scrollTop;
-        scrollLeft = this.scroller.__scrollLeft;
-        clientHeight = this.$el.clientHeight;
-        clientWidth = this.$el.clientWidth;
-      }
-
-      vertical['process'] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
-      horizontal['process'] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
-
-      vertical['barSize'] = this.bar.vBar.state.size;
-      horizontal['barSize'] = this.bar.hBar.state.size;
-      vertical['scrollTop'] = scrollTop;
-      horizontal['scrollLeft'] = scrollLeft;
-      // Current scroll direction
-      vertical['directionY'] = this.vuescroll.state.posY;
-      horizontal['directionX'] = this.vuescroll.state.posX;
-
-      this.$emit(eventType, vertical, horizontal, nativeEvent);
-    },
-    recordCurrentPos: function recordCurrentPos() {
-      var mode = this.mode;
-      if (this.mode !== this.lastMode) {
-        mode = this.lastMode;
-        this.lastMode = this.mode;
-      }
-
-      var state = this.vuescroll.state;
-      var axis = resolveOffset(mode, this);
-      var oldX = state.internalScrollLeft;
-      var oldY = state.internalScrollTop;
-
-      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
-      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
-
-      state.internalScrollLeft = axis.x;
-      state.internalScrollTop = axis.y;
-    },
-    initVariables: function initVariables() {
-      this.lastMode = this.mode;
-      this.$el._isVuescroll = true;
-      this.clearScrollingTimes();
-    },
-    refreshMode: function refreshMode() {
-      var x = this.vuescroll.state.internalScrollLeft;
-      var y = this.vuescroll.state.internalScrollTop;
-      if (this.destroyScroller) {
-        this.scroller.stop();
-        this.destroyScroller();
-        this.destroyScroller = null;
-      }
-      if (this.mode == 'slide') {
-        this.destroyScroller = this.registryScroller();
-      } else if (this.mode == 'native') {
-        // remove the legacy transform style attribute
-        this.scrollPanelElm.style.transform = '';
-        this.scrollPanelElm.style.transformOrigin = '';
-      }
-      // keep the last-mode's position.
-      this.scrollTo({ x: x, y: y }, false, true /* force */);
-    },
-    refreshInternalStatus: function refreshInternalStatus() {
-      // 1.set vuescroll height or width according to
-      // sizeStrategy
-      this.setVsSize();
-      // 2. registry resize event
-      this.registryResize();
-      // 3. registry scroller if mode is 'slide'
-      // or remove 'transform origin' is the mode is not `slide`
-      this.refreshMode();
-      // 4. update scrollbar's height/width
-      this.updateBarStateAndEmitEvent('refresh-status');
-    },
-    registryResize: function registryResize() {
-      var _this2 = this;
-
-      /* istanbul ignore next */
-      if (this.destroyResize) {
-        // when toggling the mode
-        // we should clean the flag-object.
-        this.destroyResize();
-      }
-
-      var contentElm = null;
-      if (this.mode == 'slide') {
-        contentElm = this.scrollPanelElm;
-      } else if (this.mode == 'native') {
-        // scrollContent maybe a vue-component or a pure-dom
-        contentElm = this.scrollContentElm;
-      }
-
-      var handleWindowResize = function handleWindowResize() /* istanbul ignore next */{
-        this.updateBarStateAndEmitEvent('window-resize');
-        if (this.mode == 'slide') {
-          this.vuescroll.updatedCbs.push(this.updateScroller);
-          this.$forceUpdate();
-        }
-      };
-      var handleDomResize = function handleDomResize() {
-        var currentSize = {};
-        if (_this2.mode == 'slide') {
-          currentSize['width'] = _this2.scroller.__contentWidth;
-          currentSize['height'] = _this2.scroller.__contentHeight;
-          _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
-          // update scroller should after rendering
-          _this2.vuescroll.updatedCbs.push(_this2.updateScroller);
-          _this2.$forceUpdate();
-        } else if (_this2.mode == 'native') {
-          currentSize['width'] = _this2.scrollPanelElm.scrollWidth;
-          currentSize['height'] = _this2.scrollPanelElm.scrollHeight;
-          _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
-        }
-      };
-      window.addEventListener('resize', handleWindowResize.bind(this), false);
-
-      var resizeEnable = this.mergedOptions.vuescroll.detectResize;
-      var destroyDomResize = resizeEnable ? installResizeDetection(contentElm, handleDomResize) : function () {};
-
-      var destroyWindowResize = function destroyWindowResize() {
-        window.removeEventListener('resize', handleWindowResize, false);
-      };
-
-      this.destroyResize = function () {
-        destroyWindowResize();
-        destroyDomResize();
-      };
+    getCurrentviewDom: function getCurrentviewDom() {
+      return this.mode == 'slide' ? this.getCurrentviewDomSlide() : this.getCurrentviewDomNative();
     }
   }
 };
@@ -2711,7 +2531,7 @@ var members = {
         this.__refreshStart();
         this.__refreshActive = true;
       }
-    } else {
+    } else if (type == 'load') {
       this.__publish(this.__scrollLeft, this.__maxScrollTop + this.__loadHeight, this.__zoomLevel, true);
       if (this.__loadStart) {
         this.__loadStart();
@@ -2919,9 +2739,12 @@ var members = {
       }
     }
 
-    // Limit for allowed ranges
-    left = Math.max(Math.min(self.__maxScrollLeft, left), 0);
-    top = Math.max(Math.min(self.__maxScrollTop, top), 0);
+    if (!force) {
+      // Limit for allowed ranges
+      left = Math.max(Math.min(self.__maxScrollLeft, left), 0);
+      top = Math.max(Math.min(self.__maxScrollTop, top), 0);
+    }
+
     // Don't animate when no change detected, still call publish to make sure
     // that rendered position is really in-sync with internal data
     if (left === self.__scrollLeft && top === self.__scrollTop) {
@@ -3917,15 +3740,14 @@ var slideMix = {
       // the refresh-tip dom. let it to be invisible when doesn't trigger
       // refresh.
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
-        var refreshDom = this.$refs[__REFRESH_DOM_NAME].elm || this.$refs[__REFRESH_DOM_NAME];
-        refreshHeight = refreshDom.offsetHeight;
-        if (!refreshDom.style.marginTop) {
+        if (this.isEnableRefresh()) {
+          var refreshDom = this.$refs[__REFRESH_DOM_NAME].elm || this.$refs[__REFRESH_DOM_NAME];
+          refreshHeight = refreshDom.offsetHeight;
           refreshDom.style.marginTop = -refreshHeight + 'px';
         }
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        var enableLoad = this.isEnableLoad();
-        if (enableLoad) {
+        if (this.isEnableLoad()) {
           var loadDom = this.$refs[__LOAD_DOM_NAME].elm || this.$refs[__LOAD_DOM_NAME];
           loadHeight = loadDom.offsetHeight;
           //  hide the trailing load dom..
@@ -4077,15 +3899,9 @@ var slideMix = {
      * get the fresh.
      */
     isEnableLoad: function isEnableLoad() {
-      // Enable load only when clientHeight <= scrollHeight
       if (!this._isMounted) return false;
       var panelElm = this.scrollPanelElm;
       var containerElm = this.$el;
-
-      /* istanbul ignore if */
-      if (!this.mergedOptions.vuescroll.pushLoad.enable) {
-        return false;
-      }
 
       var loadDom = null;
       if (this.$refs['loadDom']) {
@@ -4093,11 +3909,16 @@ var slideMix = {
       }
 
       var loadHeight = loadDom && loadDom.offsetHeight || 0;
+      // Enable load only when clientHeight <= scrollHeight
       /* istanbul ignore if */
       if (panelElm.scrollHeight - loadHeight <= containerElm.clientHeight) {
         return false;
       }
 
+      return true;
+    },
+    isEnableRefresh: function isEnableRefresh() {
+      if (!this._isMounted) return false;
       return true;
     }
   }
@@ -4132,7 +3953,234 @@ var nativeMix = {
   }
 };
 
-var mixins = [api$1, core$1, slideMix, nativeMix];
+/**
+ * Resolve coordinate by mode
+ * @param {*} mode
+ * @param {*} vm
+ */
+function resolveOffset(mode, vm) {
+  var axis = {};
+  switch (mode) {
+    case 'native':
+      axis = {
+        x: vm.scrollPanelElm.scrollLeft,
+        y: vm.scrollPanelElm.scrollTop
+      };
+      break;
+    case 'slide':
+      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+      break;
+  }
+  return axis;
+}
+
+var core$1 = {
+  mixins: [api$1, slideMix, nativeMix],
+  mounted: function mounted() {
+    var _this = this;
+
+    this.$nextTick(function () {
+      if (!_this._isDestroyed && !_this.renderError) {
+        // update again to ensure bar's size is correct.
+        _this.updateBarStateAndEmitEvent();
+        // update scroller again since we get real dom.
+        if (_this.mode == 'slide') {
+          _this.updateScroller();
+        }
+        _this.scrollToAnchor();
+      }
+    });
+  },
+
+  computed: {
+    mode: function mode() {
+      return this.mergedOptions.vuescroll.mode;
+    },
+    pullRefreshTip: function pullRefreshTip() {
+      return this.mergedOptions.vuescroll.pullRefresh.tips[this.vuescroll.state.refreshStage];
+    },
+    pushLoadTip: function pushLoadTip() {
+      return this.mergedOptions.vuescroll.pushLoad.tips[this.vuescroll.state.loadStage];
+    },
+    refreshLoad: function refreshLoad() {
+      return this.mergedOptions.vuescroll.pullRefresh.enable || this.mergedOptions.vuescroll.pushLoad.enable;
+    }
+  },
+  methods: {
+    updateBarStateAndEmitEvent: function updateBarStateAndEmitEvent(eventType) {
+      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      if (this.mode == 'native') {
+        this.updateNativeModeBarState();
+      } else if (this.mode == 'slide') {
+        if (!this.scroller) {
+          return;
+        }
+
+        this.updateSlideModeBarState();
+      }
+      if (eventType) {
+        this.emitEvent(eventType, nativeEvent);
+      }
+      if (this.mergedOptions.bar.onlyShowBarOnScroll) {
+        if (eventType == 'handle-scroll' || eventType == 'handle-resize' || eventType == 'refresh-status' || eventType == 'window-resize' || eventType == 'options-change') {
+          this.showAndDefferedHideBar(true /* forceHideBar: true */);
+        }
+      } else {
+        this.showAndDefferedHideBar();
+      }
+    },
+    emitEvent: function emitEvent(eventType) {
+      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var _scrollPanelElm = this.scrollPanelElm,
+          scrollHeight = _scrollPanelElm.scrollHeight,
+          scrollWidth = _scrollPanelElm.scrollWidth,
+          clientHeight = _scrollPanelElm.clientHeight,
+          clientWidth = _scrollPanelElm.clientWidth,
+          scrollTop = _scrollPanelElm.scrollTop,
+          scrollLeft = _scrollPanelElm.scrollLeft;
+
+
+      var vertical = {
+        type: 'vertical'
+      };
+      var horizontal = {
+        type: 'horizontal'
+      };
+
+      if (this.mode == 'slide') {
+        scrollHeight = this.scroller.__contentHeight;
+        scrollWidth = this.scroller.__contentWidth;
+        scrollTop = this.scroller.__scrollTop;
+        scrollLeft = this.scroller.__scrollLeft;
+        clientHeight = this.$el.clientHeight;
+        clientWidth = this.$el.clientWidth;
+      }
+
+      vertical['process'] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
+      horizontal['process'] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
+
+      vertical['barSize'] = this.bar.vBar.state.size;
+      horizontal['barSize'] = this.bar.hBar.state.size;
+      vertical['scrollTop'] = scrollTop;
+      horizontal['scrollLeft'] = scrollLeft;
+      // Current scroll direction
+      vertical['directionY'] = this.vuescroll.state.posY;
+      horizontal['directionX'] = this.vuescroll.state.posX;
+
+      this.$emit(eventType, vertical, horizontal, nativeEvent);
+    },
+    recordCurrentPos: function recordCurrentPos() {
+      var mode = this.mode;
+      if (this.mode !== this.lastMode) {
+        mode = this.lastMode;
+        this.lastMode = this.mode;
+      }
+
+      var state = this.vuescroll.state;
+      var axis = resolveOffset(mode, this);
+      var oldX = state.internalScrollLeft;
+      var oldY = state.internalScrollTop;
+
+      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
+      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
+
+      state.internalScrollLeft = axis.x;
+      state.internalScrollTop = axis.y;
+    },
+    initVariables: function initVariables() {
+      this.lastMode = this.mode;
+      this.$el._isVuescroll = true;
+      this.clearScrollingTimes();
+    },
+    refreshMode: function refreshMode() {
+      var x = this.vuescroll.state.internalScrollLeft;
+      var y = this.vuescroll.state.internalScrollTop;
+      if (this.destroyScroller) {
+        this.scroller.stop();
+        this.destroyScroller();
+        this.destroyScroller = null;
+      }
+      if (this.mode == 'slide') {
+        this.destroyScroller = this.registryScroller();
+      } else if (this.mode == 'native') {
+        // remove the legacy transform style attribute
+        this.scrollPanelElm.style.transform = '';
+        this.scrollPanelElm.style.transformOrigin = '';
+      }
+      // keep the last-mode's position.
+      this.scrollTo({ x: x, y: y }, false, true /* force */);
+    },
+    refreshInternalStatus: function refreshInternalStatus() {
+      // 1.set vuescroll height or width according to
+      // sizeStrategy
+      this.setVsSize();
+      // 2. registry resize event
+      this.registryResize();
+      // 3. registry scroller if mode is 'slide'
+      // or remove 'transform origin' is the mode is not `slide`
+      this.refreshMode();
+      // 4. update scrollbar's height/width
+      this.updateBarStateAndEmitEvent('refresh-status');
+    },
+    registryResize: function registryResize() {
+      var _this2 = this;
+
+      /* istanbul ignore next */
+      if (this.destroyResize) {
+        // when toggling the mode
+        // we should clean the flag-object.
+        this.destroyResize();
+      }
+
+      var contentElm = null;
+      if (this.mode == 'slide') {
+        contentElm = this.scrollPanelElm;
+      } else if (this.mode == 'native') {
+        // scrollContent maybe a vue-component or a pure-dom
+        contentElm = this.scrollContentElm;
+      }
+
+      var handleWindowResize = function handleWindowResize() /* istanbul ignore next */{
+        this.updateBarStateAndEmitEvent('window-resize');
+        if (this.mode == 'slide') {
+          this.vuescroll.updatedCbs.push(this.updateScroller);
+          this.$forceUpdate();
+        }
+      };
+      var handleDomResize = function handleDomResize() {
+        var currentSize = {};
+        if (_this2.mode == 'slide') {
+          currentSize['width'] = _this2.scroller.__contentWidth;
+          currentSize['height'] = _this2.scroller.__contentHeight;
+          _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
+          // update scroller should after rendering
+          _this2.vuescroll.updatedCbs.push(_this2.updateScroller);
+          _this2.$forceUpdate();
+        } else if (_this2.mode == 'native') {
+          currentSize['width'] = _this2.scrollPanelElm.scrollWidth;
+          currentSize['height'] = _this2.scrollPanelElm.scrollHeight;
+          _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
+        }
+      };
+      window.addEventListener('resize', handleWindowResize.bind(this), false);
+
+      var resizeEnable = this.mergedOptions.vuescroll.detectResize;
+      var destroyDomResize = resizeEnable ? installResizeDetection(contentElm, handleDomResize) : function () {};
+
+      var destroyWindowResize = function destroyWindowResize() {
+        window.removeEventListener('resize', handleWindowResize, false);
+      };
+
+      this.destroyResize = function () {
+        destroyWindowResize();
+        destroyDomResize();
+      };
+    }
+  }
+};
+
+var mixins = [core$1];
 
 /**
  * The slide mode config
@@ -4183,7 +4231,7 @@ var config = {
       /** This configures the amount of change applied to acceleration when reaching boundaries  **/
       penetrationAcceleration: 0.08,
       /** Whether call e.preventDefault event when sliding the content or not */
-      preventDefault: true
+      preventDefault: false
     }
   }
 };
@@ -4263,7 +4311,7 @@ function install(Vue$$1) {
   opts.config = configs;
   opts.validator = validators;
 
-  _init(opts);
+  _install(opts);
 }
 
 var Vuescroll = {

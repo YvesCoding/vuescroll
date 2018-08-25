@@ -71,7 +71,7 @@ export function goScrolling(
  * 3. Mix
  * 4. Config
  */
-export function _init(opts = {}) {
+export function _install(opts = {}) {
   let {
     _components,
     render,

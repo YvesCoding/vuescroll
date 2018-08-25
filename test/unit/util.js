@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import vuescroll from 'src/mode/entry-mix';
+import vuescroll from 'src/entry-mix';
 export { vuescroll };
 
 Vue.use(vuescroll);

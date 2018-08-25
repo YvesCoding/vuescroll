@@ -4,7 +4,7 @@ import bar from 'mode/shared/bar';
 import render from './render';
 import mixins from './mixins';
 
-import { _init } from 'mode/shared/util';
+import { _install } from 'mode/shared/util';
 
 export default function install(Vue, opts = {}) {
   opts._components = [scrollPanel, bar];
@@ -12,5 +12,5 @@ export default function install(Vue, opts = {}) {
   opts.render = render;
   opts.Vue = Vue;
 
-  _init(opts);
+  _install(opts);
 }

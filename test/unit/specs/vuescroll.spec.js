@@ -41,6 +41,7 @@ describe('vuescroll', () => {
       true
     );
 
+    // sizeStrategy
     startSchedule().then(() => {
       const vs = vm.$refs['vs'].$el;
       const _vm = vm.$el;
@@ -57,6 +58,26 @@ describe('vuescroll', () => {
       });
     });
   });
+
+  function createMoveFunc(elm, startPoint, nextFramePoint) {
+    let start = false;
+    function moveTo(number) {
+      if (number == -1) {
+        trigger(document, 'mouseup');
+        start = false;
+        return;
+      }
+      if (!start) {
+        start = true;
+        trigger(elm, 'mousedown', { clientY: startPoint });
+        trigger(document, 'mousemove', { clientY: nextFramePoint });
+      }
+      trigger(document, 'mousemove', { clientY: number });
+    }
+
+    return moveTo;
+  }
+
   // test pull refresh
   it('pull-refresh', done => {
     vm = createVue(
@@ -91,50 +112,33 @@ describe('vuescroll', () => {
       },
       true
     );
+
+    // load
     const vs = vm.$refs['vs'];
-    const tipDom = vs.$el.querySelector('.__refresh');
-    const { clientHeight } = tipDom;
-    trigger(vs.$el, 'mousedown');
-
-    // style
-    expect(tipDom.style['margin-top']).toBe(-clientHeight + 'px');
-
-    // deactive
-    expect(tipDom.innerText).toBe('refresh deactive tip');
-    // active
-    // in scroller axis
-    // down is nagative
-    // up is positivw
-    vs.scroller.__publish(
-      vs.scroller.__scrollLeft,
-      -clientHeight * 2,
-      1, // zoom level
-      false // animate?
-    );
-    vs.scroller.__refreshActivate();
-    vs.scroller.__refreshActive = true;
-
-    vm.$nextTick(() => {
-      expect(tipDom.innerText).toBe('refresh active tip');
-      trigger(document, 'mouseup');
-      // start
-      vs.scroller.triggerRefreshOrLoad('refresh');
-      vm.$nextTick(() => {
+    let tipDom;
+    const moveY = createMoveFunc(vs.$el, 0, 50);
+    startSchedule()
+      .then(() => {
+        tipDom = vs.$el.querySelector('.__refresh');
+        // Current is at the deactive stage.
+        expect(tipDom.innerText).toBe('refresh deactive tip');
+        moveY(200);
+      })
+      .then(() => {
+        expect(tipDom.innerText).toBe('refresh active tip');
+        moveY(-1);
+      })
+      .wait(10)
+      .then(() => {
         expect(tipDom.innerText).toBe('refresh start tip');
-        startSchedule(2010)
-          .then(() => {
-            expect(tipDom.innerText).toBe('refresh before deactive tip');
-          })
-          .wait(510)
-          .then(() => {
-            expect(tipDom.innerText).toBe('refresh deactive tip');
-            done();
-          });
+      })
+      .wait(2400)
+      .then(() => {
+        expect(tipDom.innerText).toBe('refresh before deactive tip');
+        done();
       });
-    });
   });
 
-  // test push load
   it('push-load', done => {
     vm = createVue(
       {
@@ -168,49 +172,35 @@ describe('vuescroll', () => {
       },
       true
     );
-    startSchedule().then(() => {
-      const vs = vm.$refs['vs'];
-      const tipDom = vs.$el.querySelector('.__load');
-      const { clientHeight } = tipDom;
-      trigger(vs.$el, 'mousedown');
+    const vs = vm.$refs['vs'];
+    const moveY = createMoveFunc(vs.$el, 300, 290);
+    let tipDom;
 
-      // deactive
-      expect(tipDom.innerText).toBe('load deactive tip');
-
-      // scroll to bottom first
-      vs.scrollTo(
-        {
-          y: '100%'
-        },
-        false
-      );
-      vs.scroller.__publish(
-        vs.scroller.__scrollLeft,
-        clientHeight * 2,
-        1, // zoom level
-        false // animate?
-      );
-      vs.scroller.__loadActivate();
-      vs.scroller.__loadActive = true;
-      vm.$nextTick(() => {
+    startSchedule()
+      .wait(100)
+      .then(() => {
+        vs.scrollTo({ y: '100%' });
+      })
+      .wait(500)
+      .then(() => {
+        tipDom = vs.$el.querySelector('.__load');
+        // Current is at the deactive stage.
+        expect(tipDom.innerText).toBe('load deactive tip');
+        moveY(150);
+      })
+      .then(() => {
         expect(tipDom.innerText).toBe('load active tip');
-        trigger(document, 'mouseup');
-        // start
-        vs.scroller.triggerRefreshOrLoad('load');
-        vm.$nextTick(() => {
-          expect(tipDom.innerText).toBe('load start tip');
-          startSchedule(2010)
-            .then(() => {
-              expect(tipDom.innerText).toBe('load before deactive tip');
-            })
-            .wait(510)
-            .then(() => {
-              expect(tipDom.innerText).toBe('load deactive tip');
-              done();
-            });
-        });
+        moveY(-1);
+      })
+      .wait(10)
+      .then(() => {
+        expect(tipDom.innerText).toBe('load start tip');
+      })
+      .wait(2400)
+      .then(() => {
+        expect(tipDom.innerText).toBe('load before deactive tip');
+        done();
       });
-    });
   });
 
   // The measures of calculation of paging and snapping
@@ -218,7 +208,6 @@ describe('vuescroll', () => {
   // Math.round(scrollTop / clientHeight) * clientHeight
   // snapping:
   // Math.round(scrollTop / snapHeight) * snapHeight
-
   it('paging', done => {
     vm = createVue(
       {

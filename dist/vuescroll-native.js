@@ -2,7 +2,8 @@
     * Vuescroll v4.7.5
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
-    * Github Link: https://github.com/YvesCoding/vuescroll
+    * Github: https://github.com/YvesCoding/vuescroll
+    * Website: https://github.com/YvesCoding/vuescroll
     */
    
 (function (global, factory) {
@@ -287,6 +288,7 @@ function insertChildrenIntoSlot(h) {
   var data = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
   var swapChildren = arguments[4];
 
+  /* istanbul ignore if */
   if (parentVnode && parentVnode.length > 1) {
     return swapChildren ? [].concat(toConsumableArray(childVNode), toConsumableArray(parentVnode)) : [].concat(toConsumableArray(parentVnode), toConsumableArray(childVNode));
   }
@@ -902,35 +904,6 @@ function getPanelChildren(h, context) {
   );
 }
 
-/**
- * These mixes is exclusive for native mode
- */
-
-var updateMix = {
-  methods: {
-    updateNativeModeBarState: function updateNativeModeBarState() {
-      var container = this.scrollPanelElm;
-      var isPercent = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
-      var clientWidth = isPercent ? container.clientWidth : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
-      var clientHeight = isPercent ? container.clientHeight : this.vuescroll.state.height.slice(0, -2);
-
-      var heightPercentage = clientHeight * 100 / container.scrollHeight;
-      var widthPercentage = clientWidth * 100 / container.scrollWidth;
-
-      this.bar.vBar.state.posValue = container.scrollTop * 100 / clientHeight;
-      this.bar.hBar.state.posValue = container.scrollLeft * 100 / clientWidth;
-
-      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
-      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
-    }
-  },
-  computed: {
-    scrollContentElm: function scrollContentElm() {
-      return this.$refs['scrollContent']._isVue ? this.$refs['scrollContent'].$el : this.$refs['scrollContent'];
-    }
-  }
-};
-
 // detect content size change
 function installResizeDetection(element, callback) {
   return injectObject(element, callback);
@@ -970,132 +943,6 @@ function injectObject(element, callback) {
     element.hasResized = false;
   };
 }
-
-var core = {
-  mounted: function mounted() {
-    var _this = this;
-
-    this.$nextTick(function () {
-      if (!_this._isDestroyed && !_this.renderError) {
-        // update again to ensure bar's size is correct.
-        _this.updateBarStateAndEmitEvent();
-        _this.scrollToAnchor();
-      }
-    });
-  },
-
-  methods: {
-    updateBarStateAndEmitEvent: function updateBarStateAndEmitEvent(eventType) {
-      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-      this.updateNativeModeBarState();
-      if (eventType) {
-        this.emitEvent(eventType, nativeEvent);
-      }
-      if (this.mergedOptions.bar.onlyShowBarOnScroll) {
-        if (eventType == 'handle-scroll' || eventType == 'handle-resize' || eventType == 'refresh-status' || eventType == 'window-resize' || eventType == 'options-change') {
-          this.showAndDefferedHideBar(true /* forceHideBar: true */);
-        }
-      } else {
-        this.showAndDefferedHideBar();
-      }
-    },
-    emitEvent: function emitEvent(eventType) {
-      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      var _scrollPanelElm = this.scrollPanelElm,
-          scrollHeight = _scrollPanelElm.scrollHeight,
-          scrollWidth = _scrollPanelElm.scrollWidth,
-          clientHeight = _scrollPanelElm.clientHeight,
-          clientWidth = _scrollPanelElm.clientWidth,
-          scrollTop = _scrollPanelElm.scrollTop,
-          scrollLeft = _scrollPanelElm.scrollLeft;
-
-
-      var vertical = {
-        type: 'vertical'
-      };
-      var horizontal = {
-        type: 'horizontal'
-      };
-
-      vertical['process'] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
-      horizontal['process'] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
-
-      vertical['barSize'] = this.bar.vBar.state.size;
-      horizontal['barSize'] = this.bar.hBar.state.size;
-      vertical['scrollTop'] = scrollTop;
-      horizontal['scrollLeft'] = scrollLeft;
-      // Current scroll direction
-      vertical['directionY'] = this.vuescroll.state.posY;
-      horizontal['directionX'] = this.vuescroll.state.posX;
-
-      this.$emit(eventType, vertical, horizontal, nativeEvent);
-    },
-    recordCurrentPos: function recordCurrentPos() {
-      var state = this.vuescroll.state;
-      var axis = {
-        x: this.scrollPanelElm.scrollLeft,
-        y: this.scrollPanelElm.scrollTop
-      };
-      var oldX = state.internalScrollLeft;
-      var oldY = state.internalScrollTop;
-
-      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
-      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
-
-      state.internalScrollLeft = axis.x;
-      state.internalScrollTop = axis.y;
-    },
-    initVariables: function initVariables() {
-      this.$el._isVuescroll = true;
-      this.clearScrollingTimes();
-    },
-    refreshInternalStatus: function refreshInternalStatus() {
-      // 1.set vuescroll height or width according to
-      // sizeStrategy
-      this.setVsSize();
-      // 2. registry resize event
-      this.registryResize();
-      // 3. update scrollbar's height/width
-      this.updateBarStateAndEmitEvent('refresh-status');
-    },
-    registryResize: function registryResize() {
-      var _this2 = this;
-
-      /* istanbul ignore next */
-      if (this.destroyResize) {
-        // when toggling the mode
-        // we should clean the flag-object.
-        this.destroyResize();
-      }
-
-      var contentElm = this.scrollContentElm;
-
-      var handleWindowResize = function handleWindowResize() /* istanbul ignore next */{
-        this.updateBarStateAndEmitEvent('window-resize');
-      };
-      var handleDomResize = function handleDomResize() {
-        var currentSize = {};
-        currentSize['width'] = _this2.scrollPanelElm.scrollWidth;
-        currentSize['height'] = _this2.scrollPanelElm.scrollHeight;
-        _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
-      };
-      window.addEventListener('resize', handleWindowResize.bind(this), false);
-
-      var resizeEnable = this.mergedOptions.vuescroll.detectResize;
-      var destroyDomResize = resizeEnable ? installResizeDetection(contentElm, handleDomResize) : function () {};
-
-      var destroyWindowResize = function destroyWindowResize() {
-        window.removeEventListener('resize', handleWindowResize, false);
-      };
-
-      this.destroyResize = function () {
-        destroyWindowResize();
-        destroyDomResize();
-      };
-    }
-  }
-};
 
 /**
  *  Compatible to scroller's animation function
@@ -1225,7 +1072,7 @@ var millisecondsPerSecond = 1000;
 var running = {};
 var counter = 1;
 
-var core$1 = { effect: {} };
+var core = { effect: {} };
 var global$1 = null;
 
 if (typeof window !== 'undefined') {
@@ -1234,7 +1081,7 @@ if (typeof window !== 'undefined') {
   global$1 = {};
 }
 
-core$1.effect.Animate = {
+core.effect.Animate = {
   /**
    * A requestAnimationFrame wrapper / polyfill.
    *
@@ -1343,7 +1190,7 @@ core$1.effect.Animate = {
         completedCallback && completedCallback(desiredFrames - dropCounter / ((now - start) / millisecondsPerSecond), id, percent === 1 || duration == null);
       } else if (render) {
         lastFrame = now;
-        core$1.effect.Animate.requestAnimationFrame(step, root);
+        core.effect.Animate.requestAnimationFrame(step, root);
       }
     };
 
@@ -1351,7 +1198,7 @@ core$1.effect.Animate = {
     running[id] = true;
 
     // Init first step
-    core$1.effect.Animate.requestAnimationFrame(step, root);
+    core.effect.Animate.requestAnimationFrame(step, root);
 
     // Return unique animation ID
     return id;
@@ -1847,7 +1694,7 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
     return Math.abs(positionY - startLocationY) <= Math.abs(deltaY) || Math.abs(positionX - startLocationX) <= Math.abs(deltaX);
   };
 
-  core$1.effect.Animate.start(stepCallback, verifyCallback, scrollingComplete, speed, easingMethod);
+  core.effect.Animate.start(stepCallback, verifyCallback, scrollingComplete, speed, easingMethod);
 }
 
 /**
@@ -1857,7 +1704,7 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
  * 3. Mix
  * 4. Config
  */
-function _init() {
+function _install() {
   var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
   var _components = opts._components,
       render = opts.render,
@@ -1937,8 +1784,7 @@ function getCurrentViewportDom(parent, container) {
 
 var api$1 = {
   methods: {
-    // private api
-    internalScrollTo: function internalScrollTo(destX, destY, animate) {
+    nativeScrollTo: function nativeScrollTo(destX, destY, animate) {
       if (animate) {
         // hadnle for scroll complete
         var scrollingComplete = this.scrollingComplete.bind(this);
@@ -1949,16 +1795,177 @@ var api$1 = {
         this.$refs['scrollPanel'].$el.scrollLeft = destX;
       }
     },
-    getCurrentviewDom: function getCurrentviewDom() {
+    getCurrentviewDomNative: function getCurrentviewDomNative() {
       var parent = this.scrollContentElm;
-
       var domFragment = getCurrentViewportDom(parent, this.$el);
       return domFragment;
     }
   }
 };
 
-var mixins = [updateMix, core, api$1];
+/**
+ * These mixes is exclusive for native mode
+ */
+
+var updateNative = {
+  methods: {
+    updateNativeModeBarState: function updateNativeModeBarState() {
+      var container = this.scrollPanelElm;
+      var isPercent = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
+      var clientWidth = isPercent ? container.clientWidth : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
+      var clientHeight = isPercent ? container.clientHeight : this.vuescroll.state.height.slice(0, -2);
+
+      var heightPercentage = clientHeight * 100 / container.scrollHeight;
+      var widthPercentage = clientWidth * 100 / container.scrollWidth;
+
+      this.bar.vBar.state.posValue = container.scrollTop * 100 / clientHeight;
+      this.bar.hBar.state.posValue = container.scrollLeft * 100 / clientWidth;
+
+      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
+      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
+    }
+  },
+  computed: {
+    scrollContentElm: function scrollContentElm() {
+      return this.$refs['scrollContent']._isVue ? this.$refs['scrollContent'].$el : this.$refs['scrollContent'];
+    }
+  }
+};
+
+var core$1 = {
+  mixins: [api$1, updateNative],
+  mounted: function mounted() {
+    var _this = this;
+
+    this.$nextTick(function () {
+      if (!_this._isDestroyed && !_this.renderError) {
+        // update again to ensure bar's size is correct.
+        _this.updateBarStateAndEmitEvent();
+        _this.scrollToAnchor();
+      }
+    });
+  },
+
+  methods: {
+    getCurrentviewDom: function getCurrentviewDom() {
+      this.getCurrentviewDomNaitve();
+    },
+    internalScrollTo: function internalScrollTo(destX, destY, animate) {
+      this.nativeScrollTo(destX, destY, animate);
+    },
+    updateBarStateAndEmitEvent: function updateBarStateAndEmitEvent(eventType) {
+      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+      this.updateNativeModeBarState();
+      if (eventType) {
+        this.emitEvent(eventType, nativeEvent);
+      }
+      if (this.mergedOptions.bar.onlyShowBarOnScroll) {
+        if (eventType == 'handle-scroll' || eventType == 'handle-resize' || eventType == 'refresh-status' || eventType == 'window-resize' || eventType == 'options-change') {
+          this.showAndDefferedHideBar(true /* forceHideBar: true */);
+        }
+      } else {
+        this.showAndDefferedHideBar();
+      }
+    },
+    emitEvent: function emitEvent(eventType) {
+      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var _scrollPanelElm = this.scrollPanelElm,
+          scrollHeight = _scrollPanelElm.scrollHeight,
+          scrollWidth = _scrollPanelElm.scrollWidth,
+          clientHeight = _scrollPanelElm.clientHeight,
+          clientWidth = _scrollPanelElm.clientWidth,
+          scrollTop = _scrollPanelElm.scrollTop,
+          scrollLeft = _scrollPanelElm.scrollLeft;
+
+
+      var vertical = {
+        type: 'vertical'
+      };
+      var horizontal = {
+        type: 'horizontal'
+      };
+
+      vertical['process'] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
+      horizontal['process'] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
+
+      vertical['barSize'] = this.bar.vBar.state.size;
+      horizontal['barSize'] = this.bar.hBar.state.size;
+      vertical['scrollTop'] = scrollTop;
+      horizontal['scrollLeft'] = scrollLeft;
+      // Current scroll direction
+      vertical['directionY'] = this.vuescroll.state.posY;
+      horizontal['directionX'] = this.vuescroll.state.posX;
+
+      this.$emit(eventType, vertical, horizontal, nativeEvent);
+    },
+    recordCurrentPos: function recordCurrentPos() {
+      var state = this.vuescroll.state;
+      var axis = {
+        x: this.scrollPanelElm.scrollLeft,
+        y: this.scrollPanelElm.scrollTop
+      };
+      var oldX = state.internalScrollLeft;
+      var oldY = state.internalScrollTop;
+
+      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
+      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
+
+      state.internalScrollLeft = axis.x;
+      state.internalScrollTop = axis.y;
+    },
+    initVariables: function initVariables() {
+      this.$el._isVuescroll = true;
+      this.clearScrollingTimes();
+    },
+    refreshInternalStatus: function refreshInternalStatus() {
+      // 1.set vuescroll height or width according to
+      // sizeStrategy
+      this.setVsSize();
+      // 2. registry resize event
+      this.registryResize();
+      // 3. update scrollbar's height/width
+      this.updateBarStateAndEmitEvent('refresh-status');
+    },
+    registryResize: function registryResize() {
+      var _this2 = this;
+
+      /* istanbul ignore next */
+      if (this.destroyResize) {
+        // when toggling the mode
+        // we should clean the flag-object.
+        this.destroyResize();
+      }
+
+      var contentElm = this.scrollContentElm;
+
+      var handleWindowResize = function handleWindowResize() /* istanbul ignore next */{
+        this.updateBarStateAndEmitEvent('window-resize');
+      };
+      var handleDomResize = function handleDomResize() {
+        var currentSize = {};
+        currentSize['width'] = _this2.scrollPanelElm.scrollWidth;
+        currentSize['height'] = _this2.scrollPanelElm.scrollHeight;
+        _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
+      };
+      window.addEventListener('resize', handleWindowResize.bind(this), false);
+
+      var resizeEnable = this.mergedOptions.vuescroll.detectResize;
+      var destroyDomResize = resizeEnable ? installResizeDetection(contentElm, handleDomResize) : function () {};
+
+      var destroyWindowResize = function destroyWindowResize() {
+        window.removeEventListener('resize', handleWindowResize, false);
+      };
+
+      this.destroyResize = function () {
+        destroyWindowResize();
+        destroyDomResize();
+      };
+    }
+  }
+};
+
+var mixins = [core$1];
 
 function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -1968,7 +1975,7 @@ function install(Vue$$1) {
   opts.render = createPanel;
   opts.Vue = Vue$$1;
 
-  _init(opts);
+  _install(opts);
 }
 
 var Vuescroll = {

@@ -190,7 +190,7 @@ describe('api', () => {
       });
   });
 
-  it('triggerRefreshOrLoad, goToPage ', done => {
+  it('triggerRefreshOrLoad, goToPage ,getCurrentviewDom', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -241,6 +241,16 @@ describe('api', () => {
         expect(page.y).toBe(2);
         expect(currentDom.length).toBe(1);
         expect(currentDom[0]).toEqual(divs[1]);
+        vm.ops.vuescroll.mode = 'native';
+      })
+      .then(() => {
+        const currentDom = vs.getCurrentviewDom();
+        const divs = vm.$el.querySelectorAll('.__view div');
+        expect(currentDom.length).toBe(1);
+        expect(currentDom[0]).toEqual(divs[1]);
+        vm.ops.vuescroll.mode = 'slide';
+      })
+      .then(() => {
         vs.scrollIntoView('#d3');
       })
       .wait(350)

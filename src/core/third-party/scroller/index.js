@@ -413,7 +413,7 @@ var members = {
         this.__refreshStart();
         this.__refreshActive = true;
       }
-    } else {
+    } else if (type == 'load') {
       this.__publish(
         this.__scrollLeft,
         this.__maxScrollTop + this.__loadHeight,
@@ -636,9 +636,12 @@ var members = {
       }
     }
 
-    // Limit for allowed ranges
-    left = Math.max(Math.min(self.__maxScrollLeft, left), 0);
-    top = Math.max(Math.min(self.__maxScrollTop, top), 0);
+    if (!force) {
+      // Limit for allowed ranges
+      left = Math.max(Math.min(self.__maxScrollLeft, left), 0);
+      top = Math.max(Math.min(self.__maxScrollTop, top), 0);
+    }
+
     // Don't animate when no change detected, still call publish to make sure
     // that rendered position is really in-sync with internal data
     if (left === self.__scrollLeft && top === self.__scrollTop) {

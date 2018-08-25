@@ -1,6 +1,9 @@
 import { installResizeDetection } from 'core/third-party/resize-detector/index';
+import api from './api';
+import updateNative from './update-native';
 
 export default {
+  mixins: [api, updateNative],
   mounted() {
     this.$nextTick(() => {
       if (!this._isDestroyed && !this.renderError) {
@@ -11,6 +14,12 @@ export default {
     });
   },
   methods: {
+    getCurrentviewDom() {
+      this.getCurrentviewDomNaitve();
+    },
+    internalScrollTo(destX, destY, animate) {
+      this.nativeScrollTo(destX, destY, animate);
+    },
     updateBarStateAndEmitEvent(eventType, nativeEvent = null) {
       this.updateNativeModeBarState();
       if (eventType) {

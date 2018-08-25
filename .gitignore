@@ -1,10 +1,6 @@
 node_modules/
 .vscode
-vue.js
-server.js
-compress.js
 coverage
-test.html
 package-lock.json
 debug.log
 demo
