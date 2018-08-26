@@ -24,19 +24,13 @@ It can not only scroll on PC and mobile phone like native scrollbar but also can
 
 ## Features
 
-### Basic features
-
 - Support [customize scrollbar](http://vuescrolljs.yvescoding.org/guide/configuration.html#bar), including setting rail/bar's `backgroundColor` , `opacity`,and setting bar's `keepShow or not`.
 - Support smoothly scroll, you can set [easing](http://vuescrolljs.yvescoding.org/guide/configuration.html#detailed-options-2) to get different scroll animations.
 - Support [detecting the size change](http://vuescrolljs.yvescoding.org/demo/#_3-detect-size-changes) of scrolled content.
 
-### Features only for slide mode
-
 - Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#pullrefresh), for detail, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_4-pull-refresh-or-push-load-supported), and this [demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/) of SSR version.
 - Support [snapping](http://vuescrolljs.yvescoding.org/demo/#_2-timepicker) to make a picker, scroll same distance at each time.
 - Support [paging](http://vuescrolljs.yvescoding.org/demo/#_1-carousel).
-
-### Other features
 
 - Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html)
 - Support [SSR(Server-Side Rendering)](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/).
@@ -55,7 +49,7 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
-### In order to remove parts that are not used, you can import vuescroll separately
+### In order to reduce the size of the bundle, you can import modes separately
 
 #### Only import the features of slide mode:
 
@@ -104,7 +98,7 @@ Wrap the content you need to scroll by `vuescroll`
   </script>
 ```
 
-## More guides
+## Detailed guides
 
 - [Online Examples](http://vuescrolljs.yvescoding.org/demo/)
 - [Get Started Guide](http://vuescrolljs.yvescoding.org/guide/getting-started.html)
