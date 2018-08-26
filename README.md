@@ -18,22 +18,31 @@
 
 ## Introduction
 
-Vuescroll is a powerful, customizable, multi-mode scrollbar plugin based on Vue.js - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
+Vuescroll is a customizable, multi-mode driven scrollbar plugin based on Vue.js - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
 
-It can not only scroll on PC and mobile phone like native scrollbar but also can scroll smoothly with many animations, scroll out of boundaries, and the features of pull to refresh and push to load.
+You can use it on PC or mobile by changing its mode.
 
 ## Features
 
+### Basic & native mode features
+
 - Support [customize scrollbar](http://vuescrolljs.yvescoding.org/guide/configuration.html#bar), including setting rail/bar's `backgroundColor` , `opacity`,and setting bar's `keepShow or not`.
+
 - Support smoothly scroll, you can set [easing](http://vuescrolljs.yvescoding.org/guide/configuration.html#detailed-options-2) to get different scroll animations.
+
 - Support [detecting the size change](http://vuescrolljs.yvescoding.org/demo/#_3-detect-size-changes) of scrolled content.
 
-- Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#pullrefresh), for detail, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_4-pull-refresh-or-push-load-supported), and this [demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/) of SSR version.
-- Support [snapping](http://vuescrolljs.yvescoding.org/demo/#_2-timepicker) to make a picker, scroll same distance at each time.
-- Support [paging](http://vuescrolljs.yvescoding.org/demo/#_1-carousel).
+- Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html).
 
-- Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html)
 - Support [SSR(Server-Side Rendering)](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/).
+
+### Slide mode(includes basic & slide mode features) features
+
+- Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#pullrefresh), for detail, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_4-pull-refresh-or-push-load-supported), and this [demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/) of SSR version.
+
+- Support **snapping**. **Snapping** means you can scroll same given distance in options at each timem. You can use it to make a [time-picker](http://vuescrolljs.yvescoding.org/demo/#_2-timepicker).
+
+- Support **paging**. **Paging** means you can scroll a distance of container at each time. You can use it to make such a [Carousel](http://vuescrolljs.yvescoding.org/demo/#_1-carousel).
 
 ## Quick Start
 
