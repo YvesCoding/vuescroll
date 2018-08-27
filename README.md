@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <a href="https://vuescroll-issue-list-demo-zdizhghthq.now.sh">Online Demo(Recommend to use mobile)</a>
+  <a href="https://vuescroll-issue-list-demo-zbmlnzvgov.now.sh/">Online Demo(Recommend to use mobile)</a>
 </p>
 
 ## Introduction
@@ -34,11 +34,11 @@ You can use it on PC or mobile by changing its mode.
 
 - Support [typescript](http://vuescrolljs.yvescoding.org/guide/typescript.html).
 
-- Support [SSR(Server-Side Rendering)](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/).
+- Support [SSR(Server-Side Rendering)](https://vuescroll-issue-list-demo-zbmlnzvgov.now.sh//).
 
 ### Slide mode(includes basic & slide mode features) features
 
-- Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#pullrefresh), for detail, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_4-pull-refresh-or-push-load-supported), and this [demo](https://vuescroll-issue-list-demo-zdizhghthq.now.sh/) of SSR version.
+- Support [pull to refresh and push to load](http://vuescrolljs.yvescoding.org/guide/configuration.html#pullrefresh), for detail, you can checkout this [demo](http://vuescrolljs.yvescoding.org/demo/#_4-pull-refresh-or-push-load-supported), and this [demo](https://vuescroll-issue-list-demo-zbmlnzvgov.now.sh//) of SSR version.
 
 - Support **snapping**. **Snapping** means you can scroll same given distance in options at each timem. You can use it to make a [time-picker](http://vuescrolljs.yvescoding.org/demo/#_2-timepicker).
 
