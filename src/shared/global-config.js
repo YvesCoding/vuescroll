@@ -27,8 +27,6 @@ const baseConfig = {
     opacity: 0,
     /** Rail's size(Height/Width) , default -> 6px */
     size: '6px',
-    /** Whether to show border-radius on scrolling, default -> true */
-    radius: true,
     /** Rail's border-radius,  default -> 8px */
     borderRadius: '8px'
   },
