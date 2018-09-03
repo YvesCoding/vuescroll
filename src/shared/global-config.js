@@ -26,9 +26,7 @@ const baseConfig = {
     background: '#01a99a',
     opacity: 0,
     /** Rail's size(Height/Width) , default -> 6px */
-    size: '6px',
-    /** Rail's border-radius,  default -> 8px */
-    borderRadius: '8px'
+    size: '6px'
   },
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
