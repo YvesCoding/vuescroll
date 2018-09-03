@@ -229,7 +229,7 @@ export default {
     const rail = {
       class: `__rail-is-${vm.type}`,
       style: {
-        borderRadius: vm.ops.rail.specifyBorderRadius || vm.ops.rail.size,
+        borderRadius: vm.ops.rail.borderRadius || vm.ops.rail.size,
         background: railBackgroundColor,
         [vm.bar.opsSize]: vm.ops.rail.size
       },
