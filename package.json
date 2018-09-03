@@ -43,7 +43,7 @@
     "report-coverage": "codecov",
     "gen-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
-  "version": "4.7.6",
+  "version": "4.8.0",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.5",
@@ -79,9 +79,7 @@
     "rollup-plugin-uglify": "^4.0.0",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
+    "vue": "^2.0.0",
     "webpack": "^3.10.0"
-  },
-  "dependencies": {
-    "vue": "^2.5.17"
   }
 }

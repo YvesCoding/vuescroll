@@ -49,7 +49,7 @@ describe('rail', () => {
         const vRail = vs.$el.querySelector('.__rail-is-vertical');
         const offset = vRail.offsetHeight;
         const clientY = vRail.getBoundingClientRect().top + offset / 2;
-        trigger(vRail, 'click', { clientY });
+        trigger(vRail, 'mousedown', { clientY });
       })
       .wait(350)
       .then(() => {
@@ -62,7 +62,7 @@ describe('rail', () => {
         const hRail = vs.$el.querySelector('.__rail-is-horizontal');
         const offset = hRail.offsetWidth;
         const clientX = hRail.getBoundingClientRect().left + offset / 2;
-        trigger(hRail, 'click', { clientX });
+        trigger(hRail, 'mousedown', { clientX });
       })
       .wait(350)
       .then(() => {
