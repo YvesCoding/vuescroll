@@ -30,7 +30,9 @@ const baseConfig = {
     /** Specify rail and bar's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
     specifyBorderRadius: false,
     /** Rail the distance from the two ends of the X axis and Y axis. **/
-    gutter: '2px'
+    gutterOfEnds: '2px',
+    /** Rail the distance from the side of container. **/
+    gutterOfSide: '2px'
   },
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */

@@ -226,8 +226,9 @@ export default {
         borderRadius: vm.ops.rail.specifyBorderRadius || vm.ops.rail.size,
         background: railBackgroundColor,
         [vm.bar.opsSize]: vm.ops.rail.size,
-        [vm.bar.posName]: vm.ops.rail[`gutter`],
-        [vm.bar.opposName]: vm.ops.rail[`gutter`]
+        [vm.bar.posName]: vm.ops.rail[`gutterOfEnds`],
+        [vm.bar.opposName]: vm.ops.rail[`gutterOfEnds`],
+        [vm.bar.sidePosName]: vm.ops.rail[`gutterOfSide`]
       },
       on: {}
     };

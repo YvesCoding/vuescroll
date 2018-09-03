@@ -553,6 +553,7 @@ var scrollMap = {
     opsSize: 'width',
     posName: 'top',
     opposName: 'bottom',
+    sidePosName: 'right',
     page: 'pageY',
     scroll: 'scrollTop',
     scrollSize: 'scrollHeight',
@@ -565,6 +566,7 @@ var scrollMap = {
     opsSize: 'height',
     posName: 'left',
     opposName: 'right',
+    sidePosName: 'bottom',
     page: 'pageX',
     scroll: 'scrollLeft',
     scrollSize: 'scrollWidth',
@@ -769,7 +771,7 @@ var bar = {
       style: (_style2 = {
         borderRadius: vm.ops.rail.specifyBorderRadius || vm.ops.rail.size,
         background: railBackgroundColor
-      }, defineProperty(_style2, vm.bar.opsSize, vm.ops.rail.size), defineProperty(_style2, vm.bar.posName, vm.ops.rail['gutter']), defineProperty(_style2, vm.bar.opposName, vm.ops.rail['gutter']), _style2),
+      }, defineProperty(_style2, vm.bar.opsSize, vm.ops.rail.size), defineProperty(_style2, vm.bar.posName, vm.ops.rail['gutterOfEnds']), defineProperty(_style2, vm.bar.opposName, vm.ops.rail['gutterOfEnds']), defineProperty(_style2, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style2),
       on: {}
     };
 
@@ -1352,7 +1354,9 @@ var baseConfig = {
     /** Specify rail and bar's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
     specifyBorderRadius: false,
     /** Rail the distance from the two ends of the X axis and Y axis. **/
-    gutter: '2px'
+    gutterOfEnds: '2px',
+    /** Rail the distance from the side of container. **/
+    gutterOfSide: '2px'
   },
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
