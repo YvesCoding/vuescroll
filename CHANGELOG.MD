@@ -1,33 +1,56 @@
-<a name="4.8.0"></a>
-# [4.8.0](https://github.com/YvesCoding/vuescroll/compare/v4.7.1-rc.10...v4.8.0) (2018-09-03)
+<a name="4.8.1"></a>
 
-
-### Bug Fixes
-
-* Correct scroll position when use scrollTo ([7a98fb4](https://github.com/YvesCoding/vuescroll/commit/7a98fb4)), closes [#51](https://github.com/YvesCoding/vuescroll/issues/51)
-* Incorrect bar size in sometimes on Edge ([b04e62c](https://github.com/YvesCoding/vuescroll/commit/b04e62c)), closes [#52](https://github.com/YvesCoding/vuescroll/issues/52)
-* **rail:** After clicking middle of rail doesn't scroll to the center of content ([1019063](https://github.com/YvesCoding/vuescroll/commit/1019063))
-* **util:** Dont't set value for reactive obnject ([dbdb846](https://github.com/YvesCoding/vuescroll/commit/dbdb846))
-* Incorrect children of slots: scroll-content scroll-panel ([d82b485](https://github.com/YvesCoding/vuescroll/commit/d82b485))
-* Some test cases and use setTimeout to update scroll status ([c98ff18](https://github.com/YvesCoding/vuescroll/commit/c98ff18))
-
+## [4.8.1](https://github.com/YvesCoding/vuescroll/compare/v4.7.1-rc.10...v4.8.1) (2018-09-03)
 
 ### Features
 
-* **rail, bar:** Allow to specify border-radius and gutter for bar and rail. ([88da4c2](https://github.com/YvesCoding/vuescroll/commit/88da4c2))
+- **rail:** Add `gutterOfSide` option to rail you can use it to see the ([2590c22](https://github.com/YvesCoding/vuescroll/commit/2590c22))
 
+```javascript
+ops: {
+  rail: {
+    gutterOfEnds: '2px';
+  }
+}
+```
 
+> Rename the `gutter` in `4.8.0` to `gutterOfEnds` to distinguish the two kind of gutters.
 
-<a name="4.7.5"></a>
-## [4.7.5](https://github.com/YvesCoding/vuescroll/compare/v4.7.1-rc.10...v4.7.5) (2018-08-21)
+<a name="4.8.0"></a>
 
+# [4.8.0](https://github.com/YvesCoding/vuescroll/compare/v4.7.1-rc.10...v4.8.0) (2018-09-03)
 
 ### Bug Fixes
 
-* Correct scroll position when use scrollTo ([7a98fb4](https://github.com/YvesCoding/vuescroll/commit/7a98fb4)), closes [#51](https://github.com/YvesCoding/vuescroll/issues/51)
-* Incorrect bar size in sometimes on Edge ([b04e62c](https://github.com/YvesCoding/vuescroll/commit/b04e62c)), closes [#52](https://github.com/YvesCoding/vuescroll/issues/52)
-* Some test cases and use setTimeout to update scroll status ([c98ff18](https://github.com/YvesCoding/vuescroll/commit/c98ff18))
-* **rail:** After clicking middle of rail doesn't scroll to the center of content ([1019063](https://github.com/YvesCoding/vuescroll/commit/1019063))
+- Correct scroll position when use scrollTo ([7a98fb4](https://github.com/YvesCoding/vuescroll/commit/7a98fb4)), closes [#51](https://github.com/YvesCoding/vuescroll/issues/51)
+- Incorrect bar size in sometimes on Edge ([b04e62c](https://github.com/YvesCoding/vuescroll/commit/b04e62c)), closes [#52](https://github.com/YvesCoding/vuescroll/issues/52)
+- **rail:** After clicking middle of rail doesn't scroll to the center of content ([1019063](https://github.com/YvesCoding/vuescroll/commit/1019063))
+- **util:** Dont't set value for reactive obnject ([dbdb846](https://github.com/YvesCoding/vuescroll/commit/dbdb846))
+- Incorrect children of slots: scroll-content scroll-panel ([d82b485](https://github.com/YvesCoding/vuescroll/commit/d82b485))
+- Some test cases and use setTimeout to update scroll status ([c98ff18](https://github.com/YvesCoding/vuescroll/commit/c98ff18))
+
+### Features
+
+- **rail, bar:** Allow to specify border-radius and gutter for bar and rail. ([88da4c2](https://github.com/YvesCoding/vuescroll/commit/88da4c2))
+
+```javascript
+ops: {
+  rail: {
+    specifyBorderRadius: '2px'; // Set false to let vuescroll to ajust automatically
+  }
+}
+```
+
+<a name="4.7.5"></a>
+
+## [4.7.5](https://github.com/YvesCoding/vuescroll/compare/v4.7.1-rc.10...v4.7.5) (2018-08-21)
+
+### Bug Fixes
+
+- Correct scroll position when use scrollTo ([7a98fb4](https://github.com/YvesCoding/vuescroll/commit/7a98fb4)), closes [#51](https://github.com/YvesCoding/vuescroll/issues/51)
+- Incorrect bar size in sometimes on Edge ([b04e62c](https://github.com/YvesCoding/vuescroll/commit/b04e62c)), closes [#52](https://github.com/YvesCoding/vuescroll/issues/52)
+- Some test cases and use setTimeout to update scroll status ([c98ff18](https://github.com/YvesCoding/vuescroll/commit/c98ff18))
+- **rail:** After clicking middle of rail doesn't scroll to the center of content ([1019063](https://github.com/YvesCoding/vuescroll/commit/1019063))
 
 ## Breaking Changes
 
@@ -35,39 +58,34 @@
 
 ## Refactor
 
-- Remove **scrollContent** component which only exists in native mode, and merge its part into **scrollPanel**. 
-
+- Remove **scrollContent** component which only exists in native mode, and merge its part into **scrollPanel**.
 
 <a name="4.7.1-rc.10"></a>
-## [4.7.1-rc.10](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.7.1-rc.10) (2018-08-05)
 
+## [4.7.1-rc.10](https://github.com/YvesCoding/vuescroll/compare/v4.6.11...v4.7.1-rc.10) (2018-08-05)
 
 ### Bug Fixes
 
-* add __no-hbar when scrollingX is false ([8dca8e3](https://github.com/YvesCoding/vuescroll/commit/8dca8e3))
-* Add children of slot-panel to render list ([df417ae](https://github.com/YvesCoding/vuescroll/commit/df417ae))
-* Cannot hide native scrollbar in FireFox ([208f759](https://github.com/YvesCoding/vuescroll/commit/208f759))
-* files field in  package.json ([ebe101f](https://github.com/YvesCoding/vuescroll/commit/ebe101f))
-* Flinker when child size equals parent size ([41f33b9](https://github.com/YvesCoding/vuescroll/commit/41f33b9))
-* Get gutter more accurately ([f3392f6](https://github.com/YvesCoding/vuescroll/commit/f3392f6))
-* Remove import Vue in index.js, move Vue to peerDep ([60ef2fc](https://github.com/YvesCoding/vuescroll/commit/60ef2fc)), closes [#45](https://github.com/YvesCoding/vuescroll/issues/45)
-
+- add \_\_no-hbar when scrollingX is false ([8dca8e3](https://github.com/YvesCoding/vuescroll/commit/8dca8e3))
+- Add children of slot-panel to render list ([df417ae](https://github.com/YvesCoding/vuescroll/commit/df417ae))
+- Cannot hide native scrollbar in FireFox ([208f759](https://github.com/YvesCoding/vuescroll/commit/208f759))
+- files field in package.json ([ebe101f](https://github.com/YvesCoding/vuescroll/commit/ebe101f))
+- Flinker when child size equals parent size ([41f33b9](https://github.com/YvesCoding/vuescroll/commit/41f33b9))
+- Get gutter more accurately ([f3392f6](https://github.com/YvesCoding/vuescroll/commit/f3392f6))
+- Remove import Vue in index.js, move Vue to peerDep ([60ef2fc](https://github.com/YvesCoding/vuescroll/commit/60ef2fc)), closes [#45](https://github.com/YvesCoding/vuescroll/issues/45)
 
 ### Features
 
-* **api:** Add scrollingTimes and clearScrollingTimes to control the times you have scrolled ([0b7b7e2](https://github.com/YvesCoding/vuescroll/commit/0b7b7e2))
-* **bar:** Merge configurations vBar, hBar, vRail, hRail ([dc40aa9](https://github.com/YvesCoding/vuescroll/commit/dc40aa9))
-* **config:** Add onlyShowBarOnScroll to show bar only when scrolling ([e8c3ffe](https://github.com/YvesCoding/vuescroll/commit/e8c3ffe))
-* Add typescript for separate modes ([d2a1adf](https://github.com/YvesCoding/vuescroll/commit/d2a1adf))
-* Can pass global config via Vue.use ([2cd8b12](https://github.com/YvesCoding/vuescroll/commit/2cd8b12))
-* Support SSR ([12f5158](https://github.com/YvesCoding/vuescroll/commit/12f5158)), closes [#42](https://github.com/YvesCoding/vuescroll/issues/42)
-
+- **api:** Add scrollingTimes and clearScrollingTimes to control the times you have scrolled ([0b7b7e2](https://github.com/YvesCoding/vuescroll/commit/0b7b7e2))
+- **bar:** Merge configurations vBar, hBar, vRail, hRail ([dc40aa9](https://github.com/YvesCoding/vuescroll/commit/dc40aa9))
+- **config:** Add onlyShowBarOnScroll to show bar only when scrolling ([e8c3ffe](https://github.com/YvesCoding/vuescroll/commit/e8c3ffe))
+- Add typescript for separate modes ([d2a1adf](https://github.com/YvesCoding/vuescroll/commit/d2a1adf))
+- Can pass global config via Vue.use ([2cd8b12](https://github.com/YvesCoding/vuescroll/commit/2cd8b12))
+- Support SSR ([12f5158](https://github.com/YvesCoding/vuescroll/commit/12f5158)), closes [#42](https://github.com/YvesCoding/vuescroll/issues/42)
 
 ### BREAKING CHANGES
 
-* **bar:** The vBar, hBar,vRail, hRail are not avilable now. Use rail, bar that works for both vertical and horizontal.
-
-
+- **bar:** The vBar, hBar,vRail, hRail are not avilable now. Use rail, bar that works for both vertical and horizontal.
 
 <a name="4.7.0"></a>
 
