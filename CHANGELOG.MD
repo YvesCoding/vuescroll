@@ -1,3 +1,23 @@
+<a name="4.8.0"></a>
+# [4.8.0](https://github.com/YvesCoding/vuescroll/compare/v4.7.1-rc.10...v4.8.0) (2018-09-03)
+
+
+### Bug Fixes
+
+* Correct scroll position when use scrollTo ([7a98fb4](https://github.com/YvesCoding/vuescroll/commit/7a98fb4)), closes [#51](https://github.com/YvesCoding/vuescroll/issues/51)
+* Incorrect bar size in sometimes on Edge ([b04e62c](https://github.com/YvesCoding/vuescroll/commit/b04e62c)), closes [#52](https://github.com/YvesCoding/vuescroll/issues/52)
+* **rail:** After clicking middle of rail doesn't scroll to the center of content ([1019063](https://github.com/YvesCoding/vuescroll/commit/1019063))
+* **util:** Dont't set value for reactive obnject ([dbdb846](https://github.com/YvesCoding/vuescroll/commit/dbdb846))
+* Incorrect children of slots: scroll-content scroll-panel ([d82b485](https://github.com/YvesCoding/vuescroll/commit/d82b485))
+* Some test cases and use setTimeout to update scroll status ([c98ff18](https://github.com/YvesCoding/vuescroll/commit/c98ff18))
+
+
+### Features
+
+* **rail, bar:** Allow to specify border-radius and gutter for bar and rail. ([88da4c2](https://github.com/YvesCoding/vuescroll/commit/88da4c2))
+
+
+
 <a name="4.7.5"></a>
 ## [4.7.5](https://github.com/YvesCoding/vuescroll/compare/v4.7.1-rc.10...v4.7.5) (2018-08-21)
 
