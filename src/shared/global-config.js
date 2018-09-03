@@ -27,8 +27,7 @@ const baseConfig = {
     opacity: 0,
     /** Rail's size(Height/Width) , default -> 6px */
     size: '6px',
-    /** Specify rail and bar's border-radius, default -> false **/
-    specifyBorderRadius: false
+    borderRadius: false
   },
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
