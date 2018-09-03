@@ -131,24 +131,25 @@ function getRgbAColor(color, opacity) {
   }, ${opacity})`);
 }
 
-function handleClickTrack(e) {
-  const ctx = this;
-  const parent = getRealParent(ctx);
+function createTrackEvent(ctx, type) {
+  return function handleClickTrack(e) {
+    const parent = getRealParent(ctx);
 
-  const { client, offset, posName, axis } = ctx.bar;
-  const thumb = ctx.$refs['thumb'];
+    const { client, offset, posName, axis } = ctx.bar;
+    const thumb = ctx.$refs['thumb'];
+    const barOffset = thumb[offset];
+    const event = type == 'touchstart' ? e.touches[0] : e;
 
-  const barOffset = thumb[offset];
+    const percent =
+      (event[client] -
+        e.currentTarget.getBoundingClientRect()[posName] -
+        barOffset / 2) /
+      (e.currentTarget[offset] - barOffset);
 
-  const percent =
-    (e[client] -
-      e.currentTarget.getBoundingClientRect()[posName] -
-      barOffset / 2) /
-    (e.currentTarget[offset] - barOffset);
-
-  parent.scrollTo({
-    [axis.toLowerCase()]: percent * 100 + '%'
-  });
+    parent.scrollTo({
+      [axis.toLowerCase()]: percent * 100 + '%'
+    });
+  };
 }
 
 export default {
@@ -212,13 +213,6 @@ export default {
       };
     }
 
-    /* istanbul ignore if */
-    if (isSupportTouch()) {
-      bar.on['touchstart'] = createTouchEvent(this);
-    } else {
-      bar.on['mousedown'] = createMouseEvent(this);
-    }
-
     /** Get rgbA format background color */
     const railBackgroundColor = getRgbAColor(
       vm.ops.rail.background,
@@ -231,14 +225,21 @@ export default {
       style: {
         borderRadius: vm.ops.rail.specifyBorderRadius || vm.ops.rail.size,
         background: railBackgroundColor,
-        [vm.bar.opsSize]: vm.ops.rail.size
+        [vm.bar.opsSize]: vm.ops.rail.size,
+        [vm.bar.posName]: vm.ops.rail[`gutter`],
+        [vm.bar.opposName]: vm.ops.rail[`gutter`]
       },
-      on: {
-        click(e) {
-          handleClickTrack.call(vm, e);
-        }
-      }
+      on: {}
     };
+
+    /* istanbul ignore if */
+    if (isSupportTouch()) {
+      bar.on['touchstart'] = createTouchEvent(this);
+      rail.on['touchstart'] = createTrackEvent(this, 'touchstart');
+    } else {
+      bar.on['mousedown'] = createMouseEvent(this);
+      rail.on['mousedown'] = createTrackEvent(this, 'mousedown');
+    }
 
     return (
       <div {...rail}>

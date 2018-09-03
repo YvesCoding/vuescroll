@@ -682,23 +682,24 @@ function getRgbAColor(color, opacity) {
   return colorCache[id] = 'rgba(' + extractRgbColor.exec(computedColor)[1] + ', ' + opacity + ')';
 }
 
-function handleClickTrack(e) {
-  var ctx = this;
-  var parent = getRealParent(ctx);
+function createTrackEvent(ctx, type) {
+  return function handleClickTrack(e) {
+    var parent = getRealParent(ctx);
 
-  var _ctx$bar = ctx.bar,
-      client = _ctx$bar.client,
-      offset = _ctx$bar.offset,
-      posName = _ctx$bar.posName,
-      axis = _ctx$bar.axis;
+    var _ctx$bar = ctx.bar,
+        client = _ctx$bar.client,
+        offset = _ctx$bar.offset,
+        posName = _ctx$bar.posName,
+        axis = _ctx$bar.axis;
 
-  var thumb = ctx.$refs['thumb'];
+    var thumb = ctx.$refs['thumb'];
+    var barOffset = thumb[offset];
+    var event = type == 'touchstart' ? e.touches[0] : e;
 
-  var barOffset = thumb[offset];
+    var percent = (event[client] - e.currentTarget.getBoundingClientRect()[posName] - barOffset / 2) / (e.currentTarget[offset] - barOffset);
 
-  var percent = (e[client] - e.currentTarget.getBoundingClientRect()[posName] - barOffset / 2) / (e.currentTarget[offset] - barOffset);
-
-  parent.scrollTo(defineProperty({}, axis.toLowerCase(), percent * 100 + '%'));
+    parent.scrollTo(defineProperty({}, axis.toLowerCase(), percent * 100 + '%'));
+  };
 }
 
 var bar = {
@@ -723,7 +724,7 @@ var bar = {
     }
   },
   render: function render(h) {
-    var _style;
+    var _style, _style2;
 
     var vm = this;
 
@@ -759,29 +760,27 @@ var bar = {
       };
     }
 
-    /* istanbul ignore if */
-    if (isSupportTouch()) {
-      bar.on['touchstart'] = createTouchEvent(this);
-    } else {
-      bar.on['mousedown'] = createMouseEvent(this);
-    }
-
     /** Get rgbA format background color */
     var railBackgroundColor = getRgbAColor(vm.ops.rail.background, vm.ops.rail.opacity);
 
     /** Rail Data */
     var rail = {
       class: '__rail-is-' + vm.type,
-      style: defineProperty({
-        borderRadius: vm.ops.rail.size,
+      style: (_style2 = {
+        borderRadius: vm.ops.rail.specifyBorderRadius || vm.ops.rail.size,
         background: railBackgroundColor
-      }, vm.bar.opsSize, vm.ops.rail.size),
-      on: {
-        click: function click(e) {
-          handleClickTrack.call(vm, e);
-        }
-      }
+      }, defineProperty(_style2, vm.bar.opsSize, vm.ops.rail.size), defineProperty(_style2, vm.bar.posName, vm.ops.rail['gutter']), defineProperty(_style2, vm.bar.opposName, vm.ops.rail['gutter']), _style2),
+      on: {}
     };
+
+    /* istanbul ignore if */
+    if (isSupportTouch()) {
+      bar.on['touchstart'] = createTouchEvent(this);
+      rail.on['touchstart'] = createTrackEvent(this, 'touchstart');
+    } else {
+      bar.on['mousedown'] = createMouseEvent(this);
+      rail.on['mousedown'] = createTrackEvent(this, 'mousedown');
+    }
 
     return h(
       'div',
@@ -1349,7 +1348,11 @@ var baseConfig = {
     background: '#01a99a',
     opacity: 0,
     /** Rail's size(Height/Width) , default -> 6px */
-    size: '6px'
+    size: '6px',
+    /** Specify rail and bar's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
+    specifyBorderRadius: false,
+    /** Rail the distance from the two ends of the X axis and Y axis. **/
+    gutter: '2px'
   },
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
