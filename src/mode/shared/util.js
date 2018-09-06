@@ -5,7 +5,6 @@ import {
 import { core } from 'core/third-party/scroller/animate';
 import withBase from 'core/index';
 import { extendOpts } from 'shared/global-config';
-import { isArray } from 'shared/util';
 /**
  * Start to scroll to a position
  */
