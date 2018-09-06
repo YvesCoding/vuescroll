@@ -43,7 +43,11 @@ export function getPanelData(context) {
       context.bar.vBar.state.size &&
       context.mergedOptions.scrollPanel.scrollingY
     ) {
-      data.style.marginRight = `-${gutter}px`;
+      if (context.mergedOptions.scrollPanel.verticalNativeBarPos == 'right') {
+        data.style.marginRight = `-${gutter}px`;
+      } /* istanbul ignore next */ else {
+        data.style.marginLeft = `-${gutter}px`;
+      }
     }
     if (
       context.bar.hBar.state.size &&
@@ -84,7 +88,9 @@ export function getPanelChildren(h, context) {
   };
   const _customContent = context.$slots['scroll-content'];
 
-  viewStyle.width = getComplitableStyle('width', 'fit-content');
+  if (context.mergedOptions.scrollPanel.scrollingX) {
+    viewStyle.width = getComplitableStyle('width', 'fit-content');
+  }
 
   if (context.mergedOptions.scrollPanel.padding) {
     data.style.paddingRight = context.mergedOptions.rail.size;

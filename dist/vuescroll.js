@@ -736,6 +736,9 @@ var bar = {
       type: Object,
       required: true
     },
+    hideBar: {
+      type: Boolean
+    },
     type: {
       type: String,
       required: true
@@ -808,7 +811,7 @@ var bar = {
     return h(
       'div',
       rail,
-      [h('div', bar)]
+      [this.hideBar ? null : h('div', bar)]
     );
   }
 };
@@ -824,7 +827,11 @@ function createBar(h, vm, type) {
   /** type.charAt(0) = vBar/hBar */
   var barType = type.charAt(0) + 'Bar';
 
-  if (!vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel['scrolling' + axis] || vm.refreshLoad && type !== 'vertical') {
+  var hideBar = !vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel['scrolling' + axis] || vm.refreshLoad && type !== 'vertical';
+
+  var keepShowRail = vm.mergedOptions.rail.keepShow;
+
+  if (hideBar && !keepShowRail) {
     return null;
   }
 
@@ -835,7 +842,8 @@ function createBar(h, vm, type) {
         bar: vm.mergedOptions.bar,
         rail: vm.mergedOptions.rail
       },
-      state: vm.bar[barType].state
+      state: vm.bar[barType].state,
+      hideBar: hideBar
     },
     on: {
       setBarDrag: vm.setBarDrag
@@ -882,7 +890,11 @@ function getPanelData(context) {
     // hide system bar by use a negative value px
     // gutter should be 0 when manually disable scrollingX #14
     if (context.bar.vBar.state.size && context.mergedOptions.scrollPanel.scrollingY) {
-      data.style.marginRight = '-' + gutter + 'px';
+      if (context.mergedOptions.scrollPanel.verticalNativeBarPos == 'right') {
+        data.style.marginRight = '-' + gutter + 'px';
+      } /* istanbul ignore next */else {
+          data.style.marginLeft = '-' + gutter + 'px';
+        }
     }
     if (context.bar.hBar.state.size && context.mergedOptions.scrollPanel.scrollingX) {
       data.style.height = 'calc(100% + ' + gutter + 'px)';
@@ -924,7 +936,9 @@ function getPanelChildren(h, context) {
   };
   var _customContent = context.$slots['scroll-content'];
 
-  viewStyle.width = getComplitableStyle('width', 'fit-content');
+  if (context.mergedOptions.scrollPanel.scrollingX) {
+    viewStyle.width = getComplitableStyle('width', 'fit-content');
+  }
 
   if (context.mergedOptions.scrollPanel.padding) {
     data.style.paddingRight = context.mergedOptions.rail.size;
@@ -1474,7 +1488,10 @@ var baseConfig = {
     scrollingX: true,
     scrollingY: true,
     speed: 300,
-    easing: undefined
+    easing: undefined,
+    // Sometimes, the nativebar maybe on the left,
+    // See https://github.com/YvesCoding/vuescroll/issues/64
+    verticalNativeBarPos: 'right'
   },
 
   //
@@ -1488,7 +1505,9 @@ var baseConfig = {
     /** Rail the distance from the two ends of the X axis and Y axis. **/
     gutterOfEnds: '2px',
     /** Rail the distance from the side of container. **/
-    gutterOfSide: '2px'
+    gutterOfSide: '2px',
+    /** Whether to keep rail show or not, default -> false, event content height is not enough */
+    keepShow: false
   },
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
@@ -1579,7 +1598,6 @@ function hackPropsData() {
 var hackLifecycle = {
   data: function data() {
     return {
-      shouldStopRender: false,
       mergedOptions: {
         vuescroll: {},
         scrollPanel: {},
@@ -1596,15 +1614,21 @@ var hackLifecycle = {
   }
 };
 
-var withBase = function withBase(createPanel, Vue$$1, components, opts) {
-  return Vue$$1.component(opts.name || 'vueScroll', {
+var withBase = function withBase(_ref) {
+  var _render = _ref.render,
+      name = _ref.name,
+      components = _ref.components,
+      mixins = _ref.mixins,
+      Vue$$1 = _ref.Vue;
+
+  return Vue$$1.component(name || 'vue-scroll', {
     components: components,
     props: {
       ops: { type: Object }
     },
     mixins: [
     /** Hack lifecycle to merge options*/
-    hackLifecycle, api],
+    hackLifecycle, api].concat(toConsumableArray([].concat(mixins))),
     data: function data() {
       return {
         vuescroll: {
@@ -1625,10 +1649,8 @@ var withBase = function withBase(createPanel, Vue$$1, components, opts) {
             width: '100%',
             /** How many times you have scrolled */
             scrollingTimes: 0
-          },
-          updatedCbs: []
+          }
         },
-
         bar: {
           vBar: {
             state: {
@@ -1645,7 +1667,7 @@ var withBase = function withBase(createPanel, Vue$$1, components, opts) {
             }
           }
         },
-
+        updatedCbs: [],
         renderError: false
       };
     },
@@ -1697,7 +1719,7 @@ var withBase = function withBase(createPanel, Vue$$1, components, opts) {
           };
         }
 
-      var ch = [createPanel(h, vm), createBar(h, vm, 'vertical'), createBar(h, vm, 'horizontal')];
+      var ch = [_render(h, vm), createBar(h, vm, 'vertical'), createBar(h, vm, 'horizontal')];
 
       var _customContainer = this.$slots['scroll-container'];
       if (_customContainer) {
@@ -1714,17 +1736,18 @@ var withBase = function withBase(createPanel, Vue$$1, components, opts) {
       if (!this.renderError) {
         this.initVariables();
         this.initWatchOpsChange();
+        // Call external merged Api
         this.refreshInternalStatus();
       }
     },
     updated: function updated() {
       var _this = this;
 
-      this.vuescroll.updatedCbs.forEach(function (cb) {
+      this.updatedCbs.forEach(function (cb) {
         cb.call(_this);
       });
       // Clear
-      this.vuescroll.updatedCbs = [];
+      this.updatedCbs = [];
     },
     beforeDestroy: function beforeDestroy() {
       // remove registryed resize event
@@ -1950,8 +1973,7 @@ function goScrolling(elm, deltaX, deltaY, speed, easing, scrollingComplete) {
  * Init following things
  * 1. Component
  * 2. Render
- * 3. Mix
- * 4. Config
+ * 3. Config
  */
 function _install() {
   var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -1969,31 +1991,21 @@ function _install() {
   // Init component
 
   var comp = _components = _components || {};
-  comp.forEach(function (_c) {
-    components[_c.name] = _c;
+  comp.forEach(function (_) {
+    components[_.name] = _;
   });
 
-  // Init render
-  var vsCtor = withBase(render, Vue$$1, components, opts);
-  // Init Mix
-  initMix(vsCtor, opts.mixins);
+  opts.components = components;
+  opts.Vue = Vue$$1;
+  opts.render = render;
+
+  // Create component
+  withBase(opts);
+
   // Init Config
   extendOpts(config, validator);
   // Inject global config
   Vue$$1.prototype.$vuescrollConfig = ops;
-}
-
-function initMix(ctor, mix) {
-  var _mixedArr = flatArray(mix);
-  _mixedArr.forEach(function (_) {
-    return ctor.mixin(_);
-  });
-}
-
-function flatArray(arr) {
-  return arr.reduce(function (pre, cur) {
-    return pre.concat(isArray(cur) ? flatMap(cur) : cur);
-  }, []);
 }
 
 /**
@@ -2494,7 +2506,9 @@ var members = {
     var activateCallback = _ref.activateCallback,
         deactivateCallback = _ref.deactivateCallback,
         startCallback = _ref.startCallback,
-        beforeDeactivateCallback = _ref.beforeDeactivateCallback;
+        beforeDeactivateCallback = _ref.beforeDeactivateCallback,
+        beforeDeactiveStart = _ref.beforeDeactiveStart,
+        beforeDeactiveEnd = _ref.beforeDeactiveEnd;
 
     var self = this;
 
@@ -2503,12 +2517,16 @@ var members = {
     self.__refreshBeforeDeactivate = beforeDeactivateCallback;
     self.__refreshDeactivate = deactivateCallback;
     self.__refreshStart = startCallback;
+    self.__refreshBeforeDeactiveStart = beforeDeactiveStart;
+    self.__refreshBeforeDeactiveEnd = beforeDeactiveEnd;
   },
   activatePushToLoad: function activatePushToLoad(height, _ref2) {
     var activateCallback = _ref2.activateCallback,
         deactivateCallback = _ref2.deactivateCallback,
         startCallback = _ref2.startCallback,
-        beforeDeactivateCallback = _ref2.beforeDeactivateCallback;
+        beforeDeactivateCallback = _ref2.beforeDeactivateCallback,
+        beforeDeactiveStart = _ref2.beforeDeactiveStart,
+        beforeDeactiveEnd = _ref2.beforeDeactiveEnd;
 
     var self = this;
 
@@ -2517,6 +2535,8 @@ var members = {
     self.__loadBeforeDeactivate = beforeDeactivateCallback;
     self.__loadDeactivate = deactivateCallback;
     self.__loadStart = startCallback;
+    self.__loadBeforeDeactiveStart = beforeDeactiveStart;
+    self.__loadBeforeDeactiveEnd = beforeDeactiveEnd;
   },
 
   /**
@@ -2559,6 +2579,10 @@ var members = {
         if (self.__refreshDeactivate) {
           self.__refreshDeactivate();
         }
+        if (self.__refreshBeforeDeactiveStart) {
+          self.__refreshBeforeDeactiveStart();
+        }
+        self.__refreshBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
       });
     } else if (self.__refreshDeactivate && self.__refreshActive) {
@@ -2573,6 +2597,10 @@ var members = {
         if (self.__loadDeactivate) {
           self.__loadDeactivate();
         }
+        if (self.__loadBeforeDeactiveStart) {
+          self.__loadBeforeDeactiveStart();
+        }
+        self.__loadBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
       });
     } else if (self.__loadDeactivate && self.__loadActive) {
@@ -3277,6 +3305,16 @@ var members = {
             self.__zoomComplete = null;
           }
         }
+
+        if (self.__refreshBeforeDeactiveStarted) {
+          self.__refreshBeforeDeactiveStarted = false;
+          self.__refreshBeforeDeactiveEnd();
+        }
+
+        if (self.__loadBeforeDeactiveStarted) {
+          self.__loadBeforeDeactiveStarted = false;
+          self.__loadBeforeDeactiveEnd();
+        }
       };
 
       // When continuing based on previous animation we choose an ease-out animation instead of ease-in-out
@@ -3719,15 +3757,33 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
     };
   }
 
+  var beforeDeactiveStart = function beforeDeactiveStart() {
+    vm.beingDeactive = true;
+  };
+  var beforeDeactiveEnd = function beforeDeactiveEnd() {
+    vm.beingDeactive = false;
+  };
+
   return {
     activateCallback: activateCallback,
     deactivateCallback: deactivateCallback,
     startCallback: startCallback,
-    beforeDeactivateCallback: beforeDeactivateCallback
+    beforeDeactivateCallback: beforeDeactivateCallback,
+    beforeDeactiveStart: beforeDeactiveStart,
+    beforeDeactiveEnd: beforeDeactiveEnd
   };
 }
 
 var slideMix = {
+  data: function data() {
+    return {
+      // The period from beforeDeactvate stage ends to
+      // deactvate, at this stage, we should hide the refresh or
+      // load tip dom.
+      beingDeactive: false
+    };
+  },
+
   methods: {
     // Update:
     // 1. update height/width
@@ -3906,7 +3962,7 @@ var slideMix = {
      * get the fresh.
      */
     isEnableLoad: function isEnableLoad() {
-      if (!this._isMounted) return false;
+      if (!this._isMounted || this.beingDeactive) return false;
       var panelElm = this.scrollPanelElm;
       var containerElm = this.$el;
 
@@ -3925,8 +3981,7 @@ var slideMix = {
       return true;
     },
     isEnableRefresh: function isEnableRefresh() {
-      if (!this._isMounted) return false;
-      return true;
+      return this._isMounted && !this.beingDeactive;
     }
   }
 };
@@ -3984,19 +4039,12 @@ function resolveOffset(mode, vm) {
 var core$1 = {
   mixins: [api$1, slideMix, nativeMix],
   mounted: function mounted() {
-    var _this = this;
-
-    this.$nextTick(function () {
-      if (!_this._isDestroyed && !_this.renderError) {
-        // update again to ensure bar's size is correct.
-        _this.updateBarStateAndEmitEvent();
-        // update scroller again since we get real dom.
-        if (_this.mode == 'slide') {
-          _this.updateScroller();
-        }
-        _this.scrollToAnchor();
+    if (!this._isDestroyed && !this.renderError) {
+      if (this.mode == 'slide') {
+        this.updatedCbs.push(this.updateScroller);
       }
-    });
+      this.updatedCbs.push(this.scrollToAnchor);
+    }
   },
 
   computed: {
@@ -4020,6 +4068,7 @@ var core$1 = {
       if (this.mode == 'native') {
         this.updateNativeModeBarState();
       } else if (this.mode == 'slide') {
+        /* istanbul ignore if */
         if (!this.scroller) {
           return;
         }
@@ -4131,7 +4180,7 @@ var core$1 = {
       this.updateBarStateAndEmitEvent('refresh-status');
     },
     registryResize: function registryResize() {
-      var _this2 = this;
+      var _this = this;
 
       /* istanbul ignore next */
       if (this.destroyResize) {
@@ -4151,23 +4200,23 @@ var core$1 = {
       var handleWindowResize = function handleWindowResize() /* istanbul ignore next */{
         this.updateBarStateAndEmitEvent('window-resize');
         if (this.mode == 'slide') {
-          this.vuescroll.updatedCbs.push(this.updateScroller);
+          this.updatedCbs.push(this.updateScroller);
           this.$forceUpdate();
         }
       };
       var handleDomResize = function handleDomResize() {
         var currentSize = {};
-        if (_this2.mode == 'slide') {
-          currentSize['width'] = _this2.scroller.__contentWidth;
-          currentSize['height'] = _this2.scroller.__contentHeight;
-          _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
+        if (_this.mode == 'slide') {
+          currentSize['width'] = _this.scroller.__contentWidth;
+          currentSize['height'] = _this.scroller.__contentHeight;
+          _this.updateBarStateAndEmitEvent('handle-resize', currentSize);
           // update scroller should after rendering
-          _this2.vuescroll.updatedCbs.push(_this2.updateScroller);
-          _this2.$forceUpdate();
-        } else if (_this2.mode == 'native') {
-          currentSize['width'] = _this2.scrollPanelElm.scrollWidth;
-          currentSize['height'] = _this2.scrollPanelElm.scrollHeight;
-          _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
+          _this.updatedCbs.push(_this.updateScroller);
+          _this.$forceUpdate();
+        } else if (_this.mode == 'native') {
+          currentSize['width'] = _this.scrollPanelElm.scrollWidth;
+          currentSize['height'] = _this.scrollPanelElm.scrollHeight;
+          _this.updateBarStateAndEmitEvent('handle-resize', currentSize);
         }
       };
       window.addEventListener('resize', handleWindowResize.bind(this), false);

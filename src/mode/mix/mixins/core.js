@@ -11,15 +11,15 @@ import nativeMix from 'mode/native/mixins/update-native';
 function resolveOffset(mode, vm) {
   let axis = {};
   switch (mode) {
-  case 'native':
-    axis = {
-      x: vm.scrollPanelElm.scrollLeft,
-      y: vm.scrollPanelElm.scrollTop
-    };
-    break;
-  case 'slide':
-    axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-    break;
+    case 'native':
+      axis = {
+        x: vm.scrollPanelElm.scrollLeft,
+        y: vm.scrollPanelElm.scrollTop
+      };
+      break;
+    case 'slide':
+      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+      break;
   }
   return axis;
 }
@@ -27,17 +27,12 @@ function resolveOffset(mode, vm) {
 export default {
   mixins: [api, slideMix, nativeMix],
   mounted() {
-    this.$nextTick(() => {
-      if (!this._isDestroyed && !this.renderError) {
-        // update again to ensure bar's size is correct.
-        this.updateBarStateAndEmitEvent();
-        // update scroller again since we get real dom.
-        if (this.mode == 'slide') {
-          this.updateScroller();
-        }
-        this.scrollToAnchor();
+    if (!this._isDestroyed && !this.renderError) {
+      if (this.mode == 'slide') {
+        this.updatedCbs.push(this.updateScroller);
       }
-    });
+      this.updatedCbs.push(this.scrollToAnchor);
+    }
   },
   computed: {
     mode() {
@@ -65,6 +60,7 @@ export default {
       if (this.mode == 'native') {
         this.updateNativeModeBarState();
       } else if (this.mode == 'slide') {
+        /* istanbul ignore if */
         if (!this.scroller) {
           return;
         }
@@ -209,7 +205,7 @@ export default {
       const handleWindowResize = function() /* istanbul ignore next */ {
         this.updateBarStateAndEmitEvent('window-resize');
         if (this.mode == 'slide') {
-          this.vuescroll.updatedCbs.push(this.updateScroller);
+          this.updatedCbs.push(this.updateScroller);
           this.$forceUpdate();
         }
       };
@@ -220,7 +216,7 @@ export default {
           currentSize['height'] = this.scroller.__contentHeight;
           this.updateBarStateAndEmitEvent('handle-resize', currentSize);
           // update scroller should after rendering
-          this.vuescroll.updatedCbs.push(this.updateScroller);
+          this.updatedCbs.push(this.updateScroller);
           this.$forceUpdate();
         } else if (this.mode == 'native') {
           currentSize['width'] = this.scrollPanelElm.scrollWidth;

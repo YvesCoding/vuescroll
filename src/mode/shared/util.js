@@ -68,8 +68,7 @@ export function goScrolling(
  * Init following things
  * 1. Component
  * 2. Render
- * 3. Mix
- * 4. Config
+ * 3. Config
  */
 export function _install(opts = {}) {
   let {
@@ -84,29 +83,21 @@ export function _install(opts = {}) {
 
   // Init component
   const comp = (_components = _components || {});
-  comp.forEach(_c => {
-    components[_c.name] = _c;
+  comp.forEach(_ => {
+    components[_.name] = _;
   });
 
-  // Init render
-  let vsCtor = withBase(render, Vue, components, opts);
-  // Init Mix
-  initMix(vsCtor, opts.mixins);
+  opts.components = components;
+  opts.Vue = Vue;
+  opts.render = render;
+
+  // Create component
+  withBase(opts);
+
   // Init Config
   extendOpts(config, validator);
   // Inject global config
   Vue.prototype.$vuescrollConfig = ops;
-}
-
-function initMix(ctor, mix) {
-  const _mixedArr = flatArray(mix);
-  _mixedArr.forEach(_ => ctor.mixin(_));
-}
-
-function flatArray(arr) {
-  return arr.reduce((pre, cur) => {
-    return pre.concat(isArray(cur) ? flatMap(cur) : cur);
-  }, []);
 }
 
 /**

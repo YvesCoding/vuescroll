@@ -11,8 +11,8 @@ import { installResizeDetection } from 'core/third-party/resize-detector/index';
 
 import { createBar } from 'mode/shared/bar';
 
-const withBase = (createPanel, Vue, components, opts) => {
-  return Vue.component(opts.name || 'vueScroll', {
+const withBase = ({ render, name, components, mixins, Vue }) => {
+  return Vue.component(name || 'vue-scroll', {
     components,
     props: {
       ops: { type: Object }
@@ -20,7 +20,8 @@ const withBase = (createPanel, Vue, components, opts) => {
     mixins: [
       /** Hack lifecycle to merge options*/
       hackLifecycle,
-      api
+      api,
+      ...[].concat(mixins)
     ],
     data() {
       return {
@@ -42,10 +43,8 @@ const withBase = (createPanel, Vue, components, opts) => {
             width: '100%',
             /** How many times you have scrolled */
             scrollingTimes: 0
-          },
-          updatedCbs: []
+          }
         },
-
         bar: {
           vBar: {
             state: {
@@ -62,7 +61,7 @@ const withBase = (createPanel, Vue, components, opts) => {
             }
           }
         },
-
+        updatedCbs: [],
         renderError: false
       };
     },
@@ -116,7 +115,7 @@ const withBase = (createPanel, Vue, components, opts) => {
       }
 
       const ch = [
-        createPanel(h, vm),
+        render(h, vm),
         createBar(h, vm, 'vertical'),
         createBar(h, vm, 'horizontal')
       ];
@@ -132,15 +131,16 @@ const withBase = (createPanel, Vue, components, opts) => {
       if (!this.renderError) {
         this.initVariables();
         this.initWatchOpsChange();
+        // Call external merged Api
         this.refreshInternalStatus();
       }
     },
     updated() {
-      this.vuescroll.updatedCbs.forEach(cb => {
+      this.updatedCbs.forEach(cb => {
         cb.call(this);
       });
       // Clear
-      this.vuescroll.updatedCbs = [];
+      this.updatedCbs = [];
     },
     beforeDestroy() {
       // remove registryed resize event

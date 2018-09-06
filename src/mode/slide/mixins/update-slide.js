@@ -69,15 +69,32 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
     };
   }
 
+  let beforeDeactiveStart = () => {
+    vm.beingDeactive = true;
+  };
+  let beforeDeactiveEnd = () => {
+    vm.beingDeactive = false;
+  };
+
   return {
     activateCallback,
     deactivateCallback,
     startCallback,
-    beforeDeactivateCallback
+    beforeDeactivateCallback,
+    beforeDeactiveStart,
+    beforeDeactiveEnd
   };
 }
 
 export default {
+  data() {
+    return {
+      // The period from beforeDeactvate stage ends to
+      // deactvate, at this stage, we should hide the refresh or
+      // load tip dom.
+      beingDeactive: false
+    };
+  },
   methods: {
     // Update:
     // 1. update height/width
@@ -182,15 +199,15 @@ export default {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
-          case 'mousedown':
-            this.vuescroll.state.isDragging = true;
-            break;
-          case 'onscroll':
-            this.handleScroll(false);
-            break;
-          case 'mouseup':
-            this.vuescroll.state.isDragging = false;
-            break;
+            case 'mousedown':
+              this.vuescroll.state.isDragging = true;
+              break;
+            case 'onscroll':
+              this.handleScroll(false);
+              break;
+            case 'mouseup':
+              this.vuescroll.state.isDragging = false;
+              break;
           }
         },
         zooming,
@@ -294,7 +311,7 @@ export default {
      * get the fresh.
      */
     isEnableLoad() {
-      if (!this._isMounted) return false;
+      if (!this._isMounted || this.beingDeactive) return false;
       const panelElm = this.scrollPanelElm;
       const containerElm = this.$el;
 
@@ -313,8 +330,7 @@ export default {
       return true;
     },
     isEnableRefresh() {
-      if (!this._isMounted) return false;
-      return true;
+      return this._isMounted && !this.beingDeactive;
     }
   }
 };

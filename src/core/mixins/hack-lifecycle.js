@@ -22,7 +22,6 @@ function hackPropsData() {
 export default {
   data() {
     return {
-      shouldStopRender: false,
       mergedOptions: {
         vuescroll: {},
         scrollPanel: {},

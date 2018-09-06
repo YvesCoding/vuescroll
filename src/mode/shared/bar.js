@@ -163,6 +163,9 @@ export default {
       type: Object,
       required: true
     },
+    hideBar: {
+      type: Boolean
+    },
     type: {
       type: String,
       required: true
@@ -242,11 +245,7 @@ export default {
       rail.on['mousedown'] = createTrackEvent(this, 'mousedown');
     }
 
-    return (
-      <div {...rail}>
-        <div {...bar} />
-      </div>
-    );
+    return <div {...rail}>{this.hideBar ? null : <div {...bar} />}</div>;
   }
 };
 
@@ -261,11 +260,14 @@ export function createBar(h, vm, type) {
   /** type.charAt(0) = vBar/hBar */
   const barType = `${type.charAt(0)}Bar`;
 
-  if (
+  const hideBar =
     !vm.bar[barType].state.size ||
     !vm.mergedOptions.scrollPanel['scrolling' + axis] ||
-    (vm.refreshLoad && type !== 'vertical')
-  ) {
+    (vm.refreshLoad && type !== 'vertical');
+
+  const keepShowRail = vm.mergedOptions.rail.keepShow;
+
+  if (hideBar && !keepShowRail) {
     return null;
   }
 
@@ -276,7 +278,8 @@ export function createBar(h, vm, type) {
         bar: vm.mergedOptions.bar,
         rail: vm.mergedOptions.rail
       },
-      state: vm.bar[barType].state
+      state: vm.bar[barType].state,
+      hideBar
     },
     on: {
       setBarDrag: vm.setBarDrag

@@ -5,13 +5,9 @@ import updateNative from './update-native';
 export default {
   mixins: [api, updateNative],
   mounted() {
-    this.$nextTick(() => {
-      if (!this._isDestroyed && !this.renderError) {
-        // update again to ensure bar's size is correct.
-        this.updateBarStateAndEmitEvent();
-        this.scrollToAnchor();
-      }
-    });
+    if (!this._isDestroyed && !this.renderError) {
+      this.updatedCbs.push(this.scrollToAnchor);
+    }
   },
   methods: {
     getCurrentviewDom() {

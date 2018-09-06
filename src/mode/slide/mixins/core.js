@@ -7,11 +7,10 @@ export default {
   mounted() {
     this.$nextTick(() => {
       if (!this._isDestroyed && !this.renderError) {
-        // update again to ensure bar's size is correct.
-        this.updateBarStateAndEmitEvent();
-        // update scroller again since we get real dom.
-        this.updateScroller();
-        this.scrollToAnchor();
+        this.updatedCbs.push(() => {
+          this.updateScroller();
+          this.scrollToAnchor();
+        });
       }
     });
   },
@@ -162,7 +161,7 @@ export default {
       let contentElm = this.scrollPanelElm;
       const handleWindowResize = function() /* istanbul ignore next */ {
         this.updateBarStateAndEmitEvent('window-resize');
-        this.vuescroll.updatedCbs.push(this.updateScroller);
+        this.updatedCbs.push(this.updateScroller);
         this.$forceUpdate();
       };
       const handleDomResize = () => {
@@ -171,7 +170,7 @@ export default {
         currentSize['height'] = this.scroller.__contentHeight;
         this.updateBarStateAndEmitEvent('handle-resize', currentSize);
         // update scroller should after rendering
-        this.vuescroll.updatedCbs.push(this.updateScroller);
+        this.updatedCbs.push(this.updateScroller);
         this.$forceUpdate();
       };
       window.addEventListener('resize', handleWindowResize.bind(this), false);

@@ -362,7 +362,9 @@ var members = {
       activateCallback,
       deactivateCallback,
       startCallback,
-      beforeDeactivateCallback
+      beforeDeactivateCallback,
+      beforeDeactiveStart,
+      beforeDeactiveEnd
     }
   ) {
     var self = this;
@@ -372,6 +374,8 @@ var members = {
     self.__refreshBeforeDeactivate = beforeDeactivateCallback;
     self.__refreshDeactivate = deactivateCallback;
     self.__refreshStart = startCallback;
+    self.__refreshBeforeDeactiveStart = beforeDeactiveStart;
+    self.__refreshBeforeDeactiveEnd = beforeDeactiveEnd;
   },
   activatePushToLoad: function(
     height,
@@ -379,7 +383,9 @@ var members = {
       activateCallback,
       deactivateCallback,
       startCallback,
-      beforeDeactivateCallback
+      beforeDeactivateCallback,
+      beforeDeactiveStart,
+      beforeDeactiveEnd
     }
   ) {
     var self = this;
@@ -389,6 +395,8 @@ var members = {
     self.__loadBeforeDeactivate = beforeDeactivateCallback;
     self.__loadDeactivate = deactivateCallback;
     self.__loadStart = startCallback;
+    self.__loadBeforeDeactiveStart = beforeDeactiveStart;
+    self.__loadBeforeDeactiveEnd = beforeDeactiveEnd;
   },
 
   /**
@@ -439,6 +447,10 @@ var members = {
         if (self.__refreshDeactivate) {
           self.__refreshDeactivate();
         }
+        if (self.__refreshBeforeDeactiveStart) {
+          self.__refreshBeforeDeactiveStart();
+        }
+        self.__refreshBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
       });
     } else if (self.__refreshDeactivate && self.__refreshActive) {
@@ -453,6 +465,10 @@ var members = {
         if (self.__loadDeactivate) {
           self.__loadDeactivate();
         }
+        if (self.__loadBeforeDeactiveStart) {
+          self.__loadBeforeDeactiveStart();
+        }
+        self.__loadBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
       });
     } else if (self.__loadDeactivate && self.__loadActive) {
@@ -1236,6 +1252,16 @@ var members = {
             self.__zoomComplete();
             self.__zoomComplete = null;
           }
+        }
+
+        if (self.__refreshBeforeDeactiveStarted) {
+          self.__refreshBeforeDeactiveStarted = false;
+          self.__refreshBeforeDeactiveEnd();
+        }
+
+        if (self.__loadBeforeDeactiveStarted) {
+          self.__loadBeforeDeactiveStarted = false;
+          self.__loadBeforeDeactiveEnd();
         }
       };
 

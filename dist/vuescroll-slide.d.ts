@@ -78,6 +78,7 @@ interface scrollPanel {
   speed?: number;
   easing?: easing | undefined;
   padding?: boolean;
+  verticalNativeBarPos?: 'right' | 'left';
 }
 
 interface rail {
@@ -87,6 +88,12 @@ interface rail {
   opacity?: number;
   /** Rail's size(Height/Width) , default -> 6px */
   size?: string;
+  /** Rail the distance from the two ends of the X axis and Y axis. **/
+  gutterOfEnds?: string;
+  /** Rail the distance from the side of container. **/
+  gutterOfSide?: string;
+  /** Whether to keep rail show or not, default -> false, event content height is not enough */
+  keepShow?: boolean;
 }
 
 type Partial<T> = { [P in keyof T]?: T[P] };

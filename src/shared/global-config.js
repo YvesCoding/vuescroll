@@ -18,7 +18,10 @@ const baseConfig = {
     scrollingX: true,
     scrollingY: true,
     speed: 300,
-    easing: undefined
+    easing: undefined,
+    // Sometimes, the nativebar maybe on the left,
+    // See https://github.com/YvesCoding/vuescroll/issues/64
+    verticalNativeBarPos: 'right'
   },
 
   //
@@ -32,7 +35,9 @@ const baseConfig = {
     /** Rail the distance from the two ends of the X axis and Y axis. **/
     gutterOfEnds: '2px',
     /** Rail the distance from the side of container. **/
-    gutterOfSide: '2px'
+    gutterOfSide: '2px',
+    /** Whether to keep rail show or not, default -> false, event content height is not enough */
+    keepShow: false
   },
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
