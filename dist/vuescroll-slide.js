@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.8.1
+    * Vuescroll v4.8.2
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1503,9 +1503,6 @@ var withBase = function withBase(_ref) {
             /** Current scrolling directions */
             posX: null,
             posY: null,
-            /** Default tips of refresh and load */
-            refreshStage: 'deactive',
-            loadStage: 'deactive',
             /** Default sizeStrategies */
             height: '100%',
             width: '100%',
@@ -2292,7 +2289,6 @@ var members = {
         deactivateCallback = _ref.deactivateCallback,
         startCallback = _ref.startCallback,
         beforeDeactivateCallback = _ref.beforeDeactivateCallback,
-        beforeDeactiveStart = _ref.beforeDeactiveStart,
         beforeDeactiveEnd = _ref.beforeDeactiveEnd;
 
     var self = this;
@@ -2300,17 +2296,15 @@ var members = {
     self.__refreshHeight = height;
     self.__refreshActivate = activateCallback;
     self.__refreshBeforeDeactivate = beforeDeactivateCallback;
+    self.__refreshBeforeDeactiveEnd = beforeDeactiveEnd;
     self.__refreshDeactivate = deactivateCallback;
     self.__refreshStart = startCallback;
-    self.__refreshBeforeDeactiveStart = beforeDeactiveStart;
-    self.__refreshBeforeDeactiveEnd = beforeDeactiveEnd;
   },
   activatePushToLoad: function activatePushToLoad(height, _ref2) {
     var activateCallback = _ref2.activateCallback,
         deactivateCallback = _ref2.deactivateCallback,
         startCallback = _ref2.startCallback,
         beforeDeactivateCallback = _ref2.beforeDeactivateCallback,
-        beforeDeactiveStart = _ref2.beforeDeactiveStart,
         beforeDeactiveEnd = _ref2.beforeDeactiveEnd;
 
     var self = this;
@@ -2318,10 +2312,9 @@ var members = {
     self.__loadHeight = height;
     self.__loadActivate = activateCallback;
     self.__loadBeforeDeactivate = beforeDeactivateCallback;
+    self.__loadBeforeDeactiveEnd = beforeDeactiveEnd;
     self.__loadDeactivate = deactivateCallback;
     self.__loadStart = startCallback;
-    self.__loadBeforeDeactiveStart = beforeDeactiveStart;
-    self.__loadBeforeDeactiveEnd = beforeDeactiveEnd;
   },
 
   /**
@@ -2361,11 +2354,8 @@ var members = {
     if (self.__refreshBeforeDeactivate && self.__refreshActive) {
       self.__refreshActive = false;
       self.__refreshBeforeDeactivate(function () {
-        if (self.__refreshDeactivate) {
-          self.__refreshDeactivate();
-        }
-        if (self.__refreshBeforeDeactiveStart) {
-          self.__refreshBeforeDeactiveStart();
+        if (self.__refreshBeforeDeactiveEnd) {
+          self.__refreshBeforeDeactiveEnd();
         }
         self.__refreshBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
@@ -2379,11 +2369,8 @@ var members = {
     if (self.__loadBeforeDeactivate && self.__loadActive) {
       self.__loadActive = false;
       self.__loadBeforeDeactivate(function () {
-        if (self.__loadDeactivate) {
-          self.__loadDeactivate();
-        }
-        if (self.__loadBeforeDeactiveStart) {
-          self.__loadBeforeDeactiveStart();
+        if (self.__loadBeforeDeactiveEnd) {
+          self.__loadBeforeDeactiveEnd();
         }
         self.__loadBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
@@ -3093,12 +3080,12 @@ var members = {
 
         if (self.__refreshBeforeDeactiveStarted) {
           self.__refreshBeforeDeactiveStarted = false;
-          self.__refreshBeforeDeactiveEnd();
+          if (self.__refreshDeactivate) self.__refreshDeactivate();
         }
 
         if (self.__loadBeforeDeactiveStarted) {
           self.__loadBeforeDeactiveStarted = false;
-          self.__loadBeforeDeactiveEnd();
+          if (self.__loadDeactivate) self.__loadDeactivate();
         }
       };
 
@@ -3489,72 +3476,59 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
 /**
  * @description refresh and load callback
  */
-function createStateCallbacks(type, stageName, vm, tipDom) {
+function createStateCallbacks(type, stageType, vm, tipDom) {
   var listeners = vm.$listeners;
 
   var activateCallback = function activateCallback() {
-    vm.vuescroll.state[stageName] = 'active';
+    vm.vuescroll.state[stageType] = 'active';
+    vm.$emit(type + '-activate', vm, tipDom);
   };
 
   var deactivateCallback = function deactivateCallback() {
-    vm.vuescroll.state[stageName] = 'deactive';
+    vm.vuescroll.state[stageType] = 'deactive';
+    vm.$emit(type + '-deactivate', vm, tipDom);
+  };
+
+  var beforeDeactiveEnd = function beforeDeactiveEnd() {
+    vm.vuescroll.state[stageType] = 'beforeDeactiveEnd';
+    vm.$emit(type + '-before-deactivate-end', vm, tipDom);
   };
 
   var startCallback = function startCallback() {
-    vm.vuescroll.state[stageName] = 'start';
+    vm.vuescroll.state[stageType] = 'start';
     setTimeout(function () {
       vm.scroller.finishRefreshOrLoad();
     }, 2000); // Default start stage duration
   };
 
   var beforeDeactivateCallback = function beforeDeactivateCallback(done) {
-    vm.vuescroll.state[stageName] = 'beforeDeactive';
+    vm.vuescroll.state[stageType] = 'beforeDeactive';
     setTimeout(function () {
       done();
     }, 500); // Default before-deactivated stage duration
   };
-  /* istanbul ignore if */
-  if (listeners[type + '-activate']) {
-    activateCallback = function activateCallback() {
-      vm.vuescroll.state[stageName] = 'active';
-      vm.$emit(type + '-activate', vm, tipDom);
-    };
-  }
+
   /* istanbul ignore if */
   if (listeners[type + '-before-deactivate']) {
     beforeDeactivateCallback = function beforeDeactivateCallback(done) {
-      vm.vuescroll.state[stageName] = 'beforeDeactive';
+      vm.vuescroll.state[stageType] = 'beforeDeactive';
       vm.$emit(type + '-before-deactivate', vm, tipDom, done.bind(vm.scroller));
     };
   }
-  /* istanbul ignore if */
-  if (listeners[type + '-deactivate']) {
-    deactivateCallback = function deactivateCallback() {
-      vm.vuescroll.state[stageName] = 'deactive';
-      vm.$emit(type + '-deactivate', vm, tipDom);
-    };
-  }
+
   /* istanbul ignore if */
   if (listeners[type + '-start']) {
     startCallback = function startCallback() {
-      vm.vuescroll.state[stageName] = 'start';
+      vm.vuescroll.state[stageType] = 'start';
       vm.$emit(type + '-start', vm, tipDom, vm.scroller.finishRefreshOrLoad.bind(vm.scroller));
     };
   }
-
-  var beforeDeactiveStart = function beforeDeactiveStart() {
-    vm.beingDeactive = true;
-  };
-  var beforeDeactiveEnd = function beforeDeactiveEnd() {
-    vm.beingDeactive = false;
-  };
 
   return {
     activateCallback: activateCallback,
     deactivateCallback: deactivateCallback,
     startCallback: startCallback,
     beforeDeactivateCallback: beforeDeactivateCallback,
-    beforeDeactiveStart: beforeDeactiveStart,
     beforeDeactiveEnd: beforeDeactiveEnd
   };
 }
@@ -3562,13 +3536,27 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
 var updateSlide = {
   data: function data() {
     return {
-      // The period from beforeDeactvate stage ends to
-      // deactvate, at this stage, we should hide the refresh or
-      // load tip dom.
-      beingDeactive: false
+      vuescroll: {
+        state: {
+          /** Default tips of refresh and load */
+          refreshStage: 'deactive',
+          loadStage: 'deactive'
+        }
+      }
     };
   },
 
+  computed: {
+    pullRefreshTip: function pullRefreshTip() {
+      return this.mergedOptions.vuescroll.pullRefresh.tips[this.vuescroll.state.refreshStage];
+    },
+    pushLoadTip: function pushLoadTip() {
+      return this.mergedOptions.vuescroll.pushLoad.tips[this.vuescroll.state.loadStage];
+    },
+    refreshLoad: function refreshLoad() {
+      return this.mergedOptions.vuescroll.pullRefresh.enable || this.mergedOptions.vuescroll.pushLoad.enable;
+    }
+  },
   methods: {
     // Update:
     // 1. update height/width
@@ -3733,9 +3721,9 @@ var updateSlide = {
     registryEvent: function registryEvent(type) {
       var domName = type == 'refresh' ? __REFRESH_DOM_NAME : __LOAD_DOM_NAME;
       var activateFunc = type == 'refresh' ? this.scroller.activatePullToRefresh : this.scroller.activatePushToLoad;
-      var stageName = type == 'refresh' ? 'refreshStage' : 'loadStage';
+      var stageType = type == 'refresh' ? 'refreshStage' : 'loadStage';
       var tipDom = this.$refs[domName].elm || this.$refs[domName];
-      var cbs = createStateCallbacks(type, stageName, this, tipDom);
+      var cbs = createStateCallbacks(type, stageType, this, tipDom);
       var height = tipDom.offsetHeight;
 
       activateFunc.bind(this.scroller)(height, cbs);
@@ -3747,7 +3735,7 @@ var updateSlide = {
      * get the fresh.
      */
     isEnableLoad: function isEnableLoad() {
-      if (!this._isMounted || this.beingDeactive) return false;
+      if (!this._isMounted) return false;
       var panelElm = this.scrollPanelElm;
       var containerElm = this.$el;
 
@@ -3766,7 +3754,7 @@ var updateSlide = {
       return true;
     },
     isEnableRefresh: function isEnableRefresh() {
-      return this._isMounted && !this.beingDeactive;
+      return this._isMounted;
     }
   }
 };
@@ -3786,17 +3774,6 @@ var core$1 = {
     });
   },
 
-  computed: {
-    pullRefreshTip: function pullRefreshTip() {
-      return this.mergedOptions.vuescroll.pullRefresh.tips[this.vuescroll.state.refreshStage];
-    },
-    pushLoadTip: function pushLoadTip() {
-      return this.mergedOptions.vuescroll.pushLoad.tips[this.vuescroll.state.loadStage];
-    },
-    refreshLoad: function refreshLoad() {
-      return this.mergedOptions.vuescroll.pullRefresh.enable || this.mergedOptions.vuescroll.pushLoad.enable;
-    }
-  },
   methods: {
     getCurrentviewDom: function getCurrentviewDom() {
       this.getCurrentviewDomSlide();
@@ -4030,7 +4007,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.8.1',
+  version: '4.8.2',
   refreshAll: refreshAll
 };
 

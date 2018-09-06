@@ -35,9 +35,6 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
             /** Current scrolling directions */
             posX: null,
             posY: null,
-            /** Default tips of refresh and load */
-            refreshStage: 'deactive',
-            loadStage: 'deactive',
             /** Default sizeStrategies */
             height: '100%',
             width: '100%',

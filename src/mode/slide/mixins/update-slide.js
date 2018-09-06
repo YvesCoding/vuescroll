@@ -11,55 +11,50 @@ import { __REFRESH_DOM_NAME, __LOAD_DOM_NAME } from 'shared/constants';
 /**
  * @description refresh and load callback
  */
-function createStateCallbacks(type, stageName, vm, tipDom) {
+function createStateCallbacks(type, stageType, vm, tipDom) {
   const listeners = vm.$listeners;
 
-  let activateCallback = () => {
-    vm.vuescroll.state[stageName] = 'active';
+  const activateCallback = () => {
+    vm.vuescroll.state[stageType] = 'active';
+    vm.$emit(type + '-activate', vm, tipDom);
   };
 
-  let deactivateCallback = () => {
-    vm.vuescroll.state[stageName] = 'deactive';
+  const deactivateCallback = () => {
+    vm.vuescroll.state[stageType] = 'deactive';
+    vm.$emit(type + '-deactivate', vm, tipDom);
+  };
+
+  const beforeDeactiveEnd = () => {
+    vm.vuescroll.state[stageType] = 'beforeDeactiveEnd';
+    vm.$emit(type + '-before-deactivate-end', vm, tipDom);
   };
 
   let startCallback = () => {
-    vm.vuescroll.state[stageName] = 'start';
+    vm.vuescroll.state[stageType] = 'start';
     setTimeout(() => {
       vm.scroller.finishRefreshOrLoad();
     }, 2000); // Default start stage duration
   };
 
   let beforeDeactivateCallback = done => {
-    vm.vuescroll.state[stageName] = 'beforeDeactive';
+    vm.vuescroll.state[stageType] = 'beforeDeactive';
     setTimeout(function() {
       done();
     }, 500); // Default before-deactivated stage duration
   };
-  /* istanbul ignore if */
-  if (listeners[type + '-activate']) {
-    activateCallback = () => {
-      vm.vuescroll.state[stageName] = 'active';
-      vm.$emit(type + '-activate', vm, tipDom);
-    };
-  }
+
   /* istanbul ignore if */
   if (listeners[type + '-before-deactivate']) {
     beforeDeactivateCallback = done => {
-      vm.vuescroll.state[stageName] = 'beforeDeactive';
+      vm.vuescroll.state[stageType] = 'beforeDeactive';
       vm.$emit(type + '-before-deactivate', vm, tipDom, done.bind(vm.scroller));
     };
   }
-  /* istanbul ignore if */
-  if (listeners[type + '-deactivate']) {
-    deactivateCallback = () => {
-      vm.vuescroll.state[stageName] = 'deactive';
-      vm.$emit(type + '-deactivate', vm, tipDom);
-    };
-  }
+
   /* istanbul ignore if */
   if (listeners[type + '-start']) {
     startCallback = () => {
-      vm.vuescroll.state[stageName] = 'start';
+      vm.vuescroll.state[stageType] = 'start';
       vm.$emit(
         type + '-start',
         vm,
@@ -69,19 +64,11 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
     };
   }
 
-  let beforeDeactiveStart = () => {
-    vm.beingDeactive = true;
-  };
-  let beforeDeactiveEnd = () => {
-    vm.beingDeactive = false;
-  };
-
   return {
     activateCallback,
     deactivateCallback,
     startCallback,
     beforeDeactivateCallback,
-    beforeDeactiveStart,
     beforeDeactiveEnd
   };
 }
@@ -89,11 +76,32 @@ function createStateCallbacks(type, stageName, vm, tipDom) {
 export default {
   data() {
     return {
-      // The period from beforeDeactvate stage ends to
-      // deactvate, at this stage, we should hide the refresh or
-      // load tip dom.
-      beingDeactive: false
+      vuescroll: {
+        state: {
+          /** Default tips of refresh and load */
+          refreshStage: 'deactive',
+          loadStage: 'deactive'
+        }
+      }
     };
+  },
+  computed: {
+    pullRefreshTip() {
+      return this.mergedOptions.vuescroll.pullRefresh.tips[
+        this.vuescroll.state.refreshStage
+      ];
+    },
+    pushLoadTip() {
+      return this.mergedOptions.vuescroll.pushLoad.tips[
+        this.vuescroll.state.loadStage
+      ];
+    },
+    refreshLoad() {
+      return (
+        this.mergedOptions.vuescroll.pullRefresh.enable ||
+        this.mergedOptions.vuescroll.pushLoad.enable
+      );
+    }
   },
   methods: {
     // Update:
@@ -298,9 +306,9 @@ export default {
         type == 'refresh'
           ? this.scroller.activatePullToRefresh
           : this.scroller.activatePushToLoad;
-      const stageName = type == 'refresh' ? 'refreshStage' : 'loadStage';
+      const stageType = type == 'refresh' ? 'refreshStage' : 'loadStage';
       const tipDom = this.$refs[domName].elm || this.$refs[domName];
-      const cbs = createStateCallbacks(type, stageName, this, tipDom);
+      const cbs = createStateCallbacks(type, stageType, this, tipDom);
       const height = tipDom.offsetHeight;
 
       activateFunc.bind(this.scroller)(height, cbs);
@@ -311,7 +319,7 @@ export default {
      * get the fresh.
      */
     isEnableLoad() {
-      if (!this._isMounted || this.beingDeactive) return false;
+      if (!this._isMounted) return false;
       const panelElm = this.scrollPanelElm;
       const containerElm = this.$el;
 
@@ -330,7 +338,7 @@ export default {
       return true;
     },
     isEnableRefresh() {
-      return this._isMounted && !this.beingDeactive;
+      return this._isMounted;
     }
   }
 };

@@ -37,22 +37,6 @@ export default {
   computed: {
     mode() {
       return this.mergedOptions.vuescroll.mode;
-    },
-    pullRefreshTip() {
-      return this.mergedOptions.vuescroll.pullRefresh.tips[
-        this.vuescroll.state.refreshStage
-      ];
-    },
-    pushLoadTip() {
-      return this.mergedOptions.vuescroll.pushLoad.tips[
-        this.vuescroll.state.loadStage
-      ];
-    },
-    refreshLoad() {
-      return (
-        this.mergedOptions.vuescroll.pullRefresh.enable ||
-        this.mergedOptions.vuescroll.pushLoad.enable
-      );
     }
   },
   methods: {

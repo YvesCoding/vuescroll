@@ -363,7 +363,6 @@ var members = {
       deactivateCallback,
       startCallback,
       beforeDeactivateCallback,
-      beforeDeactiveStart,
       beforeDeactiveEnd
     }
   ) {
@@ -372,10 +371,9 @@ var members = {
     self.__refreshHeight = height;
     self.__refreshActivate = activateCallback;
     self.__refreshBeforeDeactivate = beforeDeactivateCallback;
+    self.__refreshBeforeDeactiveEnd = beforeDeactiveEnd;
     self.__refreshDeactivate = deactivateCallback;
     self.__refreshStart = startCallback;
-    self.__refreshBeforeDeactiveStart = beforeDeactiveStart;
-    self.__refreshBeforeDeactiveEnd = beforeDeactiveEnd;
   },
   activatePushToLoad: function(
     height,
@@ -384,7 +382,6 @@ var members = {
       deactivateCallback,
       startCallback,
       beforeDeactivateCallback,
-      beforeDeactiveStart,
       beforeDeactiveEnd
     }
   ) {
@@ -393,10 +390,9 @@ var members = {
     self.__loadHeight = height;
     self.__loadActivate = activateCallback;
     self.__loadBeforeDeactivate = beforeDeactivateCallback;
+    self.__loadBeforeDeactiveEnd = beforeDeactiveEnd;
     self.__loadDeactivate = deactivateCallback;
     self.__loadStart = startCallback;
-    self.__loadBeforeDeactiveStart = beforeDeactiveStart;
-    self.__loadBeforeDeactiveEnd = beforeDeactiveEnd;
   },
 
   /**
@@ -444,11 +440,8 @@ var members = {
     if (self.__refreshBeforeDeactivate && self.__refreshActive) {
       self.__refreshActive = false;
       self.__refreshBeforeDeactivate(function() {
-        if (self.__refreshDeactivate) {
-          self.__refreshDeactivate();
-        }
-        if (self.__refreshBeforeDeactiveStart) {
-          self.__refreshBeforeDeactiveStart();
+        if (self.__refreshBeforeDeactiveEnd) {
+          self.__refreshBeforeDeactiveEnd();
         }
         self.__refreshBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
@@ -462,11 +455,8 @@ var members = {
     if (self.__loadBeforeDeactivate && self.__loadActive) {
       self.__loadActive = false;
       self.__loadBeforeDeactivate(function() {
-        if (self.__loadDeactivate) {
-          self.__loadDeactivate();
-        }
-        if (self.__loadBeforeDeactiveStart) {
-          self.__loadBeforeDeactiveStart();
+        if (self.__loadBeforeDeactiveEnd) {
+          self.__loadBeforeDeactiveEnd();
         }
         self.__loadBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
@@ -1256,12 +1246,12 @@ var members = {
 
         if (self.__refreshBeforeDeactiveStarted) {
           self.__refreshBeforeDeactiveStarted = false;
-          self.__refreshBeforeDeactiveEnd();
+          if (self.__refreshDeactivate) self.__refreshDeactivate();
         }
 
         if (self.__loadBeforeDeactiveStarted) {
           self.__loadBeforeDeactiveStarted = false;
-          self.__loadBeforeDeactiveEnd();
+          if (self.__loadDeactivate) self.__loadDeactivate();
         }
       };
 

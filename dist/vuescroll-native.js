@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.8.1
+    * Vuescroll v4.8.2
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1399,9 +1399,6 @@ var withBase = function withBase(_ref) {
             /** Current scrolling directions */
             posX: null,
             posY: null,
-            /** Default tips of refresh and load */
-            refreshStage: 'deactive',
-            loadStage: 'deactive',
             /** Default sizeStrategies */
             height: '100%',
             width: '100%',
@@ -1993,7 +1990,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.8.1',
+  version: '4.8.2',
   refreshAll: refreshAll
 };
 
