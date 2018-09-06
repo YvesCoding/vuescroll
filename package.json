@@ -43,7 +43,7 @@
     "report-coverage": "codecov",
     "gen-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
-  "version": "4.8.2",
+  "version": "4.8.4",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.5",
