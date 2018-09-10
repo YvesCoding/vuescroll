@@ -3588,6 +3588,7 @@ var updateSlide = {
           loadHeight = loadDom.offsetHeight;
           //  hide the trailing load dom..
           contentHeight -= loadHeight;
+          loadDom.style.bottom = '-' + loadHeight + 'px';
         }
       }
       if (this.scroller) {
@@ -3742,13 +3743,6 @@ var updateSlide = {
       var loadDom = null;
       if (this.$refs['loadDom']) {
         loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
-      }
-
-      var loadHeight = loadDom && loadDom.offsetHeight || 0;
-      // Enable load only when clientHeight <= scrollHeight
-      /* istanbul ignore if */
-      if (panelElm.scrollHeight - loadHeight <= containerElm.clientHeight) {
-        return false;
       }
 
       return true;
