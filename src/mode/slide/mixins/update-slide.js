@@ -208,15 +208,15 @@ export default {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
-            case 'mousedown':
-              this.vuescroll.state.isDragging = true;
-              break;
-            case 'onscroll':
-              this.handleScroll(false);
-              break;
-            case 'mouseup':
-              this.vuescroll.state.isDragging = false;
-              break;
+          case 'mousedown':
+            this.vuescroll.state.isDragging = true;
+            break;
+          case 'onscroll':
+            this.handleScroll(false);
+            break;
+          case 'mouseup':
+            this.vuescroll.state.isDragging = false;
+            break;
           }
         },
         zooming,
@@ -321,10 +321,7 @@ export default {
      */
     isEnableLoad() {
       if (!this._isMounted) return false;
-      const panelElm = this.scrollPanelElm;
-      const containerElm = this.$el;
 
-      let loadDom = null;
       if (this.$refs['loadDom']) {
         loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
       }
