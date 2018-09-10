@@ -49,7 +49,9 @@ export const config = {
       /** This configures the amount of change applied to acceleration when reaching boundaries  **/
       penetrationAcceleration: 0.08,
       /** Whether call e.preventDefault event when sliding the content or not */
-      preventDefault: false
+      preventDefault: false,
+      /** Whether call preventDefault when (mouse/touch)move*/
+      preventDefaultOnMove: true
     }
   }
 };

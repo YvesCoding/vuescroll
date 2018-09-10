@@ -161,8 +161,10 @@ export default {
       }
     },
     registryScroller() {
-      const preventDefault = this.mergedOptions.vuescroll.scroller
-        .preventDefault;
+      const {
+        preventDefault,
+        preventDefaultOnMove
+      } = this.mergedOptions.vuescroll.scroller;
       const paging = this.mergedOptions.vuescroll.paging;
       const snapping = this.mergedOptions.vuescroll.snapping.enable;
       // disale zooming when refresh or load enabled
@@ -220,7 +222,8 @@ export default {
           }
         },
         zooming,
-        preventDefault
+        preventDefault,
+        preventDefaultOnMove
       );
 
       this.updateScroller();

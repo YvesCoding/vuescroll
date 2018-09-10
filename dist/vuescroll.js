@@ -3569,7 +3569,7 @@ function render$1(content, global, suffix, value) {
   }
 }
 
-function listenContainer(container, scroller, eventCallback, zooming, preventDefault) {
+function listenContainer(container, scroller, eventCallback, zooming, preventDefault, preventDefaultOnMove) {
   var destroy = null;
   // for touch
   function touchstart(e) {
@@ -3590,7 +3590,9 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
   function touchmove(e) {
     eventCallback('mousemove');
     scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
-    e.preventDefault();
+    if (preventDefaultOnMove) {
+      e.preventDefault();
+    }
   }
   function touchend(e) {
     eventCallback('mouseup');
@@ -3627,7 +3629,9 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
       pageX: e.pageX,
       pageY: e.pageY
     }], e.timeStamp);
-
+    if (preventDefaultOnMove) {
+      e.preventDefault();
+    }
     mousedown = true;
   }
   function mouseup(e) {
@@ -3823,7 +3827,10 @@ var slideMix = {
     registryScroller: function registryScroller() {
       var _this = this;
 
-      var preventDefault = this.mergedOptions.vuescroll.scroller.preventDefault;
+      var _mergedOptions$vuescr = this.mergedOptions.vuescroll.scroller,
+          preventDefault = _mergedOptions$vuescr.preventDefault,
+          preventDefaultOnMove = _mergedOptions$vuescr.preventDefaultOnMove;
+
       var paging = this.mergedOptions.vuescroll.paging;
       var snapping = this.mergedOptions.vuescroll.snapping.enable;
       // disale zooming when refresh or load enabled
@@ -3868,7 +3875,7 @@ var slideMix = {
             _this.vuescroll.state.isDragging = false;
             break;
         }
-      }, zooming, preventDefault);
+      }, zooming, preventDefault, preventDefaultOnMove);
 
       this.updateScroller();
 
@@ -4258,7 +4265,9 @@ var config = {
       /** This configures the amount of change applied to acceleration when reaching boundaries  **/
       penetrationAcceleration: 0.08,
       /** Whether call e.preventDefault event when sliding the content or not */
-      preventDefault: false
+      preventDefault: false,
+      /** Whether call preventDefault when (mouse/touch)move*/
+      preventDefaultOnMove: true
     }
   }
 };

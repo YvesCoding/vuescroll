@@ -3,7 +3,8 @@ export function listenContainer(
   scroller,
   eventCallback,
   zooming,
-  preventDefault
+  preventDefault,
+  preventDefaultOnMove
 ) {
   let destroy = null;
   // for touch
@@ -29,7 +30,9 @@ export function listenContainer(
   function touchmove(e) {
     eventCallback('mousemove');
     scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
-    e.preventDefault();
+    if (preventDefaultOnMove) {
+      e.preventDefault();
+    }
   }
   function touchend(e) {
     eventCallback('mouseup');
@@ -76,7 +79,9 @@ export function listenContainer(
       ],
       e.timeStamp
     );
-
+    if (preventDefaultOnMove) {
+      e.preventDefault();
+    }
     mousedown = true;
   }
   function mouseup(e) {
