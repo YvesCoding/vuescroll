@@ -209,15 +209,15 @@ export default {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
-            case 'mousedown':
-              this.vuescroll.state.isDragging = true;
-              break;
-            case 'onscroll':
-              this.handleScroll(false);
-              break;
-            case 'mouseup':
-              this.vuescroll.state.isDragging = false;
-              break;
+          case 'mousedown':
+            this.vuescroll.state.isDragging = true;
+            break;
+          case 'onscroll':
+            this.handleScroll(false);
+            break;
+          case 'mouseup':
+            this.vuescroll.state.isDragging = false;
+            break;
           }
         },
         zooming,
