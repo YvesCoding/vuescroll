@@ -3799,11 +3799,11 @@ var slideMix = {
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
         if (this.isEnableLoad()) {
-          var _loadDom = this.$refs[__LOAD_DOM_NAME].elm || this.$refs[__LOAD_DOM_NAME];
-          loadHeight = _loadDom.offsetHeight;
+          var loadDom = this.$refs[__LOAD_DOM_NAME].elm || this.$refs[__LOAD_DOM_NAME];
+          loadHeight = loadDom.offsetHeight;
           //  hide the trailing load dom..
           contentHeight -= loadHeight;
-          _loadDom.style.bottom = '-' + loadHeight + 'px';
+          loadDom.style.bottom = '-' + loadHeight + 'px';
         }
       }
       if (this.scroller) {
@@ -3953,11 +3953,12 @@ var slideMix = {
     isEnableLoad: function isEnableLoad() {
       if (!this._isMounted) return false;
 
+      var loadDom = null;
       if (this.$refs['loadDom']) {
         loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
       }
 
-      return true;
+      return !!loadDom;
     },
     isEnableRefresh: function isEnableRefresh() {
       return this._isMounted;

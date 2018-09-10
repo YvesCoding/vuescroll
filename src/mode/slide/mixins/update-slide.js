@@ -322,11 +322,12 @@ export default {
     isEnableLoad() {
       if (!this._isMounted) return false;
 
+      let loadDom = null;
       if (this.$refs['loadDom']) {
         loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
       }
 
-      return true;
+      return !!loadDom;
     },
     isEnableRefresh() {
       return this._isMounted;
