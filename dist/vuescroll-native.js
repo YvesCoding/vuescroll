@@ -828,7 +828,7 @@ function getPanelData(context) {
     style: {},
     class: [],
     nativeOn: {
-      scroll: context.handleScroll
+      '&scroll': context.handleScroll
     },
     props: {
       ops: context.mergedOptions.scrollPanel
