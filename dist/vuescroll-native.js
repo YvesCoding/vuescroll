@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.8.7
+    * Vuescroll v4.8.8
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1423,7 +1423,8 @@ var withBase = function withBase(_ref) {
           }
         },
         updatedCbs: [],
-        renderError: false
+        renderError: false,
+        vsMounted: false
       };
     },
     render: function render(h) {
@@ -1926,6 +1927,7 @@ var core$1 = {
     },
     initVariables: function initVariables() {
       this.$el._isVuescroll = true;
+      this.vsMounted = true;
       this.clearScrollingTimes();
     },
     refreshInternalStatus: function refreshInternalStatus() {
@@ -1990,7 +1992,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.8.7',
+  version: '4.8.8',
   refreshAll: refreshAll
 };
 

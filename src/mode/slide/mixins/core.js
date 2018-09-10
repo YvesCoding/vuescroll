@@ -104,6 +104,7 @@ export default {
     },
 
     initVariables() {
+      this.vsMounted = true;
       this.$el._isVuescroll = true;
       this.clearScrollingTimes();
     },

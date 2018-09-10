@@ -91,6 +91,7 @@ export default {
 
     initVariables() {
       this.$el._isVuescroll = true;
+      this.vsMounted = true;
       this.clearScrollingTimes();
     },
     refreshInternalStatus() {

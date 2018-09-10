@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.8.7
+    * Vuescroll v4.8.8
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -889,7 +889,7 @@ function getPanelChildren(h, context) {
     renderChildren.unshift(h(
       'div',
       {
-        'class': { __refresh: true, __none: !context.isEnableRefresh() },
+        'class': { __refresh: true, __none: !context.vsMounted },
         ref: __REFRESH_DOM_NAME,
         key: __REFRESH_DOM_NAME
       },
@@ -904,7 +904,7 @@ function getPanelChildren(h, context) {
       {
         ref: __LOAD_DOM_NAME,
         key: __LOAD_DOM_NAME,
-        'class': { __load: true, __none: !context.isEnableLoad() }
+        'class': { __load: true, __none: !context.vsMounted }
       },
       [[createTipDom(h, context, 'load'), context.pushLoadTip]]
     ));
@@ -1527,7 +1527,8 @@ var withBase = function withBase(_ref) {
           }
         },
         updatedCbs: [],
-        renderError: false
+        renderError: false,
+        vsMounted: false
       };
     },
     render: function render(h) {
@@ -3580,14 +3581,14 @@ var updateSlide = {
       // the refresh-tip dom. let it to be invisible when doesn't trigger
       // refresh.
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
-        if (this.isEnableRefresh()) {
+        if (this.vsMounted) {
           var refreshDom = this.$refs[__REFRESH_DOM_NAME].elm || this.$refs[__REFRESH_DOM_NAME];
           refreshHeight = refreshDom.offsetHeight;
           refreshDom.style.marginTop = -refreshHeight + 'px';
         }
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        if (this.isEnableLoad()) {
+        if (this.vsMounted) {
           var loadDom = this.$refs[__LOAD_DOM_NAME].elm || this.$refs[__LOAD_DOM_NAME];
           loadHeight = loadDom.offsetHeight;
           contentHeight -= loadHeight;
@@ -3734,18 +3735,6 @@ var updateSlide = {
       var height = tipDom.offsetHeight;
 
       activateFunc.bind(this.scroller)(height, cbs);
-    },
-
-    /**
-     * We don't want it to be computed because computed
-     * will cache the result and we don't want to cache the result and always
-     * get the fresh.
-     */
-    isEnableLoad: function isEnableLoad() {
-      return this._isMounted;
-    },
-    isEnableRefresh: function isEnableRefresh() {
-      return this._isMounted;
     }
   }
 };
@@ -3843,6 +3832,7 @@ var core$1 = {
       state.internalScrollTop = axis.y;
     },
     initVariables: function initVariables() {
+      this.vsMounted = true;
       this.$el._isVuescroll = true;
       this.clearScrollingTimes();
     },
@@ -4000,7 +3990,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.8.7',
+  version: '4.8.8',
   refreshAll: refreshAll
 };
 

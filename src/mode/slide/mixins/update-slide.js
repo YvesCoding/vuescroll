@@ -122,7 +122,7 @@ export default {
       // the refresh-tip dom. let it to be invisible when doesn't trigger
       // refresh.
       if (this.mergedOptions.vuescroll.pullRefresh.enable) {
-        if (this.isEnableRefresh()) {
+        if (this.vsMounted) {
           const refreshDom =
             this.$refs[__REFRESH_DOM_NAME].elm ||
             this.$refs[__REFRESH_DOM_NAME];
@@ -131,7 +131,7 @@ export default {
         }
       }
       if (this.mergedOptions.vuescroll.pushLoad.enable) {
-        if (this.isEnableLoad()) {
+        if (this.vsMounted) {
           const loadDom =
             this.$refs[__LOAD_DOM_NAME].elm || this.$refs[__LOAD_DOM_NAME];
           loadHeight = loadDom.offsetHeight;
@@ -209,15 +209,15 @@ export default {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
-          case 'mousedown':
-            this.vuescroll.state.isDragging = true;
-            break;
-          case 'onscroll':
-            this.handleScroll(false);
-            break;
-          case 'mouseup':
-            this.vuescroll.state.isDragging = false;
-            break;
+            case 'mousedown':
+              this.vuescroll.state.isDragging = true;
+              break;
+            case 'onscroll':
+              this.handleScroll(false);
+              break;
+            case 'mouseup':
+              this.vuescroll.state.isDragging = false;
+              break;
           }
         },
         zooming,
@@ -315,17 +315,6 @@ export default {
       const height = tipDom.offsetHeight;
 
       activateFunc.bind(this.scroller)(height, cbs);
-    },
-    /**
-     * We don't want it to be computed because computed
-     * will cache the result and we don't want to cache the result and always
-     * get the fresh.
-     */
-    isEnableLoad() {
-      return this._isMounted;
-    },
-    isEnableRefresh() {
-      return this._isMounted;
     }
   }
 };

@@ -59,7 +59,8 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
           }
         },
         updatedCbs: [],
-        renderError: false
+        renderError: false,
+        vsMounted: false
       };
     },
 
