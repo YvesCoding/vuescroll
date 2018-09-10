@@ -13,7 +13,7 @@ const banner = `/*
     * (c) 2018-${new Date().getFullYear()} Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
-    * Website: https://github.com/YvesCoding/vuescroll
+    * Website: http://vuescrolljs.yvescoding.org/
     */
    `;
 
