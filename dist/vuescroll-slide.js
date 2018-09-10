@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.8.6
+    * Vuescroll v4.8.7
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -3590,7 +3590,6 @@ var updateSlide = {
         if (this.isEnableLoad()) {
           var loadDom = this.$refs[__LOAD_DOM_NAME].elm || this.$refs[__LOAD_DOM_NAME];
           loadHeight = loadDom.offsetHeight;
-          //  hide the trailing load dom..
           contentHeight -= loadHeight;
           loadDom.style.bottom = '-' + loadHeight + 'px';
         }
@@ -3743,14 +3742,7 @@ var updateSlide = {
      * get the fresh.
      */
     isEnableLoad: function isEnableLoad() {
-      if (!this._isMounted) return false;
-
-      var loadDom = null;
-      if (this.$refs['loadDom']) {
-        loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
-      }
-
-      return !!loadDom;
+      return this._isMounted;
     },
     isEnableRefresh: function isEnableRefresh() {
       return this._isMounted;
@@ -4008,7 +4000,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.8.6',
+  version: '4.8.7',
   refreshAll: refreshAll
 };
 

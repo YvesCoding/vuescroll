@@ -135,7 +135,6 @@ export default {
           const loadDom =
             this.$refs[__LOAD_DOM_NAME].elm || this.$refs[__LOAD_DOM_NAME];
           loadHeight = loadDom.offsetHeight;
-          //  hide the trailing load dom..
           contentHeight -= loadHeight;
           loadDom.style.bottom = `-${loadHeight}px`;
         }
@@ -323,14 +322,7 @@ export default {
      * get the fresh.
      */
     isEnableLoad() {
-      if (!this._isMounted) return false;
-
-      let loadDom = null;
-      if (this.$refs['loadDom']) {
-        loadDom = this.$refs['loadDom'].elm || this.$refs['loadDom'];
-      }
-
-      return !!loadDom;
+      return this._isMounted;
     },
     isEnableRefresh() {
       return this._isMounted;
