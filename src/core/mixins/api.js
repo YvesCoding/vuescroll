@@ -98,6 +98,9 @@ export default {
     },
     refresh() {
       this.refreshInternalStatus();
+
+      // refresh again to keep status is correct
+      this.$nextTick(this.refreshInternalStatus);
     },
     // Get the times you have scrolled!
     getScrollingTimes() {

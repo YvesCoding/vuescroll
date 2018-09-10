@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.8.9
+    * Vuescroll v4.8.10
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -463,6 +463,9 @@ var api = {
     },
     refresh: function refresh() {
       this.refreshInternalStatus();
+
+      // refresh again to keep status is correct
+      this.$nextTick(this.refreshInternalStatus);
     },
 
     // Get the times you have scrolled!
@@ -1992,7 +1995,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.8.9',
+  version: '4.8.10',
   refreshAll: refreshAll
 };
 
