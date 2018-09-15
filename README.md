@@ -58,7 +58,7 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
-### In order to reduce the size of the bundle, you can import modes separately
+### In order to reduce the size of the bundle, you can also import modes separately
 
 #### Only import the features of slide mode:
 
