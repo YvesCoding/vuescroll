@@ -3752,6 +3752,8 @@ var core$1 = {
         _this.updatedCbs.push(function () {
           _this.updateScroller();
           _this.scrollToAnchor();
+          // Should update bar again to ensure accuracy.
+          _this.updateBarStateAndEmitEvent();
         });
       }
     });

@@ -1855,8 +1855,13 @@ var updateNative = {
 var core$1 = {
   mixins: [api$1, updateNative],
   mounted: function mounted() {
+    var _this = this;
+
     if (!this._isDestroyed && !this.renderError) {
-      this.updatedCbs.push(this.scrollToAnchor);
+      this.updatedCbs.push(function () {
+        _this.scrollToAnchor();
+        _this.updateBarStateAndEmitEvent();
+      });
     }
   },
 
@@ -1943,7 +1948,7 @@ var core$1 = {
       this.updateBarStateAndEmitEvent('refresh-status');
     },
     registryResize: function registryResize() {
-      var _this = this;
+      var _this2 = this;
 
       /* istanbul ignore next */
       if (this.destroyResize) {
@@ -1959,9 +1964,9 @@ var core$1 = {
       };
       var handleDomResize = function handleDomResize() {
         var currentSize = {};
-        currentSize['width'] = _this.scrollPanelElm.scrollWidth;
-        currentSize['height'] = _this.scrollPanelElm.scrollHeight;
-        _this.updateBarStateAndEmitEvent('handle-resize', currentSize);
+        currentSize['width'] = _this2.scrollPanelElm.scrollWidth;
+        currentSize['height'] = _this2.scrollPanelElm.scrollHeight;
+        _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
       };
       window.addEventListener('resize', handleWindowResize.bind(this), false);
 

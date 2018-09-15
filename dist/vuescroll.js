@@ -4010,11 +4010,16 @@ function resolveOffset(mode, vm) {
 var core$1 = {
   mixins: [api$1, slideMix, nativeMix],
   mounted: function mounted() {
+    var _this = this;
+
     if (!this._isDestroyed && !this.renderError) {
       if (this.mode == 'slide') {
         this.updatedCbs.push(this.updateScroller);
       }
-      this.updatedCbs.push(this.scrollToAnchor);
+      this.updatedCbs.push(function () {
+        _this.scrollToAnchor();
+        _this.updateBarStateAndEmitEvent();
+      });
     }
   },
 
@@ -4143,7 +4148,7 @@ var core$1 = {
       this.updateBarStateAndEmitEvent('refresh-status');
     },
     registryResize: function registryResize() {
-      var _this = this;
+      var _this2 = this;
 
       /* istanbul ignore next */
       if (this.destroyResize) {
@@ -4169,17 +4174,17 @@ var core$1 = {
       };
       var handleDomResize = function handleDomResize() {
         var currentSize = {};
-        if (_this.mode == 'slide') {
-          currentSize['width'] = _this.scroller.__contentWidth;
-          currentSize['height'] = _this.scroller.__contentHeight;
-          _this.updateBarStateAndEmitEvent('handle-resize', currentSize);
+        if (_this2.mode == 'slide') {
+          currentSize['width'] = _this2.scroller.__contentWidth;
+          currentSize['height'] = _this2.scroller.__contentHeight;
+          _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
           // update scroller should after rendering
-          _this.updatedCbs.push(_this.updateScroller);
-          _this.$forceUpdate();
-        } else if (_this.mode == 'native') {
-          currentSize['width'] = _this.scrollPanelElm.scrollWidth;
-          currentSize['height'] = _this.scrollPanelElm.scrollHeight;
-          _this.updateBarStateAndEmitEvent('handle-resize', currentSize);
+          _this2.updatedCbs.push(_this2.updateScroller);
+          _this2.$forceUpdate();
+        } else if (_this2.mode == 'native') {
+          currentSize['width'] = _this2.scrollPanelElm.scrollWidth;
+          currentSize['height'] = _this2.scrollPanelElm.scrollHeight;
+          _this2.updateBarStateAndEmitEvent('handle-resize', currentSize);
         }
       };
       window.addEventListener('resize', handleWindowResize.bind(this), false);

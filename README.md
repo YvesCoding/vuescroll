@@ -18,9 +18,9 @@
 
 ## Introduction
 
-Vuescroll is a customizable, multi-mode driven scrollbar plugin based on Vue.js - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
+Vuescroll is a full customizable scrollbar based on Vue.js, which spports pull-to-refresh and push-to-load. - [vuescrolljs.yvescoding.org](http://vuescrolljs.yvescoding.org/)
 
-You can use it on PC or mobile by changing its mode.
+It is compitable with both PC and mobile phone.
 
 ## Features
 

@@ -6,7 +6,10 @@ export default {
   mixins: [api, updateNative],
   mounted() {
     if (!this._isDestroyed && !this.renderError) {
-      this.updatedCbs.push(this.scrollToAnchor);
+      this.updatedCbs.push(() => {
+        this.scrollToAnchor();
+        this.updateBarStateAndEmitEvent();
+      });
     }
   },
   methods: {

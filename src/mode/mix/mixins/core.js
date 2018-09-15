@@ -11,15 +11,15 @@ import nativeMix from 'mode/native/mixins/update-native';
 function resolveOffset(mode, vm) {
   let axis = {};
   switch (mode) {
-  case 'native':
-    axis = {
-      x: vm.scrollPanelElm.scrollLeft,
-      y: vm.scrollPanelElm.scrollTop
-    };
-    break;
-  case 'slide':
-    axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-    break;
+    case 'native':
+      axis = {
+        x: vm.scrollPanelElm.scrollLeft,
+        y: vm.scrollPanelElm.scrollTop
+      };
+      break;
+    case 'slide':
+      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
+      break;
   }
   return axis;
 }
@@ -31,7 +31,10 @@ export default {
       if (this.mode == 'slide') {
         this.updatedCbs.push(this.updateScroller);
       }
-      this.updatedCbs.push(this.scrollToAnchor);
+      this.updatedCbs.push(() => {
+        this.scrollToAnchor();
+        this.updateBarStateAndEmitEvent();
+      });
     }
   },
   computed: {

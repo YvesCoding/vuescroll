@@ -10,6 +10,8 @@ export default {
         this.updatedCbs.push(() => {
           this.updateScroller();
           this.scrollToAnchor();
+          // Should update bar again to ensure accuracy.
+          this.updateBarStateAndEmitEvent();
         });
       }
     });
