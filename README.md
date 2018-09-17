@@ -44,9 +44,210 @@ It is compitable with both PC and mobile phone.
 
 - Support **paging**. **Paging** means you can scroll a distance of container at each time. You can use it to make such a [Carousel](http://vuescrolljs.yvescoding.org/demo/#_1-carousel).
 
-## Quick Start
+## Quick Start & Examples
 
-### Import
+### Example1: Browser environment(Basic Scroll)
+
+```html
+  <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuescroll@4.8.12/dist/vuescroll.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/vuescroll@4.8.12/dist/vuescroll.css">
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+    }
+
+    #parent {
+      width: 400px;
+      height: 400px;
+      display: inline-block;
+    }
+
+    #child {
+      width: 800px;
+      height: 800px;
+      background: -webkit-linear-gradient(left top, red, blue);
+      /* Safari 5.1 to 6.0 */
+      background: -o-linear-gradient(bottom right, red, blue);
+      /* Opera 11.1 to 12.0 */
+      background: -moz-linear-gradient(bottom right, red, blue);
+      /* Firefox 3.6 to 15 */
+      background: linear-gradient(to bottom right, red, blue);
+      /* 标准语法 */
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div id="parent">
+      <vue-scroll :ops="ops">
+        <div id="child">
+        </div>
+      </vue-scroll>
+    </div>
+  </div>
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        ops: {
+          bar: {
+            background: "rgb(24, 144, 255)"
+          }
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
+```
+
+### Example2: Browser environment(Pull to refresh, push to load)
+
+```html
+  <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuescroll@4.8.12/dist/vuescroll.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/vuescroll@4.8.12/dist/vuescroll.css">
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #app {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+    }
+
+    #parent {
+      width: 400px;
+      height: 400px;
+      display: inline-block;
+    }
+
+    .child {
+      width: 400px;
+      height: 400px;
+      background: -webkit-linear-gradient(left top, red, blue);
+      /* Safari 5.1 to 6.0 */
+      background: -o-linear-gradient(bottom right, red, blue);
+      /* Opera 11.1 to 12.0 */
+      background: -moz-linear-gradient(bottom right, red, blue);
+      /* Firefox 3.6 to 15 */
+      background: linear-gradient(to bottom right, red, blue);
+      /* 标准语法 */
+    }
+
+    .child:not(:first-child) {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div id="parent">
+      <vue-scroll :ops="ops" @load-start="ls" @refresh-start="rs" @load-before-deactivate="lBD">
+        <div class="child" v-for="i in dataNum" :key="i">
+        </div>
+      </vue-scroll>
+    </div>
+  </div>
+  <script>
+    new Vue({
+      el: "#app",
+      data: {
+        dataNum: 1,
+        ops: {
+          vuescroll: {
+            mode: 'slide',
+            pullRefresh: {
+              enable: true
+            },
+            pushLoad: {
+              enable: true
+            }
+          },
+          bar: {
+            background: "rgb(24, 144, 255)"
+          }
+        }
+      },
+      methods: {
+        ls(vs, refrehDom, done) {
+          let vm = this;
+          // fake fetching data...
+          setTimeout(() => {
+            // Must call done, to let vuescroll know
+            // you have finished working.
+            done();
+
+            // Assume we have fetched the data, In order to
+            // let user see the tip of the result. We don't
+            // increase data immediately, instead, we put data
+            // into a tempory variable.
+            vm.receiveData = 1;
+          }, 500);
+        },
+        lBD(vs, refrehDom, done) {
+          const tipTime = 500;
+          const vm = this;
+
+          setTimeout(() => {
+            vm.dataNum += (vm.receiveData || 0);
+            // Must call done, to let vuescroll know
+            // you have finished working.
+            done();
+          }, tipTime);
+        },
+        rs(vs, refrehDom, done) {
+          this.refresh();
+          done();
+        },
+        refresh() {
+          this.dataNum = 1;
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
+```
+
+### Example3: Module system(Basic Scroll)
+
+1. Import
 
 In your entry file:
 
@@ -58,9 +259,9 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
-### In order to reduce the size of the bundle, you can also import modes separately
+In order to reduce the size of the bundle, you can also import modes separately
 
-#### Only import the features of slide mode:
+Only import the features of slide mode:
 
 ```javascript
 import Vue from 'vue';
@@ -70,7 +271,7 @@ import 'vuescroll/dist/vuescroll.css';
 Vue.use(vuescroll);
 ```
 
-#### Only import the features of native mode:
+Only import the features of native mode:
 
 ```javascript
 import Vue from 'vue';
@@ -82,7 +283,7 @@ Vue.use(vuescroll);
 
 ### Usage
 
-Wrap the content you need to scroll by `vuescroll`
+3. Wrap the content you need to scroll by `vuescroll`
 
 ```html
   <template>
@@ -107,7 +308,7 @@ Wrap the content you need to scroll by `vuescroll`
   </script>
 ```
 
-## Detailed guides
+## For more detailed guides, please see:
 
 - [Online Examples](http://vuescrolljs.yvescoding.org/demo/)
 - [Get Started Guide](http://vuescrolljs.yvescoding.org/guide/getting-started.html)
