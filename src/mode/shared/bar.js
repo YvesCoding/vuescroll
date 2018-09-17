@@ -16,6 +16,8 @@ function createMouseEvent(ctx) {
 
   function mousedown(e) {
     e.stopImmediatePropagation();
+    e.preventDefault();
+
     document.onselectstart = () => false;
     ctx.axisStartPos =
       e[ctx.bar.client] -
