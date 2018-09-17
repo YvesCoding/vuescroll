@@ -139,6 +139,8 @@ function createTrackEvent(ctx, type) {
 
     const { client, offset, posName, axis } = ctx.bar;
     const thumb = ctx.$refs['thumb'];
+    if (!thumb) return;
+
     const barOffset = thumb[offset];
     const event = type == 'touchstart' ? e.touches[0] : e;
 
