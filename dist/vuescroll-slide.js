@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.8.12
+    * Vuescroll v4.8.13
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -589,6 +589,8 @@ function createMouseEvent(ctx) {
 
   function mousedown(e) {
     e.stopImmediatePropagation();
+    e.preventDefault();
+
     document.onselectstart = function () {
       return false;
     };
@@ -698,6 +700,8 @@ function createTrackEvent(ctx, type) {
         axis = _ctx$bar.axis;
 
     var thumb = ctx.$refs['thumb'];
+    if (!thumb) return;
+
     var barOffset = thumb[offset];
     var event = type == 'touchstart' ? e.touches[0] : e;
 
@@ -3995,7 +3999,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.8.12',
+  version: '4.8.13',
   refreshAll: refreshAll
 };
 

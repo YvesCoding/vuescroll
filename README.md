@@ -58,8 +58,8 @@ It is compitable with both PC and mobile phone.
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
-  <script src="https://unpkg.com/vuescroll@4.8.12/dist/vuescroll.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/vuescroll@4.8.12/dist/vuescroll.css">
+  <script src="https://unpkg.com/vuescroll@4.8.13/dist/vuescroll.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/vuescroll@4.8.13/dist/vuescroll.css">
   <style>
     html,
     body {
@@ -133,8 +133,8 @@ It is compitable with both PC and mobile phone.
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
-  <script src="https://unpkg.com/vuescroll@4.8.12/dist/vuescroll.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/vuescroll@4.8.12/dist/vuescroll.css">
+  <script src="https://unpkg.com/vuescroll@4.8.13/dist/vuescroll.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/vuescroll@4.8.13/dist/vuescroll.css">
   <style>
     html,
     body {
