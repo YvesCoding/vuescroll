@@ -687,6 +687,8 @@ function createTrackEvent(ctx, type) {
     var thumb = ctx.$refs['thumb'];
     if (!thumb) return;
 
+    e.preventDefault();
+
     var barOffset = thumb[offset];
     var event = type == 'touchstart' ? e.touches[0] : e;
 
