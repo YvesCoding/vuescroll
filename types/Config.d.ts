@@ -47,7 +47,7 @@ interface Container {
   scroller?: Scroller;
 }
 
-declare type easing =
+export declare type easing =
   | 'easeInQuad'
   | 'easeInOutQuad'
   | 'easeInCubic'

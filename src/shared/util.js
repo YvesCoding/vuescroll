@@ -294,3 +294,14 @@ export const isArray = _ => Array.isArray(_);
 export const isPlainObj = _ =>
   Object.prototype.toString.call(_) == '[object Object]';
 export const isUndef = _ => typeof _ === 'undefined';
+
+export function getNumericValue(distance, size) {
+  let number;
+  if (!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
+    number = distance - 0;
+  } else {
+    number = number[1] - 0;
+    number = (size * number) / 100;
+  }
+  return number;
+}

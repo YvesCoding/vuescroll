@@ -1,23 +1,4 @@
-import { warn, isChildInParent } from 'shared/util';
-
-const vsInstances = {};
-
-export function refreshAll() {
-  for (let vs in vsInstances) {
-    vsInstances[vs].refresh();
-  }
-}
-
-function getNumericValue(distance, size) {
-  let number;
-  if (!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
-    number = distance - 0;
-  } else {
-    number = number[1] - 0;
-    number = (size * number) / 100;
-  }
-  return number;
-}
+import { warn, isChildInParent, getNumericValue } from 'shared/util';
 
 export default {
   mounted() {
@@ -29,22 +10,6 @@ export default {
   methods: {
     // public api
     scrollTo({ x, y }, animate = true, force = false) {
-      if (typeof x === 'undefined') {
-        x = this.vuescroll.state.internalScrollLeft || 0;
-      } else {
-        x = getNumericValue(
-          x,
-          this.scrollPanelElm.scrollWidth - this.$el.clientWidth
-        );
-      }
-      if (typeof y === 'undefined') {
-        y = this.vuescroll.state.internalScrollTop || 0;
-      } else {
-        y = getNumericValue(
-          y,
-          this.scrollPanelElm.scrollHeight - this.$el.clientHeight
-        );
-      }
       this.internalScrollTo(x, y, animate, force);
     },
     scrollBy({ dx = 0, dy = 0 }, animate = true) {
@@ -98,7 +63,6 @@ export default {
     },
     refresh() {
       this.refreshInternalStatus();
-
       // refresh again to keep status is correct
       this.$nextTick(this.refreshInternalStatus);
     },
@@ -112,3 +76,15 @@ export default {
     }
   }
 };
+
+/** Public Api */
+
+/**
+ * Refresh all
+ */
+const vsInstances = {};
+export function refreshAll() {
+  for (let vs in vsInstances) {
+    vsInstances[vs].refresh();
+  }
+}

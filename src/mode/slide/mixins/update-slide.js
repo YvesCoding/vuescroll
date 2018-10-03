@@ -74,16 +74,8 @@ function createStateCallbacks(type, stageType, vm, tipDom) {
 }
 
 export default {
-  data() {
-    return {
-      vuescroll: {
-        state: {
-          /** Default tips of refresh and load */
-          refreshStage: 'deactive',
-          loadStage: 'deactive'
-        }
-      }
-    };
+  mounted() {
+    this.vsMounted = true;
   },
   computed: {
     pullRefreshTip() {
@@ -101,7 +93,27 @@ export default {
         this.mergedOptions.vuescroll.pullRefresh.enable ||
         this.mergedOptions.vuescroll.pushLoad.enable
       );
+    },
+    refrehDomVisiable() {
+      return this.vsMounted && this.outTheTopBoundary;
+    },
+    loadDomVisiable() {
+      return this.vsMounted && this.outTheBottomBoundary;
     }
+  },
+  data() {
+    return {
+      vuescroll: {
+        state: {
+          /** Default tips of refresh and load */
+          refreshStage: 'deactive',
+          loadStage: 'deactive'
+        }
+      },
+      vsMounted: false,
+      outTheTopBoundary: false,
+      outTheBottomBoundary: false
+    };
   },
   methods: {
     // Update:
@@ -209,15 +221,15 @@ export default {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
-          case 'mousedown':
-            this.vuescroll.state.isDragging = true;
-            break;
-          case 'onscroll':
-            this.handleScroll(false);
-            break;
-          case 'mouseup':
-            this.vuescroll.state.isDragging = false;
-            break;
+            case 'mousedown':
+              this.vuescroll.state.isDragging = true;
+              break;
+            case 'onscroll':
+              this.handleScroll(false);
+              break;
+            case 'mouseup':
+              this.vuescroll.state.isDragging = false;
+              break;
           }
         },
         zooming,
@@ -315,6 +327,35 @@ export default {
       const height = tipDom.offsetHeight;
 
       activateFunc.bind(this.scroller)(height, cbs);
+    },
+    recordSlideCurrentPos() {
+      const state = this.vuescroll.state;
+      let axis = {
+        x: this.scroller.__scrollLeft,
+        y: this.scroller.__scrollTop
+      };
+      const maxScrollTop = this.scroller.__maxScrollTop;
+
+      const oldX = state.internalScrollLeft;
+      const oldY = state.internalScrollTop;
+
+      state.posX =
+        oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
+      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
+
+      state.internalScrollLeft = axis.x;
+      state.internalScrollTop = axis.y;
+
+      if (axis.y < 0) {
+        this.outTheTopBoundary = true;
+        this.outTheBottomBoundary = false;
+      } else if (axis.y > maxScrollTop) {
+        this.outTheTopBoundary = false;
+        this.outTheBottomBoundary = true;
+      } else {
+        this.outTheTopBoundary = false;
+        this.outTheBottomBoundary = false;
+      }
     }
   }
 };

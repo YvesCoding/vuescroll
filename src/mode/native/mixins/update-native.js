@@ -24,6 +24,22 @@ export default {
         heightPercentage < 100 ? heightPercentage + '%' : 0;
       this.bar.hBar.state.size =
         widthPercentage < 100 ? widthPercentage + '%' : 0;
+    },
+    recordNativeCurrentPos() {
+      const state = this.vuescroll.state;
+      let axis = {
+        x: this.scrollPanelElm.scrollLeft,
+        y: this.scrollPanelElm.scrollTop
+      };
+      const oldX = state.internalScrollLeft;
+      const oldY = state.internalScrollTop;
+
+      state.posX =
+        oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
+      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
+
+      state.internalScrollLeft = axis.x;
+      state.internalScrollTop = axis.y;
     }
   },
   computed: {

@@ -1,4 +1,6 @@
-import hackLifecycle from './mixins/hack-lifecycle';
+import GCF, { validateOps } from 'shared/global-config';
+import { mergeObject, defineReactive } from 'shared/util';
+
 import api from './mixins/api';
 
 import {
@@ -8,62 +10,45 @@ import {
 } from 'shared/util';
 import { smallChangeArray } from 'shared/constants';
 import { installResizeDetection } from 'core/third-party/resize-detector/index';
-
 import { createBar } from 'mode/shared/bar';
+
+/**
+ * This is like a HOC, It extracts the common parts of the
+ * native-mode, slide-mode and mix-mode.
+ * Each mode must implement the following methods:
+ * 1. refreshInternalStatus : use to refresh the component
+ * 2. recordCurrentPos : use the record the current scroll postion.
+ * 3. destroy : Destroy some registryed events before component destroy.
+ * 4. updateBarStateAndEmitEvent: use to update bar states and emit events.
+ */
 
 const withBase = ({ render, name, components, mixins, Vue }) => {
   return Vue.component(name || 'vue-scroll', {
-    components,
     props: {
       ops: { type: Object }
     },
-    mixins: [
-      /** Hack lifecycle to merge options*/
-      hackLifecycle,
-      api,
-      ...[].concat(mixins)
-    ],
-    data() {
-      return {
-        vuescroll: {
-          state: {
-            isDragging: false,
-            pointerLeave: true,
-            /** Internal states to record current positions */
-            internalScrollTop: 0,
-            internalScrollLeft: 0,
-            /** Current scrolling directions */
-            posX: null,
-            posY: null,
-            /** Default sizeStrategies */
-            height: '100%',
-            width: '100%',
-            /** How many times you have scrolled */
-            scrollingTimes: 0
-          }
-        },
-        bar: {
-          vBar: {
-            state: {
-              posValue: 0,
-              size: 0,
-              opacity: 0
-            }
-          },
-          hBar: {
-            state: {
-              posValue: 0,
-              size: 0,
-              opacity: 0
-            }
-          }
-        },
-        updatedCbs: [],
-        renderError: false,
-        vsMounted: false
-      };
-    },
+    components,
+    mixins: [api, ...[].concat(mixins)],
+    created() {
+      /**
+       * Begin to merge options
+       */
 
+      const _gfc = mergeObject(this.$vuescrollConfig || {}, {});
+      const ops = mergeObject(GCF, _gfc);
+
+      this.$options.propsData.ops = this.$options.propsData.ops || {};
+      Object.keys(this.$options.propsData.ops).forEach(key => {
+        {
+          defineReactive(this.mergedOptions, key, this.$options.propsData.ops);
+        }
+      });
+      // from ops to mergedOptions
+      mergeObject(ops, this.mergedOptions);
+
+      this._isVuescrollRoot = true;
+      this.renderError = validateOps(this.mergedOptions);
+    },
     render(h) {
       let vm = this;
       if (vm.renderError) {
@@ -131,6 +116,11 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
         this.initWatchOpsChange();
         // Call external merged Api
         this.refreshInternalStatus();
+
+        this.updatedCbs.push(() => {
+          this.scrollToAnchor();
+          this.updateBarStateAndEmitEvent();
+        });
       }
     },
     updated() {
@@ -146,9 +136,9 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
         this.destroyParentDomResize();
         this.destroyParentDomResize = null;
       }
-      if (this.destroyResize) {
-        this.destroyResize();
-        this.destroyResize = null;
+
+      if (this.destroy) {
+        this.destroy();
       }
     },
 
@@ -160,7 +150,52 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
           : this.$refs['scrollPanel'];
       }
     },
-
+    data() {
+      return {
+        vuescroll: {
+          state: {
+            isDragging: false,
+            pointerLeave: true,
+            /** Internal states to record current positions */
+            internalScrollTop: 0,
+            internalScrollLeft: 0,
+            /** Current scrolling directions */
+            posX: null,
+            posY: null,
+            /** Default sizeStrategies */
+            height: '100%',
+            width: '100%',
+            /** How many times you have scrolled */
+            scrollingTimes: 0
+          }
+        },
+        bar: {
+          vBar: {
+            state: {
+              posValue: 0,
+              size: 0,
+              opacity: 0
+            }
+          },
+          hBar: {
+            state: {
+              posValue: 0,
+              size: 0,
+              opacity: 0
+            }
+          }
+        },
+        mergedOptions: {
+          vuescroll: {},
+          scrollPanel: {},
+          scrollContent: {},
+          rail: {},
+          bar: {}
+        },
+        updatedCbs: [],
+        renderError: false
+      };
+    },
     /** ------------------------------- Methods -------------------------------- */
     methods: {
       /** ------------------------ Handlers --------------------------- */
@@ -180,9 +215,9 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
       /** ------------------------ Some Helpers --------------------------- */
 
       /* 
-     * To have a good ux, instead of hiding bar immediately, we hide bar
-     * after some seconds by using this simple debounce-hidebar method.
-     */
+      * To have a good ux, instead of hiding bar immediately, we hide bar
+      * after some seconds by using this simple debounce-hidebar method.
+      */
       showAndDefferedHideBar(forceHideBar) {
         this.showBar();
 
@@ -239,14 +274,15 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
       },
       // Set its size to be equal to its parentNode
       setVsSize() {
+        if (this.destroyParentDomResize) {
+          this.destroyParentDomResize();
+          this.destroyParentDomResize = null;
+        }
+
         if (this.mergedOptions.vuescroll.sizeStrategy == 'number') {
           this.useNumbericSize();
           this.registryParentResize();
         } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
-          if (this.destroyParentDomResize) {
-            this.destroyParentDomResize();
-            this.destroyParentDomResize = null;
-          }
           this.usePercentSize();
         }
       },
@@ -263,7 +299,7 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
             // record current position
             this.recordCurrentPos();
             setTimeout(() => {
-              if (this.isSmallChangeThisTick == true) {
+              if (this.isSmallChangeThisTick) {
                 this.isSmallChangeThisTick = false;
                 this.updateBarStateAndEmitEvent('options-change');
                 return;

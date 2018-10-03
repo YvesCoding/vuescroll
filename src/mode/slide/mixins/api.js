@@ -1,10 +1,21 @@
 import { getCurrentViewportDom } from 'mode/shared/util';
-import { warn } from 'shared/util';
+import { warn, getNumericValue } from 'shared/util';
 
 export default {
   methods: {
-    slideScrollTo(destX, destY, animate, force) {
-      this.scroller.scrollTo(destX, destY, animate, undefined, force);
+    slideScrollTo(x, y, animate, force) {
+      if (typeof x === 'undefined') {
+        x = this.vuescroll.state.internalScrollLeft || 0;
+      } else {
+        x = getNumericValue(x, this.scroller.__maxScrollLeft);
+      }
+      if (typeof y === 'undefined') {
+        y = this.vuescroll.state.internalScrollTop || 0;
+      } else {
+        y = getNumericValue(y, this.scroller.__maxScrollTop);
+      }
+
+      this.scroller.scrollTo(x, y, animate, undefined, force);
     },
     zoomBy(factor, animate, originLeft, originTop, callback) {
       if (!this.scroller) {
@@ -51,7 +62,7 @@ export default {
         warn('refresh must be enabled!');
         return;
       } else if (type == 'load' && !isLoad) {
-        warn('load must be enabled and content\'s height > container\'s height!');
+        warn("load must be enabled and content's height > container's height!");
         return;
       } else if (type !== 'refresh' && type !== 'load') {
         warn('param must be one of load and refresh!');

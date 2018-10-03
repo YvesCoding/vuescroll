@@ -9,14 +9,24 @@ export default {
       if (!this._isDestroyed && !this.renderError) {
         this.updatedCbs.push(() => {
           this.updateScroller();
-          this.scrollToAnchor();
-          // Should update bar again to ensure accuracy.
-          this.updateBarStateAndEmitEvent();
         });
       }
     });
   },
   methods: {
+    destroy() {
+      /* istanbul ignore next */
+      if (this.destroyScroller) {
+        this.scroller.stop();
+        this.destroyScroller();
+        this.destroyScroller = null;
+      }
+
+      /* istanbul ignore next */
+      if (this.destroyResize) {
+        this.destroyResize();
+      }
+    },
     getCurrentviewDom() {
       this.getCurrentviewDomSlide();
     },
@@ -87,26 +97,10 @@ export default {
 
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
-
     recordCurrentPos() {
-      const state = this.vuescroll.state;
-      let axis = {
-        x: this.scroller.__scrollLeft,
-        y: this.scroller.__scrollTop
-      };
-      const oldX = state.internalScrollLeft;
-      const oldY = state.internalScrollTop;
-
-      state.posX =
-        oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
-      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
-
-      state.internalScrollLeft = axis.x;
-      state.internalScrollTop = axis.y;
+      this.recordSlideCurrentPos();
     },
-
     initVariables() {
-      this.vsMounted = true;
       this.$el._isVuescroll = true;
       this.clearScrollingTimes();
     },
@@ -144,11 +138,13 @@ export default {
       }
 
       let contentElm = this.scrollPanelElm;
+      const vm = this;
       const handleWindowResize = function() /* istanbul ignore next */ {
-        this.updateBarStateAndEmitEvent('window-resize');
-        this.updatedCbs.push(this.updateScroller);
-        this.$forceUpdate();
+        vm.updateBarStateAndEmitEvent('window-resize');
+        vm.updatedCbs.push(vm.updateScroller);
+        vm.$forceUpdate();
       };
+
       const handleDomResize = () => {
         let currentSize = {};
         currentSize['width'] = this.scroller.__contentWidth;
@@ -158,7 +154,7 @@ export default {
         this.updatedCbs.push(this.updateScroller);
         this.$forceUpdate();
       };
-      window.addEventListener('resize', handleWindowResize.bind(this), false);
+      window.addEventListener('resize', handleWindowResize, false);
       const resizeEnable = this.mergedOptions.vuescroll.detectResize;
       const destroyDomResize = resizeEnable
         ? installResizeDetection(contentElm, handleDomResize)

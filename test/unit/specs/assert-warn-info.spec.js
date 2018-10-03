@@ -6,6 +6,7 @@ import {
   startSchedule
 } from 'test/unit/util';
 import { modes } from 'src/shared/constants';
+import { vuescroll as _vs } from '../util';
 
 function noop() {}
 
@@ -315,7 +316,7 @@ describe('assert-warn-info', () => {
       expect('refresh must be enabled!').toHaveBeenTipped();
       vs.triggerRefreshOrLoad('load');
       expect(
-        'load must be enabled and content\'s height > container\'s height!'
+        "load must be enabled and content's height > container's height!"
       ).toHaveBeenTipped();
       done();
     });
@@ -354,6 +355,16 @@ describe('assert-warn-info', () => {
     expect(
       'The options: vRail, hRail, vBar, hBar have been deprecated since v4.7.0,' +
         'please use corresponing rail/bar instead!'
+    ).toHaveBeenTipped();
+  });
+
+  // scrollTo (public)
+  it('scrollTo (public): Should tip user pass a dom for parst param.', () => {
+    _vs.scrollTo('foo');
+    expect(
+      'You must pass a dom for the first param, ' +
+        'for window scrolling, ' +
+        'you can pass document as the first param.'
     ).toHaveBeenTipped();
   });
 });

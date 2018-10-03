@@ -18,7 +18,7 @@ describe('api', () => {
     }
   });
 
-  it('scrollTo', done => {
+  it('scrollTo(native)', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -32,7 +32,11 @@ describe('api', () => {
           }
         ),
         data: {
-          ops: {}
+          ops: {
+            vuescroll: {
+              mode: 'native'
+            }
+          }
         }
       },
       true
@@ -80,6 +84,73 @@ describe('api', () => {
         const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollLeft } = scrollPanel;
         expect(scrollLeft).toBe(0);
+        done();
+      });
+  });
+
+  it('scrollTo(slide)', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 200,
+            h: 200
+          },
+          {
+            w: 100,
+            h: 100
+          }
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'slide'
+            }
+          }
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+    // scroll Y axis
+
+    startSchedule()
+      .then(() => {
+        vs.scrollTo(
+          {
+            y: 300
+          },
+          true
+        );
+      })
+      .wait(350)
+      .then(() => {
+        const { __scrollTop } = vs.scroller;
+        expect(Math.ceil(__scrollTop)).toBe(100);
+        // scroll X axis
+        vs.scrollTo(
+          {
+            x: 300
+          },
+          true
+        );
+      })
+      .wait(350)
+      .then(() => {
+        const { __scrollLeft } = vs.scroller;
+        expect(Math.ceil(__scrollLeft)).toBe(100);
+        // scroll X axis
+        vs.scrollTo(
+          {
+            x: -200
+          },
+          true
+        );
+      })
+      .wait(350)
+      .then(() => {
+        const { __scrollLeft } = vs.scroller;
+        expect(__scrollLeft).toBe(0);
         done();
       });
   });
@@ -465,6 +536,44 @@ describe('api', () => {
         const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollTop } = scrollPanel;
         expect(Math.ceil(scrollTop)).toBe(50);
+        done();
+      });
+  });
+
+  it('scrollTo(public)', done => {
+    const height = document.scrollingElement.scrollHeight + 100;
+    const width = document.scrollingElement.scrollWidth + 100;
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: width,
+            h: height
+          },
+          {
+            w: width,
+            h: height
+          },
+          '',
+          3
+        ),
+        data: {
+          ops: {}
+        }
+      },
+      true
+    );
+
+    _vs.scrollTo(document, undefined /* X */, 100 /* Y */, 300 /* 300ms */);
+
+    startSchedule(350)
+      .then(() => {
+        expect(window.pageYOffset).toBe(100);
+        _vs.scrollTo(document, 100 /* X */, undefined /* Y */, 300 /* 300ms */);
+      })
+      .wait(350)
+      .then(() => {
+        expect(window.pageXOffset).toBe(100);
         done();
       });
   });

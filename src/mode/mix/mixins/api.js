@@ -2,6 +2,7 @@ import nativeApi from 'src/mode/native/mixins/api';
 import slideApi from 'src/mode/slide/mixins/api';
 
 export default {
+  // mix slide and nitive modes apis.
   mixins: [slideApi, nativeApi],
   methods: {
     // private api

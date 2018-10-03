@@ -4,15 +4,13 @@ import updateNative from './update-native';
 
 export default {
   mixins: [api, updateNative],
-  mounted() {
-    if (!this._isDestroyed && !this.renderError) {
-      this.updatedCbs.push(() => {
-        this.scrollToAnchor();
-        this.updateBarStateAndEmitEvent();
-      });
-    }
-  },
   methods: {
+    destroy() {
+      /* istanbul ignore next */
+      if (this.destroyResize) {
+        this.destroyResize();
+      }
+    },
     getCurrentviewDom() {
       this.getCurrentviewDomNaitve();
     },
@@ -76,25 +74,11 @@ export default {
     },
 
     recordCurrentPos() {
-      const state = this.vuescroll.state;
-      let axis = {
-        x: this.scrollPanelElm.scrollLeft,
-        y: this.scrollPanelElm.scrollTop
-      };
-      const oldX = state.internalScrollLeft;
-      const oldY = state.internalScrollTop;
-
-      state.posX =
-        oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
-      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
-
-      state.internalScrollLeft = axis.x;
-      state.internalScrollTop = axis.y;
+      this.recordNativeCurrentPos();
     },
 
     initVariables() {
       this.$el._isVuescroll = true;
-      this.vsMounted = true;
       this.clearScrollingTimes();
     },
     refreshInternalStatus() {
@@ -116,8 +100,9 @@ export default {
 
       let contentElm = this.scrollContentElm;
 
+      const vm = this;
       const handleWindowResize = function() /* istanbul ignore next */ {
-        this.updateBarStateAndEmitEvent('window-resize');
+        vm.updateBarStateAndEmitEvent('window-resize');
       };
       const handleDomResize = () => {
         let currentSize = {};
@@ -125,7 +110,7 @@ export default {
         currentSize['height'] = this.scrollPanelElm.scrollHeight;
         this.updateBarStateAndEmitEvent('handle-resize', currentSize);
       };
-      window.addEventListener('resize', handleWindowResize.bind(this), false);
+      window.addEventListener('resize', handleWindowResize, false);
 
       const resizeEnable = this.mergedOptions.vuescroll.detectResize;
       const destroyDomResize = resizeEnable

@@ -139,9 +139,12 @@ function createTrackEvent(ctx, type) {
 
     const { client, offset, posName, axis } = ctx.bar;
     const thumb = ctx.$refs['thumb'];
+
+    /* istanbul ignore if */
     if (!thumb) return;
 
     e.preventDefault();
+    e.stopImmediatePropagation();
 
     const barOffset = thumb[offset];
     const event = type == 'touchstart' ? e.touches[0] : e;

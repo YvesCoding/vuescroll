@@ -3,27 +3,6 @@ import api from './api';
 import slideMix from 'mode/slide/mixins/update-slide';
 import nativeMix from 'mode/native/mixins/update-native';
 
-/**
- * Resolve coordinate by mode
- * @param {*} mode
- * @param {*} vm
- */
-function resolveOffset(mode, vm) {
-  let axis = {};
-  switch (mode) {
-    case 'native':
-      axis = {
-        x: vm.scrollPanelElm.scrollLeft,
-        y: vm.scrollPanelElm.scrollTop
-      };
-      break;
-    case 'slide':
-      axis = { x: vm.scroller.__scrollLeft, y: vm.scroller.__scrollTop };
-      break;
-  }
-  return axis;
-}
-
 export default {
   mixins: [api, slideMix, nativeMix],
   mounted() {
@@ -31,10 +10,6 @@ export default {
       if (this.mode == 'slide') {
         this.updatedCbs.push(this.updateScroller);
       }
-      this.updatedCbs.push(() => {
-        this.scrollToAnchor();
-        this.updateBarStateAndEmitEvent();
-      });
     }
   },
   computed: {
@@ -43,6 +18,18 @@ export default {
     }
   },
   methods: {
+    destroy() {
+      if (this.destroyScroller) {
+        this.scroller.stop();
+        this.destroyScroller();
+        this.destroyScroller = null;
+      }
+
+      /* istanbul ignore next */
+      if (this.destroyResize) {
+        this.destroyResize();
+      }
+    },
     updateBarStateAndEmitEvent(eventType, nativeEvent = null) {
       if (this.mode == 'native') {
         this.updateNativeModeBarState();
@@ -123,23 +110,16 @@ export default {
         this.lastMode = this.mode;
       }
 
-      const state = this.vuescroll.state;
-      let axis = resolveOffset(mode, this);
-      const oldX = state.internalScrollLeft;
-      const oldY = state.internalScrollTop;
-
-      state.posX =
-        oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
-      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
-
-      state.internalScrollLeft = axis.x;
-      state.internalScrollTop = axis.y;
+      if (mode == 'slide') {
+        this.recordSlideCurrentPos();
+      } else {
+        this.recordNativeCurrentPos();
+      }
     },
 
     initVariables() {
       this.lastMode = this.mode;
       this.$el._isVuescroll = true;
-      this.vsMounted = true;
       this.clearScrollingTimes();
     },
 
@@ -190,13 +170,15 @@ export default {
         contentElm = this.scrollContentElm;
       }
 
+      const vm = this;
       const handleWindowResize = function() /* istanbul ignore next */ {
-        this.updateBarStateAndEmitEvent('window-resize');
-        if (this.mode == 'slide') {
-          this.updatedCbs.push(this.updateScroller);
-          this.$forceUpdate();
+        vm.updateBarStateAndEmitEvent('window-resize');
+        if (vm.mode == 'slide') {
+          vm.updatedCbs.push(vm.updateScroller);
+          vm.$forceUpdate();
         }
       };
+
       const handleDomResize = () => {
         let currentSize = {};
         if (this.mode == 'slide') {
@@ -212,7 +194,7 @@ export default {
           this.updateBarStateAndEmitEvent('handle-resize', currentSize);
         }
       };
-      window.addEventListener('resize', handleWindowResize.bind(this), false);
+      window.addEventListener('resize', handleWindowResize, false);
 
       const resizeEnable = this.mergedOptions.vuescroll.detectResize;
       const destroyDomResize = resizeEnable

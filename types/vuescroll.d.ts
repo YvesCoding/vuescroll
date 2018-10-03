@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { easing } from './Config';
 
 type Pos = {
   x: number | string;
@@ -14,6 +15,15 @@ export declare class vuescroll extends Vue {
   // ----------------------- Static methods --------------------
   static install(vue: typeof Vue): void;
   static refreshAll(): void;
+  static scrollTo(
+    elm: Document | Element,
+    x: string | number,
+    y: string | number,
+    speed?: number = 300,
+    easing?: easing,
+    animate? = true,
+    scrollingComplete?: (x, y) => void
+  ): void;
 
   // ----------------------- Api -------------------------
 

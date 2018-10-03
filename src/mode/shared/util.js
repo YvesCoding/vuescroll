@@ -9,15 +9,21 @@ import { extendOpts } from 'shared/global-config';
  * Start to scroll to a position
  */
 export function goScrolling(
-  elm,
-  deltaX,
-  deltaY,
+  x,
+  y,
+  startLocationX,
+  startLocationY,
+  maxX,
+  maxY,
   speed,
   easing,
-  scrollingComplete
+  scrollingComplete,
+  render
 ) {
-  const startLocationY = elm['scrollTop'];
-  const startLocationX = elm['scrollLeft'];
+  // deltaX,
+  // deltaY,
+  let deltaX = x - startLocationX;
+  let deltaY = y - startLocationY;
   let positionX = startLocationX;
   let positionY = startLocationY;
   /**
@@ -27,15 +33,14 @@ export function goScrolling(
   if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  const scrollHeight = elm['scrollHeight'];
-  if (startLocationY + deltaY > scrollHeight) {
-    deltaY = scrollHeight - startLocationY;
+  if (startLocationY + deltaY > maxX) {
+    deltaY = maxY - startLocationY;
   }
   if (startLocationX + deltaX < 0) {
     deltaX = -startLocationX;
   }
-  if (startLocationX + deltaX > elm['scrollWidth']) {
-    deltaX = elm['scrollWidth'] - startLocationX;
+  if (startLocationX + deltaX > maxY) {
+    deltaX = maxX - startLocationX;
   }
 
   const easingMethod = createEasingFunction(easing, easingPattern);
@@ -43,8 +48,7 @@ export function goScrolling(
   const stepCallback = percentage => {
     positionX = startLocationX + deltaX * percentage;
     positionY = startLocationY + deltaY * percentage;
-    elm['scrollTop'] = Math.floor(positionY);
-    elm['scrollLeft'] = Math.floor(positionX);
+    render(Math.floor(positionX), Math.floor(positionY));
   };
 
   const verifyCallback = () => {

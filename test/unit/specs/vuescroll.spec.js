@@ -100,7 +100,6 @@ describe('vuescroll', () => {
               pullRefresh: {
                 enable: true,
                 tips: {
-                  deactive: 'refresh deactive tip',
                   active: 'refresh active tip',
                   start: 'refresh start tip',
                   beforeDeactive: 'refresh before deactive tip'
@@ -120,8 +119,6 @@ describe('vuescroll', () => {
     startSchedule()
       .then(() => {
         tipDom = vs.$el.querySelector('.__refresh');
-        // Current is at the deactive stage.
-        expect(tipDom.innerText).toBe('refresh deactive tip');
         moveY(200);
       })
       .then(() => {
@@ -160,7 +157,6 @@ describe('vuescroll', () => {
               pushLoad: {
                 enable: true,
                 tips: {
-                  deactive: 'load deactive tip',
                   active: 'load active tip',
                   start: 'load start tip',
                   beforeDeactive: 'load before deactive tip'
@@ -184,8 +180,6 @@ describe('vuescroll', () => {
       .wait(500)
       .then(() => {
         tipDom = vs.$el.querySelector('.__load');
-        // Current is at the deactive stage.
-        expect(tipDom.innerText).toBe('load deactive tip');
         moveY(150);
       })
       .then(() => {
