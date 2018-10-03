@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.1
+    * Vuescroll v4.9.0-beta.2
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1078,11 +1078,11 @@ function createTrackEvent(ctx, type) {
 
     var thumb = ctx.$refs['thumb'];
 
-    /* istanbul ignore if */
-    if (!thumb) return;
-
     e.preventDefault();
     e.stopImmediatePropagation();
+
+    /* istanbul ignore if */
+    if (!thumb) return;
 
     var barOffset = thumb[offset];
     var event = type == 'touchstart' ? e.touches[0] : e;
@@ -4456,7 +4456,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.1',
+  version: '4.9.0-beta.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };
