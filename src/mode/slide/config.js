@@ -23,7 +23,9 @@ export const config = {
         active: 'Release to Load',
         start: 'Loading...',
         beforeDeactive: 'Load Successfully!'
-      }
+      },
+      auto: false,
+      autoLoadDistance: 0
     },
     paging: false,
     zooming: true,

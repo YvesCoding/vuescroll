@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.2
+    * Vuescroll v4.9.0-beta.3
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -2194,7 +2194,7 @@ var slideApi = {
         warn('refresh must be enabled!');
         return;
       } else if (type == 'load' && !isLoad) {
-        warn("load must be enabled and content's height > container's height!");
+        warn('load must be enabled and content\'s height > container\'s height!');
         return;
       } else if (type !== 'refresh' && type !== 'load') {
         warn('param must be one of load and refresh!');
@@ -3406,6 +3406,16 @@ var members = {
           self.__zoomComplete = null;
         }
       }
+
+      if (self.__refreshBeforeDeactiveStarted) {
+        self.__refreshBeforeDeactiveStarted = false;
+        if (self.__refreshDeactivate) self.__refreshDeactivate();
+      }
+
+      if (self.__loadBeforeDeactiveStarted) {
+        self.__loadBeforeDeactiveStarted = false;
+        if (self.__loadDeactivate) self.__loadDeactivate();
+      }
     }
   },
 
@@ -3962,7 +3972,32 @@ var slideMix = {
             _this.vuescroll.state.isDragging = true;
             break;
           case 'onscroll':
-            _this.handleScroll(false);
+            {
+              /**
+                 * Trigger auto load
+                 */
+              var stage = _this.vuescroll.state['loadStage'];
+              var _mergedOptions$vuescr2 = _this.mergedOptions.vuescroll.pushLoad,
+                  enable = _mergedOptions$vuescr2.enable,
+                  auto = _mergedOptions$vuescr2.auto,
+                  autoLoadDistance = _mergedOptions$vuescr2.autoLoadDistance;
+              var _scroller = _this.scroller,
+                  __scrollTop = _scroller.__scrollTop,
+                  __maxScrollTop = _scroller.__maxScrollTop;
+
+              if (stage != 'start' && enable && auto && !_this.lockAutoLoad && // auto load debounce
+              autoLoadDistance >= __maxScrollTop - __scrollTop) {
+                _this.lockAutoLoad = true;
+                _this.triggerRefreshOrLoad('load');
+              }
+
+              if (autoLoadDistance < __maxScrollTop - __scrollTop) {
+                _this.lockAutoLoad = false;
+              }
+
+              _this.handleScroll(false);
+            }
+
             break;
           case 'mouseup':
             _this.vuescroll.state.isDragging = false;
@@ -4343,7 +4378,9 @@ var config = {
         active: 'Release to Load',
         start: 'Loading...',
         beforeDeactive: 'Load Successfully!'
-      }
+      },
+      auto: false,
+      autoLoadDistance: 0
     },
     paging: false,
     zooming: true,
@@ -4456,7 +4493,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.2',
+  version: '4.9.0-beta.3',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };

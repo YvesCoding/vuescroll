@@ -21,6 +21,12 @@ interface PullRefreshOrPushLoad {
   tips?: Tips;
 }
 
+interface PushLoad {
+  /** Whether auto load or not */
+  auto: boolean;
+  autoLoadDistance: number;
+}
+
 interface Snapping {
   enable?: boolean;
   width?: number;
@@ -50,7 +56,7 @@ interface Container {
   sizeStrategy?: 'percent' | 'number';
   detectResize?: boolean;
   pullRefresh?: PullRefreshOrPushLoad;
-  pushLoad?: PullRefreshOrPushLoad;
+  pushLoad?: PullRefreshOrPushLoad & PushLoad;
   paging?: boolean;
   zooming?: boolean;
   snapping?: Snapping;

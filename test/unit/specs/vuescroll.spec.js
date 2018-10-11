@@ -197,6 +197,57 @@ describe('vuescroll', () => {
       });
   });
 
+  it('auto-load', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 400,
+            h: 800
+          },
+          {
+            w: 400,
+            h: 200
+          }
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'slide',
+              pushLoad: {
+                enable: true,
+                auto: true,
+                autoLoadDistance: 10,
+                tips: {
+                  start: 'load start tip'
+                }
+              }
+            }
+          }
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+    let tipDom;
+
+    startSchedule()
+      .wait(100)
+      .then(() => {
+        vs.scrollTo({ y: 590 });
+      })
+      .wait(400)
+      .then(() => {
+        tipDom = vs.$el.querySelector('.__load');
+        expect(tipDom.innerText).toBe('load start tip');
+      })
+      .wait(2600)
+      .then(() => {
+        expect(tipDom.innerText).toBe('');
+        done();
+      });
+  });
+
   // The measures of calculation of paging and snapping
   // paging:
   // Math.round(scrollTop / clientHeight) * clientHeight

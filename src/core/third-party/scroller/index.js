@@ -1282,6 +1282,16 @@ var members = {
           self.__zoomComplete = null;
         }
       }
+
+      if (self.__refreshBeforeDeactiveStarted) {
+        self.__refreshBeforeDeactiveStarted = false;
+        if (self.__refreshDeactivate) self.__refreshDeactivate();
+      }
+
+      if (self.__loadBeforeDeactiveStarted) {
+        self.__loadBeforeDeactiveStarted = false;
+        if (self.__loadDeactivate) self.__loadDeactivate();
+      }
     }
   },
 
