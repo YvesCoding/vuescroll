@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.3
+    * Vuescroll v4.9.0-beta.4
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1841,7 +1841,7 @@ function getPanelChildren(h, context) {
         ref: __REFRESH_DOM_NAME,
         key: __REFRESH_DOM_NAME
       },
-      [[createTipDom(h, context, 'refresh'), context.pullRefreshTip]]
+      [createTipDom(h, context, 'refresh', context.pullRefreshTip)]
     ));
   }
 
@@ -1854,7 +1854,7 @@ function getPanelChildren(h, context) {
         key: __LOAD_DOM_NAME,
         'class': { __load: true, __none: !context.loadDomVisiable }
       },
-      [[createTipDom(h, context, 'load'), context.pushLoadTip]]
+      [createTipDom(h, context, 'load', context.pushLoadTip)]
     ));
   }
 
@@ -1862,13 +1862,13 @@ function getPanelChildren(h, context) {
 }
 
 // Create load or refresh tip dom of each stages
-function createTipDom(h, context, type) {
+function createTipDom(h, context, type, tip) {
   var stage = context.vuescroll.state[type + 'Stage'];
   var dom = null;
   // Return user specified animation dom
   /* istanbul ignore if */
   if (dom = context.$slots[type + '-' + stage]) {
-    return dom[0];
+    return dom;
   }
 
   switch (stage) {
@@ -1959,7 +1959,7 @@ function createTipDom(h, context, type) {
       );
       break;
   }
-  return dom;
+  return [dom, tip];
 }
 
 /**
@@ -4193,7 +4193,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.3',
+  version: '4.9.0-beta.4',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };

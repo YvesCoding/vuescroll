@@ -19,10 +19,10 @@ export declare class vuescroll extends Vue {
     elm: Document | Element,
     x: string | number,
     y: string | number,
-    speed?: number = 300,
+    speed?: number,
     easing?: easing,
-    animate? = true,
-    scrollingComplete?: (x, y) => void
+    animate?: boolean,
+    scrollingComplete?: (x: string | number, y: string | number) => void
   ): void;
 
   // ----------------------- Api -------------------------
