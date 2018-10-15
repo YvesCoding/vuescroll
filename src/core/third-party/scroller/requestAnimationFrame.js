@@ -27,6 +27,7 @@ export function requestAnimationFrame(global) {
   var rafHandle = 1;
   var intervalHandle = null;
   var lastActive = +new Date();
+  // eslint-disable-next-line
   var requestCount = 0;
 
   return function(callback) {

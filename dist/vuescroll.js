@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.4
+    * Vuescroll v4.9.0-beta.5
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -567,6 +567,7 @@ function requestAnimationFrame(global) {
   var rafHandle = 1;
   var intervalHandle = null;
   var lastActive = +new Date();
+  // eslint-disable-next-line
   return function (callback) {
     var callbackHandle = rafHandle++;
 
@@ -4487,7 +4488,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.4',
+  version: '4.9.0-beta.5',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };
