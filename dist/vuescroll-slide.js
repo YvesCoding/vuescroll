@@ -546,15 +546,11 @@ function requestAnimationFrame(global) {
   var rafHandle = 1;
   var intervalHandle = null;
   var lastActive = +new Date();
-
   return function (callback) {
     var callbackHandle = rafHandle++;
 
     // Store callback
     requests[callbackHandle] = callback;
-    requestCount++;
-
-    // Create timeout at first request
     if (intervalHandle === null) {
       intervalHandle = setInterval(function () {
         var time = +new Date();
@@ -562,8 +558,6 @@ function requestAnimationFrame(global) {
 
         // Reset data structure before executing callbacks
         requests = {};
-        requestCount = 0;
-
         for (var key in currentRequests) {
           if (currentRequests.hasOwnProperty(key)) {
             currentRequests[key](time);
