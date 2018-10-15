@@ -27,6 +27,7 @@ export function requestAnimationFrame(global) {
   var rafHandle = 1;
   var intervalHandle = null;
   var lastActive = +new Date();
+  var requestCount = 0;
 
   return function(callback) {
     var callbackHandle = rafHandle++;
