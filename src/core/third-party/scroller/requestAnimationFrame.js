@@ -27,15 +27,12 @@ export function requestAnimationFrame(global) {
   var rafHandle = 1;
   var intervalHandle = null;
   var lastActive = +new Date();
-  // eslint-disable-next-line
-  var requestCount = 0;
 
   return function(callback) {
     var callbackHandle = rafHandle++;
 
     // Store callback
     requests[callbackHandle] = callback;
-    requestCount++;
 
     // Create timeout at first request
     if (intervalHandle === null) {
@@ -45,7 +42,6 @@ export function requestAnimationFrame(global) {
 
         // Reset data structure before executing callbacks
         requests = {};
-        requestCount = 0;
 
         for (var key in currentRequests) {
           if (currentRequests.hasOwnProperty(key)) {
