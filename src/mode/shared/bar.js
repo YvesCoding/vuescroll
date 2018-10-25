@@ -24,7 +24,7 @@ function createMouseEvent(ctx) {
       ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
 
     // Tell parent that the mouse has been down.
-    ctx.$emit('setBarDrag', true);
+    ctx.setBarDrag(true);
     eventCenter(document, 'mousemove', mousemove);
     eventCenter(document, 'mouseup', mouseup);
   }
@@ -47,7 +47,7 @@ function createMouseEvent(ctx) {
   }
 
   function mouseup() {
-    ctx.$emit('setBarDrag', false);
+    ctx.setBarDrag(false);
     parent.hideBar();
 
     document.onselectstart = null;
@@ -75,7 +75,7 @@ function createTouchEvent(ctx) {
       ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
 
     // Tell parent that the mouse has been down.
-    ctx.$emit('setBarDrag', true);
+    ctx.setBarDrag(true);
     eventCenter(document, 'touchmove', touchmove);
     eventCenter(document, 'touchend', touchend);
   }
@@ -98,7 +98,7 @@ function createTouchEvent(ctx) {
     );
   }
   function touchend() {
-    ctx.$emit('setBarDrag', false);
+    ctx.setBarDrag(false);
     parent.hideBar();
 
     document.onselectstart = null;
@@ -199,31 +199,15 @@ export default {
       style: style,
       class: `__bar-is-${vm.type}`,
       ref: 'thumb',
-      on: {}
+      on: {
+        mouseenter() {
+          vm.setBarHoverStyles();
+        },
+        mouseleave() {
+          vm.tryRestoreBarStyles();
+        }
+      }
     };
-
-    let originBarStyle = {};
-    let hoverBarStyle = vm.ops.bar.hoverStyle;
-    if (hoverBarStyle) {
-      bar.on['mouseenter'] = () => {
-        /* istanbul ignore next */
-        if (!hoverBarStyle) return;
-
-        Object.keys(hoverBarStyle).forEach(key => {
-          originBarStyle[key] = vm.$refs.thumb.style[key];
-        });
-
-        mergeObject(hoverBarStyle, vm.$refs.thumb.style, true);
-      };
-      bar.on['mouseleave'] = () => {
-        /* istanbul ignore next */
-        if (!hoverBarStyle) return;
-
-        Object.keys(hoverBarStyle).forEach(key => {
-          vm.$refs.thumb.style[key] = originBarStyle[key];
-        });
-      };
-    }
 
     /** Get rgbA format background color */
     const railBackgroundColor = getRgbAColor(
@@ -255,6 +239,45 @@ export default {
     }
 
     return <div {...rail}>{this.hideBar ? null : <div {...bar} />}</div>;
+  },
+  data() {
+    return {
+      // Use to restore bar styles after hovering the bars, on enable
+      // when option hoverStyle is not `falsy`.
+      originBarStyle: null,
+      isBarDragging: false
+    };
+  },
+  methods: {
+    setBarDrag(val) /* istanbul ignore next */ {
+      this.$emit('setBarDrag', (this.isBarDragging = val));
+
+      if (!val) {
+        this.tryRestoreBarStyles();
+      }
+    },
+    tryRestoreBarStyles() {
+      /* istanbul ignore if */
+      if (this.isBarDragging) return;
+
+      Object.keys(this.originBarStyle).forEach(key => {
+        this.$refs.thumb.style[key] = this.originBarStyle[key];
+      });
+    },
+    setBarHoverStyles() {
+      let hoverBarStyle = this.ops.bar.hoverStyle;
+      /* istanbul ignore next */
+      if (!hoverBarStyle) return;
+
+      if (!this.originBarStyle) {
+        this.originBarStyle = {};
+        Object.keys(hoverBarStyle).forEach(key => {
+          this.originBarStyle[key] = this.$refs.thumb.style[key];
+        });
+      }
+
+      mergeObject(hoverBarStyle, this.$refs.thumb.style, true);
+    }
   }
 };
 
