@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.6
+    * Vuescroll v4.9.0-beta.7
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1147,7 +1147,7 @@ var bar = {
       var _this = this;
 
       /* istanbul ignore if */
-      if (this.isBarDragging) return;
+      if (this.isBarDragging || !this.originBarStyle) return;
 
       Object.keys(this.originBarStyle).forEach(function (key) {
         _this.$refs.thumb.style[key] = _this.originBarStyle[key];
@@ -2084,7 +2084,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.6',
+  version: '4.9.0-beta.7',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };

@@ -258,7 +258,7 @@ export default {
     },
     tryRestoreBarStyles() {
       /* istanbul ignore if */
-      if (this.isBarDragging) return;
+      if (this.isBarDragging || !this.originBarStyle) return;
 
       Object.keys(this.originBarStyle).forEach(key => {
         this.$refs.thumb.style[key] = this.originBarStyle[key];
