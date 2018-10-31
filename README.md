@@ -329,6 +329,10 @@ Please check out [CONTRIBUTING](.github/CONTRIBUTING.md).
 
 For bug report or feature request, you can raise an issue or twitter [@wangyi70991](https://twitter.com/wangyi70991?s=01)
 
+> Scan the QR code to join the WeChat group
+
+ <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400" alt="Demo" style="max-width:100%;">
+
 ## License
 
 **MIT**
