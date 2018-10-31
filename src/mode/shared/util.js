@@ -33,13 +33,13 @@ export function goScrolling(
   if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  if (startLocationY + deltaY > maxX) {
+  if (startLocationY + deltaY > maxY) {
     deltaY = maxY - startLocationY;
   }
   if (startLocationX + deltaX < 0) {
     deltaX = -startLocationX;
   }
-  if (startLocationX + deltaX > maxY) {
+  if (startLocationX + deltaX > maxX) {
     deltaX = maxX - startLocationX;
   }
 

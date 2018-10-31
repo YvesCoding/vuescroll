@@ -500,13 +500,13 @@ describe('api', () => {
   });
 
   // ScrollTop should be 50 #51
-  it('scrollTop should be 50', done => {
+  it('scrollTo 50%, scrollTop and scrollLeft should be 150', done => {
     vm = createVue(
       {
         template: makeTemplate(
           {
-            w: 200,
-            h: 200
+            w: 400,
+            h: 400
           },
           {
             w: 100,
@@ -526,7 +526,8 @@ describe('api', () => {
       .then(() => {
         vs.scrollTo(
           {
-            y: '50%'
+            y: '50%',
+            x: '50%'
           },
           true
         );
@@ -534,8 +535,9 @@ describe('api', () => {
       .wait(350)
       .then(() => {
         const scrollPanel = vm.$el.querySelector('.__panel');
-        const { scrollTop } = scrollPanel;
-        expect(Math.ceil(scrollTop)).toBe(50);
+        const { scrollTop, scrollLeft } = scrollPanel;
+        expect(Math.ceil(scrollTop)).toBe(150);
+        expect(Math.ceil(scrollLeft)).toBe(150);
         done();
       });
   });

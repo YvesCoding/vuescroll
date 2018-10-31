@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.7
+    * Vuescroll v4.9.0-beta.8
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1582,13 +1582,13 @@ function goScrolling(x, y, startLocationX, startLocationY, maxX, maxY, speed, ea
   if (startLocationY + deltaY < 0) {
     deltaY = -startLocationY;
   }
-  if (startLocationY + deltaY > maxX) {
+  if (startLocationY + deltaY > maxY) {
     deltaY = maxY - startLocationY;
   }
   if (startLocationX + deltaX < 0) {
     deltaX = -startLocationX;
   }
-  if (startLocationX + deltaX > maxY) {
+  if (startLocationX + deltaX > maxX) {
     deltaX = maxX - startLocationX;
   }
 
@@ -2084,7 +2084,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.7',
+  version: '4.9.0-beta.8',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };
