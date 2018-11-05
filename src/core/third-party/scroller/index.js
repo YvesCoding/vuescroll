@@ -882,6 +882,8 @@ var members = {
         }
       }
 
+      let shouldBounce = false;
+
       if (self.__enableScrollX) {
         scrollLeft -= moveX * this.options.speedMultiplier;
         var maxScrollLeft = self.__maxScrollLeft;
@@ -889,6 +891,19 @@ var members = {
         if (scrollLeft > maxScrollLeft || scrollLeft < 0) {
           // Slow down on the edges
           if (self.options.bouncing) {
+            if (Array.isArray(self.options.bouncing)) {
+              if (
+                (scrollLeft > maxScrollLeft && self.__enableBounce('left')) ||
+                (scrollLeft < 0 && self.__enableBounce('right'))
+              ) {
+                shouldBounce = true;
+              }
+            } else {
+              shouldBounce = true;
+            }
+          }
+
+          if (shouldBounce) {
             scrollLeft += (moveX / 2) * this.options.speedMultiplier;
           } else if (scrollLeft > maxScrollLeft) {
             scrollLeft = maxScrollLeft;
@@ -904,8 +919,22 @@ var members = {
         var maxScrollTop = self.__maxScrollTop;
 
         if (scrollTop > maxScrollTop || scrollTop < 0) {
+          shouldBounce = false;
           // Slow down on the edges
           if (self.options.bouncing) {
+            if (Array.isArray(self.options.bouncing)) {
+              if (
+                (scrollTop > maxScrollTop && self.__enableBounce('bottom')) ||
+                (scrollTop < 0 && self.__enableBounce('top'))
+              ) {
+                shouldBounce = true;
+              }
+            } else {
+              shouldBounce = true;
+            }
+          }
+
+          if (shouldBounce) {
             scrollTop += (moveY / 2) * this.options.speedMultiplier;
 
             // Support pull-to-refresh (only when only y is scrollable)
@@ -1155,7 +1184,17 @@ var members = {
     self.__disable = true;
   },
   start: function() {
+    var self = this;
+
     self.__disable = true;
+  },
+  __enableBounce: function(direction) {
+    var self = this;
+
+    return (
+      self.options.bouncing === true ||
+      self.options.bouncing.indexOf(direction) > -1
+    );
   },
   /*
 	---------------------------------------------------------------------------
