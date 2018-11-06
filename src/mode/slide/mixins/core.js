@@ -132,9 +132,7 @@ export default {
     registryResize() {
       /* istanbul ignore next */
       if (this.destroyResize) {
-        // when toggling the mode
-        // we should clean the flag-object.
-        this.destroyResize();
+        return;
       }
 
       let contentElm = this.scrollPanelElm;
@@ -166,6 +164,8 @@ export default {
       this.destroyResize = () => {
         destroyWindowResize();
         destroyDomResize();
+
+        this.destroyResize = null;
       };
     }
   }

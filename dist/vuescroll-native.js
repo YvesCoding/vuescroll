@@ -2035,9 +2035,7 @@ var core$1 = {
 
       /* istanbul ignore next */
       if (this.destroyResize) {
-        // when toggling the mode
-        // we should clean the flag-object.
-        this.destroyResize();
+        return;
       }
 
       var contentElm = this.scrollContentElm;
@@ -2064,6 +2062,8 @@ var core$1 = {
       this.destroyResize = function () {
         destroyWindowResize();
         destroyDomResize();
+
+        _this.destroyResize = null;
       };
     }
   }

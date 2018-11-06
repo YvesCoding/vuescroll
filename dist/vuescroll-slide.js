@@ -1900,11 +1900,17 @@ function createTipDom(h, context, type, tip) {
   switch (stage) {
     // The dom will show at deactive stage
     case 'deactive':
+    case 'active':
+      var className = 'active';
+      if (stage == 'deactive') {
+        className += ' deactive';
+      }
+
       dom = h(
         'svg',
         {
-          attrs: {
-            version: '1.1',
+          'class': className,
+          attrs: { version: '1.1',
             xmlns: 'http://www.w3.org/2000/svg',
             xmlnsXlink: 'http://www.w3.org/1999/xlink',
             x: '0px',
@@ -1936,32 +1942,6 @@ function createTipDom(h, context, type, tip) {
           'class': 'bg-path' }), h('circle', {
           attrs: { cx: '25', cy: '25', r: '20' },
           'class': 'active-path' })]
-      );
-      break;
-    case 'active':
-      dom = h(
-        'svg',
-        {
-          attrs: {
-            version: '1.1',
-            xmlns: 'http://www.w3.org/2000/svg',
-            xmlnsXlink: 'http://www.w3.org/1999/xlink',
-            x: '0px',
-            y: '0px',
-            viewBox: '0 0 1000 1000',
-            'enable-background': 'new 0 0 1000 1000',
-            xmlSpace: 'preserve'
-          }
-        },
-        [h('metadata', [' Svg Vector Icons : http://www.sfont.cn ']), h('g', [h(
-          'g',
-          {
-            attrs: { transform: 'matrix(1 0 0 -1 0 1008)' }
-          },
-          [h('path', {
-            attrs: { d: 'M500,18L10,473l105,105l315-297.5V998h140V280.5L885,578l105-105L500,18z' }
-          })]
-        )])]
       );
       break;
     case 'beforeDeactive':
@@ -4090,9 +4070,7 @@ var core$1 = {
 
       /* istanbul ignore next */
       if (this.destroyResize) {
-        // when toggling the mode
-        // we should clean the flag-object.
-        this.destroyResize();
+        return;
       }
 
       var contentElm = this.scrollPanelElm;
@@ -4122,6 +4100,8 @@ var core$1 = {
       this.destroyResize = function () {
         destroyWindowResize();
         destroyDomResize();
+
+        _this2.destroyResize = null;
       };
     }
   }

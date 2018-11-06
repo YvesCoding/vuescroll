@@ -70,6 +70,12 @@
     font-size: 16px;
     line-height: 50px;
     svg {
+      &.active {
+        transition: all 0.2s;
+        &.deactive {
+          transform: rotateZ(180deg);
+        }
+      }
       margin-right: 10px;
       width: 25px;
       height: 25px;
