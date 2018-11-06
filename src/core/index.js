@@ -296,8 +296,6 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
         this.$watch(
           'mergedOptions',
           () => {
-            // record current position
-            this.recordCurrentPos();
             setTimeout(() => {
               if (this.isSmallChangeThisTick) {
                 this.isSmallChangeThisTick = false;
@@ -305,6 +303,9 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
                 return;
               }
               this.refreshInternalStatus();
+
+              // record current position
+              this.recordCurrentPos();
             }, 0);
           },
           watchOpts

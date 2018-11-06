@@ -130,8 +130,18 @@ export default {
     },
 
     registryResize() {
+      const resizeEnable = this.mergedOptions.vuescroll.detectResize;
+
       /* istanbul ignore next */
+      if (this.destroyResize && resizeEnable) {
+        return;
+      }
+
       if (this.destroyResize) {
+        this.destroyResize();
+      }
+
+      if (!resizeEnable) {
         return;
       }
 
@@ -153,10 +163,9 @@ export default {
         this.$forceUpdate();
       };
       window.addEventListener('resize', handleWindowResize, false);
-      const resizeEnable = this.mergedOptions.vuescroll.detectResize;
       const destroyDomResize = resizeEnable
         ? installResizeDetection(contentElm, handleDomResize)
-        : () => {};
+        : NOOP;
       const destroyWindowResize = () => {
         window.removeEventListener('resize', handleWindowResize, false);
       };

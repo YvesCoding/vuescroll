@@ -131,6 +131,11 @@ export default {
         this.destroyScroller();
         this.destroyScroller = null;
       }
+
+      if (this.mode !== this.lastMode) {
+        this.registryResize(true);
+      }
+
       if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       } else if (this.mode == 'native') {
@@ -154,9 +159,19 @@ export default {
       this.updateBarStateAndEmitEvent('refresh-status');
     },
 
-    registryResize() {
+    registryResize(isDestroyResize) {
+      const resizeEnable = this.mergedOptions.vuescroll.detectResize;
+
       /* istanbul ignore next */
+      if (this.destroyResize && !isDestroyResize && resizeEnable) {
+        return;
+      }
+
       if (this.destroyResize) {
+        this.destroyResize();
+      }
+
+      if (!resizeEnable) {
         return;
       }
 
@@ -194,10 +209,10 @@ export default {
       };
       window.addEventListener('resize', handleWindowResize, false);
 
-      const resizeEnable = this.mergedOptions.vuescroll.detectResize;
-      const destroyDomResize = resizeEnable
-        ? installResizeDetection(contentElm, handleDomResize)
-        : () => {};
+      const destroyDomResize = installResizeDetection(
+        contentElm,
+        handleDomResize
+      );
 
       const destroyWindowResize = () => {
         window.removeEventListener('resize', handleWindowResize, false);

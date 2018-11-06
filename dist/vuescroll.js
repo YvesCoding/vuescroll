@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.8
+    * Vuescroll v4.9.0-beta.9
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1547,8 +1547,6 @@ var withBase = function withBase(_ref) {
           sync: true
         };
         this.$watch('mergedOptions', function () {
-          // record current position
-          _this6.recordCurrentPos();
           setTimeout(function () {
             if (_this6.isSmallChangeThisTick) {
               _this6.isSmallChangeThisTick = false;
@@ -1556,6 +1554,9 @@ var withBase = function withBase(_ref) {
               return;
             }
             _this6.refreshInternalStatus();
+
+            // record current position
+            _this6.recordCurrentPos();
           }, 0);
         }, watchOpts);
 
@@ -3073,6 +3074,8 @@ var members = {
         }
       }
 
+      var shouldBounce = false;
+
       if (self.__enableScrollX) {
         scrollLeft -= moveX * this.options.speedMultiplier;
         var maxScrollLeft = self.__maxScrollLeft;
@@ -3080,6 +3083,16 @@ var members = {
         if (scrollLeft > maxScrollLeft || scrollLeft < 0) {
           // Slow down on the edges
           if (self.options.bouncing) {
+            if (Array.isArray(self.options.bouncing)) {
+              if (scrollLeft > maxScrollLeft && self.__enableBounce('right') || scrollLeft < 0 && self.__enableBounce('left')) {
+                shouldBounce = true;
+              }
+            } else {
+              shouldBounce = true;
+            }
+          }
+
+          if (shouldBounce) {
             scrollLeft += moveX / 2 * this.options.speedMultiplier;
           } else if (scrollLeft > maxScrollLeft) {
             scrollLeft = maxScrollLeft;
@@ -3095,8 +3108,19 @@ var members = {
         var maxScrollTop = self.__maxScrollTop;
 
         if (scrollTop > maxScrollTop || scrollTop < 0) {
+          shouldBounce = false;
           // Slow down on the edges
           if (self.options.bouncing) {
+            if (Array.isArray(self.options.bouncing)) {
+              if (scrollTop > maxScrollTop && self.__enableBounce('bottom') || scrollTop < 0 && self.__enableBounce('top')) {
+                shouldBounce = true;
+              }
+            } else {
+              shouldBounce = true;
+            }
+          }
+
+          if (shouldBounce) {
             scrollTop += moveY / 2 * this.options.speedMultiplier;
 
             // Support pull-to-refresh (only when only y is scrollable)
@@ -3299,7 +3323,14 @@ var members = {
     self.__disable = true;
   },
   start: function start() {
+    var self = this;
+
     self.__disable = true;
+  },
+  __enableBounce: function __enableBounce(direction) {
+    var self = this;
+
+    return self.options.bouncing === true || self.options.bouncing.indexOf(direction) > -1;
   },
   /*
   ---------------------------------------------------------------------------
@@ -3541,14 +3572,26 @@ var members = {
     //
     // HARD LIMIT SCROLL POSITION FOR NON BOUNCING MODE
     //
+    var bounceX = false;
+    var bounceY = false;
 
-    if (!self.options.bouncing) {
+    if (scrollLeft < 0 && self.__enableBounce('left') || scrollLeft > self.__maxDecelerationScrollLeft && self.__enableBounce('right')) {
+      bounceX = true;
+    }
+
+    if (scrollTop < 0 && self.__enableBounce('top') || scrollTop > self.__maxDecelerationScrollTop && self.__enableBounce('bottom')) {
+      bounceY = true;
+    }
+
+    if (!bounceX) {
       var scrollLeftFixed = Math.max(Math.min(self.__maxDecelerationScrollLeft, scrollLeft), self.__minDecelerationScrollLeft);
       if (scrollLeftFixed !== scrollLeft) {
         scrollLeft = scrollLeftFixed;
         self.__decelerationVelocityX = 0;
       }
+    }
 
+    if (!bounceY) {
       var scrollTopFixed = Math.max(Math.min(self.__maxDecelerationScrollTop, scrollTop), self.__minDecelerationScrollTop);
       if (scrollTopFixed !== scrollTop) {
         scrollTop = scrollTopFixed;
@@ -3594,17 +3637,21 @@ var members = {
       var penetrationDeceleration = self.options.penetrationDeceleration;
       var penetrationAcceleration = self.options.penetrationAcceleration;
 
-      // Check limits
-      if (scrollLeft < self.__minDecelerationScrollLeft) {
-        scrollOutsideX = self.__minDecelerationScrollLeft - scrollLeft;
-      } else if (scrollLeft > self.__maxDecelerationScrollLeft) {
-        scrollOutsideX = self.__maxDecelerationScrollLeft - scrollLeft;
+      if (bounceX) {
+        // Check limits
+        if (scrollLeft < self.__minDecelerationScrollLeft) {
+          scrollOutsideX = self.__minDecelerationScrollLeft - scrollLeft;
+        } else if (scrollLeft > self.__maxDecelerationScrollLeft) {
+          scrollOutsideX = self.__maxDecelerationScrollLeft - scrollLeft;
+        }
       }
 
-      if (scrollTop < self.__minDecelerationScrollTop) {
-        scrollOutsideY = self.__minDecelerationScrollTop - scrollTop;
-      } else if (scrollTop > self.__maxDecelerationScrollTop) {
-        scrollOutsideY = self.__maxDecelerationScrollTop - scrollTop;
+      if (bounceY) {
+        if (scrollTop < self.__minDecelerationScrollTop) {
+          scrollOutsideY = self.__minDecelerationScrollTop - scrollTop;
+        } else if (scrollTop > self.__maxDecelerationScrollTop) {
+          scrollOutsideY = self.__maxDecelerationScrollTop - scrollTop;
+        }
       }
 
       // Slow down until slow enough, then flip back to snap position
@@ -4278,6 +4325,11 @@ var core$1 = {
         this.destroyScroller();
         this.destroyScroller = null;
       }
+
+      if (this.mode !== this.lastMode) {
+        this.registryResize(true);
+      }
+
       if (this.mode == 'slide') {
         this.destroyScroller = this.registryScroller();
       } else if (this.mode == 'native') {
@@ -4300,11 +4352,21 @@ var core$1 = {
       // 4. update scrollbar's height/width
       this.updateBarStateAndEmitEvent('refresh-status');
     },
-    registryResize: function registryResize() {
+    registryResize: function registryResize(isDestroyResize) {
       var _this = this;
 
+      var resizeEnable = this.mergedOptions.vuescroll.detectResize;
+
       /* istanbul ignore next */
+      if (this.destroyResize && !isDestroyResize && resizeEnable) {
+        return;
+      }
+
       if (this.destroyResize) {
+        this.destroyResize();
+      }
+
+      if (!resizeEnable) {
         return;
       }
 
@@ -4342,8 +4404,7 @@ var core$1 = {
       };
       window.addEventListener('resize', handleWindowResize, false);
 
-      var resizeEnable = this.mergedOptions.vuescroll.detectResize;
-      var destroyDomResize = resizeEnable ? installResizeDetection(contentElm, handleDomResize) : function () {};
+      var destroyDomResize = installResizeDetection(contentElm, handleDomResize);
 
       var destroyWindowResize = function destroyWindowResize() {
         window.removeEventListener('resize', handleWindowResize, false);
@@ -4499,7 +4560,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.8',
+  version: '4.9.0-beta.9',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };

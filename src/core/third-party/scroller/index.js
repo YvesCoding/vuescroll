@@ -893,8 +893,8 @@ var members = {
           if (self.options.bouncing) {
             if (Array.isArray(self.options.bouncing)) {
               if (
-                (scrollLeft > maxScrollLeft && self.__enableBounce('left')) ||
-                (scrollLeft < 0 && self.__enableBounce('right'))
+                (scrollLeft > maxScrollLeft && self.__enableBounce('right')) ||
+                (scrollLeft < 0 && self.__enableBounce('left'))
               ) {
                 shouldBounce = true;
               }

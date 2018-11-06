@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.8
+    * Vuescroll v4.9.0-beta.9
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1509,8 +1509,6 @@ var withBase = function withBase(_ref) {
           sync: true
         };
         this.$watch('mergedOptions', function () {
-          // record current position
-          _this6.recordCurrentPos();
           setTimeout(function () {
             if (_this6.isSmallChangeThisTick) {
               _this6.isSmallChangeThisTick = false;
@@ -1518,6 +1516,9 @@ var withBase = function withBase(_ref) {
               return;
             }
             _this6.refreshInternalStatus();
+
+            // record current position
+            _this6.recordCurrentPos();
           }, 0);
         }, watchOpts);
 
@@ -2033,8 +2034,18 @@ var core$1 = {
     registryResize: function registryResize() {
       var _this = this;
 
+      var resizeEnable = this.mergedOptions.vuescroll.detectResize;
+
       /* istanbul ignore next */
+      if (this.destroyResize && resizeEnable) {
+        return;
+      }
+
       if (this.destroyResize) {
+        this.destroyResize();
+      }
+
+      if (!resizeEnable) {
         return;
       }
 
@@ -2052,8 +2063,7 @@ var core$1 = {
       };
       window.addEventListener('resize', handleWindowResize, false);
 
-      var resizeEnable = this.mergedOptions.vuescroll.detectResize;
-      var destroyDomResize = resizeEnable ? installResizeDetection(contentElm, handleDomResize) : function () {};
+      var destroyDomResize = installResizeDetection(contentElm, handleDomResize);
 
       var destroyWindowResize = function destroyWindowResize() {
         window.removeEventListener('resize', handleWindowResize, false);
@@ -2084,7 +2094,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.8',
+  version: '4.9.0-beta.9',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };
