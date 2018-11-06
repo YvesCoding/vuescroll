@@ -1469,8 +1469,26 @@ var members = {
     //
     // HARD LIMIT SCROLL POSITION FOR NON BOUNCING MODE
     //
+    var bounceX = false;
+    var bounceY = false;
 
-    if (!self.options.bouncing) {
+    if (
+      (scrollLeft < 0 && self.__enableBounce('left')) ||
+      (scrollLeft > self.__maxDecelerationScrollLeft &&
+        self.__enableBounce('right'))
+    ) {
+      bounceX = true;
+    }
+
+    if (
+      (scrollTop < 0 && self.__enableBounce('top')) ||
+      (scrollTop > self.__maxDecelerationScrollTop &&
+        self.__enableBounce('bottom'))
+    ) {
+      bounceY = true;
+    }
+
+    if (!bounceX) {
       var scrollLeftFixed = Math.max(
         Math.min(self.__maxDecelerationScrollLeft, scrollLeft),
         self.__minDecelerationScrollLeft
@@ -1479,7 +1497,9 @@ var members = {
         scrollLeft = scrollLeftFixed;
         self.__decelerationVelocityX = 0;
       }
+    }
 
+    if (!bounceY) {
       var scrollTopFixed = Math.max(
         Math.min(self.__maxDecelerationScrollTop, scrollTop),
         self.__minDecelerationScrollTop
@@ -1528,17 +1548,21 @@ var members = {
       var penetrationDeceleration = self.options.penetrationDeceleration;
       var penetrationAcceleration = self.options.penetrationAcceleration;
 
-      // Check limits
-      if (scrollLeft < self.__minDecelerationScrollLeft) {
-        scrollOutsideX = self.__minDecelerationScrollLeft - scrollLeft;
-      } else if (scrollLeft > self.__maxDecelerationScrollLeft) {
-        scrollOutsideX = self.__maxDecelerationScrollLeft - scrollLeft;
+      if (bounceX) {
+        // Check limits
+        if (scrollLeft < self.__minDecelerationScrollLeft) {
+          scrollOutsideX = self.__minDecelerationScrollLeft - scrollLeft;
+        } else if (scrollLeft > self.__maxDecelerationScrollLeft) {
+          scrollOutsideX = self.__maxDecelerationScrollLeft - scrollLeft;
+        }
       }
 
-      if (scrollTop < self.__minDecelerationScrollTop) {
-        scrollOutsideY = self.__minDecelerationScrollTop - scrollTop;
-      } else if (scrollTop > self.__maxDecelerationScrollTop) {
-        scrollOutsideY = self.__maxDecelerationScrollTop - scrollTop;
+      if (bounceY) {
+        if (scrollTop < self.__minDecelerationScrollTop) {
+          scrollOutsideY = self.__minDecelerationScrollTop - scrollTop;
+        } else if (scrollTop > self.__maxDecelerationScrollTop) {
+          scrollOutsideY = self.__maxDecelerationScrollTop - scrollTop;
+        }
       }
 
       // Slow down until slow enough, then flip back to snap position
