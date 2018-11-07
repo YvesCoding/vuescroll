@@ -90,6 +90,8 @@ export function getPanelChildren(h, context) {
 
   if (context.mergedOptions.scrollPanel.scrollingX) {
     viewStyle.width = getComplitableStyle('width', 'fit-content');
+  } else {
+    data.style['width'] = '100%';
   }
 
   if (context.mergedOptions.scrollPanel.padding) {

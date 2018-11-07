@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.9
+    * Vuescroll v4.9.0-beta.10
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1893,6 +1893,8 @@ function getPanelChildren(h, context) {
 
   if (context.mergedOptions.scrollPanel.scrollingX) {
     viewStyle.width = getComplitableStyle('width', 'fit-content');
+  } else {
+    data.style['width'] = '100%';
   }
 
   if (context.mergedOptions.scrollPanel.padding) {
@@ -2094,7 +2096,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.9',
+  version: '4.9.0-beta.10',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };

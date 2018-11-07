@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.9
+    * Vuescroll v4.9.0-beta.10
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1931,6 +1931,8 @@ function getPanelChildren(h, context) {
 
   if (context.mergedOptions.scrollPanel.scrollingX) {
     viewStyle.width = getComplitableStyle('width', 'fit-content');
+  } else {
+    data.style['width'] = '100%';
   }
 
   if (context.mergedOptions.scrollPanel.padding) {
@@ -1954,9 +1956,6 @@ function getPanelData$1(context) {
     ref: 'scrollPanel',
     style: {},
     class: [],
-    nativeOn: {
-      scroll: context.handleScroll
-    },
     props: {
       ops: context.mergedOptions.scrollPanel
     }
@@ -1964,12 +1963,16 @@ function getPanelData$1(context) {
 
   data.class.push('__slide');
 
-  var width = getComplitableStyle('width', 'fit-content');
-  if (width) {
-    data.style['width'] = width;
-  } /* istanbul ignore next */else {
-      data['display'] = 'inline-block';
-    }
+  if (context.mergedOptions.scrollPanel.scrollingX && !context.refreshLoad) {
+    var width = getComplitableStyle('width', 'fit-content');
+    if (width) {
+      data.style['width'] = width;
+    } /* istanbul ignore next */else {
+        data['display'] = 'inline-block';
+      }
+  } else {
+    data.style['width'] = '100%';
+  }
 
   if (context.mergedOptions.scrollPanel.padding) {
     data.style.paddingRight = context.mergedOptions.rail.size;
@@ -2037,35 +2040,37 @@ function createTipDom(h, context, type, tip) {
     // The dom will show at deactive stage
     case 'deactive':
     case 'active':
-      var className = 'active';
-      if (stage == 'deactive') {
-        className += ' deactive';
-      }
+      {
+        var className = 'active';
+        if (stage == 'deactive') {
+          className += ' deactive';
+        }
 
-      dom = h(
-        'svg',
-        {
-          'class': className,
-          attrs: { version: '1.1',
-            xmlns: 'http://www.w3.org/2000/svg',
-            xmlnsXlink: 'http://www.w3.org/1999/xlink',
-            x: '0px',
-            y: '0px',
-            viewBox: '0 0 1000 1000',
-            'enable-background': 'new 0 0 1000 1000',
-            xmlSpace: 'preserve'
-          }
-        },
-        [h('metadata', [' Svg Vector Icons : http://www.sfont.cn ']), h('g', [h(
-          'g',
+        dom = h(
+          'svg',
           {
-            attrs: { transform: 'matrix(1 0 0 -1 0 1008)' }
+            'class': className,
+            attrs: { version: '1.1',
+              xmlns: 'http://www.w3.org/2000/svg',
+              xmlnsXlink: 'http://www.w3.org/1999/xlink',
+              x: '0px',
+              y: '0px',
+              viewBox: '0 0 1000 1000',
+              'enable-background': 'new 0 0 1000 1000',
+              xmlSpace: 'preserve'
+            }
           },
-          [h('path', {
-            attrs: { d: 'M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z' }
-          })]
-        )])]
-      );
+          [h('metadata', [' Svg Vector Icons : http://www.sfont.cn ']), h('g', [h(
+            'g',
+            {
+              attrs: { transform: 'matrix(1 0 0 -1 0 1008)' }
+            },
+            [h('path', {
+              attrs: { d: 'M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z' }
+            })]
+          )])]
+        );
+      }
       break;
     case 'start':
       dom = h(
@@ -4560,7 +4565,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.9',
+  version: '4.9.0-beta.10',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };
