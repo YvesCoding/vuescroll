@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.10
+    * Vuescroll v4.9.0-beta.11
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -190,16 +190,19 @@ function getGutter() {
   outer.style.width = '100px';
   outer.style.position = 'absolute';
   outer.style.top = '-9999px';
-  outer.style.overflow = 'scroll';
   document.body.appendChild(outer);
 
-  var offsetWidth = outer.offsetWidth,
-      clientWidth = outer.clientWidth;
+  var widthNoScroll = outer.offsetWidth;
+  outer.style.overflow = 'scroll';
 
+  var inner = document.createElement('div');
+  inner.style.width = '100%';
+  outer.appendChild(inner);
 
-  scrollBarWidth = offsetWidth - clientWidth;
+  var widthWithScroll = inner.offsetWidth;
+  outer.parentNode.removeChild(outer);
+  scrollBarWidth = widthNoScroll - widthWithScroll;
 
-  document.body.removeChild(outer);
   return scrollBarWidth;
 }
 
@@ -2096,7 +2099,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.10',
+  version: '4.9.0-beta.11',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };

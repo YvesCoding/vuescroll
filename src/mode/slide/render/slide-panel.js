@@ -88,61 +88,61 @@ function createTipDom(h, context, type, tip) {
   }
 
   switch (stage) {
-    // The dom will show at deactive stage
-    case 'deactive':
-    case 'active':
-      {
-        let className = 'active';
-        if (stage == 'deactive') {
-          className += ' deactive';
-        }
-
-        dom = (
-          <svg
-            class={className}
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            viewBox="0 0 1000 1000"
-            enable-background="new 0 0 1000 1000"
-            xmlSpace="preserve"
-          >
-            <metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
-            <g>
-              <g transform="matrix(1 0 0 -1 0 1008)">
-                <path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" />
-              </g>
-            </g>
-          </svg>
-        );
+  // The dom will show at deactive stage
+  case 'deactive':
+  case 'active':
+    {
+      let className = 'active';
+      if (stage == 'deactive') {
+        className += ' deactive';
       }
-      break;
-    case 'start':
-      dom = (
-        <svg viewBox="0 0 50 50" class="start">
-          <circle stroke="true" cx="25" cy="25" r="20" class="bg-path" />
-          <circle cx="25" cy="25" r="20" class="active-path" />
-        </svg>
-      );
-      break;
-    case 'beforeDeactive':
+
       dom = (
         <svg
-          viewBox="0 0 1024 1024"
+          class={className}
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
-          p-id="3562"
+          xmlnsXlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 1000 1000"
+          enable-background="new 0 0 1000 1000"
+          xmlSpace="preserve"
         >
-          <path
-            d="M512 0C229.706831 0 0 229.667446 0 512s229.667446 512 512 512c282.293169 0 512-229.667446 512-512S794.332554 0 512 0z m282.994215 353.406031L433.2544 715.145846a31.484062 31.484062 0 0 1-22.275938 9.231754h-0.4096a31.586462 31.586462 0 0 1-22.449231-9.814646L228.430769 546.327631a31.507692 31.507692 0 0 1 45.701908-43.386093l137.4208 144.785724L750.442338 308.854154a31.507692 31.507692 0 1 1 44.551877 44.551877z"
-            fill=""
-            p-id="3563"
-          />
+          <metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
+          <g>
+            <g transform="matrix(1 0 0 -1 0 1008)">
+              <path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" />
+            </g>
+          </g>
         </svg>
       );
-      break;
+    }
+    break;
+  case 'start':
+    dom = (
+      <svg viewBox="0 0 50 50" class="start">
+        <circle stroke="true" cx="25" cy="25" r="20" class="bg-path" />
+        <circle cx="25" cy="25" r="20" class="active-path" />
+      </svg>
+    );
+    break;
+  case 'beforeDeactive':
+    dom = (
+      <svg
+        viewBox="0 0 1024 1024"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        p-id="3562"
+      >
+        <path
+          d="M512 0C229.706831 0 0 229.667446 0 512s229.667446 512 512 512c282.293169 0 512-229.667446 512-512S794.332554 0 512 0z m282.994215 353.406031L433.2544 715.145846a31.484062 31.484062 0 0 1-22.275938 9.231754h-0.4096a31.586462 31.586462 0 0 1-22.449231-9.814646L228.430769 546.327631a31.507692 31.507692 0 0 1 45.701908-43.386093l137.4208 144.785724L750.442338 308.854154a31.507692 31.507692 0 1 1 44.551877 44.551877z"
+          fill=""
+          p-id="3563"
+        />
+      </svg>
+    );
+    break;
   }
   return [dom, tip];
 }

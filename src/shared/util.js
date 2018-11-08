@@ -111,14 +111,19 @@ export function getGutter() {
   outer.style.width = '100px';
   outer.style.position = 'absolute';
   outer.style.top = '-9999px';
-  outer.style.overflow = 'scroll';
   document.body.appendChild(outer);
 
-  const { offsetWidth, clientWidth } = outer;
+  const widthNoScroll = outer.offsetWidth;
+  outer.style.overflow = 'scroll';
 
-  scrollBarWidth = offsetWidth - clientWidth;
+  const inner = document.createElement('div');
+  inner.style.width = '100%';
+  outer.appendChild(inner);
 
-  document.body.removeChild(outer);
+  const widthWithScroll = inner.offsetWidth;
+  outer.parentNode.removeChild(outer);
+  scrollBarWidth = widthNoScroll - widthWithScroll;
+
   return scrollBarWidth;
 }
 
