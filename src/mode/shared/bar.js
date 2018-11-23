@@ -310,7 +310,7 @@ export default {
         background: railBackgroundColor,
         border: vm.ops.rail.border,
         [vm.bar.opsSize]: railSize,
-        [vm.bar.posName]: vm.ops.rail['gutterOfEnds'] || railSize,
+        [vm.bar.posName]: vm.ops.rail['gutterOfEnds'] || 0,
         [vm.bar.opposName]: vm.ops.rail['gutterOfEnds'] || railSize,
         [vm.bar.sidePosName]: vm.ops.rail['gutterOfSide']
       }

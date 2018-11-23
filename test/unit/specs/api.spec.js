@@ -214,6 +214,9 @@ describe('api', () => {
           ops: {
             vuescroll: {
               mode: 'slide'
+            },
+            rail: {
+              gutterOfEnds: '6px'
             }
           }
         }

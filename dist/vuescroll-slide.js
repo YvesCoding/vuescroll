@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.13
+    * Vuescroll v4.9.0-beta.14
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1228,7 +1228,7 @@ var bar = {
         borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
         background: railBackgroundColor,
         border: vm.ops.rail.border
-      }, defineProperty(_style3, vm.bar.opsSize, railSize), defineProperty(_style3, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || railSize), defineProperty(_style3, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || railSize), defineProperty(_style3, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style3)
+      }, defineProperty(_style3, vm.bar.opsSize, railSize), defineProperty(_style3, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || 0), defineProperty(_style3, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || railSize), defineProperty(_style3, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style3)
     };
 
     // left space for scroll button
@@ -4376,7 +4376,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.13',
+  version: '4.9.0-beta.14',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };
