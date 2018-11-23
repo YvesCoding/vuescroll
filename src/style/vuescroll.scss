@@ -46,6 +46,66 @@
     border-radius: inherit;
   }
 
+  .__bar-wrap-is-vertical,
+  .__bar-wrap-is-horizontal {
+    position: absolute;
+  }
+
+  .__bar-wrap-is-vertical {
+    width: 100%;
+  }
+  .__bar-wrap-is-horizontal {
+    height: 100%;
+  }
+  .__bar-button {
+    position: absolute;
+    cursor: pointer;
+    display: table;
+    .__bar-button-inner {
+      width: 0;
+      height: 0;
+      margin: auto;
+    }
+    &-is {
+      &-vertical {
+        &-start {
+          .__bar-button-inner {
+            transform: translateY(-25%);
+            border-top-color: transparent !important;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+          }
+        }
+        &-end {
+          .__bar-button-inner {
+            transform: translateY(25%);
+            border-bottom-color: transparent !important;
+            border-left-color: transparent !important;
+            border-right-color: transparent !important;
+          }
+        }
+      }
+      &-horizontal {
+        &-start {
+          .__bar-button-inner {
+            transform: translateX(-25%);
+            border-top-color: transparent !important;
+            border-left-color: transparent !important;
+            border-bottom-color: transparent !important;
+          }
+        }
+        &-end {
+          .__bar-button-inner {
+            transform: translateX(25%);
+            border-top-color: transparent !important;
+            border-right-color: transparent !important;
+            border-bottom-color: transparent !important;
+          }
+        }
+      }
+    }
+  }
+
   .__rail-is-vertical {
     .__bar-is-vertical {
       top: 0;

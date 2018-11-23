@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.11
+    * Vuescroll v4.9.0-beta.12
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -799,12 +799,13 @@ var baseConfig = {
   rail: {
     background: '#01a99a',
     opacity: 0,
+    border: 'none',
     /** Rail's size(Height/Width) , default -> 6px */
     size: '6px',
-    /** Specify rail and bar's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
+    /** Specify rail's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
     specifyBorderRadius: false,
     /** Rail the distance from the two ends of the X axis and Y axis. **/
-    gutterOfEnds: '2px',
+    gutterOfEnds: null,
     /** Rail the distance from the side of container. **/
     gutterOfSide: '2px',
     /** Whether to keep rail show or not, default -> false, event content height is not enough */
@@ -813,6 +814,8 @@ var baseConfig = {
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
     showDelay: 500,
+    /** Specify bar's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
+    specifyBorderRadius: false,
     /** Whether to show bar on scrolling, default -> true */
     onlyShowBarOnScroll: true,
     /** Whether to keep show or not, default -> false */
@@ -823,6 +826,13 @@ var baseConfig = {
     opacity: 1,
     /** Styles when you hover scrollbar, it will merge into the current style */
     hoverStyle: false
+  },
+  scrollButton: {
+    enable: false,
+    background: 'rgb(3, 185, 118)',
+    opacity: 1,
+    step: 180,
+    mousedownStep: 30
   }
 };
 /**
@@ -940,7 +950,11 @@ var scrollMap = {
     scrollSize: 'scrollHeight',
     offset: 'offsetHeight',
     client: 'clientY',
-    axis: 'Y'
+    axis: 'Y',
+    scrollButton: {
+      start: 'top',
+      end: 'bottom'
+    }
   },
   horizontal: {
     size: 'width',
@@ -953,7 +967,11 @@ var scrollMap = {
     scrollSize: 'scrollWidth',
     offset: 'offsetWidth',
     client: 'clientX',
-    axis: 'X'
+    axis: 'X',
+    scrollButton: {
+      start: 'left',
+      end: 'right'
+    }
   }
 };
 
@@ -962,22 +980,28 @@ var rgbReg = /rgb\(/;
 var extractRgbColor = /rgb\((.*)\)/;
 
 /* istanbul ignore next */
-function createMouseEvent(ctx) {
+function createBarEvent(ctx) {
+  var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'mouse';
+
   var parent = getRealParent(ctx);
+  var moveEventName = type == 'mouse' ? 'mousemove' : 'touchmove';
+  var endEventName = type == 'mouse' ? 'mouseup' : 'touchend';
 
   function mousedown(e) {
     e.stopImmediatePropagation();
     e.preventDefault();
 
+    var event = type == 'mouse' ? e : e.touches[0];
+
     document.onselectstart = function () {
       return false;
     };
-    ctx.axisStartPos = e[ctx.bar.client] - ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
+    ctx.axisStartPos = event[ctx.bar.client] - ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
 
     // Tell parent that the mouse has been down.
     ctx.setBarDrag(true);
-    eventCenter(document, 'mousemove', mousemove);
-    eventCenter(document, 'mouseup', mouseup);
+    eventCenter(document, moveEventName, mousemove);
+    eventCenter(document, endEventName, mouseup);
   }
 
   function mousemove(e) {
@@ -985,8 +1009,12 @@ function createMouseEvent(ctx) {
       return;
     }
 
-    var delta = e[ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
-    var percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
+    var thubmParent = ctx.$refs.thumb.parentNode;
+
+    var event = type == 'mouse' ? e : e.touches[0];
+
+    var delta = event[ctx.bar.client] - thubmParent.getBoundingClientRect()[ctx.bar.posName];
+    var percent = (delta - ctx.axisStartPos) / thubmParent[ctx.bar.offset];
     parent.scrollTo(defineProperty({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
   }
 
@@ -997,53 +1025,88 @@ function createMouseEvent(ctx) {
     document.onselectstart = null;
     ctx.axisStartPos = 0;
 
-    eventCenter(document, 'mousemove', mousemove, false, 'off');
-    eventCenter(document, 'mouseup', mouseup, false, 'off');
+    eventCenter(document, moveEventName, mousemove, false, 'off');
+    eventCenter(document, endEventName, mouseup, false, 'off');
   }
 
   return mousedown;
 }
 
 /* istanbul ignore next */
-function createTouchEvent(ctx) {
+function createScrollButtonEvent(ctx, type) {
+  var env = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'mouse';
+
   var parent = getRealParent(ctx);
+  var endEventName = env == 'mouse' ? 'mouseup' : 'touchend';
+  var _ctx$ops$scrollButton = ctx.ops.scrollButton,
+      step = _ctx$ops$scrollButton.step,
+      mousedownStep = _ctx$ops$scrollButton.mousedownStep;
 
-  function touchstart(e) {
-    e.stopImmediatePropagation();
-    e.preventDefault();
+  var stepWithDirection = type == 'start' ? -step : step;
+  var mousedownStepWithDirection = type == 'start' ? -mousedownStep : mousedownStep;
+  var ref = requestAnimationFrame(window);
 
-    document.onselectstart = function () {
-      return false;
-    };
+  var isMouseDown = false;
+  var isMouseout = true;
+  var timeoutId = void 0;
 
-    ctx.axisStartPos = e.touches[0][ctx.bar.client] - ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
+  function start(e) {
+    /* istanbul ignore if */
 
-    // Tell parent that the mouse has been down.
-    ctx.setBarDrag(true);
-    eventCenter(document, 'touchmove', touchmove);
-    eventCenter(document, 'touchend', touchend);
-  }
-  function touchmove(e) {
-    if (!ctx.axisStartPos) {
+    if (3 == e.which) {
       return;
     }
 
-    var delta = e.touches[0][ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
-    var percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
+    e.stopImmediatePropagation();
+    e.preventDefault();
 
-    parent.scrollTo(defineProperty({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
+    isMouseout = false;
+
+    parent.scrollBy(defineProperty({}, 'd' + ctx.bar.axis.toLowerCase(), stepWithDirection));
+
+    eventCenter(document, endEventName, endPress, false);
+
+    if (env == 'mouse') {
+      var elm = ctx.$refs[type];
+      eventCenter(elm, 'mouseenter', enter, false);
+      eventCenter(elm, 'mouseleave', leave, false);
+    }
+
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(function () {
+      isMouseDown = true;
+      ref(pressing, window);
+    }, 500);
   }
-  function touchend() {
-    ctx.setBarDrag(false);
-    parent.hideBar();
 
-    document.onselectstart = null;
-    ctx.axisStartPos = 0;
-
-    eventCenter(document, 'touchmove', touchmove, false, 'off');
-    eventCenter(document, 'touchend', touchend, false, 'off');
+  function pressing() {
+    if (isMouseDown && !isMouseout) {
+      parent.scrollBy(defineProperty({}, 'd' + ctx.bar.axis.toLowerCase(), mousedownStepWithDirection), false);
+      ref(pressing, window);
+    }
   }
-  return touchstart;
+
+  function endPress() {
+    clearTimeout(timeoutId);
+    isMouseDown = false;
+    eventCenter(document, endEventName, endPress, false, 'off');
+    if (env == 'mouse') {
+      var elm = ctx.$refs[type];
+      eventCenter(elm, 'mouseenter', enter, false, 'off');
+      eventCenter(elm, 'mouseleave', leave, false, 'off');
+    }
+  }
+
+  function enter() {
+    isMouseout = false;
+    pressing();
+  }
+
+  function leave() {
+    isMouseout = true;
+  }
+
+  return start;
 }
 
 // Transform a common color int oa `rgbA` color
@@ -1094,6 +1157,45 @@ function createTrackEvent(ctx, type) {
   };
 }
 
+function createScrollbarButton(h, barContext, type) {
+  var _style;
+
+  if (!barContext.ops.scrollButton.enable) {
+    return null;
+  }
+
+  var size = barContext.ops.rail.size;
+  var borderColor = barContext.ops.scrollButton.background;
+  var wrapperProps = {
+    class: ['__bar-button', '__bar-button-is-' + barContext.type + '-' + type],
+    style: (_style = {}, defineProperty(_style, barContext.bar.scrollButton[type], 0), defineProperty(_style, 'width', size), defineProperty(_style, 'height', size), _style),
+    ref: type
+  };
+
+  var innerProps = {
+    class: '__bar-button-inner',
+    style: {
+      border: 'calc(' + size + ' / 2.5) solid ' + borderColor
+    },
+    on: {}
+  };
+
+  /* istanbul ignore next */
+  {
+    if (isSupportTouch()) {
+      innerProps.on['touchstart'] = createScrollButtonEvent(barContext, type, 'touch');
+    } else {
+      innerProps.on['mousedown'] = createScrollButtonEvent(barContext, type);
+    }
+  }
+
+  return h(
+    'div',
+    wrapperProps,
+    [h('div', innerProps)]
+  );
+}
+
 var bar = {
   name: 'bar',
   props: {
@@ -1119,12 +1221,12 @@ var bar = {
     }
   },
   render: function render(h) {
-    var _style, _style2;
+    var _style2, _style3, _style4;
 
     var vm = this;
 
     /** Scrollbar style */
-    var style = (_style = {}, defineProperty(_style, vm.bar.size, vm.state.size), defineProperty(_style, 'background', vm.ops.bar.background), defineProperty(_style, 'opacity', vm.state.opacity), defineProperty(_style, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _style);
+    var style = (_style2 = {}, defineProperty(_style2, vm.bar.size, vm.state.size), defineProperty(_style2, 'background', vm.ops.bar.background), defineProperty(_style2, 'opacity', vm.state.opacity), defineProperty(_style2, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _style2);
     var bar = {
       style: style,
       class: '__bar-is-' + vm.type,
@@ -1143,28 +1245,43 @@ var bar = {
     var railBackgroundColor = getRgbAColor(vm.ops.rail.background, vm.ops.rail.opacity);
 
     /** Rail Data */
+    var railSize = vm.ops.rail.size;
     var rail = {
       class: '__rail-is-' + vm.type,
-      style: (_style2 = {
-        borderRadius: vm.ops.rail.specifyBorderRadius || vm.ops.rail.size,
-        background: railBackgroundColor
-      }, defineProperty(_style2, vm.bar.opsSize, vm.ops.rail.size), defineProperty(_style2, vm.bar.posName, vm.ops.rail['gutterOfEnds']), defineProperty(_style2, vm.bar.opposName, vm.ops.rail['gutterOfEnds']), defineProperty(_style2, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style2),
+      style: (_style3 = {
+        borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
+        background: railBackgroundColor,
+        border: vm.ops.rail.border
+      }, defineProperty(_style3, vm.bar.opsSize, railSize), defineProperty(_style3, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || railSize), defineProperty(_style3, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || railSize), defineProperty(_style3, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style3)
+    };
+
+    // left space for scroll button
+    var buttonSize = vm.ops.scrollButton.enable ? railSize : 0;
+    var barWrapper = {
+      class: '__bar-wrap-is-' + vm.type,
+      style: (_style4 = {
+        borderRadius: vm.ops.rail.specifyBorderRadius || railSize
+      }, defineProperty(_style4, vm.bar.posName, buttonSize), defineProperty(_style4, vm.bar.opposName, buttonSize), _style4),
       on: {}
     };
 
     /* istanbul ignore if */
     if (isSupportTouch()) {
-      bar.on['touchstart'] = createTouchEvent(this);
-      rail.on['touchstart'] = createTrackEvent(this, 'touchstart');
+      bar.on['touchstart'] = createBarEvent(this, 'touch');
+      barWrapper.on['touchstart'] = createTrackEvent(this, 'touchstart');
     } else {
-      bar.on['mousedown'] = createMouseEvent(this);
-      rail.on['mousedown'] = createTrackEvent(this, 'mousedown');
+      bar.on['mousedown'] = createBarEvent(this);
+      barWrapper.on['mousedown'] = createTrackEvent(this, 'mousedown');
     }
 
     return h(
       'div',
       rail,
-      [this.hideBar ? null : h('div', bar)]
+      [createScrollbarButton(h, this, 'start'), this.hideBar ? null : h(
+        'div',
+        barWrapper,
+        [h('div', bar)]
+      ), createScrollbarButton(h, this, 'end')]
     );
   },
   data: function data() {
@@ -1237,7 +1354,8 @@ function createBar(h, vm, type) {
       type: type,
       ops: {
         bar: vm.mergedOptions.bar,
-        rail: vm.mergedOptions.rail
+        rail: vm.mergedOptions.rail,
+        scrollButton: vm.mergedOptions.scrollButton
       },
       state: vm.bar[barType].state,
       hideBar: hideBar
@@ -4568,7 +4686,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.11',
+  version: '4.9.0-beta.12',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };

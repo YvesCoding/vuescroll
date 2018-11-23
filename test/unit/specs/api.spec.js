@@ -255,8 +255,8 @@ describe('api', () => {
         let { clientHeight } = vm.$el.querySelector('.__bar-is-vertical');
         let { clientWidth } = vm.$el.querySelector('.__bar-is-horizontal');
 
-        expect(clientHeight).toBe(24); // (100 - 4 bar-wrap: top:2px bottom: 2px) / 2 / 2
-        expect(clientWidth).toBe(24); // (100 - 4) / 2 / 2
+        expect(clientHeight).toBe(22); // (100 - 12 bar-wrap: top:6px bottom: 6px) / 2 / 2
+        expect(clientWidth).toBe(22); // (100 - 12) / 2 / 2
         done();
       });
   });

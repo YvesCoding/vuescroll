@@ -6,27 +6,33 @@ import {
   mergeObject
 } from 'shared/util';
 
+import { requestAnimationFrame } from 'core/third-party/scroller/requestAnimationFrame';
+
 const colorCache = {};
 const rgbReg = /rgb\(/;
 const extractRgbColor = /rgb\((.*)\)/;
 
 /* istanbul ignore next */
-function createMouseEvent(ctx) {
+function createBarEvent(ctx, type = 'mouse') {
   const parent = getRealParent(ctx);
+  const moveEventName = type == 'mouse' ? 'mousemove' : 'touchmove';
+  const endEventName = type == 'mouse' ? 'mouseup' : 'touchend';
 
   function mousedown(e) {
     e.stopImmediatePropagation();
     e.preventDefault();
 
+    const event = type == 'mouse' ? e : e.touches[0];
+
     document.onselectstart = () => false;
     ctx.axisStartPos =
-      e[ctx.bar.client] -
+      event[ctx.bar.client] -
       ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
 
     // Tell parent that the mouse has been down.
     ctx.setBarDrag(true);
-    eventCenter(document, 'mousemove', mousemove);
-    eventCenter(document, 'mouseup', mouseup);
+    eventCenter(document, moveEventName, mousemove);
+    eventCenter(document, endEventName, mouseup);
   }
 
   function mousemove(e) {
@@ -34,9 +40,14 @@ function createMouseEvent(ctx) {
       return;
     }
 
+    const thubmParent = ctx.$refs.thumb.parentNode;
+
+    const event = type == 'mouse' ? e : e.touches[0];
+
     const delta =
-      e[ctx.bar.client] - ctx.$el.getBoundingClientRect()[ctx.bar.posName];
-    const percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
+      event[ctx.bar.client] -
+      thubmParent.getBoundingClientRect()[ctx.bar.posName];
+    const percent = (delta - ctx.axisStartPos) / thubmParent[ctx.bar.offset];
     parent.scrollTo(
       {
         [ctx.bar.axis.toLowerCase()]:
@@ -53,61 +64,91 @@ function createMouseEvent(ctx) {
     document.onselectstart = null;
     ctx.axisStartPos = 0;
 
-    eventCenter(document, 'mousemove', mousemove, false, 'off');
-    eventCenter(document, 'mouseup', mouseup, false, 'off');
+    eventCenter(document, moveEventName, mousemove, false, 'off');
+    eventCenter(document, endEventName, mouseup, false, 'off');
   }
 
   return mousedown;
 }
 
 /* istanbul ignore next */
-function createTouchEvent(ctx) {
+function createScrollButtonEvent(ctx, type, env = 'mouse') {
   const parent = getRealParent(ctx);
+  const endEventName = env == 'mouse' ? 'mouseup' : 'touchend';
+  const { step, mousedownStep } = ctx.ops.scrollButton;
+  const stepWithDirection = type == 'start' ? -step : step;
+  const mousedownStepWithDirection =
+    type == 'start' ? -mousedownStep : mousedownStep;
+  const ref = requestAnimationFrame(window);
 
-  function touchstart(e) {
-    e.stopImmediatePropagation();
-    e.preventDefault();
+  let isMouseDown = false;
+  let isMouseout = true;
+  let timeoutId;
 
-    document.onselectstart = () => false;
+  function start(e) {
+    /* istanbul ignore if */
 
-    ctx.axisStartPos =
-      e.touches[0][ctx.bar.client] -
-      ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
-
-    // Tell parent that the mouse has been down.
-    ctx.setBarDrag(true);
-    eventCenter(document, 'touchmove', touchmove);
-    eventCenter(document, 'touchend', touchend);
-  }
-  function touchmove(e) {
-    if (!ctx.axisStartPos) {
+    if (3 == e.which) {
       return;
     }
 
-    const delta =
-      e.touches[0][ctx.bar.client] -
-      ctx.$el.getBoundingClientRect()[ctx.bar.posName];
-    const percent = (delta - ctx.axisStartPos) / ctx.$el[ctx.bar.offset];
+    e.stopImmediatePropagation();
+    e.preventDefault();
 
-    parent.scrollTo(
-      {
-        [ctx.bar.axis.toLowerCase()]:
-          parent.scrollPanelElm[ctx.bar.scrollSize] * percent
-      },
-      false
-    );
+    isMouseout = false;
+
+    parent.scrollBy({
+      ['d' + ctx.bar.axis.toLowerCase()]: stepWithDirection
+    });
+
+    eventCenter(document, endEventName, endPress, false);
+
+    if (env == 'mouse') {
+      const elm = ctx.$refs[type];
+      eventCenter(elm, 'mouseenter', enter, false);
+      eventCenter(elm, 'mouseleave', leave, false);
+    }
+
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      isMouseDown = true;
+      ref(pressing, window);
+    }, 500);
   }
-  function touchend() {
-    ctx.setBarDrag(false);
-    parent.hideBar();
 
-    document.onselectstart = null;
-    ctx.axisStartPos = 0;
-
-    eventCenter(document, 'touchmove', touchmove, false, 'off');
-    eventCenter(document, 'touchend', touchend, false, 'off');
+  function pressing() {
+    if (isMouseDown && !isMouseout) {
+      parent.scrollBy(
+        {
+          ['d' + ctx.bar.axis.toLowerCase()]: mousedownStepWithDirection
+        },
+        false
+      );
+      ref(pressing, window);
+    }
   }
-  return touchstart;
+
+  function endPress() {
+    clearTimeout(timeoutId);
+    isMouseDown = false;
+    eventCenter(document, endEventName, endPress, false, 'off');
+    if (env == 'mouse') {
+      const elm = ctx.$refs[type];
+      eventCenter(elm, 'mouseenter', enter, false, 'off');
+      eventCenter(elm, 'mouseleave', leave, false, 'off');
+    }
+  }
+
+  function enter() {
+    isMouseout = false;
+    pressing();
+  }
+
+  function leave() {
+    isMouseout = true;
+  }
+
+  return start;
 }
 
 // Transform a common color int oa `rgbA` color
@@ -159,6 +200,51 @@ function createTrackEvent(ctx, type) {
       [axis.toLowerCase()]: percent * 100 + '%'
     });
   };
+}
+
+function createScrollbarButton(h, barContext, type) {
+  if (!barContext.ops.scrollButton.enable) {
+    return null;
+  }
+
+  const size = barContext.ops.rail.size;
+  const borderColor = barContext.ops.scrollButton.background;
+  const wrapperProps = {
+    class: ['__bar-button', '__bar-button-is-' + barContext.type + '-' + type],
+    style: {
+      [barContext.bar.scrollButton[type]]: 0,
+      width: size,
+      height: size
+    },
+    ref: type
+  };
+
+  const innerProps = {
+    class: '__bar-button-inner',
+    style: {
+      border: `calc(${size} / 2.5) solid ${borderColor}`
+    },
+    on: {}
+  };
+
+  /* istanbul ignore next */
+  {
+    if (isSupportTouch()) {
+      innerProps.on['touchstart'] = createScrollButtonEvent(
+        barContext,
+        type,
+        'touch'
+      );
+    } else {
+      innerProps.on['mousedown'] = createScrollButtonEvent(barContext, type);
+    }
+  }
+
+  return (
+    <div {...wrapperProps}>
+      <div {...innerProps} />
+    </div>
+  );
 }
 
 export default {
@@ -216,29 +302,52 @@ export default {
     );
 
     /** Rail Data */
+    const railSize = vm.ops.rail.size;
     const rail = {
       class: `__rail-is-${vm.type}`,
       style: {
-        borderRadius: vm.ops.rail.specifyBorderRadius || vm.ops.rail.size,
+        borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
         background: railBackgroundColor,
-        [vm.bar.opsSize]: vm.ops.rail.size,
-        [vm.bar.posName]: vm.ops.rail['gutterOfEnds'],
-        [vm.bar.opposName]: vm.ops.rail['gutterOfEnds'],
+        border: vm.ops.rail.border,
+        [vm.bar.opsSize]: railSize,
+        [vm.bar.posName]: vm.ops.rail['gutterOfEnds'] || railSize,
+        [vm.bar.opposName]: vm.ops.rail['gutterOfEnds'] || railSize,
         [vm.bar.sidePosName]: vm.ops.rail['gutterOfSide']
+      }
+    };
+
+    // left space for scroll button
+    const buttonSize = vm.ops.scrollButton.enable ? railSize : 0;
+    const barWrapper = {
+      class: `__bar-wrap-is-${vm.type}`,
+      style: {
+        borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
+        [vm.bar.posName]: buttonSize,
+        [vm.bar.opposName]: buttonSize
       },
       on: {}
     };
 
     /* istanbul ignore if */
     if (isSupportTouch()) {
-      bar.on['touchstart'] = createTouchEvent(this);
-      rail.on['touchstart'] = createTrackEvent(this, 'touchstart');
+      bar.on['touchstart'] = createBarEvent(this, 'touch');
+      barWrapper.on['touchstart'] = createTrackEvent(this, 'touchstart');
     } else {
-      bar.on['mousedown'] = createMouseEvent(this);
-      rail.on['mousedown'] = createTrackEvent(this, 'mousedown');
+      bar.on['mousedown'] = createBarEvent(this);
+      barWrapper.on['mousedown'] = createTrackEvent(this, 'mousedown');
     }
 
-    return <div {...rail}>{this.hideBar ? null : <div {...bar} />}</div>;
+    return (
+      <div {...rail}>
+        {createScrollbarButton(h, this, 'start')}
+        {this.hideBar ? null : (
+          <div {...barWrapper}>
+            <div {...bar} />
+          </div>
+        )}
+        {createScrollbarButton(h, this, 'end')}
+      </div>
+    );
   },
   data() {
     return {
@@ -308,7 +417,8 @@ export function createBar(h, vm, type) {
       type: type,
       ops: {
         bar: vm.mergedOptions.bar,
-        rail: vm.mergedOptions.rail
+        rail: vm.mergedOptions.rail,
+        scrollButton: vm.mergedOptions.scrollButton
       },
       state: vm.bar[barType].state,
       hideBar

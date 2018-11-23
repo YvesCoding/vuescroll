@@ -28,12 +28,13 @@ const baseConfig = {
   rail: {
     background: '#01a99a',
     opacity: 0,
+    border: 'none',
     /** Rail's size(Height/Width) , default -> 6px */
     size: '6px',
-    /** Specify rail and bar's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
+    /** Specify rail's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
     specifyBorderRadius: false,
     /** Rail the distance from the two ends of the X axis and Y axis. **/
-    gutterOfEnds: '2px',
+    gutterOfEnds: null,
     /** Rail the distance from the side of container. **/
     gutterOfSide: '2px',
     /** Whether to keep rail show or not, default -> false, event content height is not enough */
@@ -42,6 +43,8 @@ const baseConfig = {
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
     showDelay: 500,
+    /** Specify bar's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
+    specifyBorderRadius: false,
     /** Whether to show bar on scrolling, default -> true */
     onlyShowBarOnScroll: true,
     /** Whether to keep show or not, default -> false */
@@ -52,6 +55,13 @@ const baseConfig = {
     opacity: 1,
     /** Styles when you hover scrollbar, it will merge into the current style */
     hoverStyle: false
+  },
+  scrollButton: {
+    enable: false,
+    background: 'rgb(3, 185, 118)',
+    opacity: 1,
+    step: 180,
+    mousedownStep: 30
   }
 };
 export default baseConfig;

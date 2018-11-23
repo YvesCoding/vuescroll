@@ -73,7 +73,8 @@ const builds = {
   }
 };
 
-let hasGenrateCss = false;
+const len = Object.keys(builds).length;
+let count = 0;
 function genConfig(name) {
   const opts = builds[name];
   const config = {
@@ -93,8 +94,7 @@ function genConfig(name) {
       resolveNode(),
       scss({
         output: function(styles) {
-          if (!hasGenrateCss) {
-            hasGenrateCss = true;
+          if (count++ % len == 0 && styles) {
             fs.writeFileSync(resolve('dist/vuescroll.css'), styles);
           }
         },

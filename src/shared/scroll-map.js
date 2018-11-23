@@ -10,7 +10,11 @@ export default {
     scrollSize: 'scrollHeight',
     offset: 'offsetHeight',
     client: 'clientY',
-    axis: 'Y'
+    axis: 'Y',
+    scrollButton: {
+      start: 'top',
+      end: 'bottom'
+    }
   },
   horizontal: {
     size: 'width',
@@ -23,6 +27,10 @@ export default {
     scrollSize: 'scrollWidth',
     offset: 'offsetWidth',
     client: 'clientX',
-    axis: 'X'
+    axis: 'X',
+    scrollButton: {
+      start: 'left',
+      end: 'right'
+    }
   }
 };

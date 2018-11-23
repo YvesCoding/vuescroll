@@ -6,7 +6,7 @@ import {
   trigger
 } from 'test/unit/util';
 
-describe('rail', () => {
+describe('rail and scrollButton', () => {
   let vm;
 
   afterEach(() => {
@@ -46,7 +46,7 @@ describe('rail', () => {
         maxScrollTop = panelElm.scrollHeight - panelElm.clientHeight;
         maxScrollLeft = panelElm.scrollWidth - panelElm.clientWidth;
 
-        const vRail = vs.$el.querySelector('.__rail-is-vertical');
+        const vRail = vs.$el.querySelector('.__bar-wrap-is-vertical');
         const offset = vRail.offsetHeight;
         const clientY = vRail.getBoundingClientRect().top + offset / 2;
         trigger(vRail, 'mousedown', { clientY });
@@ -59,7 +59,7 @@ describe('rail', () => {
         expect(panelElm.scrollTop).toBe(maxScrollTop / 2);
       })
       .then(() => {
-        const hRail = vs.$el.querySelector('.__rail-is-horizontal');
+        const hRail = vs.$el.querySelector('.__bar-wrap-is-horizontal');
         const offset = hRail.offsetWidth;
         const clientX = hRail.getBoundingClientRect().left + offset / 2;
         trigger(hRail, 'mousedown', { clientX });
@@ -71,6 +71,49 @@ describe('rail', () => {
         expect(styleOfTransform).toBe('translateX(50%)');
         expect(panelElm.scrollLeft).toBe(maxScrollLeft / 2);
 
+        done();
+      });
+  });
+
+  it('clicking scroll button on the bottom should scroll down 180', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 400,
+            h: 400
+          },
+          {
+            w: 100,
+            h: 100
+          }
+        ),
+        data: {
+          ops: {
+            scrollButton: {
+              enable: true,
+              step: 180
+            }
+          }
+        },
+        methods: {}
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+    const panelElm = vs.$el.querySelector('.__panel');
+
+    startSchedule()
+      .then(() => {
+        const scrollButton = vs.$el.querySelector(
+          '.__bar-button-is-vertical-end .__bar-button-inner'
+        );
+        trigger(scrollButton, 'mousedown');
+      })
+      .wait(350)
+      .then(() => {
+        expect(panelElm.scrollTop).toBe(vm.ops.scrollButton.step);
+        trigger(document, 'mouseup');
         done();
       });
   });
