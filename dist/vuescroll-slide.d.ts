@@ -94,6 +94,9 @@ interface scrollPanel {
 }
 
 interface rail {
+  border?: string;
+  /** Specify rail's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
+  specifyBorderRadius: boolean | string;
   /** Rail's background , default -> #01a99a */
   background?: string;
   /** Rail's opacity, default -> 0  */
@@ -112,6 +115,8 @@ type Partial<T> = { [P in keyof T]?: T[P] };
 type Style = Partial<CSSStyleDeclaration>;
 
 interface bar {
+  /** Specify bar's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
+  specifyBorderRadius: boolean | string;
   /** How long to hide bar after mouseleave, default -> 500 */
   showDelay?: number;
   /** Whether to keep show or not, default -> false */
@@ -124,6 +129,17 @@ interface bar {
   opacity?: number;
   /** Styles when you hover scrollbar, it will merge into the current style */
   hoverStyle?: false | Style;
+  // Sometimes, the nativebar maybe on the left,
+  // See https://github.com/YvesCoding/vuescroll/issues/64
+  verticalNativeBarPos: 'right';
+}
+
+interface scrollButton {
+  enable: boolean;
+  background: string;
+  opacity: number;
+  step: number;
+  mousedownStep: number;
 }
 
 export interface Config {
@@ -132,6 +148,7 @@ export interface Config {
   scrollConent?: scrollConent;
   bar?: bar;
   rail?: rail;
+  scrollButton?: scrollButton;
 }
 
 type Pos = {
