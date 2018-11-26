@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.14
+    * Vuescroll v4.9.0-beta.15
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -51,6 +51,20 @@ var defineProperty = function (obj, key, value) {
   }
 
   return obj;
+};
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
 };
 
 
@@ -1161,21 +1175,11 @@ function createScrollbarButton(h, barContext, type) {
 var bar = {
   name: 'bar',
   props: {
-    ops: {
-      type: Object,
-      required: true
-    },
-    state: {
-      type: Object,
-      required: true
-    },
-    hideBar: {
-      type: Boolean
-    },
-    type: {
-      type: String,
-      required: true
-    }
+    ops: Object,
+    state: Object,
+    hideBar: Boolean,
+    otherBarHide: Boolean,
+    type: String
   },
   computed: {
     bar: function bar() {
@@ -1208,13 +1212,14 @@ var bar = {
 
     /** Rail Data */
     var railSize = vm.ops.rail.size;
+    var endPos = vm.otherBarHide ? 0 : railSize;
     var rail = {
       class: '__rail-is-' + vm.type,
       style: (_style3 = {
         borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
         background: railBackgroundColor,
         border: vm.ops.rail.border
-      }, defineProperty(_style3, vm.bar.opsSize, railSize), defineProperty(_style3, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || 0), defineProperty(_style3, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || railSize), defineProperty(_style3, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style3)
+      }, defineProperty(_style3, vm.bar.opsSize, railSize), defineProperty(_style3, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || 0), defineProperty(_style3, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || endPos), defineProperty(_style3, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style3)
     };
 
     // left space for scroll button
@@ -1292,13 +1297,7 @@ var bar = {
   }
 };
 
-/**
- * create bars
- *
- * @param {any} size
- * @param {any} type
- */
-function createBar(h, vm, type) {
+function getBarData(vm, type) {
   var axis = scrollMap[type].axis;
   /** type.charAt(0) = vBar/hBar */
   var barType = type.charAt(0) + 'Bar';
@@ -1311,7 +1310,7 @@ function createBar(h, vm, type) {
     return null;
   }
 
-  var barData = {
+  return {
     props: {
       type: type,
       ops: {
@@ -1325,10 +1324,26 @@ function createBar(h, vm, type) {
     on: {
       setBarDrag: vm.setBarDrag
     },
-    ref: type + 'Bar'
+    ref: type + 'Bar',
+    key: type
   };
+}
 
-  return h('bar', barData);
+/**
+ * create bars
+ *
+ * @param {any} size
+ * @param {any} type
+ */
+function createBar(h, vm) {
+  var verticalBarProps = getBarData(vm, 'vertical');
+  var horizontalBarProps = getBarData(vm, 'horizontal');
+
+  return [verticalBarProps ? h('bar', _extends({}, verticalBarProps, {
+    props: _extends({ otherBarHide: !horizontalBarProps }, verticalBarProps.props)
+  })) : null, horizontalBarProps ? h('bar', _extends({}, horizontalBarProps, {
+    props: _extends({ otherBarHide: !verticalBarProps }, horizontalBarProps.props)
+  })) : null];
 }
 
 /**
@@ -1424,7 +1439,7 @@ var withBase = function withBase(_ref) {
           };
         }
 
-      var ch = [_render(h, vm), createBar(h, vm, 'vertical'), createBar(h, vm, 'horizontal')];
+      var ch = [_render(h, vm)].concat(toConsumableArray(createBar(h, vm)));
 
       var _customContainer = this.$slots['scroll-container'];
       if (_customContainer) {
@@ -1546,10 +1561,10 @@ var withBase = function withBase(_ref) {
 
       /** ------------------------ Some Helpers --------------------------- */
 
-      /* 
-      * To have a good ux, instead of hiding bar immediately, we hide bar
-      * after some seconds by using this simple debounce-hidebar method.
-      */
+      /*
+       * To have a good ux, instead of hiding bar immediately, we hide bar
+       * after some seconds by using this simple debounce-hidebar method.
+       */
       showAndDefferedHideBar: function showAndDefferedHideBar(forceHideBar) {
         var _this4 = this;
 
@@ -2217,7 +2232,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.14',
+  version: '4.9.0-beta.15',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };

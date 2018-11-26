@@ -250,21 +250,11 @@ function createScrollbarButton(h, barContext, type) {
 export default {
   name: 'bar',
   props: {
-    ops: {
-      type: Object,
-      required: true
-    },
-    state: {
-      type: Object,
-      required: true
-    },
-    hideBar: {
-      type: Boolean
-    },
-    type: {
-      type: String,
-      required: true
-    }
+    ops: Object,
+    state: Object,
+    hideBar: Boolean,
+    otherBarHide: Boolean,
+    type: String
   },
   computed: {
     bar() {
@@ -282,7 +272,7 @@ export default {
       transform: `translate${scrollMap[vm.type].axis}(${vm.state.posValue}%)`
     };
     const bar = {
-      style: style,
+      style,
       class: `__bar-is-${vm.type}`,
       ref: 'thumb',
       on: {
@@ -303,6 +293,7 @@ export default {
 
     /** Rail Data */
     const railSize = vm.ops.rail.size;
+    const endPos = vm.otherBarHide ? 0 : railSize;
     const rail = {
       class: `__rail-is-${vm.type}`,
       style: {
@@ -311,7 +302,7 @@ export default {
         border: vm.ops.rail.border,
         [vm.bar.opsSize]: railSize,
         [vm.bar.posName]: vm.ops.rail['gutterOfEnds'] || 0,
-        [vm.bar.opposName]: vm.ops.rail['gutterOfEnds'] || railSize,
+        [vm.bar.opposName]: vm.ops.rail['gutterOfEnds'] || endPos,
         [vm.bar.sidePosName]: vm.ops.rail['gutterOfSide']
       }
     };
@@ -390,13 +381,7 @@ export default {
   }
 };
 
-/**
- * create bars
- *
- * @param {any} size
- * @param {any} type
- */
-export function createBar(h, vm, type) {
+function getBarData(vm, type) {
   const axis = scrollMap[type].axis;
   /** type.charAt(0) = vBar/hBar */
   const barType = `${type.charAt(0)}Bar`;
@@ -412,7 +397,7 @@ export function createBar(h, vm, type) {
     return null;
   }
 
-  const barData = {
+  return {
     props: {
       type: type,
       ops: {
@@ -426,8 +411,47 @@ export function createBar(h, vm, type) {
     on: {
       setBarDrag: vm.setBarDrag
     },
-    ref: `${type}Bar`
+    ref: `${type}Bar`,
+    key: type
   };
+}
 
-  return <bar {...barData} />;
+/**
+ * create bars
+ *
+ * @param {any} size
+ * @param {any} type
+ */
+export function createBar(h, vm) {
+  const verticalBarProps = getBarData(vm, 'vertical');
+  const horizontalBarProps = getBarData(vm, 'horizontal');
+
+  return [
+    verticalBarProps ? (
+      <bar
+        {...{
+          ...verticalBarProps,
+          ...{
+            props: {
+              ...{ otherBarHide: !horizontalBarProps },
+              ...verticalBarProps.props
+            }
+          }
+        }}
+      />
+    ) : null,
+    horizontalBarProps ? (
+      <bar
+        {...{
+          ...horizontalBarProps,
+          ...{
+            props: {
+              ...{ otherBarHide: !verticalBarProps },
+              ...horizontalBarProps.props
+            }
+          }
+        }}
+      />
+    ) : null
+  ];
 }

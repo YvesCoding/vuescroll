@@ -30,42 +30,42 @@ const resolve = p => {
 
 const builds = {
   mix: {
-    entry: resolve('entry-mix.js'),
+    entry: resolve('entry-mix-mode.js'),
     dest: resolve('dist/vuescroll.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   'mix-prod': {
-    entry: resolve('entry-mix.js'),
+    entry: resolve('entry-mix-mode.js'),
     dest: resolve('dist/vuescroll.min.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   native: {
-    entry: resolve('entry-native.js'),
+    entry: resolve('entry-native-mode.js'),
     dest: resolve('dist/vuescroll-native.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   'native-prod': {
-    entry: resolve('entry-native.js'),
+    entry: resolve('entry-native-mode.js'),
     dest: resolve('dist/vuescroll-native.min.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   slide: {
-    entry: resolve('entry-slide.js'),
+    entry: resolve('entry-slide-mode.js'),
     dest: resolve('dist/vuescroll-slide.js'),
     format: 'umd',
     external: ['vue'],
     banner
   },
   'slide-prod': {
-    entry: resolve('entry-slide.js'),
+    entry: resolve('entry-slide-mode.js'),
     dest: resolve('dist/vuescroll-slide.min.js'),
     format: 'umd',
     external: ['vue'],

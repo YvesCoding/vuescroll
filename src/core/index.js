@@ -97,11 +97,7 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
         };
       }
 
-      const ch = [
-        render(h, vm),
-        createBar(h, vm, 'vertical'),
-        createBar(h, vm, 'horizontal')
-      ];
+      const ch = [render(h, vm), ...createBar(h, vm)];
 
       const _customContainer = this.$slots['scroll-container'];
       if (_customContainer) {
@@ -214,10 +210,10 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
 
       /** ------------------------ Some Helpers --------------------------- */
 
-      /* 
-      * To have a good ux, instead of hiding bar immediately, we hide bar
-      * after some seconds by using this simple debounce-hidebar method.
-      */
+      /*
+       * To have a good ux, instead of hiding bar immediately, we hide bar
+       * after some seconds by using this simple debounce-hidebar method.
+       */
       showAndDefferedHideBar(forceHideBar) {
         this.showBar();
 
