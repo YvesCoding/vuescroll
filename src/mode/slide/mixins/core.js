@@ -161,6 +161,10 @@ export default {
         // update scroller should after rendering
         this.updatedCbs.push(this.updateScroller);
         this.$forceUpdate();
+
+        // Since content sie changes, we should tell parent to set
+        // correct size to fit content's size
+        // this.setVsSize();
       };
       window.addEventListener('resize', handleWindowResize, false);
       const destroyDomResize = resizeEnable

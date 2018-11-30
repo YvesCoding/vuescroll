@@ -162,7 +162,9 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
             height: '100%',
             width: '100%',
             /** How many times you have scrolled */
-            scrollingTimes: 0
+            scrollingTimes: 0,
+            // current size strategy
+            currentSizeStrategy: 'percent'
           }
         },
         bar: {
@@ -259,12 +261,16 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
       useNumbericSize() {
         this.usePercentSize();
         setTimeout(() => {
+          this.vuescroll.state.currentSizeStrategy = 'number';
+
           const el = this.$el;
           this.vuescroll.state.height = el.offsetHeight + 'px';
           this.vuescroll.state.width = el.offsetWidth + 'px';
         }, 0);
       },
       usePercentSize() {
+        this.vuescroll.state.currentSizeStrategy = 'percent';
+
         this.vuescroll.state.height = '100%';
         this.vuescroll.state.width = '100%';
       },

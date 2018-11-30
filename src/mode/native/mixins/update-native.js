@@ -6,7 +6,7 @@ export default {
   methods: {
     updateNativeModeBarState() {
       const container = this.scrollPanelElm;
-      const isPercent = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
+      const isPercent = this.vuescroll.state.currentSizeStrategy == 'percent';
       const clientWidth = isPercent
         ? container.clientWidth
         : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
