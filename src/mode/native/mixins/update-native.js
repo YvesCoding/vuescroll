@@ -14,16 +14,14 @@ export default {
         ? container.clientHeight
         : this.vuescroll.state.height.slice(0, -2);
 
-      let heightPercentage = (clientHeight * 100) / container.scrollHeight;
-      let widthPercentage = (clientWidth * 100) / container.scrollWidth;
+      let heightPercentage = clientHeight / container.scrollHeight;
+      let widthPercentage = clientWidth / container.scrollWidth;
 
       this.bar.vBar.state.posValue = (container.scrollTop * 100) / clientHeight;
       this.bar.hBar.state.posValue = (container.scrollLeft * 100) / clientWidth;
 
-      this.bar.vBar.state.size =
-        heightPercentage < 100 ? heightPercentage + '%' : 0;
-      this.bar.hBar.state.size =
-        widthPercentage < 100 ? widthPercentage + '%' : 0;
+      this.bar.vBar.state.size = heightPercentage < 1 ? heightPercentage : 0;
+      this.bar.hBar.state.size = widthPercentage < 1 ? widthPercentage : 0;
     },
     recordNativeCurrentPos() {
       const state = this.vuescroll.state;

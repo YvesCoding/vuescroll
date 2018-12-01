@@ -803,7 +803,9 @@ var baseConfig = {
     /** Bar's opacity, default -> 1  */
     opacity: 1,
     /** Styles when you hover scrollbar, it will merge into the current style */
-    hoverStyle: false
+    hoverStyle: false,
+    /** false or a percent, like 10% */
+    minSize: false
   },
   scrollButton: {
     enable: false,
@@ -990,6 +992,8 @@ function createBarEvent(ctx) {
     var event = type == 'mouse' ? e : e.touches[0];
 
     var delta = event[ctx.bar.client] - thubmParent.getBoundingClientRect()[ctx.bar.posName];
+    delta = delta / ctx.barScale;
+
     var percent = (delta - ctx.axisStartPos) / thubmParent[ctx.bar.offset];
     parent.scrollTo(defineProperty({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
   }
@@ -1184,6 +1188,13 @@ var bar = {
   computed: {
     bar: function bar() {
       return scrollMap[this.type];
+    },
+    barSize: function barSize() {
+      var minSize = this.ops.bar.minSize;
+      return minSize ? Math.max(this.state.size, minSize) : this.state.size;
+    },
+    barScale: function barScale() {
+      return (1 - this.barSize) / (1 - this.state.size);
     }
   },
   render: function render(h) {
@@ -1192,7 +1203,10 @@ var bar = {
     var vm = this;
 
     /** Scrollbar style */
-    var style = (_style2 = {}, defineProperty(_style2, vm.bar.size, vm.state.size), defineProperty(_style2, 'background', vm.ops.bar.background), defineProperty(_style2, 'opacity', vm.state.opacity), defineProperty(_style2, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _style2);
+
+    var scrollDistance = vm.state.posValue * vm.state.size;
+    var pos = scrollDistance * this.barScale / this.barSize;
+    var style = (_style2 = {}, defineProperty(_style2, vm.bar.size, this.barSize * 100 + '%'), defineProperty(_style2, 'background', vm.ops.bar.background), defineProperty(_style2, 'opacity', vm.state.opacity), defineProperty(_style2, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + pos + '%)'), _style2);
     var bar = {
       style: style,
       class: '__bar-is-' + vm.type,
@@ -1511,7 +1525,9 @@ var withBase = function withBase(_ref) {
             height: '100%',
             width: '100%',
             /** How many times you have scrolled */
-            scrollingTimes: 0
+            scrollingTimes: 0,
+            // current size strategy
+            currentSizeStrategy: 'percent'
           }
         },
         bar: {
@@ -1610,12 +1626,16 @@ var withBase = function withBase(_ref) {
 
         this.usePercentSize();
         setTimeout(function () {
+          _this5.vuescroll.state.currentSizeStrategy = 'number';
+
           var el = _this5.$el;
           _this5.vuescroll.state.height = el.offsetHeight + 'px';
           _this5.vuescroll.state.width = el.offsetWidth + 'px';
         }, 0);
       },
       usePercentSize: function usePercentSize() {
+        this.vuescroll.state.currentSizeStrategy = 'percent';
+
         this.vuescroll.state.height = '100%';
         this.vuescroll.state.width = '100%';
       },
@@ -2056,18 +2076,18 @@ var updateNative = {
   methods: {
     updateNativeModeBarState: function updateNativeModeBarState() {
       var container = this.scrollPanelElm;
-      var isPercent = this.mergedOptions.vuescroll.sizeStrategy == 'percent';
+      var isPercent = this.vuescroll.state.currentSizeStrategy == 'percent';
       var clientWidth = isPercent ? container.clientWidth : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
       var clientHeight = isPercent ? container.clientHeight : this.vuescroll.state.height.slice(0, -2);
 
-      var heightPercentage = clientHeight * 100 / container.scrollHeight;
-      var widthPercentage = clientWidth * 100 / container.scrollWidth;
+      var heightPercentage = clientHeight / container.scrollHeight;
+      var widthPercentage = clientWidth / container.scrollWidth;
 
       this.bar.vBar.state.posValue = container.scrollTop * 100 / clientHeight;
       this.bar.hBar.state.posValue = container.scrollLeft * 100 / clientWidth;
 
-      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
-      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
+      this.bar.vBar.state.size = heightPercentage < 1 ? heightPercentage : 0;
+      this.bar.hBar.state.size = widthPercentage < 1 ? widthPercentage : 0;
     },
     recordNativeCurrentPos: function recordNativeCurrentPos() {
       var state = this.vuescroll.state;
@@ -2198,6 +2218,10 @@ var core$1 = {
         currentSize['width'] = _this.scrollPanelElm.scrollWidth;
         currentSize['height'] = _this.scrollPanelElm.scrollHeight;
         _this.updateBarStateAndEmitEvent('handle-resize', currentSize);
+
+        // Since content sie changes, we should tell parent to set
+        // correct size to fit content's size
+        // this.setVsSize();
       };
       window.addEventListener('resize', handleWindowResize, false);
 

@@ -44,9 +44,11 @@ function createBarEvent(ctx, type = 'mouse') {
 
     const event = type == 'mouse' ? e : e.touches[0];
 
-    const delta =
+    let delta =
       event[ctx.bar.client] -
       thubmParent.getBoundingClientRect()[ctx.bar.posName];
+    delta = delta / ctx.barScale;
+
     const percent = (delta - ctx.axisStartPos) / thubmParent[ctx.bar.offset];
     parent.scrollTo(
       {
@@ -259,17 +261,27 @@ export default {
   computed: {
     bar() {
       return scrollMap[this.type];
+    },
+    barSize() {
+      const minSize = this.ops.bar.minSize;
+      return minSize ? Math.max(this.state.size, minSize) : this.state.size;
+    },
+    barScale() {
+      return (1 - this.barSize) / (1 - this.state.size);
     }
   },
   render(h) {
     const vm = this;
 
     /** Scrollbar style */
+
+    const scrollDistance = vm.state.posValue * vm.state.size;
+    const pos = (scrollDistance * this.barScale) / this.barSize;
     let style = {
-      [vm.bar.size]: vm.state.size,
+      [vm.bar.size]: this.barSize * 100 + '%',
       background: vm.ops.bar.background,
       opacity: vm.state.opacity,
-      transform: `translate${scrollMap[vm.type].axis}(${vm.state.posValue}%)`
+      transform: `translate${scrollMap[vm.type].axis}(${pos}%)`
     };
     const bar = {
       style,

@@ -801,7 +801,9 @@ var baseConfig = {
     /** Bar's opacity, default -> 1  */
     opacity: 1,
     /** Styles when you hover scrollbar, it will merge into the current style */
-    hoverStyle: false
+    hoverStyle: false,
+    /** false or a percent, like 10% */
+    minSize: false
   },
   scrollButton: {
     enable: false,
@@ -990,6 +992,8 @@ function createBarEvent(ctx) {
     var event = type == 'mouse' ? e : e.touches[0];
 
     var delta = event[ctx.bar.client] - thubmParent.getBoundingClientRect()[ctx.bar.posName];
+    delta = delta / ctx.barScale;
+
     var percent = (delta - ctx.axisStartPos) / thubmParent[ctx.bar.offset];
     parent.scrollTo(defineProperty({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
   }
@@ -1184,6 +1188,13 @@ var bar = {
   computed: {
     bar: function bar() {
       return scrollMap[this.type];
+    },
+    barSize: function barSize() {
+      var minSize = this.ops.bar.minSize;
+      return minSize ? Math.max(this.state.size, minSize) : this.state.size;
+    },
+    barScale: function barScale() {
+      return (1 - this.barSize) / (1 - this.state.size);
     }
   },
   render: function render(h) {
@@ -1192,7 +1203,10 @@ var bar = {
     var vm = this;
 
     /** Scrollbar style */
-    var style = (_style2 = {}, defineProperty(_style2, vm.bar.size, vm.state.size), defineProperty(_style2, 'background', vm.ops.bar.background), defineProperty(_style2, 'opacity', vm.state.opacity), defineProperty(_style2, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + vm.state.posValue + '%)'), _style2);
+
+    var scrollDistance = vm.state.posValue * vm.state.size;
+    var pos = scrollDistance * this.barScale / this.barSize;
+    var style = (_style2 = {}, defineProperty(_style2, vm.bar.size, this.barSize * 100 + '%'), defineProperty(_style2, 'background', vm.ops.bar.background), defineProperty(_style2, 'opacity', vm.state.opacity), defineProperty(_style2, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + pos + '%)'), _style2);
     var bar = {
       style: style,
       class: '__bar-is-' + vm.type,
@@ -1511,7 +1525,9 @@ var withBase = function withBase(_ref) {
             height: '100%',
             width: '100%',
             /** How many times you have scrolled */
-            scrollingTimes: 0
+            scrollingTimes: 0,
+            // current size strategy
+            currentSizeStrategy: 'percent'
           }
         },
         bar: {
@@ -1610,12 +1626,16 @@ var withBase = function withBase(_ref) {
 
         this.usePercentSize();
         setTimeout(function () {
+          _this5.vuescroll.state.currentSizeStrategy = 'number';
+
           var el = _this5.$el;
           _this5.vuescroll.state.height = el.offsetHeight + 'px';
           _this5.vuescroll.state.width = el.offsetWidth + 'px';
         }, 0);
       },
       usePercentSize: function usePercentSize() {
+        this.vuescroll.state.currentSizeStrategy = 'percent';
+
         this.vuescroll.state.height = '100%';
         this.vuescroll.state.width = '100%';
       },
@@ -4053,8 +4073,8 @@ var updateSlide = {
         }
       }
 
-      heightPercentage = clientHeight * 100 / (contentHeight + outerTop);
-      widthPercentage = clientWidth * 100 / (contentWidth + outerLeft);
+      heightPercentage = clientHeight / (contentHeight + outerTop);
+      widthPercentage = clientWidth / (contentWidth + outerLeft);
 
       var scrollTop = Math.min(Math.max(0, scroller.__scrollTop), scroller.__maxScrollTop);
       var scrollLeft = Math.min(Math.max(0, scroller.__scrollLeft), scroller.__maxScrollLeft);
@@ -4070,8 +4090,8 @@ var updateSlide = {
         this.bar.vBar.state.posValue = 0;
       }
 
-      this.bar.vBar.state.size = heightPercentage < 100 ? heightPercentage + '%' : 0;
-      this.bar.hBar.state.size = widthPercentage < 100 ? widthPercentage + '%' : 0;
+      this.bar.vBar.state.size = heightPercentage < 1 ? heightPercentage : 0;
+      this.bar.hBar.state.size = widthPercentage < 1 ? widthPercentage : 0;
     },
     registryEvent: function registryEvent(type) {
       var domName = type == 'refresh' ? __REFRESH_DOM_NAME : __LOAD_DOM_NAME;
@@ -4268,6 +4288,10 @@ var core$1 = {
         // update scroller should after rendering
         _this2.updatedCbs.push(_this2.updateScroller);
         _this2.$forceUpdate();
+
+        // Since content sie changes, we should tell parent to set
+        // correct size to fit content's size
+        // this.setVsSize();
       };
       window.addEventListener('resize', handleWindowResize, false);
       var destroyDomResize = resizeEnable ? installResizeDetection(contentElm, handleDomResize) : NOOP;

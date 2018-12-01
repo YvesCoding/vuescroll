@@ -313,8 +313,8 @@ export default {
         }
       }
 
-      heightPercentage = (clientHeight * 100) / (contentHeight + outerTop);
-      widthPercentage = (clientWidth * 100) / (contentWidth + outerLeft);
+      heightPercentage = clientHeight / (contentHeight + outerTop);
+      widthPercentage = clientWidth / (contentWidth + outerLeft);
 
       const scrollTop = Math.min(
         Math.max(0, scroller.__scrollTop),
@@ -338,10 +338,8 @@ export default {
         this.bar.vBar.state.posValue = 0;
       }
 
-      this.bar.vBar.state.size =
-        heightPercentage < 100 ? heightPercentage + '%' : 0;
-      this.bar.hBar.state.size =
-        widthPercentage < 100 ? widthPercentage + '%' : 0;
+      this.bar.vBar.state.size = heightPercentage < 1 ? heightPercentage : 0;
+      this.bar.hBar.state.size = widthPercentage < 1 ? widthPercentage : 0;
     },
     registryEvent(type) {
       const domName = type == 'refresh' ? __REFRESH_DOM_NAME : __LOAD_DOM_NAME;
