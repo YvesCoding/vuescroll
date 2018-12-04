@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.17
+    * Vuescroll v4.9.0-beta.18
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -802,6 +802,9 @@ var baseConfig = {
     opacity: 1,
     /** Styles when you hover scrollbar, it will merge into the current style */
     hoverStyle: false,
+    /** bar's size(Height/Width) , default -> 6px */
+
+    size: '6px',
     /** false or a percent, like 10% */
     minSize: false
   },
@@ -1205,8 +1208,8 @@ var bar = {
     /** Scrollbar style */
 
     var scrollDistance = vm.state.posValue * vm.state.size;
-    var pos = scrollDistance * this.barScale / this.barSize;
-    var style = (_style2 = {}, defineProperty(_style2, vm.bar.size, this.barSize * 100 + '%'), defineProperty(_style2, 'background', vm.ops.bar.background), defineProperty(_style2, 'opacity', vm.state.opacity), defineProperty(_style2, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + pos + '%)'), _style2);
+    var pos = scrollDistance * vm.barScale / vm.barSize;
+    var style = (_style2 = {}, defineProperty(_style2, vm.bar.size, vm.barSize * 100 + '%'), defineProperty(_style2, 'background', vm.ops.bar.background), defineProperty(_style2, vm.bar.opsSize, vm.ops.bar.size), defineProperty(_style2, 'opacity', vm.state.opacity), defineProperty(_style2, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + pos + '%)'), _style2);
     var bar = {
       style: style,
       class: '__bar-is-' + vm.type,
@@ -4401,7 +4404,7 @@ function install(Vue$$1) {
 
 var Vuescroll = {
   install: install,
-  version: '4.9.0-beta.17',
+  version: '4.9.0-beta.18',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 };
