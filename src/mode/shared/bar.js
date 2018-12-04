@@ -276,10 +276,11 @@ export default {
     /** Scrollbar style */
 
     const scrollDistance = vm.state.posValue * vm.state.size;
-    const pos = (scrollDistance * this.barScale) / this.barSize;
+    const pos = (scrollDistance * vm.barScale) / vm.barSize;
     let style = {
-      [vm.bar.size]: this.barSize * 100 + '%',
+      [vm.bar.size]: vm.barSize * 100 + '%',
       background: vm.ops.bar.background,
+      [vm.bar.opsSize]: vm.ops.bar.size,
       opacity: vm.state.opacity,
       transform: `translate${scrollMap[vm.type].axis}(${pos}%)`
     };

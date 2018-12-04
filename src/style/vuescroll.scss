@@ -40,7 +40,8 @@
   .__bar-is-vertical,
   .__bar-is-horizontal {
     cursor: pointer;
-    position: relative;
+    position: absolute;
+    margin: auto;
     transition: opacity 0.5s;
     user-select: none;
     border-radius: inherit;
@@ -114,14 +115,16 @@
   .__rail-is-vertical {
     .__bar-is-vertical {
       top: 0;
-      width: 100%;
+      left: 0;
+      right: 0;
     }
   }
 
   .__rail-is-horizontal {
     .__bar-is-horizontal {
       left: 0;
-      height: 100%;
+      top: 0;
+      bottom: 0;
     }
   }
 

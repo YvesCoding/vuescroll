@@ -117,4 +117,47 @@ describe('rail and scrollButton', () => {
         done();
       });
   });
+
+  it('bar size should be 6px and rail size should be 10px', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 400,
+            h: 400
+          },
+          {
+            w: 100,
+            h: 100
+          }
+        ),
+        data: {
+          ops: {
+            rail: {
+              size: '10px'
+            },
+            bar: {
+              size: '6px'
+            }
+          }
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+    startSchedule().then(() => {
+      const hBar = vs.$el.querySelector('.__bar-is-horizontal');
+      const hRail = vs.$el.querySelector('.__rail-is-horizontal');
+      const vBar = vs.$el.querySelector('.__bar-is-vertical');
+      const vRail = vs.$el.querySelector('.__rail-is-vertical');
+
+      expect(hBar.style.height).toBe('6px');
+      expect(vBar.style.width).toBe('6px');
+
+      expect(hRail.style.height).toBe('10px');
+      expect(vRail.style.width).toBe('10px');
+
+      done();
+    });
+  });
 });

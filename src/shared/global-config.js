@@ -55,6 +55,9 @@ const baseConfig = {
     opacity: 1,
     /** Styles when you hover scrollbar, it will merge into the current style */
     hoverStyle: false,
+    /** bar's size(Height/Width) , default -> 6px */
+
+    size: '6px',
     /** false or a percent, like 10% */
     minSize: false
   },
