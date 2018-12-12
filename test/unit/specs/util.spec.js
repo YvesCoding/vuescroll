@@ -1,4 +1,4 @@
-import { deepCopy, mergeObject } from 'src/shared/util';
+import { deepCopy, mergeObject, isIos } from 'src/shared/util';
 
 describe('Util', () => {
   it('after deeping copy, b[1].a1 should be 2', () => {
@@ -24,5 +24,11 @@ describe('Util', () => {
     expect(c[0][0]).toBe(1);
     expect(c[1][0]).toBe(2);
     expect(c[2].nodeType).not.toBe(null);
+  });
+
+  it('isIos should return false', () => {
+    const IOS = isIos();
+
+    expect(IOS).toBe(false);
   });
 });

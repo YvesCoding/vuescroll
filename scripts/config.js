@@ -95,7 +95,9 @@ function genConfig(name) {
       scss({
         output: function(styles) {
           if (count++ % len == 0 && styles) {
-            fs.writeFileSync(resolve('dist/vuescroll.css'), styles);
+            let prefix = banner + '\n';
+
+            fs.writeFileSync(resolve('dist/vuescroll.css'), prefix + styles);
           }
         },
         outputStyle: 'compressed'

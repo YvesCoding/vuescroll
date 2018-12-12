@@ -90,7 +90,8 @@ describe('vuescroll', () => {
           {
             w: 400,
             h: 200
-          }
+          },
+          '@refresh-before-deactivate="rBD"'
         ),
         data: {
           ops: {
@@ -106,6 +107,13 @@ describe('vuescroll', () => {
                 }
               }
             }
+          }
+        },
+        methods: {
+          rBD(vs, dom, done) {
+            setTimeout(() => {
+              done();
+            }, 300);
           }
         }
       },
@@ -129,7 +137,7 @@ describe('vuescroll', () => {
       .then(() => {
         expect(tipDom.innerText).toBe('refresh start tip');
       })
-      .wait(2400)
+      .wait(2100)
       .then(() => {
         expect(tipDom.innerText).toBe('refresh before deactive tip');
         done();
@@ -147,7 +155,8 @@ describe('vuescroll', () => {
           {
             w: 400,
             h: 200
-          }
+          },
+          '@load-before-deactivate="lBD"'
         ),
         data: {
           ops: {
@@ -163,6 +172,13 @@ describe('vuescroll', () => {
                 }
               }
             }
+          }
+        },
+        methods: {
+          lBD(vs, dom, done) {
+            setTimeout(() => {
+              done();
+            }, 200);
           }
         }
       },
@@ -190,7 +206,7 @@ describe('vuescroll', () => {
       .then(() => {
         expect(tipDom.innerText).toBe('load start tip');
       })
-      .wait(2400)
+      .wait(2100)
       .then(() => {
         expect(tipDom.innerText).toBe('load before deactive tip');
         done();

@@ -1,7 +1,6 @@
-import Vue from 'vue';
+import { isIE, isIos, isSupportTouch, isServer } from './env';
 
-/* istanbul ignore next */
-export const isServer = () => Vue.prototype.$isServer;
+export { isIE, isIos, isSupportTouch, isServer };
 
 export function deepCopy(from, to, shallow) {
   if (shallow && isUndef(to)) {
@@ -164,12 +163,6 @@ export function isChildInParent(child, parent) {
   return flag;
 }
 
-export function isSupportTouch() {
-  /* istanbul ignore if */
-  if (isServer()) return false;
-  return 'ontouchstart' in window;
-}
-
 export function getPrefix(global) {
   var docStyle = document.documentElement.style;
   var engine;
@@ -209,18 +202,6 @@ export function getComplitableStyle(property, value) {
   }
   /* istanbul ignore next */
   return false;
-}
-
-export function isIE() {
-  /* istanbul ignore if */
-  if (isServer()) return false;
-
-  var agent = navigator.userAgent.toLowerCase();
-  return (
-    agent.indexOf('msie') !== -1 ||
-    agent.indexOf('trident') !== -1 ||
-    agent.indexOf(' edge/') !== -1
-  );
 }
 
 /**

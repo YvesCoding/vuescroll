@@ -3,7 +3,7 @@
  * http://github.com/zynga/scroller
  *
  * modified by wangyi7099
- * 
+ *
  * Copyright 2011, Zynga Inc.
  * Licensed under the MIT License.
  * https://raw.github.com/zynga/scroller/master/MIT-LICENSE.txt
@@ -437,34 +437,38 @@ var members = {
   finishRefreshOrLoad: function() {
     var self = this;
 
-    if (self.__refreshBeforeDeactivate && self.__refreshActive) {
+    if (self.__refreshActive) {
       self.__refreshActive = false;
-      self.__refreshBeforeDeactivate(function() {
+      let endRefreshActive = function() {
         if (self.__refreshBeforeDeactiveEnd) {
           self.__refreshBeforeDeactiveEnd();
         }
         self.__refreshBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
-      });
-    } else if (self.__refreshDeactivate && self.__refreshActive) {
-      self.__refreshActive = false;
-      self.__refreshDeactivate();
-      self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+      };
+
+      if (self.__refreshBeforeDeactivate) {
+        self.__refreshBeforeDeactivate(endRefreshActive);
+      } else {
+        endRefreshActive();
+      }
     }
 
-    if (self.__loadBeforeDeactivate && self.__loadActive) {
+    if (self.__loadActive) {
       self.__loadActive = false;
-      self.__loadBeforeDeactivate(function() {
+      let endLoadActive = function() {
         if (self.__loadBeforeDeactiveEnd) {
           self.__loadBeforeDeactiveEnd();
         }
         self.__loadBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
-      });
-    } else if (self.__loadDeactivate && self.__loadActive) {
-      self.__loadActive = false;
-      self.__loadDeactivate();
-      self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+      };
+
+      if (self.__loadBeforeDeactivate) {
+        self.__loadBeforeDeactivate(endLoadActive);
+      } else {
+        endLoadActive();
+      }
     }
   },
 

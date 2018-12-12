@@ -5,12 +5,23 @@
   .__panel {
     box-sizing: border-box;
     position: relative;
+    &.__ios {
+      -webkit-overflow-scrolling: touch;
+    }
+    &.__hide-ios-bar {
+      padding-right: 10px;
+      padding-bottom: 10px;
+      width: calc(100% + 10px) !important;
+      height: calc(100% + 10px) !important;
+    }
+
     &.__hidebar::-webkit-scrollbar {
       width: 0;
       height: 0;
     }
     &.__native {
       height: 100%;
+      -webkit-overflow-scrolling: touch;
     }
     &.__slide {
       transform-origin: left top 0px;
@@ -134,9 +145,9 @@
     width: 100%;
     color: black;
     height: 50px;
+    line-height: 50px;
     text-align: center;
     font-size: 16px;
-    line-height: 50px;
     svg {
       &.active {
         transition: all 0.2s;

@@ -12,7 +12,7 @@ export default {
       }
     },
     getCurrentviewDom() {
-      this.getCurrentviewDomNaitve();
+      return this.getCurrentviewDomNative();
     },
     internalScrollTo(destX, destY, animate) {
       this.nativeScrollTo(destX, destY, animate);

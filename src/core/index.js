@@ -115,6 +115,8 @@ const withBase = ({ render, name, components, mixins, Vue }) => {
 
         this.updatedCbs.push(() => {
           this.scrollToAnchor();
+          // need to reflow to deal with the
+          // latest thing.
           this.updateBarStateAndEmitEvent();
         });
       }

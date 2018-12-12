@@ -1,7 +1,8 @@
 import {
   getGutter,
   getComplitableStyle,
-  insertChildrenIntoSlot
+  insertChildrenIntoSlot,
+  isIos
 } from 'shared/util';
 
 export function getPanelData(context) {
@@ -36,6 +37,10 @@ export function getPanelData(context) {
   /* istanbul ignore if */
   if (!gutter) {
     data.class.push('__hidebar');
+    if (isIos()) {
+      data.class.push('__ios');
+      data.class.push('__hide-ios-bar');
+    }
   } else {
     // hide system bar by use a negative value px
     // gutter should be 0 when manually disable scrollingX #14

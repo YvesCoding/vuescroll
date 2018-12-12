@@ -36,12 +36,13 @@ function createStateCallbacks(type, stageType, vm, tipDom) {
     }, 2000); // Default start stage duration
   };
 
-  let beforeDeactivateCallback = done => {
-    vm.vuescroll.state[stageType] = 'beforeDeactive';
-    setTimeout(function() {
-      done();
-    }, 500); // Default before-deactivated stage duration
-  };
+  // let beforeDeactivateCallback = done => {
+  //   vm.vuescroll.state[stageType] = 'beforeDeactive';
+  //   setTimeout(function() {
+  //     done();
+  //   }, 500); // Default before-deactivated stage duration
+  // };
+  let beforeDeactivateCallback;
 
   /* istanbul ignore if */
   if (listeners[type + '-before-deactivate']) {
@@ -221,43 +222,43 @@ export default {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
-          case 'mousedown':
-            this.vuescroll.state.isDragging = true;
-            break;
-          case 'onscroll':
-            {
-              /**
+            case 'mousedown':
+              this.vuescroll.state.isDragging = true;
+              break;
+            case 'onscroll':
+              {
+                /**
                  * Trigger auto load
                  */
-              const stage = this.vuescroll.state['loadStage'];
-              const {
-                enable,
-                auto,
-                autoLoadDistance
-              } = this.mergedOptions.vuescroll.pushLoad;
-              const { __scrollTop, __maxScrollTop } = this.scroller;
-              if (
-                stage != 'start' &&
+                const stage = this.vuescroll.state['loadStage'];
+                const {
+                  enable,
+                  auto,
+                  autoLoadDistance
+                } = this.mergedOptions.vuescroll.pushLoad;
+                const { __scrollTop, __maxScrollTop } = this.scroller;
+                if (
+                  stage != 'start' &&
                   enable &&
                   auto &&
                   !this.lockAutoLoad && // auto load debounce
                   autoLoadDistance >= __maxScrollTop - __scrollTop
-              ) {
-                this.lockAutoLoad = true;
-                this.triggerRefreshOrLoad('load');
+                ) {
+                  this.lockAutoLoad = true;
+                  this.triggerRefreshOrLoad('load');
+                }
+
+                if (autoLoadDistance < __maxScrollTop - __scrollTop) {
+                  this.lockAutoLoad = false;
+                }
+
+                this.handleScroll(false);
               }
 
-              if (autoLoadDistance < __maxScrollTop - __scrollTop) {
-                this.lockAutoLoad = false;
-              }
-
-              this.handleScroll(false);
-            }
-
-            break;
-          case 'mouseup':
-            this.vuescroll.state.isDragging = false;
-            break;
+              break;
+            case 'mouseup':
+              this.vuescroll.state.isDragging = false;
+              break;
           }
         },
         zooming,

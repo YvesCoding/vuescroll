@@ -28,7 +28,7 @@ export default {
       }
     },
     getCurrentviewDom() {
-      this.getCurrentviewDomSlide();
+      return this.getCurrentviewDomSlide();
     },
     internalScrollTo(destX, destY, animate, force) {
       this.slideScrollTo(destX, destY, animate, undefined, force);

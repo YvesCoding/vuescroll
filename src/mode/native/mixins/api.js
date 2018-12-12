@@ -32,6 +32,8 @@ export function scrollTo(
   if (nodeType == 9) {
     // document
     elm = elm.scrollingElement;
+  } else {
+    elm.parentNode.classList.add('scrolling');
   }
 
   ({
