@@ -14,6 +14,33 @@
 
 Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
+function isIE() {
+  /* istanbul ignore if */
+  if (isServer()) return false;
+
+  var agent = navigator.userAgent.toLowerCase();
+  return agent.indexOf('msie') !== -1 || agent.indexOf('trident') !== -1 || agent.indexOf(' edge/') !== -1;
+}
+
+var isIos = function isIos() {
+  /* istanbul ignore if */
+  if (isServer()) return false;
+
+  var u = navigator.userAgent;
+  return !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+};
+
+function isSupportTouch() {
+  /* istanbul ignore if */
+  if (isServer()) return false;
+  return 'ontouchstart' in window;
+}
+
+/* istanbul ignore next */
+var isServer = function isServer() {
+  return Vue.prototype.$isServer;
+};
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
@@ -109,11 +136,6 @@ var toConsumableArray = function (arr) {
   } else {
     return Array.from(arr);
   }
-};
-
-/* istanbul ignore next */
-var isServer = function isServer() {
-  return Vue.prototype.$isServer;
 };
 
 function deepCopy(from, to, shallow) {
@@ -244,12 +266,6 @@ function isChildInParent(child, parent) {
   return flag;
 }
 
-function isSupportTouch() {
-  /* istanbul ignore if */
-  if (isServer()) return false;
-  return 'ontouchstart' in window;
-}
-
 function getPrefix(global) {
   var docStyle = document.documentElement.style;
   var engine;
@@ -284,14 +300,6 @@ function getComplitableStyle(property, value) {
   }
   /* istanbul ignore next */
   return false;
-}
-
-function isIE() {
-  /* istanbul ignore if */
-  if (isServer()) return false;
-
-  var agent = navigator.userAgent.toLowerCase();
-  return agent.indexOf('msie') !== -1 || agent.indexOf('trident') !== -1 || agent.indexOf(' edge/') !== -1;
 }
 
 /**
@@ -1373,14 +1381,12 @@ function createBar(h, vm) {
  * 4. updateBarStateAndEmitEvent: use to update bar states and emit events.
  */
 
-var withBase = function withBase(_ref) {
+var createComponent = function createComponent(_ref) {
   var _render = _ref.render,
-      name = _ref.name,
       components = _ref.components,
-      mixins = _ref.mixins,
-      Vue$$1 = _ref.Vue;
-
-  return Vue$$1.component(name || 'vue-scroll', {
+      mixins = _ref.mixins;
+  return {
+    name: 'vueScroll',
     props: {
       ops: { type: Object }
     },
@@ -1480,6 +1486,8 @@ var withBase = function withBase(_ref) {
 
         this.updatedCbs.push(function () {
           _this2.scrollToAnchor();
+          // need to reflow to deal with the
+          // latest thing.
           _this2.updateBarStateAndEmitEvent();
         });
       }
@@ -1722,7 +1730,7 @@ var withBase = function withBase(_ref) {
         this.destroyParentDomResize = resizeEnable ? installResizeDetection(this.$el.parentNode, this.useNumbericSize) : function () {};
       }
     }
-  });
+  };
 };
 
 /**
@@ -1774,36 +1782,27 @@ function goScrolling(x, y, startLocationX, startLocationY, maxX, maxY, speed, ea
  * 3. Config
  */
 function _install() {
-  var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var _components = opts._components,
-      render = opts.render,
-      Vue$$1 = opts.Vue,
-      _opts$components = opts.components,
-      components = _opts$components === undefined ? {} : _opts$components,
-      _opts$config = opts.config,
-      config = _opts$config === undefined ? {} : _opts$config,
-      _opts$ops = opts.ops,
-      ops = _opts$ops === undefined ? {} : _opts$ops,
-      validator = opts.validator;
+  var mixedComponents = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var renderChildrenFunction = arguments[1];
+  var extraConfigs = arguments[2];
+  var extraMixins = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
+  var extraValidators = arguments[4];
 
-  // Init component
-
-  var comp = _components = _components || {};
-  comp.forEach(function (_) {
+  var components = {};
+  mixedComponents.forEach(function (_) {
     components[_.name] = _;
   });
-
+  var opts = {};
   opts.components = components;
-  opts.Vue = Vue$$1;
-  opts.render = render;
+  opts.render = renderChildrenFunction;
+  opts.mixins = extraMixins;
 
-  // Create component
-  withBase(opts);
+  var comp = createComponent(opts);
 
   // Init Config
-  extendOpts(config, validator);
-  // Inject global config
-  Vue$$1.prototype.$vuescrollConfig = ops;
+  extendOpts(extraConfigs, extraValidators);
+
+  return comp;
 }
 
 /**
@@ -1867,6 +1866,8 @@ function scrollTo(elm, x, y) {
   if (nodeType == 9) {
     // document
     elm = elm.scrollingElement;
+  } else {
+    elm.parentNode.classList.add('scrolling');
   }
 
   var _elm2 = elm;
@@ -1967,6 +1968,10 @@ function getPanelData(context) {
   };
 
   data.class.push('__slide');
+  /* istanbul ignore if */
+  if (isIos()) {
+    data.class.push('__ios');
+  }
 
   if (context.mergedOptions.scrollPanel.scrollingX && !context.refreshLoad) {
     var width = getComplitableStyle('width', 'fit-content');
@@ -2223,7 +2228,7 @@ var api$2 = {
  * http://github.com/zynga/scroller
  *
  * modified by wangyi7099
- * 
+ *
  * Copyright 2011, Zynga Inc.
  * Licensed under the MIT License.
  * https://raw.github.com/zynga/scroller/master/MIT-LICENSE.txt
@@ -2628,34 +2633,38 @@ var members = {
   finishRefreshOrLoad: function finishRefreshOrLoad() {
     var self = this;
 
-    if (self.__refreshBeforeDeactivate && self.__refreshActive) {
+    if (self.__refreshActive) {
       self.__refreshActive = false;
-      self.__refreshBeforeDeactivate(function () {
+      var endRefreshActive = function endRefreshActive() {
         if (self.__refreshBeforeDeactiveEnd) {
           self.__refreshBeforeDeactiveEnd();
         }
         self.__refreshBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
-      });
-    } else if (self.__refreshDeactivate && self.__refreshActive) {
-      self.__refreshActive = false;
-      self.__refreshDeactivate();
-      self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+      };
+
+      if (self.__refreshBeforeDeactivate) {
+        self.__refreshBeforeDeactivate(endRefreshActive);
+      } else {
+        endRefreshActive();
+      }
     }
 
-    if (self.__loadBeforeDeactivate && self.__loadActive) {
+    if (self.__loadActive) {
       self.__loadActive = false;
-      self.__loadBeforeDeactivate(function () {
+      var endLoadActive = function endLoadActive() {
         if (self.__loadBeforeDeactiveEnd) {
           self.__loadBeforeDeactiveEnd();
         }
         self.__loadBeforeDeactiveStarted = true;
         self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
-      });
-    } else if (self.__loadDeactivate && self.__loadActive) {
-      self.__loadActive = false;
-      self.__loadDeactivate();
-      self.scrollTo(self.__scrollLeft, self.__scrollTop, true);
+      };
+
+      if (self.__loadBeforeDeactivate) {
+        self.__loadBeforeDeactivate(endLoadActive);
+      } else {
+        endLoadActive();
+      }
     }
   },
 
@@ -3838,12 +3847,13 @@ function createStateCallbacks(type, stageType, vm, tipDom) {
     }, 2000); // Default start stage duration
   };
 
-  var beforeDeactivateCallback = function beforeDeactivateCallback(done) {
-    vm.vuescroll.state[stageType] = 'beforeDeactive';
-    setTimeout(function () {
-      done();
-    }, 500); // Default before-deactivated stage duration
-  };
+  // let beforeDeactivateCallback = done => {
+  //   vm.vuescroll.state[stageType] = 'beforeDeactive';
+  //   setTimeout(function() {
+  //     done();
+  //   }, 500); // Default before-deactivated stage duration
+  // };
+  var beforeDeactivateCallback = void 0;
 
   /* istanbul ignore if */
   if (listeners[type + '-before-deactivate']) {
@@ -4001,8 +4011,8 @@ var updateSlide = {
           case 'onscroll':
             {
               /**
-                 * Trigger auto load
-                 */
+               * Trigger auto load
+               */
               var stage = _this.vuescroll.state['loadStage'];
               var _mergedOptions$vuescr2 = _this.mergedOptions.vuescroll.pushLoad,
                   enable = _mergedOptions$vuescr2.enable,
@@ -4166,7 +4176,7 @@ var core$1 = {
       }
     },
     getCurrentviewDom: function getCurrentviewDom() {
-      this.getCurrentviewDomSlide();
+      return this.getCurrentviewDomSlide();
     },
     internalScrollTo: function internalScrollTo(destX, destY, animate, force) {
       this.slideScrollTo(destX, destY, animate, undefined, force);
@@ -4389,25 +4399,21 @@ function validator(ops) {
   return renderError;
 }
 
+var component = _install([scrollPanel, bar], createPanel, config, mixins, validator);
+
 function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  opts._components = [scrollPanel, bar];
-  opts.mixins = mixins;
-  opts.render = createPanel;
-  opts.Vue = Vue$$1;
-  opts.config = config;
-  opts.validator = validator;
-
-  _install(opts);
+  Vue$$1.component(opts.name || component.name, component);
+  Vue$$1.prototype.$vuescrollConfig = opts.ops;
 }
 
-var Vuescroll = {
+var Vuescroll = _extends({
   install: install,
   version: '4.9.0-beta.18',
   refreshAll: refreshAll,
   scrollTo: scrollTo
-};
+}, component);
 
 /* istanbul ignore if */
 if (typeof window !== 'undefined' && window.Vue) {

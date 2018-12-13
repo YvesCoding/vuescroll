@@ -1,13 +1,14 @@
 import { refreshAll } from 'core/mixins/api';
 import { scrollTo } from 'src/mode/native/mixins/api';
 
-import install from 'mode/native/index';
+import install, { component } from 'mode/native/index';
 
 const Vuescroll = {
   install,
   version: '__version__',
   refreshAll,
-  scrollTo
+  scrollTo,
+  ...component
 };
 
 /* istanbul ignore if */

@@ -13,13 +13,11 @@ export function isIE() {
 }
 
 export const isIos = () => {
+  /* istanbul ignore if */
   if (isServer()) return false;
 
-  /* istanbul ignore next */
-  {
-    let u = navigator.userAgent;
-    return !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
-  }
+  let u = navigator.userAgent;
+  return !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
 };
 
 export function isSupportTouch() {

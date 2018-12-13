@@ -22,352 +22,351 @@ import { createBar } from 'mode/shared/bar';
  * 4. updateBarStateAndEmitEvent: use to update bar states and emit events.
  */
 
-const withBase = ({ render, name, components, mixins, Vue }) => {
-  return Vue.component(name || 'vue-scroll', {
-    props: {
-      ops: { type: Object }
-    },
-    components,
-    mixins: [api, ...[].concat(mixins)],
-    created() {
-      /**
-       * Begin to merge options
-       */
+const createComponent = ({ render, components, mixins }) => ({
+  name: 'vueScroll',
+  props: {
+    ops: { type: Object }
+  },
+  components,
+  mixins: [api, ...[].concat(mixins)],
+  created() {
+    /**
+     * Begin to merge options
+     */
 
-      const _gfc = mergeObject(this.$vuescrollConfig || {}, {});
-      const ops = mergeObject(GCF, _gfc);
+    const _gfc = mergeObject(this.$vuescrollConfig || {}, {});
+    const ops = mergeObject(GCF, _gfc);
 
-      this.$options.propsData.ops = this.$options.propsData.ops || {};
-      Object.keys(this.$options.propsData.ops).forEach(key => {
-        {
-          defineReactive(this.mergedOptions, key, this.$options.propsData.ops);
-        }
-      });
-      // from ops to mergedOptions
-      mergeObject(ops, this.mergedOptions);
-
-      this._isVuescrollRoot = true;
-      this.renderError = validateOps(this.mergedOptions);
-    },
-    render(h) {
-      let vm = this;
-      if (vm.renderError) {
-        return <div>{[vm.$slots['default']]}</div>;
+    this.$options.propsData.ops = this.$options.propsData.ops || {};
+    Object.keys(this.$options.propsData.ops).forEach(key => {
+      {
+        defineReactive(this.mergedOptions, key, this.$options.propsData.ops);
       }
+    });
+    // from ops to mergedOptions
+    mergeObject(ops, this.mergedOptions);
 
-      // vuescroll data
-      const data = {
-        style: {
-          height: vm.vuescroll.state.height,
-          width: vm.vuescroll.state.width,
-          padding: 0
+    this._isVuescrollRoot = true;
+    this.renderError = validateOps(this.mergedOptions);
+  },
+  render(h) {
+    let vm = this;
+    if (vm.renderError) {
+      return <div>{[vm.$slots['default']]}</div>;
+    }
+
+    // vuescroll data
+    const data = {
+      style: {
+        height: vm.vuescroll.state.height,
+        width: vm.vuescroll.state.width,
+        padding: 0
+      },
+      class: '__vuescroll'
+    };
+
+    if (!isSupportTouch()) {
+      data.on = {
+        mouseenter() {
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
         },
-        class: '__vuescroll'
+        mouseleave() {
+          vm.vuescroll.state.pointerLeave = true;
+          vm.hideBar();
+        },
+        mousemove() /* istanbul ignore next */ {
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
+        }
       };
+    } /* istanbul ignore next */ else {
+      data.on = {
+        touchstart() {
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
+        },
+        touchend() {
+          vm.vuescroll.state.pointerLeave = true;
+          vm.hideBar();
+        },
+        touchmove() /* istanbul ignore next */ {
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
+        }
+      };
+    }
 
-      if (!isSupportTouch()) {
-        data.on = {
-          mouseenter() {
-            vm.vuescroll.state.pointerLeave = false;
-            vm.updateBarStateAndEmitEvent();
-          },
-          mouseleave() {
-            vm.vuescroll.state.pointerLeave = true;
-            vm.hideBar();
-          },
-          mousemove() /* istanbul ignore next */ {
-            vm.vuescroll.state.pointerLeave = false;
-            vm.updateBarStateAndEmitEvent();
-          }
-        };
-      } /* istanbul ignore next */ else {
-        data.on = {
-          touchstart() {
-            vm.vuescroll.state.pointerLeave = false;
-            vm.updateBarStateAndEmitEvent();
-          },
-          touchend() {
-            vm.vuescroll.state.pointerLeave = true;
-            vm.hideBar();
-          },
-          touchmove() /* istanbul ignore next */ {
-            vm.vuescroll.state.pointerLeave = false;
-            vm.updateBarStateAndEmitEvent();
-          }
-        };
-      }
+    const ch = [render(h, vm), ...createBar(h, vm)];
 
-      const ch = [render(h, vm), ...createBar(h, vm)];
+    const _customContainer = this.$slots['scroll-container'];
+    if (_customContainer) {
+      return insertChildrenIntoSlot(h, _customContainer, ch, data);
+    }
 
-      const _customContainer = this.$slots['scroll-container'];
-      if (_customContainer) {
-        return insertChildrenIntoSlot(h, _customContainer, ch, data);
-      }
+    return <div {...data}>{ch}</div>;
+  },
+  mounted() {
+    if (!this.renderError) {
+      this.initVariables();
+      this.initWatchOpsChange();
+      // Call external merged Api
+      this.refreshInternalStatus();
 
-      return <div {...data}>{ch}</div>;
-    },
-    mounted() {
-      if (!this.renderError) {
-        this.initVariables();
-        this.initWatchOpsChange();
-        // Call external merged Api
-        this.refreshInternalStatus();
-
-        this.updatedCbs.push(() => {
-          this.scrollToAnchor();
-          // need to reflow to deal with the
-          // latest thing.
-          this.updateBarStateAndEmitEvent();
-        });
-      }
-    },
-    updated() {
-      this.updatedCbs.forEach(cb => {
-        cb.call(this);
+      this.updatedCbs.push(() => {
+        this.scrollToAnchor();
+        // need to reflow to deal with the
+        // latest thing.
+        this.updateBarStateAndEmitEvent();
       });
-      // Clear
-      this.updatedCbs = [];
+    }
+  },
+  updated() {
+    this.updatedCbs.forEach(cb => {
+      cb.call(this);
+    });
+    // Clear
+    this.updatedCbs = [];
+  },
+  beforeDestroy() {
+    // remove registryed resize event
+    if (this.destroyParentDomResize) {
+      this.destroyParentDomResize();
+      this.destroyParentDomResize = null;
+    }
+
+    if (this.destroy) {
+      this.destroy();
+    }
+  },
+
+  /** ------------------------------- Computed ----------------------------- */
+  computed: {
+    scrollPanelElm() {
+      return this.$refs['scrollPanel']._isVue
+        ? this.$refs['scrollPanel'].$el
+        : this.$refs['scrollPanel'];
+    }
+  },
+  data() {
+    return {
+      vuescroll: {
+        state: {
+          isDragging: false,
+          pointerLeave: true,
+          /** Internal states to record current positions */
+          internalScrollTop: 0,
+          internalScrollLeft: 0,
+          /** Current scrolling directions */
+          posX: null,
+          posY: null,
+          /** Default sizeStrategies */
+          height: '100%',
+          width: '100%',
+          /** How many times you have scrolled */
+          scrollingTimes: 0,
+          // current size strategy
+          currentSizeStrategy: 'percent'
+        }
+      },
+      bar: {
+        vBar: {
+          state: {
+            posValue: 0,
+            size: 0,
+            opacity: 0
+          }
+        },
+        hBar: {
+          state: {
+            posValue: 0,
+            size: 0,
+            opacity: 0
+          }
+        }
+      },
+      mergedOptions: {
+        vuescroll: {},
+        scrollPanel: {},
+        scrollContent: {},
+        rail: {},
+        bar: {}
+      },
+      updatedCbs: [],
+      renderError: false
+    };
+  },
+  /** ------------------------------- Methods -------------------------------- */
+  methods: {
+    /** ------------------------ Handlers --------------------------- */
+    handleScroll(nativeEvent) {
+      this.recordCurrentPos();
+      this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
     },
-    beforeDestroy() {
-      // remove registryed resize event
+    scrollingComplete() {
+      this.vuescroll.state.scrollingTimes++;
+      this.updateBarStateAndEmitEvent('handle-scroll-complete');
+    },
+    setBarDrag(val) {
+      /* istanbul ignore next */
+      this.vuescroll.state.isDragging = val;
+    },
+
+    /** ------------------------ Some Helpers --------------------------- */
+
+    /*
+     * To have a good ux, instead of hiding bar immediately, we hide bar
+     * after some seconds by using this simple debounce-hidebar method.
+     */
+    showAndDefferedHideBar(forceHideBar) {
+      this.showBar();
+
+      if (this.timeoutId) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = 0;
+      }
+
+      this.timeoutId = setTimeout(() => {
+        this.timeoutId = 0;
+        this.hideBar(forceHideBar);
+      }, this.mergedOptions.bar.showDelay);
+    },
+    showBar() {
+      const opacity = this.mergedOptions.bar.opacity;
+      this.bar.vBar.state.opacity = opacity;
+      this.bar.hBar.state.opacity = opacity;
+    },
+    hideBar(forceHideBar) {
+      // when in non-native mode dragging content
+      // in slide mode, just return
+      /* istanbul ignore next */
+      if (this.vuescroll.state.isDragging) {
+        return;
+      }
+
+      if (forceHideBar && !this.mergedOptions.bar.keepShow) {
+        this.bar.hBar.state.opacity = 0;
+        this.bar.vBar.state.opacity = 0;
+      }
+
+      // add isDragging condition
+      // to prevent from hiding bar while dragging the bar
+      if (
+        !this.mergedOptions.bar.keepShow &&
+        !this.vuescroll.state.isDragging &&
+        this.vuescroll.state.pointerLeave
+      ) {
+        this.bar.vBar.state.opacity = 0;
+        this.bar.hBar.state.opacity = 0;
+      }
+    },
+    useNumbericSize() {
+      this.usePercentSize();
+      setTimeout(() => {
+        this.vuescroll.state.currentSizeStrategy = 'number';
+
+        const el = this.$el;
+        this.vuescroll.state.height = el.offsetHeight + 'px';
+        this.vuescroll.state.width = el.offsetWidth + 'px';
+      }, 0);
+    },
+    usePercentSize() {
+      this.vuescroll.state.currentSizeStrategy = 'percent';
+
+      this.vuescroll.state.height = '100%';
+      this.vuescroll.state.width = '100%';
+    },
+    // Set its size to be equal to its parentNode
+    setVsSize() {
       if (this.destroyParentDomResize) {
         this.destroyParentDomResize();
         this.destroyParentDomResize = null;
       }
 
-      if (this.destroy) {
-        this.destroy();
-      }
-    },
-
-    /** ------------------------------- Computed ----------------------------- */
-    computed: {
-      scrollPanelElm() {
-        return this.$refs['scrollPanel']._isVue
-          ? this.$refs['scrollPanel'].$el
-          : this.$refs['scrollPanel'];
-      }
-    },
-    data() {
-      return {
-        vuescroll: {
-          state: {
-            isDragging: false,
-            pointerLeave: true,
-            /** Internal states to record current positions */
-            internalScrollTop: 0,
-            internalScrollLeft: 0,
-            /** Current scrolling directions */
-            posX: null,
-            posY: null,
-            /** Default sizeStrategies */
-            height: '100%',
-            width: '100%',
-            /** How many times you have scrolled */
-            scrollingTimes: 0,
-            // current size strategy
-            currentSizeStrategy: 'percent'
-          }
-        },
-        bar: {
-          vBar: {
-            state: {
-              posValue: 0,
-              size: 0,
-              opacity: 0
-            }
-          },
-          hBar: {
-            state: {
-              posValue: 0,
-              size: 0,
-              opacity: 0
-            }
-          }
-        },
-        mergedOptions: {
-          vuescroll: {},
-          scrollPanel: {},
-          scrollContent: {},
-          rail: {},
-          bar: {}
-        },
-        updatedCbs: [],
-        renderError: false
-      };
-    },
-    /** ------------------------------- Methods -------------------------------- */
-    methods: {
-      /** ------------------------ Handlers --------------------------- */
-      handleScroll(nativeEvent) {
-        this.recordCurrentPos();
-        this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
-      },
-      scrollingComplete() {
-        this.vuescroll.state.scrollingTimes++;
-        this.updateBarStateAndEmitEvent('handle-scroll-complete');
-      },
-      setBarDrag(val) {
-        /* istanbul ignore next */
-        this.vuescroll.state.isDragging = val;
-      },
-
-      /** ------------------------ Some Helpers --------------------------- */
-
-      /*
-       * To have a good ux, instead of hiding bar immediately, we hide bar
-       * after some seconds by using this simple debounce-hidebar method.
-       */
-      showAndDefferedHideBar(forceHideBar) {
-        this.showBar();
-
-        if (this.timeoutId) {
-          clearTimeout(this.timeoutId);
-          this.timeoutId = 0;
-        }
-
-        this.timeoutId = setTimeout(() => {
-          this.timeoutId = 0;
-          this.hideBar(forceHideBar);
-        }, this.mergedOptions.bar.showDelay);
-      },
-      showBar() {
-        const opacity = this.mergedOptions.bar.opacity;
-        this.bar.vBar.state.opacity = opacity;
-        this.bar.hBar.state.opacity = opacity;
-      },
-      hideBar(forceHideBar) {
-        // when in non-native mode dragging content
-        // in slide mode, just return
-        /* istanbul ignore next */
-        if (this.vuescroll.state.isDragging) {
-          return;
-        }
-
-        if (forceHideBar && !this.mergedOptions.bar.keepShow) {
-          this.bar.hBar.state.opacity = 0;
-          this.bar.vBar.state.opacity = 0;
-        }
-
-        // add isDragging condition
-        // to prevent from hiding bar while dragging the bar
-        if (
-          !this.mergedOptions.bar.keepShow &&
-          !this.vuescroll.state.isDragging &&
-          this.vuescroll.state.pointerLeave
-        ) {
-          this.bar.vBar.state.opacity = 0;
-          this.bar.hBar.state.opacity = 0;
-        }
-      },
-      useNumbericSize() {
+      if (this.mergedOptions.vuescroll.sizeStrategy == 'number') {
+        this.useNumbericSize();
+        this.registryParentResize();
+      } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
         this.usePercentSize();
-        setTimeout(() => {
-          this.vuescroll.state.currentSizeStrategy = 'number';
+      }
+    },
 
-          const el = this.$el;
-          this.vuescroll.state.height = el.offsetHeight + 'px';
-          this.vuescroll.state.width = el.offsetWidth + 'px';
-        }, 0);
-      },
-      usePercentSize() {
-        this.vuescroll.state.currentSizeStrategy = 'percent';
+    /** ------------------------ Init --------------------------- */
+    initWatchOpsChange() {
+      const watchOpts = {
+        deep: true,
+        sync: true
+      };
+      this.$watch(
+        'mergedOptions',
+        () => {
+          setTimeout(() => {
+            if (this.isSmallChangeThisTick) {
+              this.isSmallChangeThisTick = false;
+              this.updateBarStateAndEmitEvent('options-change');
+              return;
+            }
+            this.refreshInternalStatus();
 
-        this.vuescroll.state.height = '100%';
-        this.vuescroll.state.width = '100%';
-      },
-      // Set its size to be equal to its parentNode
-      setVsSize() {
-        if (this.destroyParentDomResize) {
-          this.destroyParentDomResize();
-          this.destroyParentDomResize = null;
-        }
+            // record current position
+            this.recordCurrentPos();
+          }, 0);
+        },
+        watchOpts
+      );
 
-        if (this.mergedOptions.vuescroll.sizeStrategy == 'number') {
-          this.useNumbericSize();
-          this.registryParentResize();
-        } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
-          this.usePercentSize();
-        }
-      },
-
-      /** ------------------------ Init --------------------------- */
-      initWatchOpsChange() {
-        const watchOpts = {
-          deep: true,
-          sync: true
-        };
+      /**
+       * We also watch `small` changes, and when small changes happen, we send
+       * a signal to vuescroll, to tell it:
+       * 1. we don't need to registry resize
+       * 2. we don't need to registry scroller.
+       */
+      smallChangeArray.forEach(opts => {
         this.$watch(
-          'mergedOptions',
+          opts,
           () => {
-            setTimeout(() => {
-              if (this.isSmallChangeThisTick) {
-                this.isSmallChangeThisTick = false;
-                this.updateBarStateAndEmitEvent('options-change');
-                return;
-              }
-              this.refreshInternalStatus();
-
-              // record current position
-              this.recordCurrentPos();
-            }, 0);
+            this.isSmallChangeThisTick = true;
           },
           watchOpts
         );
+      });
+    },
+    // scrollTo hash-anchor while mounted component have mounted.
+    scrollToAnchor() /* istanbul ignore next */ {
+      const validateHashSelector = function(hash) {
+        return /^#[a-zA-Z_]\d*$/.test(hash);
+      };
 
-        /**
-         * We also watch `small` changes, and when small changes happen, we send
-         * a signal to vuescroll, to tell it:
-         * 1. we don't need to registry resize
-         * 2. we don't need to registry scroller.
-         */
-        smallChangeArray.forEach(opts => {
-          this.$watch(
-            opts,
-            () => {
-              this.isSmallChangeThisTick = true;
-            },
-            watchOpts
-          );
-        });
-      },
-      // scrollTo hash-anchor while mounted component have mounted.
-      scrollToAnchor() /* istanbul ignore next */ {
-        const validateHashSelector = function(hash) {
-          return /^#[a-zA-Z_]\d*$/.test(hash);
-        };
-
-        let hash = window.location.hash;
-        if (
-          !hash ||
-          ((hash = hash.slice(hash.lastIndexOf('#'))) &&
-            !validateHashSelector(hash))
-        ) {
-          return;
-        }
-
-        const elm = document.querySelector(hash);
-        if (
-          !isChildInParent(elm, this.$el) ||
-          this.mergedOptions.scrollPanel.initialScrollY ||
-          this.mergedOptions.scrollPanel.initialScrollX
-        ) {
-          return;
-        }
-
-        this.scrollIntoView(elm);
-      },
-
-      /** ------------------------ Registry Resize --------------------------- */
-
-      registryParentResize() {
-        const resizeEnable = this.mergedOptions.vuescroll.detectResize;
-        this.destroyParentDomResize = resizeEnable
-          ? installResizeDetection(this.$el.parentNode, this.useNumbericSize)
-          : () => {};
+      let hash = window.location.hash;
+      if (
+        !hash ||
+        ((hash = hash.slice(hash.lastIndexOf('#'))) &&
+          !validateHashSelector(hash))
+      ) {
+        return;
       }
-    }
-  });
-};
 
-export default withBase;
+      const elm = document.querySelector(hash);
+      if (
+        !isChildInParent(elm, this.$el) ||
+        this.mergedOptions.scrollPanel.initialScrollY ||
+        this.mergedOptions.scrollPanel.initialScrollX
+      ) {
+        return;
+      }
+
+      this.scrollIntoView(elm);
+    },
+
+    /** ------------------------ Registry Resize --------------------------- */
+
+    registryParentResize() {
+      const resizeEnable = this.mergedOptions.vuescroll.detectResize;
+      this.destroyParentDomResize = resizeEnable
+        ? installResizeDetection(this.$el.parentNode, this.useNumbericSize)
+        : () => {};
+    }
+  }
+});
+
+export default createComponent;

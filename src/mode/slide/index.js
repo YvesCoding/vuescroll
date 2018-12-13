@@ -7,13 +7,17 @@ import { config, validator } from './config';
 
 import { _install } from 'mode/shared/util';
 
-export default function install(Vue, opts = {}) {
-  opts._components = [scrollPanel, bar];
-  opts.mixins = mixins;
-  opts.render = render;
-  opts.Vue = Vue;
-  opts.config = config;
-  opts.validator = validator;
+const component = _install(
+  [scrollPanel, bar],
+  render,
+  config,
+  mixins,
+  validator
+);
 
-  _install(opts);
+export default function install(Vue, opts = {}) {
+  Vue.component(opts.name || component.name, component);
+  Vue.prototype.$vuescrollConfig = opts.ops;
 }
+
+export { component };

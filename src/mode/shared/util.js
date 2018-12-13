@@ -3,7 +3,7 @@ import {
   easingPattern
 } from 'core/third-party/easingPattern/index';
 import { core } from 'core/third-party/scroller/animate';
-import withBase from 'core/index';
+import createComponent from 'core/index';
 import { extendOpts } from 'shared/global-config';
 /**
  * Start to scroll to a position
@@ -73,34 +73,28 @@ export function goScrolling(
  * 2. Render
  * 3. Config
  */
-export function _install(opts = {}) {
-  let {
-    _components,
-    render,
-    Vue,
-    components = {},
-    config = {},
-    ops = {},
-    validator
-  } = opts;
-
-  // Init component
-  const comp = (_components = _components || {});
-  comp.forEach(_ => {
+export function _install(
+  mixedComponents = [],
+  renderChildrenFunction,
+  extraConfigs,
+  extraMixins = [],
+  extraValidators
+) {
+  const components = {};
+  mixedComponents.forEach(_ => {
     components[_.name] = _;
   });
-
+  const opts = {};
   opts.components = components;
-  opts.Vue = Vue;
-  opts.render = render;
+  opts.render = renderChildrenFunction;
+  opts.mixins = extraMixins;
 
-  // Create component
-  withBase(opts);
+  const comp = createComponent(opts);
 
   // Init Config
-  extendOpts(config, validator);
-  // Inject global config
-  Vue.prototype.$vuescrollConfig = ops;
+  extendOpts(extraConfigs, extraValidators);
+
+  return comp;
 }
 
 /**

@@ -6,11 +6,11 @@ import mixins from './mixins';
 
 import { _install } from 'mode/shared/util';
 
-export default function install(Vue, opts = {}) {
-  opts._components = [scrollPanel, bar];
-  opts.mixins = mixins;
-  opts.render = render;
-  opts.Vue = Vue;
+const component = _install([scrollPanel, bar], render, [], mixins, []);
 
-  _install(opts);
+export default function install(Vue, opts = {}) {
+  Vue.component(opts.name || component.name, component);
+  Vue.prototype.$vuescrollConfig = opts.ops;
 }
+
+export { component };
