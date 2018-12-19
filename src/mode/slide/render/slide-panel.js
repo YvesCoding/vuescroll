@@ -19,18 +19,27 @@ export function getPanelData(context) {
     data.class.push('__ios');
   }
 
-  if (context.mergedOptions.scrollPanel.scrollingX && !context.refreshLoad) {
+  const { scrollingX, scrollingY, padding } = context.mergedOptions.scrollPanel;
+
+  if (scrollingX && !context.refreshLoad) {
     let width = getComplitableStyle('width', 'fit-content');
     if (width) {
       data.style['width'] = width;
     } /* istanbul ignore next */ else {
       data['display'] = 'inline-block';
     }
-  } else {
-    data.style['width'] = '100%';
   }
 
-  if (context.mergedOptions.scrollPanel.padding) {
+  /* istanbul ignore if */
+  if (!scrollingX) {
+    data.class.push('x-hidden');
+  }
+  /* istanbul ignore if */
+  if (!scrollingY) {
+    data.class.push('y-hidden');
+  }
+
+  if (padding) {
     data.style.paddingRight = context.mergedOptions.rail.size;
   }
 

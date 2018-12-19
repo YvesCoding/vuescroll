@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.18
+    * Vuescroll v4.9.0
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -2007,18 +2007,24 @@ function getPanelData(context) {
     }
   };
   data.class.push('__native');
+  var _context$mergedOption = context.mergedOptions.scrollPanel,
+      scrollingY = _context$mergedOption.scrollingY,
+      scrollingX = _context$mergedOption.scrollingX;
   // dynamic set overflow scroll
   // feat: #11
-  if (context.mergedOptions.scrollPanel.scrollingY) {
+
+  if (scrollingY) {
     data.style['overflowY'] = context.bar.vBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowY'] = 'hidden';
+    data.class.push('y-hidden');
   }
 
-  if (context.mergedOptions.scrollPanel.scrollingX) {
+  if (scrollingX) {
     data.style['overflowX'] = context.bar.hBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowX'] = 'hidden';
+    data.class.push('x-hidden');
   }
 
   var gutter = getGutter();
@@ -2117,18 +2123,31 @@ function getPanelData$1(context) {
     data.class.push('__ios');
   }
 
-  if (context.mergedOptions.scrollPanel.scrollingX && !context.refreshLoad) {
+  var _context$mergedOption = context.mergedOptions.scrollPanel,
+      scrollingX = _context$mergedOption.scrollingX,
+      scrollingY = _context$mergedOption.scrollingY,
+      padding = _context$mergedOption.padding;
+
+
+  if (scrollingX && !context.refreshLoad) {
     var width = getComplitableStyle('width', 'fit-content');
     if (width) {
       data.style['width'] = width;
     } /* istanbul ignore next */else {
         data['display'] = 'inline-block';
       }
-  } else {
-    data.style['width'] = '100%';
   }
 
-  if (context.mergedOptions.scrollPanel.padding) {
+  /* istanbul ignore if */
+  if (!scrollingX) {
+    data.class.push('x-hidden');
+  }
+  /* istanbul ignore if */
+  if (!scrollingY) {
+    data.class.push('y-hidden');
+  }
+
+  if (padding) {
     data.style.paddingRight = context.mergedOptions.rail.size;
   }
 
@@ -3492,8 +3511,8 @@ var members = {
   },
   __enableBounce: function __enableBounce(direction) {
     var self = this;
-
-    return self.options.bouncing === true || self.options.bouncing.indexOf(direction) > -1;
+    var bouncing = self.options.bouncing;
+    return bouncing === true || Array.isArray(bouncing) && bouncing.indexOf(direction) > -1;
   },
   /*
   ---------------------------------------------------------------------------
@@ -4191,8 +4210,8 @@ var slideMix = {
           case 'onscroll':
             {
               /**
-               * Trigger auto load
-               */
+                 * Trigger auto load
+                 */
               var stage = _this.vuescroll.state['loadStage'];
               var _mergedOptions$vuescr2 = _this.mergedOptions.vuescroll.pushLoad,
                   enable = _mergedOptions$vuescr2.enable,
@@ -4719,12 +4738,12 @@ function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   Vue$$1.component(opts.name || component.name, component);
-  Vue$$1.prototype.$vuescrollConfig = opts.ops;
+  Vue$$1.prototype.$vuescrollConfig = opts.ops || {};
 }
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.0-beta.18',
+  version: '4.9.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

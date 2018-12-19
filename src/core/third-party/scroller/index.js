@@ -1194,10 +1194,10 @@ var members = {
   },
   __enableBounce: function(direction) {
     var self = this;
-
+    var bouncing = self.options.bouncing;
     return (
-      self.options.bouncing === true ||
-      self.options.bouncing.indexOf(direction) > -1
+      bouncing === true ||
+      (Array.isArray(bouncing) && bouncing.indexOf(direction) > -1)
     );
   },
   /*

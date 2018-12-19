@@ -19,18 +19,21 @@ export function getPanelData(context) {
     }
   };
   data.class.push('__native');
+  const { scrollingY, scrollingX } = context.mergedOptions.scrollPanel;
   // dynamic set overflow scroll
   // feat: #11
-  if (context.mergedOptions.scrollPanel.scrollingY) {
+  if (scrollingY) {
     data.style['overflowY'] = context.bar.vBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowY'] = 'hidden';
+    data.class.push('y-hidden');
   }
 
-  if (context.mergedOptions.scrollPanel.scrollingX) {
+  if (scrollingX) {
     data.style['overflowX'] = context.bar.hBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowX'] = 'hidden';
+    data.class.push('x-hidden');
   }
 
   let gutter = getGutter();

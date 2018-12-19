@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0-beta.18
+    * Vuescroll v4.9.0
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1983,18 +1983,24 @@ function getPanelData(context) {
     }
   };
   data.class.push('__native');
+  var _context$mergedOption = context.mergedOptions.scrollPanel,
+      scrollingY = _context$mergedOption.scrollingY,
+      scrollingX = _context$mergedOption.scrollingX;
   // dynamic set overflow scroll
   // feat: #11
-  if (context.mergedOptions.scrollPanel.scrollingY) {
+
+  if (scrollingY) {
     data.style['overflowY'] = context.bar.vBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowY'] = 'hidden';
+    data.class.push('y-hidden');
   }
 
-  if (context.mergedOptions.scrollPanel.scrollingX) {
+  if (scrollingX) {
     data.style['overflowX'] = context.bar.hBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowX'] = 'hidden';
+    data.class.push('x-hidden');
   }
 
   var gutter = getGutter();
@@ -2257,12 +2263,12 @@ function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   Vue$$1.component(opts.name || component.name, component);
-  Vue$$1.prototype.$vuescrollConfig = opts.ops;
+  Vue$$1.prototype.$vuescrollConfig = opts.ops || {};
 }
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.0-beta.18',
+  version: '4.9.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
