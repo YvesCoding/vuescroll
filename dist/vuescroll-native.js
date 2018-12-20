@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.0
+    * Vuescroll v4.9.1
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1993,14 +1993,12 @@ function getPanelData(context) {
     data.style['overflowY'] = context.bar.vBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowY'] = 'hidden';
-    data.class.push('y-hidden');
   }
 
   if (scrollingX) {
     data.style['overflowX'] = context.bar.hBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowX'] = 'hidden';
-    data.class.push('x-hidden');
   }
 
   var gutter = getGutter();
@@ -2268,7 +2266,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.0',
+  version: '4.9.1',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

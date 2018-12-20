@@ -26,14 +26,12 @@ export function getPanelData(context) {
     data.style['overflowY'] = context.bar.vBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowY'] = 'hidden';
-    data.class.push('y-hidden');
   }
 
   if (scrollingX) {
     data.style['overflowX'] = context.bar.hBar.state.size ? 'scroll' : '';
   } else {
     data.style['overflowX'] = 'hidden';
-    data.class.push('x-hidden');
   }
 
   let gutter = getGutter();
