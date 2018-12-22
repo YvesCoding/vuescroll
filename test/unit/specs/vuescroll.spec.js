@@ -421,4 +421,48 @@ describe('vuescroll', () => {
         done();
       });
   });
+
+  // renderMethod
+  it('renderMethod', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 400,
+            h: 400
+          },
+          {
+            w: 200,
+            h: 200
+          }
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'slide',
+              renderMethod: 'position'
+            }
+          }
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+
+    startSchedule()
+      .then(() => {
+        vs.scrollTo({
+          x: 100,
+          y: 100
+        });
+      })
+      .wait(400)
+      .then(() => {
+        const elm = vs.$el.querySelector('.__panel');
+        expect(elm.style.top).toBe('-100px');
+        expect(elm.style.left).toBe('-100px');
+
+        done();
+      });
+  });
 });

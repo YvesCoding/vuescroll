@@ -6,6 +6,8 @@ import { error } from 'shared/util';
 export const config = {
   // vuescroll
   vuescroll: {
+    // position or transform
+    renderMethod: 'transform',
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
       enable: false,
@@ -34,7 +36,7 @@ export const config = {
       width: 100,
       height: 100
     },
-    /* shipped scroll options */
+    /* some scroller options */
     scroller: {
       /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
       bouncing: true,

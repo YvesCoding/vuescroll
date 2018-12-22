@@ -28,13 +28,14 @@
     }
     &.__native {
       height: 100%;
-      -webkit-overflow-scrolling: touch;
     }
     &.__slide {
-      transform-origin: left top 0px;
       user-select: none;
       min-width: 100%;
       min-height: 100%;
+    }
+    &.__transform {
+      transform-origin: left top 0px;
     }
     &.__pure-native {
       width: 100%;

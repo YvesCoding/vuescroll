@@ -177,29 +177,32 @@ export default {
         preventDefault,
         preventDefaultOnMove
       } = this.mergedOptions.vuescroll.scroller;
-      const paging = this.mergedOptions.vuescroll.paging;
-      const snapping = this.mergedOptions.vuescroll.snapping.enable;
+      let {
+        paging,
+        snapping: { enable: snapping },
+        renderMethod,
+        zooming
+      } = this.mergedOptions.vuescroll;
       // disale zooming when refresh or load enabled
-      let zooming =
-        !this.refreshLoad &&
-        !paging &&
-        !snapping &&
-        this.mergedOptions.vuescroll.zooming;
+      zooming = !this.refreshLoad && !paging && !snapping && zooming;
       const { scrollingY, scrollingX } = this.mergedOptions.scrollPanel;
 
       const scrollingComplete = this.scrollingComplete.bind(this);
 
       // Initialize Scroller
-      this.scroller = new Scroller(render(this.scrollPanelElm, window, 'px'), {
-        ...this.mergedOptions.vuescroll.scroller,
-        zooming,
-        scrollingY,
-        scrollingX: scrollingX && !this.refreshLoad,
-        animationDuration: this.mergedOptions.scrollPanel.speed,
-        paging,
-        snapping,
-        scrollingComplete
-      });
+      this.scroller = new Scroller(
+        render(this.scrollPanelElm, window, 'px', renderMethod),
+        {
+          ...this.mergedOptions.vuescroll.scroller,
+          zooming,
+          scrollingY,
+          scrollingX: scrollingX && !this.refreshLoad,
+          animationDuration: this.mergedOptions.scrollPanel.speed,
+          paging,
+          snapping,
+          scrollingComplete
+        }
+      );
 
       // Set snap
       if (snapping) {

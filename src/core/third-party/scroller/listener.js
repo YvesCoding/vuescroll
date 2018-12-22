@@ -22,6 +22,8 @@ export function listenContainer(
     if (preventDefault) {
       e.preventDefault();
     }
+
+    e.stopPropagation();
     // here , we want to manully prevent default, so we
     // set passive to false
     // see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
