@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.1
+    * Vuescroll v4.9.2
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1890,8 +1890,6 @@ function scrollTo(elm, x, y) {
   if (nodeType == 9) {
     // document
     elm = elm.scrollingElement;
-  } else {
-    elm.parentNode.classList.add('scrolling');
   }
 
   var _elm2 = elm;
@@ -2119,6 +2117,10 @@ function getPanelData$1(context) {
   /* istanbul ignore if */
   if (isIos()) {
     data.class.push('__ios');
+  }
+
+  if (context.mergedOptions.vuescroll.renderMethod == 'transform') {
+    data.class.push('__transform');
   }
 
   var _context$mergedOption = context.mergedOptions.scrollPanel,
@@ -3860,12 +3862,12 @@ for (var key in members) {
 }
 
 /* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
-function render$1(content, global, suffix, value) {
-  var x = null;
-  var y = null;
-
-  if (typeof content == 'string') {
-    y = content == 'vertical' ? (x = 0) || value : (x = value) && 0;
+function render$1(content, global, suffix, type) {
+  if (type == 'position') {
+    return function (left, top) {
+      content.style.left = -left + 'px';
+      content.style.top = -top + 'px';
+    };
   }
 
   var vendorPrefix = getPrefix(global);
@@ -3877,16 +3879,10 @@ function render$1(content, global, suffix, value) {
   var transformProperty = 'transform'; //vendorPrefix + 'Transform';
 
   if (helperElem.style[perspectiveProperty] !== undef) {
-    if (typeof content == 'string') {
-      return defineProperty({}, transformProperty, 'translate3d(' + x + suffix + ',' + y + suffix + ',0)');
-    }
     return function (left, top, zoom) {
       content.style[transformProperty] = 'translate3d(' + -left + suffix + ',' + -top + suffix + ',0) scale(' + zoom + ')';
     };
   } else if (helperElem.style[transformProperty] !== undef) {
-    if (typeof content == 'string') {
-      return defineProperty({}, transformProperty, 'translate(' + x + suffix + ',' + y + suffix + ')');
-    }
     return function (left, top, zoom) {
       content.style[transformProperty] = 'translate(' + -left + suffix + ',' + -top + suffix + ') scale(' + zoom + ')';
     };
@@ -3906,6 +3902,8 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
     if (preventDefault) {
       e.preventDefault();
     }
+
+    e.stopPropagation();
     // here , we want to manully prevent default, so we
     // set passive to false
     // see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
@@ -4167,11 +4165,14 @@ var slideMix = {
       var _mergedOptions$vuescr = this.mergedOptions.vuescroll.scroller,
           preventDefault = _mergedOptions$vuescr.preventDefault,
           preventDefaultOnMove = _mergedOptions$vuescr.preventDefaultOnMove;
-
-      var paging = this.mergedOptions.vuescroll.paging;
-      var snapping = this.mergedOptions.vuescroll.snapping.enable;
+      var _mergedOptions$vuescr2 = this.mergedOptions.vuescroll,
+          paging = _mergedOptions$vuescr2.paging,
+          snapping = _mergedOptions$vuescr2.snapping.enable,
+          renderMethod = _mergedOptions$vuescr2.renderMethod,
+          zooming = _mergedOptions$vuescr2.zooming;
       // disale zooming when refresh or load enabled
-      var zooming = !this.refreshLoad && !paging && !snapping && this.mergedOptions.vuescroll.zooming;
+
+      zooming = !this.refreshLoad && !paging && !snapping && zooming;
       var _mergedOptions$scroll = this.mergedOptions.scrollPanel,
           scrollingY = _mergedOptions$scroll.scrollingY,
           scrollingX = _mergedOptions$scroll.scrollingX;
@@ -4180,7 +4181,7 @@ var slideMix = {
       var scrollingComplete = this.scrollingComplete.bind(this);
 
       // Initialize Scroller
-      this.scroller = new Scroller(render$1(this.scrollPanelElm, window, 'px'), _extends({}, this.mergedOptions.vuescroll.scroller, {
+      this.scroller = new Scroller(render$1(this.scrollPanelElm, window, 'px', renderMethod), _extends({}, this.mergedOptions.vuescroll.scroller, {
         zooming: zooming,
         scrollingY: scrollingY,
         scrollingX: scrollingX && !this.refreshLoad,
@@ -4211,10 +4212,10 @@ var slideMix = {
                  * Trigger auto load
                  */
               var stage = _this.vuescroll.state['loadStage'];
-              var _mergedOptions$vuescr2 = _this.mergedOptions.vuescroll.pushLoad,
-                  enable = _mergedOptions$vuescr2.enable,
-                  auto = _mergedOptions$vuescr2.auto,
-                  autoLoadDistance = _mergedOptions$vuescr2.autoLoadDistance;
+              var _mergedOptions$vuescr3 = _this.mergedOptions.vuescroll.pushLoad,
+                  enable = _mergedOptions$vuescr3.enable,
+                  auto = _mergedOptions$vuescr3.auto,
+                  autoLoadDistance = _mergedOptions$vuescr3.autoLoadDistance;
               var _scroller = _this.scroller,
                   __scrollTop = _scroller.__scrollTop,
                   __maxScrollTop = _scroller.__maxScrollTop;
@@ -4613,6 +4614,8 @@ var mixins = [core$1];
 var config = {
   // vuescroll
   vuescroll: {
+    // position or transform
+    renderMethod: 'transform',
     // pullRefresh or pushLoad is only for the slide mode...
     pullRefresh: {
       enable: false,
@@ -4641,7 +4644,7 @@ var config = {
       width: 100,
       height: 100
     },
-    /* shipped scroll options */
+    /* some scroller options */
     scroller: {
       /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
       bouncing: true,
@@ -4741,7 +4744,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.1',
+  version: '4.9.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

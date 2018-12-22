@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.1
+    * Vuescroll v4.9.2
     * (c) 2018-2018 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1866,8 +1866,6 @@ function scrollTo(elm, x, y) {
   if (nodeType == 9) {
     // document
     elm = elm.scrollingElement;
-  } else {
-    elm.parentNode.classList.add('scrolling');
   }
 
   var _elm2 = elm;
@@ -2266,7 +2264,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.1',
+  version: '4.9.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
