@@ -1,6 +1,6 @@
 /*
-    * Vuescroll v4.9.2
-    * (c) 2018-2018 Yi(Yves) Wang
+    * Vuescroll v4.9.3
+    * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
     * Website: http://vuescrolljs.yvescoding.org/
@@ -2812,12 +2812,16 @@ var members = {
     // Use publish instead of scrollTo to allow scrolling to out of boundary position
     // We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
     if (type == 'refresh') {
+      if (this.__refreshActive || this.__refreshBeforeDeactiveStarted) return;
+
       this.__publish(this.__scrollLeft, -this.__refreshHeight, this.__zoomLevel, true);
       if (this.__refreshStart) {
         this.__refreshStart();
         this.__refreshActive = true;
       }
     } else if (type == 'load') {
+      if (this.__loadActive || this.__loadBeforeDeactiveStarted) return;
+
       this.__publish(this.__scrollLeft, this.__maxScrollTop + this.__loadHeight, this.__zoomLevel, true);
       if (this.__loadStart) {
         this.__loadStart();
@@ -4744,7 +4748,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.2',
+  version: '4.9.3',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

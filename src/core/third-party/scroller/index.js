@@ -407,6 +407,8 @@ var members = {
     // Use publish instead of scrollTo to allow scrolling to out of boundary position
     // We don't need to normalize scrollLeft, zoomLevel, etc. here because we only y-scrolling when pull-to-refresh is enabled
     if (type == 'refresh') {
+      if (this.__refreshActive || this.__refreshBeforeDeactiveStarted) return;
+
       this.__publish(
         this.__scrollLeft,
         -this.__refreshHeight,
@@ -418,6 +420,8 @@ var members = {
         this.__refreshActive = true;
       }
     } else if (type == 'load') {
+      if (this.__loadActive || this.__loadBeforeDeactiveStarted) return;
+
       this.__publish(
         this.__scrollLeft,
         this.__maxScrollTop + this.__loadHeight,
