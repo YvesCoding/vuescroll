@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.3
+    * Vuescroll v4.9.4
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -420,19 +420,20 @@ var api = {
           _ref2$dy = _ref2.dy,
           dy = _ref2$dy === undefined ? 0 : _ref2$dy;
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-      var _vuescroll$state = this.vuescroll.state,
-          _vuescroll$state$inte = _vuescroll$state.internalScrollLeft,
-          internalScrollLeft = _vuescroll$state$inte === undefined ? 0 : _vuescroll$state$inte,
-          _vuescroll$state$inte2 = _vuescroll$state.internalScrollTop,
-          internalScrollTop = _vuescroll$state$inte2 === undefined ? 0 : _vuescroll$state$inte2;
+
+      var _getPosition = this.getPosition(),
+          _getPosition$scrollLe = _getPosition.scrollLeft,
+          scrollLeft = _getPosition$scrollLe === undefined ? 0 : _getPosition$scrollLe,
+          _getPosition$scrollTo = _getPosition.scrollTop,
+          scrollTop = _getPosition$scrollTo === undefined ? 0 : _getPosition$scrollTo;
 
       if (dx) {
-        internalScrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth - this.$el.clientWidth);
+        scrollLeft += getNumericValue(dx, this.scrollPanelElm.scrollWidth - this.$el.clientWidth);
       }
       if (dy) {
-        internalScrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight - this.$el.clientHeight);
+        scrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight - this.$el.clientHeight);
       }
-      this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
+      this.internalScrollTo(scrollLeft, scrollTop, animate);
     },
     scrollIntoView: function scrollIntoView(elm) {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -905,11 +906,15 @@ function injectObject(element, callback) {
   object.style.cssText = OBJECT_STYLE;
   object.type = 'text/html';
   object.tabIndex = -1;
+  // Set # to make it work on safari mobile
+  if (isIos()) {
+    object.data = '#';
+  }
   object.onload = function () {
     eventCenter(object.contentDocument.defaultView, 'resize', callback);
   };
   // https://github.com/wnr/element-resize-detector/blob/aafe9f7ea11d1eebdab722c7c5b86634e734b9b8/src/detection-strategy/object.js#L159
-  if (!isIE()) {
+  if (!isIE() && !isIos()) {
     object.data = 'about:blank';
   }
   objWrap.isResizeElm = true;
@@ -1376,9 +1381,8 @@ function createBar(h, vm) {
  * native-mode, slide-mode and mix-mode.
  * Each mode must implement the following methods:
  * 1. refreshInternalStatus : use to refresh the component
- * 2. recordCurrentPos : use the record the current scroll postion.
- * 3. destroy : Destroy some registryed events before component destroy.
- * 4. updateBarStateAndEmitEvent: use to update bar states and emit events.
+ * 2. destroy : Destroy some registryed events before component destroy.
+ * 3. updateBarStateAndEmitEvent: use to update bar states and emit events.
  */
 
 var createComponent = function createComponent(_ref) {
@@ -1526,12 +1530,6 @@ var createComponent = function createComponent(_ref) {
           state: {
             isDragging: false,
             pointerLeave: true,
-            /** Internal states to record current positions */
-            internalScrollTop: 0,
-            internalScrollLeft: 0,
-            /** Current scrolling directions */
-            posX: null,
-            posY: null,
             /** Default sizeStrategies */
             height: '100%',
             width: '100%',
@@ -1572,10 +1570,7 @@ var createComponent = function createComponent(_ref) {
     /** ------------------------------- Methods -------------------------------- */
     methods: {
       /** ------------------------ Handlers --------------------------- */
-      handleScroll: function handleScroll(nativeEvent) {
-        this.recordCurrentPos();
-        this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
-      },
+
       scrollingComplete: function scrollingComplete() {
         this.vuescroll.state.scrollingTimes++;
         this.updateBarStateAndEmitEvent('handle-scroll-complete');
@@ -1683,9 +1678,6 @@ var createComponent = function createComponent(_ref) {
               return;
             }
             _this6.refreshInternalStatus();
-
-            // record current position
-            _this6.recordCurrentPos();
           }, 0);
         }, watchOpts);
 
@@ -2099,20 +2091,11 @@ var updateNative = {
       this.bar.vBar.state.size = heightPercentage < 1 ? heightPercentage : 0;
       this.bar.hBar.state.size = widthPercentage < 1 ? widthPercentage : 0;
     },
-    recordNativeCurrentPos: function recordNativeCurrentPos() {
-      var state = this.vuescroll.state;
-      var axis = {
-        x: this.scrollPanelElm.scrollLeft,
-        y: this.scrollPanelElm.scrollTop
+    getNativePosition: function getNativePosition() {
+      return {
+        scrollLeft: this.scrollPanelElm.scrollTop,
+        scrollTop: this.scrollPanelElm.scrollLeft
       };
-      var oldX = state.internalScrollLeft;
-      var oldY = state.internalScrollTop;
-
-      state.posX = oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
-      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
-
-      state.internalScrollLeft = axis.x;
-      state.internalScrollTop = axis.y;
     }
   },
   computed: {
@@ -2136,6 +2119,9 @@ var core$1 = {
     },
     internalScrollTo: function internalScrollTo(destX, destY, animate) {
       this.nativeScrollTo(destX, destY, animate);
+    },
+    handleScroll: function handleScroll(nativeEvent) {
+      this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
     },
     updateBarStateAndEmitEvent: function updateBarStateAndEmitEvent(eventType) {
       var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -2177,14 +2163,8 @@ var core$1 = {
       horizontal['barSize'] = this.bar.hBar.state.size;
       vertical['scrollTop'] = scrollTop;
       horizontal['scrollLeft'] = scrollLeft;
-      // Current scroll direction
-      vertical['directionY'] = this.vuescroll.state.posY;
-      horizontal['directionX'] = this.vuescroll.state.posX;
 
       this.$emit(eventType, vertical, horizontal, nativeEvent);
-    },
-    recordCurrentPos: function recordCurrentPos() {
-      this.recordNativeCurrentPos();
     },
     initVariables: function initVariables() {
       this.$el._isVuescroll = true;
@@ -2247,6 +2227,9 @@ var core$1 = {
 
         _this.destroyResize = null;
       };
+    },
+    getPosition: function getPosition() {
+      return this.getNativePosition();
     }
   }
 };
@@ -2264,7 +2247,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.3',
+  version: '4.9.4',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

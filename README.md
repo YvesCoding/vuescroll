@@ -12,7 +12,7 @@
   <a href="https://github.com/YvesCoding/vuescroll-issue-list-demo" target="_blank"><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo"/></a>
 </p>
 
-Vuescroll is a [full customizable scrollbar](https://vuescrolljs.yvescoding.org/demo/#customize-scrollbar) plugin based on Vue.js 2.X, it also spports [pull-to-refresh, push-to-load](https://vuescrolljs.yvescoding.org/demo/#pull-refresh-or-push-load) and [carousel](https://vuescrolljs.yvescoding.org/demo/#carousel).
+Vuescroll is a [full customizable scrollbar](https://vuescrolljs.yvescoding.org/demo/#customize-scrollbar) plugin based on Vue.js 2.X, it also spports [pull-to-refresh, push-to-load](https://vuescrolljs.yvescoding.org/demo/#pull-refresh-or-push-load) or [carousel](https://vuescrolljs.yvescoding.org/demo/#carousel).
 
 _Vuescroll's compatibility is consistent with `Vue.js 2.X`._
 
