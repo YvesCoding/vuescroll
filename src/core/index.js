@@ -17,9 +17,8 @@ import { createBar } from 'mode/shared/bar';
  * native-mode, slide-mode and mix-mode.
  * Each mode must implement the following methods:
  * 1. refreshInternalStatus : use to refresh the component
- * 2. recordCurrentPos : use the record the current scroll postion.
- * 3. destroy : Destroy some registryed events before component destroy.
- * 4. updateBarStateAndEmitEvent: use to update bar states and emit events.
+ * 2. destroy : Destroy some registryed events before component destroy.
+ * 3. updateBarStateAndEmitEvent: use to update bar states and emit events.
  */
 
 const createComponent = ({ render, components, mixins }) => ({
@@ -154,12 +153,6 @@ const createComponent = ({ render, components, mixins }) => ({
         state: {
           isDragging: false,
           pointerLeave: true,
-          /** Internal states to record current positions */
-          internalScrollTop: 0,
-          internalScrollLeft: 0,
-          /** Current scrolling directions */
-          posX: null,
-          posY: null,
           /** Default sizeStrategies */
           height: '100%',
           width: '100%',
@@ -199,10 +192,7 @@ const createComponent = ({ render, components, mixins }) => ({
   /** ------------------------------- Methods -------------------------------- */
   methods: {
     /** ------------------------ Handlers --------------------------- */
-    handleScroll(nativeEvent) {
-      this.recordCurrentPos();
-      this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
-    },
+
     scrollingComplete() {
       this.vuescroll.state.scrollingTimes++;
       this.updateBarStateAndEmitEvent('handle-scroll-complete');
@@ -307,9 +297,6 @@ const createComponent = ({ render, components, mixins }) => ({
               return;
             }
             this.refreshInternalStatus();
-
-            // record current position
-            this.recordCurrentPos();
           }, 0);
         },
         watchOpts

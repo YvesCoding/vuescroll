@@ -12,7 +12,7 @@ describe('scroll-panel', () => {
     destroyVM(vm);
   });
 
-  it('initialScrollY and initialScrollX and speed', done => {
+  it('initialScrollY and initialScrollX and speed', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -47,7 +47,7 @@ describe('scroll-panel', () => {
     });
   });
 
-  it('scrollingX, scrollingY', done => {
+  it('scrollingX, scrollingY', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -87,7 +87,7 @@ describe('scroll-panel', () => {
   });
 
   // hover style
-  it('Padding', done => {
+  it('Padding', (done) => {
     vm = createVue(
       {
         template: makeTemplate(

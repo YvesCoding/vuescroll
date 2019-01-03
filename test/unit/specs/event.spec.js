@@ -17,7 +17,7 @@ describe('handle-resize', () => {
     destroyVM(vm);
   });
 
-  it('toggle mode test resize', done => {
+  it('toggle mode test resize', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -49,13 +49,13 @@ describe('handle-resize', () => {
     let hBar;
     let content = vm.$el.querySelector('.__view > div');
     startSchedule()
-      .then(r => {
+      .then((r) => {
         hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(hBar).not.toBe(null);
         content.style.width = '99px';
         _r = r;
       })
-      .then(r => {
+      .then((r) => {
         hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(hBar).toBe(null);
         content.style.width = '198px';
@@ -68,12 +68,12 @@ describe('handle-resize', () => {
         vm.ops.vuescroll.mode = 'slide';
       })
       .wait(5)
-      .then(r => {
+      .then((r) => {
         content = vm.$el.querySelector('.__panel > div');
         content.style.width = '99px';
         _r = r;
       })
-      .then(r => {
+      .then((r) => {
         hBar = vm.$el.querySelector('.__bar-is-horizontal');
         expect(hBar).toBe(null);
         content.style.width = '198px';

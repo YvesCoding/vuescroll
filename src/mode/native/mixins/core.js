@@ -17,6 +17,9 @@ export default {
     internalScrollTo(destX, destY, animate) {
       this.nativeScrollTo(destX, destY, animate);
     },
+    handleScroll(nativeEvent) {
+      this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
+    },
     updateBarStateAndEmitEvent(eventType, nativeEvent = null) {
       this.updateNativeModeBarState();
       if (eventType) {
@@ -66,15 +69,8 @@ export default {
       horizontal['barSize'] = this.bar.hBar.state.size;
       vertical['scrollTop'] = scrollTop;
       horizontal['scrollLeft'] = scrollLeft;
-      // Current scroll direction
-      vertical['directionY'] = this.vuescroll.state.posY;
-      horizontal['directionX'] = this.vuescroll.state.posX;
 
       this.$emit(eventType, vertical, horizontal, nativeEvent);
-    },
-
-    recordCurrentPos() {
-      this.recordNativeCurrentPos();
     },
 
     initVariables() {
@@ -139,6 +135,9 @@ export default {
 
         this.destroyResize = null;
       };
+    },
+    getPosition() {
+      return this.getNativePosition();
     }
   }
 };

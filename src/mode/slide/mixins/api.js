@@ -4,13 +4,14 @@ import { warn, getNumericValue } from 'shared/util';
 export default {
   methods: {
     slideScrollTo(x, y, animate, force) {
+      const { scrollLeft, scrollTop } = this.getPosition();
       if (typeof x === 'undefined') {
-        x = this.vuescroll.state.internalScrollLeft || 0;
+        x = scrollLeft || 0;
       } else {
         x = getNumericValue(x, this.scroller.__maxScrollLeft);
       }
       if (typeof y === 'undefined') {
-        y = this.vuescroll.state.internalScrollTop || 0;
+        y = scrollTop || 0;
       } else {
         y = getNumericValue(y, this.scroller.__maxScrollTop);
       }
@@ -62,7 +63,7 @@ export default {
         warn('refresh must be enabled!');
         return;
       } else if (type == 'load' && !isLoad) {
-        warn('load must be enabled and content\'s height > container\'s height!');
+        warn("load must be enabled and content's height > container's height!");
         return;
       } else if (type !== 'refresh' && type !== 'load') {
         warn('param must be one of load and refresh!');

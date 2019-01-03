@@ -10,7 +10,7 @@ describe('api', () => {
 
   afterEach(() => {
     if (Array.isArray(vm)) {
-      vm.forEach(v => {
+      vm.forEach((v) => {
         destroyVM(v);
       });
     } else {
@@ -18,7 +18,7 @@ describe('api', () => {
     }
   });
 
-  it('scrollTo(native)', done => {
+  it('scrollTo(native)', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -88,7 +88,7 @@ describe('api', () => {
       });
   });
 
-  it('scrollTo(slide)', done => {
+  it('scrollTo(slide)', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -155,7 +155,7 @@ describe('api', () => {
       });
   });
 
-  it('scrollBy', done => {
+  it('scrollBy', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -197,7 +197,7 @@ describe('api', () => {
       });
   });
 
-  it('zoomBy, zoomTo', done => {
+  it('zoomBy, zoomTo', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -264,7 +264,7 @@ describe('api', () => {
       });
   });
 
-  it('triggerRefreshOrLoad, goToPage ,getCurrentviewDom', done => {
+  it('triggerRefreshOrLoad, goToPage ,getCurrentviewDom', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -315,14 +315,6 @@ describe('api', () => {
         expect(page.y).toBe(2);
         expect(currentDom.length).toBe(1);
         expect(currentDom[0]).toEqual(divs[1]);
-        vm.ops.vuescroll.mode = 'native';
-      })
-      .then(() => {
-        const currentDom = vs.getCurrentviewDom();
-        const divs = vm.$el.querySelectorAll('.__view div');
-        expect(currentDom.length).toBe(1);
-        expect(currentDom[0]).toEqual(divs[1]);
-        vm.ops.vuescroll.mode = 'slide';
       })
       .then(() => {
         vs.scrollIntoView('#d3');
@@ -352,11 +344,26 @@ describe('api', () => {
       .then(() => {
         const loadDom = vs.$el.querySelector('.__load');
         expect(loadDom.innerText).toBe('Loading...');
+        vm.ops.vuescroll.mode = 'native';
+      })
+      .then(() => {
+        vs.scrollTo(
+          {
+            y: 100
+          },
+          false
+        );
+      })
+      .then(() => {
+        const divs = vm.$el.querySelectorAll('.__view div');
+        const currentDom = vs.getCurrentviewDom();
+        expect(currentDom.length).toBe(1);
+        expect(currentDom[0]).toEqual(divs[1]);
         done();
       });
   });
 
-  it('refresh, refreshAll', done => {
+  it('refresh, refreshAll', (done) => {
     vm = [];
     vm[0] = createVue(
       {
@@ -453,7 +460,7 @@ describe('api', () => {
 
   // Scrolling times test
 
-  it('Api: getScrollingTimes, clearScrollingTimes', done => {
+  it('Api: getScrollingTimes, clearScrollingTimes', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -503,7 +510,7 @@ describe('api', () => {
   });
 
   // ScrollTop should be 50 #51
-  it('scrollTo 50%, scrollTop and scrollLeft should be 150', done => {
+  it('scrollTo 50%, scrollTop and scrollLeft should be 150', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -545,7 +552,7 @@ describe('api', () => {
       });
   });
 
-  it('scrollTo(public)', done => {
+  it('scrollTo(public)', (done) => {
     const height = document.scrollingElement.scrollHeight + 100;
     const width = document.scrollingElement.scrollWidth + 100;
     vm = createVue(

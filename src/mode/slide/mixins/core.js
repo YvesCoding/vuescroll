@@ -33,6 +33,9 @@ export default {
     internalScrollTo(destX, destY, animate, force) {
       this.slideScrollTo(destX, destY, animate, undefined, force);
     },
+    handleScroll(nativeEvent) {
+      this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
+    },
     updateBarStateAndEmitEvent(eventType, nativeEvent = null) {
       if (!this.scroller) {
         return;
@@ -91,22 +94,15 @@ export default {
       horizontal['barSize'] = this.bar.hBar.state.size;
       vertical['scrollTop'] = scrollTop;
       horizontal['scrollLeft'] = scrollLeft;
-      // Current scroll direction
-      vertical['directionY'] = this.vuescroll.state.posY;
-      horizontal['directionX'] = this.vuescroll.state.posX;
 
       this.$emit(eventType, vertical, horizontal, nativeEvent);
-    },
-    recordCurrentPos() {
-      this.recordSlideCurrentPos();
     },
     initVariables() {
       this.$el._isVuescroll = true;
       this.clearScrollingTimes();
     },
     refreshMode() {
-      const x = this.vuescroll.state.internalScrollLeft;
-      const y = this.vuescroll.state.internalScrollTop;
+      const { scrollLefft: x, scrollTop: y } = this.getPosition();
       if (this.destroyScroller) {
         this.scroller.stop();
         this.destroyScroller();
@@ -180,6 +176,9 @@ export default {
 
         this.destroyResize = null;
       };
+    },
+    getPosition() {
+      return this.getSlidePosition();
     }
   }
 };

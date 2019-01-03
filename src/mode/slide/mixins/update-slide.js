@@ -225,43 +225,43 @@ export default {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
-          case 'mousedown':
-            this.vuescroll.state.isDragging = true;
-            break;
-          case 'onscroll':
-            {
-              /**
+            case 'mousedown':
+              this.vuescroll.state.isDragging = true;
+              break;
+            case 'onscroll':
+              {
+                /**
                  * Trigger auto load
                  */
-              const stage = this.vuescroll.state['loadStage'];
-              const {
-                enable,
-                auto,
-                autoLoadDistance
-              } = this.mergedOptions.vuescroll.pushLoad;
-              const { __scrollTop, __maxScrollTop } = this.scroller;
-              if (
-                stage != 'start' &&
+                const stage = this.vuescroll.state['loadStage'];
+                const {
+                  enable,
+                  auto,
+                  autoLoadDistance
+                } = this.mergedOptions.vuescroll.pushLoad;
+                const { __scrollTop, __maxScrollTop } = this.scroller;
+                if (
+                  stage != 'start' &&
                   enable &&
                   auto &&
                   !this.lockAutoLoad && // auto load debounce
                   autoLoadDistance >= __maxScrollTop - __scrollTop
-              ) {
-                this.lockAutoLoad = true;
-                this.triggerRefreshOrLoad('load');
+                ) {
+                  this.lockAutoLoad = true;
+                  this.triggerRefreshOrLoad('load');
+                }
+
+                if (autoLoadDistance < __maxScrollTop - __scrollTop) {
+                  this.lockAutoLoad = false;
+                }
+
+                this.handleScroll(false);
               }
 
-              if (autoLoadDistance < __maxScrollTop - __scrollTop) {
-                this.lockAutoLoad = false;
-              }
-
-              this.handleScroll(false);
-            }
-
-            break;
-          case 'mouseup':
-            this.vuescroll.state.isDragging = false;
-            break;
+              break;
+            case 'mouseup':
+              this.vuescroll.state.isDragging = false;
+              break;
           }
         },
         zooming,
@@ -290,31 +290,29 @@ export default {
       const contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       const contentHeight = clientHeight + this.scroller.__maxScrollTop;
 
-      const __enableScrollX =
-        clientWidth < contentWidth && this.mergedOptions.scrollPanel.scrollingX;
-      const __enableScrollY =
-        clientHeight < contentHeight &&
-        this.mergedOptions.scrollPanel.scrollingY;
+      // We should add the the height or width that is
+      // out of horizontal bountry  to the total length
 
-      // We should take the the height or width that is
-      // out of horizontal bountry  into the total length
-      if (__enableScrollX) {
-        /* istanbul ignore if */
-        if (scroller.__scrollLeft < 0) {
-          outerLeft = -scroller.__scrollLeft;
-        } /* istanbul ignore next */ else if (
-          scroller.__scrollLeft > scroller.__maxScrollLeft
-        ) {
-          outerLeft = scroller.__scrollLeft - scroller.__maxScrollLeft;
-        }
+      /* istanbul ignore if */
+      if (scroller.__scrollLeft < 0) {
+        outerLeft = -scroller.__scrollLeft;
+      } /* istanbul ignore next */ else if (
+        scroller.__scrollLeft > scroller.__maxScrollLeft
+      ) {
+        outerLeft = scroller.__scrollLeft - scroller.__maxScrollLeft;
       }
+
       // out of vertical bountry
-      if (__enableScrollY) {
-        if (scroller.__scrollTop < 0) {
-          outerTop = -scroller.__scrollTop;
-        } else if (scroller.__scrollTop > scroller.__maxScrollTop) {
-          outerTop = scroller.__scrollTop - scroller.__maxScrollTop;
-        }
+      if (scroller.__scrollTop < 0) {
+        outerTop = -scroller.__scrollTop;
+        this.outTheBottomBoundary = false;
+        this.outTheTopBoundary = true;
+      } else if (scroller.__scrollTop > scroller.__maxScrollTop) {
+        outerTop = scroller.__scrollTop - scroller.__maxScrollTop;
+        this.outTheTopBoundary = false;
+        this.outTheBottomBoundary = true;
+      } else {
+        this.outTheTopBoundary = this.outTheBottomBoundary = false;
       }
 
       heightPercentage = clientHeight / (contentHeight + outerTop);
@@ -358,34 +356,11 @@ export default {
 
       activateFunc.bind(this.scroller)(height, cbs);
     },
-    recordSlideCurrentPos() {
-      const state = this.vuescroll.state;
-      let axis = {
-        x: this.scroller.__scrollLeft,
-        y: this.scroller.__scrollTop
+    getSlidePosition() {
+      return {
+        scrollLeft: this.scroller.__scrollLeft,
+        scrollTop: this.scroller.__scrollTop
       };
-      const maxScrollTop = this.scroller.__maxScrollTop;
-
-      const oldX = state.internalScrollLeft;
-      const oldY = state.internalScrollTop;
-
-      state.posX =
-        oldX - axis.x > 0 ? 'right' : oldX - axis.x < 0 ? 'left' : null;
-      state.posY = oldY - axis.y > 0 ? 'up' : oldY - axis.y < 0 ? 'down' : null;
-
-      state.internalScrollLeft = axis.x;
-      state.internalScrollTop = axis.y;
-
-      if (axis.y < 0) {
-        this.outTheTopBoundary = true;
-        this.outTheBottomBoundary = false;
-      } else if (axis.y > maxScrollTop) {
-        this.outTheTopBoundary = false;
-        this.outTheBottomBoundary = true;
-      } else {
-        this.outTheTopBoundary = false;
-        this.outTheBottomBoundary = false;
-      }
     }
   }
 };

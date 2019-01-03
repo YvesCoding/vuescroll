@@ -13,23 +13,20 @@ export default {
       this.internalScrollTo(x, y, animate, force);
     },
     scrollBy({ dx = 0, dy = 0 }, animate = true) {
-      let {
-        internalScrollLeft = 0,
-        internalScrollTop = 0
-      } = this.vuescroll.state;
+      let { scrollLeft = 0, scrollTop = 0 } = this.getPosition();
       if (dx) {
-        internalScrollLeft += getNumericValue(
+        scrollLeft += getNumericValue(
           dx,
           this.scrollPanelElm.scrollWidth - this.$el.clientWidth
         );
       }
       if (dy) {
-        internalScrollTop += getNumericValue(
+        scrollTop += getNumericValue(
           dy,
           this.scrollPanelElm.scrollHeight - this.$el.clientHeight
         );
       }
-      this.internalScrollTo(internalScrollLeft, internalScrollTop, animate);
+      this.internalScrollTo(scrollLeft, scrollTop, animate);
     },
     scrollIntoView(elm, animate = true) {
       const parentElm = this.$el;

@@ -30,6 +30,9 @@ export default {
         this.destroyResize();
       }
     },
+    handleScroll(nativeEvent) {
+      this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
+    },
     updateBarStateAndEmitEvent(eventType, nativeEvent = null) {
       if (this.mode == 'native') {
         this.updateNativeModeBarState();
@@ -97,43 +100,19 @@ export default {
       horizontal['barSize'] = this.bar.hBar.state.size;
       vertical['scrollTop'] = scrollTop;
       horizontal['scrollLeft'] = scrollLeft;
-      // Current scroll direction
-      vertical['directionY'] = this.vuescroll.state.posY;
-      horizontal['directionX'] = this.vuescroll.state.posX;
 
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
-    recordCurrentPos() {
-      let mode = this.mode;
-      if (this.mode !== this.lastMode) {
-        mode = this.lastMode;
-        this.lastMode = this.mode;
-      }
-
-      if (mode == 'slide') {
-        this.recordSlideCurrentPos();
-      } else {
-        this.recordNativeCurrentPos();
-      }
-    },
-
     initVariables() {
       this.lastMode = this.mode;
       this.$el._isVuescroll = true;
       this.clearScrollingTimes();
     },
-
     refreshMode() {
-      const x = this.vuescroll.state.internalScrollLeft;
-      const y = this.vuescroll.state.internalScrollTop;
       if (this.destroyScroller) {
         this.scroller.stop();
         this.destroyScroller();
         this.destroyScroller = null;
-      }
-
-      if (this.mode !== this.lastMode) {
-        this.registryResize(true);
       }
 
       if (this.mode == 'slide') {
@@ -143,8 +122,6 @@ export default {
         this.scrollPanelElm.style.transform = '';
         this.scrollPanelElm.style.transformOrigin = '';
       }
-      // keep the last-mode's position.
-      this.scrollTo({ x, y }, false /* animate */, false /* force */);
     },
     refreshInternalStatus() {
       // 1.set vuescroll height or width according to
@@ -159,11 +136,17 @@ export default {
       this.updateBarStateAndEmitEvent('refresh-status');
     },
 
-    registryResize(isDestroyResize) {
+    registryResize() {
       const resizeEnable = this.mergedOptions.vuescroll.detectResize;
+      let modeChanged = false;
+
+      if (this.lastMode != this.mode) {
+        modeChanged = true;
+        this.lastMode = this.mode;
+      }
 
       /* istanbul ignore next */
-      if (this.destroyResize && !isDestroyResize && resizeEnable) {
+      if (this.destroyResize && resizeEnable && !modeChanged) {
         return;
       }
 
@@ -228,6 +211,13 @@ export default {
 
         this.destroyResize = null;
       };
+    },
+    getPosition() {
+      if (this.mode == 'slide') {
+        return this.getSlidePosition();
+      } else if (this.mode == 'native') {
+        return this.getNativePosition();
+      }
     }
   }
 };
