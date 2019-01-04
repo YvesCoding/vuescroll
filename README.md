@@ -18,11 +18,11 @@ _Vuescroll's compatibility is consistent with `Vue.js 2.X`._
 
 ## Documentation
 
-- [Online Demo](http://vuescrolljs.yvescoding.org/demo/)
+- [Live Demo](http://vuescrolljs.yvescoding.org/demo/)
 
-- [Get Started Guide](http://vuescrolljs.yvescoding.org/guide/getting-started.html)
+- [Get Started](http://vuescrolljs.yvescoding.org/guide/getting-started.html)
 
-- [Configurations](http://vuescrolljs.yvescoding.org/guide/configuration.html)
+- [Configuration](http://vuescrolljs.yvescoding.org/guide/configuration.html)
 
 - [API](http://vuescrolljs.yvescoding.org/guide/api.html)
 
