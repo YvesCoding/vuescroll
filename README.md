@@ -9,28 +9,26 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/YvesCoding/vuescroll-issue-list-demo" target="_blank"><img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show1.gif?raw=true" width="400"  alt="Demo"/></a>
+  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show.gif?raw=true" width="800"  alt="Demo"/> 
 </p>
 
-Vuescroll is a [full customizable scrollbar](https://vuescrolljs.yvescoding.org/demo/#customize-scrollbar) plugin based on Vue.js 2.X, it also spports [pull-to-refresh, push-to-load](https://vuescrolljs.yvescoding.org/demo/#pull-refresh-or-push-load) or [carousel](https://vuescrolljs.yvescoding.org/demo/#carousel).
+Vuescroll is a scrollbar plugin based on Vue.js 2.X, it is very easy to use, no complex options and every options has its default value. Just wrap the content by `<vue-scroll>` and a custom scrollbar will show. It spports:
+
+- [Customizable scrollbar](https://vuescrolljs.yvescoding.org/demo/#customize-scrollbar)
+- [Pull-to-refresh, push-to-load](https://vuescrolljs.yvescoding.org/demo/#pull-refresh-or-push-load)
+- [Carousel](https://vuescrolljs.yvescoding.org/demo/#carousel)
+
+## Compatibility
 
 _Vuescroll's compatibility is consistent with `Vue.js 2.X`._
 
 ## Documentation
 
-- [Live Demo](http://vuescrolljs.yvescoding.org/demo/)
-
-- [Get Started](http://vuescrolljs.yvescoding.org/guide/getting-started.html)
-
-- [Configuration](http://vuescrolljs.yvescoding.org/guide/configuration.html)
-
-- [API](http://vuescrolljs.yvescoding.org/guide/api.html)
-
-- [Event](http://vuescrolljs.yvescoding.org/guide/event.html)
-
-- [Slot](http://vuescrolljs.yvescoding.org/guide/slot.html)
+Please see our [Guide](https://vuescrolljs.yvescoding.org/guide) section.
 
 ## Example
+
+> Copy it to a html file and run it on the browser.
 
 ```html
 <!DOCTYPE html>
@@ -113,9 +111,9 @@ _Vuescroll's compatibility is consistent with `Vue.js 2.X`._
 
 ## Communication
 
-- My twitter: [@wangyi70991](https://twitter.com/wangyi70991?s=01)
+- Tell me on my twitter: [@wangyi70991](https://twitter.com/wangyi70991?s=01)
 
-* WeChat group:
+- WeChat group:
 
  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400" alt="Demo" style="max-width:100%;">
 
