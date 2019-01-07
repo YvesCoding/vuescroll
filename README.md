@@ -22,6 +22,10 @@ Vuescroll is a scrollbar plugin based on Vue.js 2.X, it is very easy to use, no 
 
 _Vuescroll's compatibility is consistent with `Vue.js 2.X`._
 
+## Demo
+
+Please see [Live Demo](https://vuescrolljs.yvescoding.org/demo) on the website.
+
 ## Documentation
 
 Please see our [Guide](https://vuescrolljs.yvescoding.org/guide) section of the website.
