@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.4
+    * Vuescroll v4.9.5
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -4229,18 +4229,12 @@ var core$1 = {
       this.clearScrollingTimes();
     },
     refreshMode: function refreshMode() {
-      var _getPosition = this.getPosition(),
-          x = _getPosition.scrollLefft,
-          y = _getPosition.scrollTop;
-
       if (this.destroyScroller) {
         this.scroller.stop();
         this.destroyScroller();
         this.destroyScroller = null;
       }
       this.destroyScroller = this.registryScroller();
-      // keep the last-mode's position.
-      this.scrollTo({ x: x, y: y }, false, true /* force */);
     },
     refreshInternalStatus: function refreshInternalStatus() {
       // 1.set vuescroll height or width according to
@@ -4402,7 +4396,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.4',
+  version: '4.9.5',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
