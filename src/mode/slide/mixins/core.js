@@ -102,15 +102,12 @@ export default {
       this.clearScrollingTimes();
     },
     refreshMode() {
-      const { scrollLefft: x, scrollTop: y } = this.getPosition();
       if (this.destroyScroller) {
         this.scroller.stop();
         this.destroyScroller();
         this.destroyScroller = null;
       }
       this.destroyScroller = this.registryScroller();
-      // keep the last-mode's position.
-      this.scrollTo({ x, y }, false, true /* force */);
     },
     refreshInternalStatus() {
       // 1.set vuescroll height or width according to
