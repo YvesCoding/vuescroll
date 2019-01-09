@@ -25,8 +25,8 @@ export default {
     },
     getNativePosition() {
       return {
-        scrollLeft: this.scrollPanelElm.scrollTop,
-        scrollTop: this.scrollPanelElm.scrollLeft
+        scrollTop: this.scrollPanelElm.scrollTop,
+        scrollLeft: this.scrollPanelElm.scrollLeft
       };
     }
   },
