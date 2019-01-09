@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.5
+    * Vuescroll v4.9.6
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -2093,8 +2093,8 @@ var updateNative = {
     },
     getNativePosition: function getNativePosition() {
       return {
-        scrollLeft: this.scrollPanelElm.scrollTop,
-        scrollTop: this.scrollPanelElm.scrollLeft
+        scrollTop: this.scrollPanelElm.scrollTop,
+        scrollLeft: this.scrollPanelElm.scrollLeft
       };
     }
   },
@@ -2247,7 +2247,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.5',
+  version: '4.9.6',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
