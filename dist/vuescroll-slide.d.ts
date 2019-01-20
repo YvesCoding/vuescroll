@@ -60,7 +60,7 @@ interface Scroller {
 
 interface Container {
   sizeStrategy?: 'percent' | 'number';
-  renderMethod: 'transform' | 'position';
+  renderMethod?: 'transform' | 'position';
   detectResize?: boolean;
   pullRefresh?: PullRefreshOrPushLoad;
   pushLoad?: PullRefreshOrPushLoad & PushLoad;

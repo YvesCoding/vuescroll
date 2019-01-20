@@ -50,7 +50,7 @@ interface Scroller {
 interface Container {
   mode?: 'native' | 'slide';
   sizeStrategy?: 'percent' | 'number';
-  renderMethod: 'transform' | 'position';
+  renderMethod?: 'transform' | 'position';
   detectResize?: boolean;
   pullRefresh?: PullRefreshOrPushLoad;
   pushLoad?: PullRefreshOrPushLoad & PushLoad;

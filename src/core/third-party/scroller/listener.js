@@ -50,6 +50,9 @@ export function listenContainer(
     if (e.target.tagName.match(/input|textarea|select/i)) {
       return;
     }
+
+    e.stopPropagation();
+
     eventCallback('mousedown');
     scroller.doTouchStart(
       [

@@ -5,6 +5,7 @@
   .__panel {
     box-sizing: border-box;
     position: relative;
+    will-change: transform;
     &.__ios {
       -webkit-overflow-scrolling: touch;
     }
