@@ -372,6 +372,38 @@ function getNumericValue(distance, size) {
   return number;
 }
 
+function createStyle(styleId, cssText) {
+  /* istanbul ignore if */
+  if (isServer() || document.getElementById(styleId)) {
+    return;
+  }
+
+  var head = document.head || doc.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+
+  style.id = styleId;
+  style.type = 'text/css';
+
+  /* istanbul ignore if */
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(cssText));
+  }
+
+  head.appendChild(style);
+}
+
+// Hide the ios native scrollbar.
+
+
+// create slide mode style
+function createSlideModeStyle() {
+  var cssText = '\n    @-webkit-keyframes loading-rotate {\n      to {\n        -webkit-transform: rotate(1turn);\n        transform: rotate(1turn);\n      }\n    }\n\n    @keyframes loading-rotate {\n      to {\n        -webkit-transform: rotate(1turn);\n        transform: rotate(1turn);\n      }\n    }\n\n    @-webkit-keyframes loading-wipe {\n      0% {\n        stroke-dasharray: 1, 200;\n        stroke-dashoffset: 0;\n      }\n      50% {\n        stroke-dasharray: 90, 150;\n        stroke-dashoffset: -40px;\n      }\n      to {\n        stroke-dasharray: 90, 150;\n        stroke-dashoffset: -120px;\n      }\n    }\n\n    @keyframes loading-wipe {\n      0% {\n        stroke-dasharray: 1, 200;\n        stroke-dashoffset: 0;\n      }\n      50% {\n        stroke-dasharray: 90, 150;\n        stroke-dashoffset: -40px;\n      }\n      to {\n        stroke-dasharray: 90, 150;\n        stroke-dashoffset: -120px;\n      }\n    }\n\n    .__vuescroll .__refresh,\n    .__vuescroll .__load {\n      position: absolute;\n      width: 100%;\n      color: black;\n      height: 50px;\n      line-height: 50px;\n      text-align: center;\n      font-size: 16px;\n    }\n    .__vuescroll .__refresh svg,\n    .__vuescroll .__load svg {\n      margin-right: 10px;\n      width: 25px;\n      height: 25px;\n      vertical-align: sub;\n    }\n    .__vuescroll .__refresh svg.active,\n    .__vuescroll .__load svg.active {\n      transition: all 0.2s;\n    }\n    .__vuescroll .__refresh svg.active.deactive,\n    .__vuescroll .__load svg.active.deactive {\n      transform: rotateZ(180deg);\n    }\n    .__vuescroll .__refresh svg path,\n    .__vuescroll .__refresh svg rect,\n    .__vuescroll .__load svg path,\n    .__vuescroll .__load svg rect {\n      fill: #20a0ff;\n    }\n    .__vuescroll .__refresh svg.start,\n    .__vuescroll .__load svg.start {\n      stroke: #343640;\n      stroke-width: 4;\n      stroke-linecap: round;\n      -webkit-animation: loading-rotate 2s linear infinite;\n      animation: loading-rotate 2s linear infinite;\n    }\n    .__vuescroll .__refresh svg.start .bg-path,\n    .__vuescroll .__load svg.start .bg-path {\n      stroke: #f2f2f2;\n      fill: none;\n    }\n    .__vuescroll .__refresh svg.start .active-path,\n    .__vuescroll .__load svg.start .active-path {\n      stroke: #20a0ff;\n      fill: none;\n      stroke-dasharray: 90, 150;\n      stroke-dashoffset: 0;\n      -webkit-animation: loading-wipe 1.5s ease-in-out infinite;\n      animation: loading-wipe 1.5s ease-in-out infinite;\n    }\n  ';
+
+  createStyle('vuescroll-silde-mode-style', cssText);
+}
+
 var api = {
   mounted: function mounted() {
     vsInstances[this._uid] = this;
@@ -1140,19 +1172,46 @@ function createScrollbarButton(h, barContext, type) {
 
   var size = barContext.ops.rail.size;
   var borderColor = barContext.ops.scrollButton.background;
+
   var wrapperProps = {
     class: ['__bar-button', '__bar-button-is-' + barContext.type + '-' + type],
-    style: (_style = {}, defineProperty(_style, barContext.bar.scrollButton[type], 0), defineProperty(_style, 'width', size), defineProperty(_style, 'height', size), _style),
+    style: (_style = {}, defineProperty(_style, barContext.bar.scrollButton[type], 0), defineProperty(_style, 'width', size), defineProperty(_style, 'height', size), defineProperty(_style, 'position', 'absolute'), defineProperty(_style, 'cursor', 'pointer'), defineProperty(_style, 'display', 'table'), _style),
     ref: type
   };
 
   var innerProps = {
     class: '__bar-button-inner',
     style: {
-      border: 'calc(' + size + ' / 2.5) solid ' + borderColor
+      border: 'calc(' + size + ' / 2.5) solid transparent',
+      width: '0',
+      height: '0',
+      margin: 'auto',
+      position: 'absolute',
+      top: '0',
+      bottom: '0',
+      right: '0',
+      left: '0'
     },
     on: {}
   };
+
+  if (barContext.type == 'vertical') {
+    if (type == 'start') {
+      innerProps.style['border-bottom-color'] = borderColor;
+      innerProps.style['transform'] = 'translateY(-25%)';
+    } else {
+      innerProps.style['border-top-color'] = borderColor;
+      innerProps.style['transform'] = 'translateY(25%)';
+    }
+  } else {
+    if (type == 'start') {
+      innerProps.style['border-right-color'] = borderColor;
+      innerProps.style['transform'] = 'translateX(-25%)';
+    } else {
+      innerProps.style['border-left-color'] = borderColor;
+      innerProps.style['transform'] = 'translateX(25%)';
+    }
+  }
 
   /* istanbul ignore next */
   {
@@ -1192,17 +1251,52 @@ var bar$1 = {
     }
   },
   render: function render(h) {
-    var _style2, _style3, _style4;
+    var _style2, _style3, _barStyle;
 
     var vm = this;
+    /** Get rgbA format background color */
+    var railBackgroundColor = getRgbAColor(vm.ops.rail.background, vm.ops.rail.opacity);
 
-    /** Scrollbar style */
+    /** Rail Data */
+    var railSize = vm.ops.rail.size;
+    var endPos = vm.otherBarHide ? 0 : railSize;
+    var rail = {
+      class: '__rail-is-' + vm.type,
+      style: (_style2 = {
+        position: 'absolute',
+        'z-index': '1',
+
+        borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
+        background: railBackgroundColor,
+        border: vm.ops.rail.border
+      }, defineProperty(_style2, vm.bar.opsSize, railSize), defineProperty(_style2, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || 0), defineProperty(_style2, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || endPos), defineProperty(_style2, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style2)
+    };
+
+    // left space for scroll button
+    var buttonSize = vm.ops.scrollButton.enable ? railSize : 0;
+    var barWrapper = {
+      class: '__bar-wrap-is-' + vm.type,
+      style: (_style3 = {
+        position: 'absolute',
+        borderRadius: vm.ops.rail.specifyBorderRadius || railSize
+      }, defineProperty(_style3, vm.bar.posName, buttonSize), defineProperty(_style3, vm.bar.opposName, buttonSize), _style3),
+      on: {}
+    };
 
     var scrollDistance = vm.state.posValue * vm.state.size;
     var pos = scrollDistance * vm.barScale / vm.barSize;
-    var style = (_style2 = {}, defineProperty(_style2, vm.bar.size, vm.barSize * 100 + '%'), defineProperty(_style2, 'background', vm.ops.bar.background), defineProperty(_style2, vm.bar.opsSize, vm.ops.bar.size), defineProperty(_style2, 'opacity', vm.state.opacity), defineProperty(_style2, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + pos + '%)'), _style2);
+    /** Scrollbar style */
+    var barStyle = (_barStyle = {
+      cursor: 'pointer',
+      position: 'absolute',
+      margin: 'auto',
+      transition: 'opacity 0.5s',
+      'user-select': 'none',
+      'border-radius': 'inherit'
+
+    }, defineProperty(_barStyle, vm.bar.size, vm.barSize * 100 + '%'), defineProperty(_barStyle, 'background', vm.ops.bar.background), defineProperty(_barStyle, vm.bar.opsSize, vm.ops.bar.size), defineProperty(_barStyle, 'opacity', vm.state.opacity), defineProperty(_barStyle, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + pos + '%)'), _barStyle);
     var bar = {
-      style: style,
+      style: barStyle,
       class: '__bar-is-' + vm.type,
       ref: 'thumb',
       on: {
@@ -1215,30 +1309,11 @@ var bar$1 = {
       }
     };
 
-    /** Get rgbA format background color */
-    var railBackgroundColor = getRgbAColor(vm.ops.rail.background, vm.ops.rail.opacity);
-
-    /** Rail Data */
-    var railSize = vm.ops.rail.size;
-    var endPos = vm.otherBarHide ? 0 : railSize;
-    var rail = {
-      class: '__rail-is-' + vm.type,
-      style: (_style3 = {
-        borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
-        background: railBackgroundColor,
-        border: vm.ops.rail.border
-      }, defineProperty(_style3, vm.bar.opsSize, railSize), defineProperty(_style3, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || 0), defineProperty(_style3, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || endPos), defineProperty(_style3, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style3)
-    };
-
-    // left space for scroll button
-    var buttonSize = vm.ops.scrollButton.enable ? railSize : 0;
-    var barWrapper = {
-      class: '__bar-wrap-is-' + vm.type,
-      style: (_style4 = {
-        borderRadius: vm.ops.rail.specifyBorderRadius || railSize
-      }, defineProperty(_style4, vm.bar.posName, buttonSize), defineProperty(_style4, vm.bar.opposName, buttonSize), _style4),
-      on: {}
-    };
+    if (vm.type == 'vertical') {
+      barWrapper.style.width = '100%';
+    } else {
+      barWrapper.style.height = '100%';
+    }
 
     /* istanbul ignore if */
     if (isSupportTouch()) {
@@ -1742,7 +1817,10 @@ var scrollPanel$1 = {
     // eslint-disable-line
     var data = {
       class: ['__panel'],
-      style: {}
+      style: {
+        position: 'relative',
+        boxSizing: 'border-box'
+      }
     };
 
     var parent = getRealParent(this);
@@ -1927,7 +2005,12 @@ function getPanelData(context) {
   // scrollPanel data start
   var data = {
     ref: 'scrollPanel',
-    style: {},
+    style: {
+      'user-select': 'none',
+      '-webkit-user-select': 'none',
+      'min-width': '100%',
+      'min-height': '100%'
+    },
     class: [],
     props: {
       ops: context.mergedOptions.scrollPanel
@@ -1937,11 +2020,11 @@ function getPanelData(context) {
   data.class.push('__slide');
   /* istanbul ignore if */
   if (isIos()) {
-    data.class.push('__ios');
+    data.style = defineProperty({}, '-webkit-overflow-scrolling', 'touch');
   }
 
   if (context.mergedOptions.vuescroll.renderMethod == 'transform') {
-    data.class.push('__transform');
+    data.style['transform-origin'] = 'left top 0px';
   }
 
   var _context$mergedOption = context.mergedOptions.scrollPanel,
@@ -3675,6 +3758,7 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
  * These mixes is exclusive for slide mode
  */
 
+createSlideModeStyle();
 /**
  * @description refresh and load callback
  */
@@ -3882,7 +3966,7 @@ var update = {
                   __maxScrollTop = _scroller.__maxScrollTop;
 
               if (stage != 'start' && enable && auto && !_this.lockAutoLoad && // auto load debounce
-              autoLoadDistance >= __maxScrollTop - __scrollTop) {
+              autoLoadDistance >= __maxScrollTop - __scrollTop && __scrollTop > 0) {
                 _this.lockAutoLoad = true;
                 _this.triggerRefreshOrLoad('load');
               }

@@ -27,7 +27,7 @@ export default function getPanelData(context) {
   }
 
   if (context.mergedOptions.vuescroll.renderMethod == 'transform') {
-    data.cstyle['transform-origin'] = 'left top 0px';
+    data.style['transform-origin'] = 'left top 0px';
   }
 
   const { scrollingX, scrollingY, padding } = context.mergedOptions.scrollPanel;
@@ -71,7 +71,8 @@ export function getPanelChildren(h, context) {
   if (context.mergedOptions.vuescroll.pullRefresh.enable) {
     finalChildren.push(
       <div
-        class={{ __refresh: true, __none: !context.refrehDomVisiable }}
+        class="__refresh"
+        style={{ visibility: context.refrehDomVisiable ? '' : 'hidden' }}
         ref={__REFRESH_DOM_NAME}
         key={__REFRESH_DOM_NAME}
       >
@@ -88,7 +89,8 @@ export function getPanelChildren(h, context) {
       <div
         ref={__LOAD_DOM_NAME}
         key={__LOAD_DOM_NAME}
-        class={{ __load: true, __none: !context.loadDomVisiable }}
+        class="__load"
+        style={{ visibility: context.loadDomVisiable ? '' : 'hidden' }}
       >
         {createTipDom(h, context, 'load', context.pushLoadTip)}
       </div>

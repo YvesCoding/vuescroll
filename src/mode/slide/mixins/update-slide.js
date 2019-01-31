@@ -6,7 +6,9 @@ import Scroller from 'core/third-party/scroller/index';
 import { render } from 'core/third-party/scroller/render';
 import { listenContainer } from 'core/third-party/scroller/listener';
 import { __REFRESH_DOM_NAME, __LOAD_DOM_NAME } from 'shared/constants';
+import { createSlideModeStyle } from 'shared/util';
 
+createSlideModeStyle();
 /**
  * @description refresh and load callback
  */
@@ -244,7 +246,8 @@ export default {
                   enable &&
                   auto &&
                   !this.lockAutoLoad && // auto load debounce
-                  autoLoadDistance >= __maxScrollTop - __scrollTop
+                  autoLoadDistance >= __maxScrollTop - __scrollTop &&
+                  __scrollTop > 0
                 ) {
                   this.lockAutoLoad = true;
                   this.triggerRefreshOrLoad('load');

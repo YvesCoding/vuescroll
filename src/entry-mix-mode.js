@@ -2,7 +2,6 @@ import { refreshAll } from 'core/mixins/api';
 import { scrollTo } from 'src/mode/native/mixins/api';
 
 import install, { component } from 'mode/mix/index';
-import './style/vuescroll.scss';
 
 const Vuescroll = {
   install,

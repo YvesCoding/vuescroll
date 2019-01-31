@@ -2,7 +2,8 @@ import {
   getGutter,
   getComplitableStyle,
   insertChildrenIntoSlot,
-  isIos
+  isIos,
+  createHideBarStyle
 } from 'shared/util';
 
 export default function getPanelData(context) {
@@ -38,6 +39,7 @@ export default function getPanelData(context) {
   let gutter = getGutter();
   /* istanbul ignore if */
   if (!gutter) {
+    createHideBarStyle();
     data.class.push('__hidebar');
     if (isIos()) {
       data.style = {

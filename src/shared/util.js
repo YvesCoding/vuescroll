@@ -270,3 +270,143 @@ export function getNumericValue(distance, size) {
   }
   return number;
 }
+
+export function createStyle(styleId, cssText) {
+  /* istanbul ignore if */
+  if (isServer() || document.getElementById(styleId)) {
+    return;
+  }
+
+  const head = document.head || doc.getElementsByTagName('head')[0];
+  const style = document.createElement('style');
+
+  style.id = styleId;
+  style.type = 'text/css';
+
+  /* istanbul ignore if */
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(cssText));
+  }
+
+  head.appendChild(style);
+}
+
+// Hide the ios native scrollbar.
+export function createHideBarStyle() {
+  /* istanbul ignore next */
+  {
+    const cssText = ` &.__hidebar::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+    }`;
+
+    createStyle('vuescroll-hide-ios-bar', cssText);
+  }
+}
+
+// create slide mode style
+export function createSlideModeStyle() {
+  const cssText = `
+    @-webkit-keyframes loading-rotate {
+      to {
+        -webkit-transform: rotate(1turn);
+        transform: rotate(1turn);
+      }
+    }
+
+    @keyframes loading-rotate {
+      to {
+        -webkit-transform: rotate(1turn);
+        transform: rotate(1turn);
+      }
+    }
+
+    @-webkit-keyframes loading-wipe {
+      0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+      }
+      50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -40px;
+      }
+      to {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -120px;
+      }
+    }
+
+    @keyframes loading-wipe {
+      0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+      }
+      50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -40px;
+      }
+      to {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -120px;
+      }
+    }
+
+    .__vuescroll .__refresh,
+    .__vuescroll .__load {
+      position: absolute;
+      width: 100%;
+      color: black;
+      height: 50px;
+      line-height: 50px;
+      text-align: center;
+      font-size: 16px;
+    }
+    .__vuescroll .__refresh svg,
+    .__vuescroll .__load svg {
+      margin-right: 10px;
+      width: 25px;
+      height: 25px;
+      vertical-align: sub;
+    }
+    .__vuescroll .__refresh svg.active,
+    .__vuescroll .__load svg.active {
+      transition: all 0.2s;
+    }
+    .__vuescroll .__refresh svg.active.deactive,
+    .__vuescroll .__load svg.active.deactive {
+      transform: rotateZ(180deg);
+    }
+    .__vuescroll .__refresh svg path,
+    .__vuescroll .__refresh svg rect,
+    .__vuescroll .__load svg path,
+    .__vuescroll .__load svg rect {
+      fill: #20a0ff;
+    }
+    .__vuescroll .__refresh svg.start,
+    .__vuescroll .__load svg.start {
+      stroke: #343640;
+      stroke-width: 4;
+      stroke-linecap: round;
+      -webkit-animation: loading-rotate 2s linear infinite;
+      animation: loading-rotate 2s linear infinite;
+    }
+    .__vuescroll .__refresh svg.start .bg-path,
+    .__vuescroll .__load svg.start .bg-path {
+      stroke: #f2f2f2;
+      fill: none;
+    }
+    .__vuescroll .__refresh svg.start .active-path,
+    .__vuescroll .__load svg.start .active-path {
+      stroke: #20a0ff;
+      fill: none;
+      stroke-dasharray: 90, 150;
+      stroke-dashoffset: 0;
+      -webkit-animation: loading-wipe 1.5s ease-in-out infinite;
+      animation: loading-wipe 1.5s ease-in-out infinite;
+    }
+  `;
+
+  createStyle('vuescroll-silde-mode-style', cssText);
+}

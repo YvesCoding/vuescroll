@@ -2,7 +2,6 @@
 const resolveNode = require('rollup-plugin-node-resolve');
 const babel = require('rollup-plugin-babel');
 const replace = require('rollup-plugin-replace');
-const scss = require('rollup-plugin-scss');
 const alias = require('rollup-plugin-alias');
 const path = require('path');
 const version = process.env.VERSION || require('../package.json').version;
@@ -19,7 +18,7 @@ const banner = `/*
 
 const aliases = require('./alias');
 
-const resolve = p => {
+const resolve = (p) => {
   const base = p.split('/')[0];
   if (aliases[base]) {
     return path.resolve(aliases[base], p.slice(base.length + 1));
@@ -92,16 +91,6 @@ function genConfig(name) {
     },
     plugins: [
       resolveNode(),
-      scss({
-        output: function(styles) {
-          if (count++ % len == 0 && styles) {
-            let prefix = banner + '\n';
-
-            fs.writeFileSync(resolve('dist/vuescroll.css'), prefix + styles);
-          }
-        },
-        outputStyle: 'compressed'
-      }),
       babel({
         exclude: 'node_modules/**' // only transpile our source code
       }),
