@@ -211,12 +211,16 @@ function createScrollbarButton(h, barContext, type) {
 
   const size = barContext.ops.rail.size;
   const borderColor = barContext.ops.scrollButton.background;
+
   const wrapperProps = {
     class: ['__bar-button', '__bar-button-is-' + barContext.type + '-' + type],
     style: {
       [barContext.bar.scrollButton[type]]: 0,
       width: size,
-      height: size
+      height: size,
+      position: 'absolute',
+      cursor: 'pointer',
+      display: 'table'
     },
     ref: type
   };
@@ -224,10 +228,36 @@ function createScrollbarButton(h, barContext, type) {
   const innerProps = {
     class: '__bar-button-inner',
     style: {
-      border: `calc(${size} / 2.5) solid ${borderColor}`
+      border: `calc(${size} / 2.5) solid transparent`,
+      width: '0',
+      height: '0',
+      margin: 'auto',
+      position: 'absolute',
+      top: '0',
+      bottom: '0',
+      right: '0',
+      left: '0'
     },
     on: {}
   };
+
+  if (barContext.type == 'vertical') {
+    if (type == 'start') {
+      innerProps.style['border-bottom-color'] = borderColor;
+      innerProps.style['transform'] = 'translateY(-25%)';
+    } else {
+      innerProps.style['border-top-color'] = borderColor;
+      innerProps.style['transform'] = 'translateY(25%)';
+    }
+  } else {
+    if (type == 'start') {
+      innerProps.style['border-right-color'] = borderColor;
+      innerProps.style['transform'] = 'translateX(-25%)';
+    } else {
+      innerProps.style['border-left-color'] = borderColor;
+      innerProps.style['transform'] = 'translateX(25%)';
+    }
+  }
 
   /* istanbul ignore next */
   {
@@ -272,32 +302,6 @@ export default {
   },
   render(h) {
     const vm = this;
-
-    /** Scrollbar style */
-
-    const scrollDistance = vm.state.posValue * vm.state.size;
-    const pos = (scrollDistance * vm.barScale) / vm.barSize;
-    let style = {
-      [vm.bar.size]: vm.barSize * 100 + '%',
-      background: vm.ops.bar.background,
-      [vm.bar.opsSize]: vm.ops.bar.size,
-      opacity: vm.state.opacity,
-      transform: `translate${scrollMap[vm.type].axis}(${pos}%)`
-    };
-    const bar = {
-      style,
-      class: `__bar-is-${vm.type}`,
-      ref: 'thumb',
-      on: {
-        mouseenter() {
-          vm.setBarHoverStyles();
-        },
-        mouseleave() {
-          vm.tryRestoreBarStyles();
-        }
-      }
-    };
-
     /** Get rgbA format background color */
     const railBackgroundColor = getRgbAColor(
       vm.ops.rail.background,
@@ -310,6 +314,9 @@ export default {
     const rail = {
       class: `__rail-is-${vm.type}`,
       style: {
+        position: 'absolute',
+        'z-index': '1',
+
         borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
         background: railBackgroundColor,
         border: vm.ops.rail.border,
@@ -325,12 +332,50 @@ export default {
     const barWrapper = {
       class: `__bar-wrap-is-${vm.type}`,
       style: {
+        position: 'absolute',
         borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
         [vm.bar.posName]: buttonSize,
         [vm.bar.opposName]: buttonSize
       },
       on: {}
     };
+
+    const scrollDistance = vm.state.posValue * vm.state.size;
+    const pos = (scrollDistance * vm.barScale) / vm.barSize;
+    /** Scrollbar style */
+    let barStyle = {
+      cursor: 'pointer',
+      position: 'absolute',
+      margin: 'auto',
+      transition: 'opacity 0.5s',
+      'user-select': 'none',
+      'border-radius': 'inherit',
+
+      [vm.bar.size]: vm.barSize * 100 + '%',
+      background: vm.ops.bar.background,
+      [vm.bar.opsSize]: vm.ops.bar.size,
+      opacity: vm.state.opacity,
+      transform: `translate${scrollMap[vm.type].axis}(${pos}%)`
+    };
+    const bar = {
+      style: barStyle,
+      class: `__bar-is-${vm.type}`,
+      ref: 'thumb',
+      on: {
+        mouseenter() {
+          vm.setBarHoverStyles();
+        },
+        mouseleave() {
+          vm.tryRestoreBarStyles();
+        }
+      }
+    };
+
+    if (vm.type == 'vertical') {
+      barWrapper.style.width = '100%';
+    } else {
+      barWrapper.style.height = '100%';
+    }
 
     /* istanbul ignore if */
     if (isSupportTouch()) {
@@ -373,7 +418,7 @@ export default {
       /* istanbul ignore if */
       if (this.isBarDragging || !this.originBarStyle) return;
 
-      Object.keys(this.originBarStyle).forEach(key => {
+      Object.keys(this.originBarStyle).forEach((key) => {
         this.$refs.thumb.style[key] = this.originBarStyle[key];
       });
     },
@@ -384,7 +429,7 @@ export default {
 
       if (!this.originBarStyle) {
         this.originBarStyle = {};
-        Object.keys(hoverBarStyle).forEach(key => {
+        Object.keys(hoverBarStyle).forEach((key) => {
           this.originBarStyle[key] = this.$refs.thumb.style[key];
         });
       }

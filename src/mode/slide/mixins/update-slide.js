@@ -5,7 +5,6 @@
 import Scroller from 'core/third-party/scroller/index';
 import { render } from 'core/third-party/scroller/render';
 import { listenContainer } from 'core/third-party/scroller/listener';
-import { getAccurateSize } from 'shared/util';
 import { __REFRESH_DOM_NAME, __LOAD_DOM_NAME } from 'shared/constants';
 
 /**
@@ -46,7 +45,7 @@ function createStateCallbacks(type, stageType, vm, tipDom) {
 
   /* istanbul ignore if */
   if (listeners[type + '-before-deactivate']) {
-    beforeDeactivateCallback = done => {
+    beforeDeactivateCallback = (done) => {
       vm.vuescroll.state[stageType] = 'beforeDeactive';
       vm.$emit(type + '-before-deactivate', vm, tipDom, done.bind(vm.scroller));
     };
@@ -221,7 +220,7 @@ export default {
       const cb = listenContainer(
         this.$el,
         this.scroller,
-        eventType => {
+        (eventType) => {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
@@ -282,10 +281,7 @@ export default {
       let outerLeft = 0;
       let outerTop = 0;
 
-      const { clientWidth, clientHeight } = getAccurateSize(
-        this.$el,
-        true /* Use Math.round */
-      );
+      const { clientWidth, clientHeight } = this.$el;
 
       const contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       const contentHeight = clientHeight + this.scroller.__maxScrollTop;

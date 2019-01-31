@@ -1,18 +1,15 @@
-import scrollPanel from 'mode/shared/panel';
-import bar from 'mode/shared/bar';
-
-import render from './render';
-import mixins from './mixins';
-import { config, validator } from './config';
+import render from './slide-panel';
+import core from './core';
+import { config, configValidator } from './config';
 
 import { _install } from 'mode/shared/util';
 
 const component = _install(
   [scrollPanel, bar],
+  core,
   render,
   config,
-  mixins,
-  validator
+  configValidator
 );
 
 export default function install(Vue, opts = {}) {

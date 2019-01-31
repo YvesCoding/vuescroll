@@ -5,6 +5,9 @@ import {
 import { core } from 'core/third-party/scroller/animate';
 import createComponent from 'core/index';
 import { extendOpts } from 'shared/global-config';
+import scrollPanel from 'mode/shared/panel';
+import bar from 'mode/shared/bar';
+
 /**
  * Start to scroll to a position
  */
@@ -45,7 +48,7 @@ export function goScrolling(
 
   const easingMethod = createEasingFunction(easing, easingPattern);
 
-  const stepCallback = percentage => {
+  const stepCallback = (percentage) => {
     positionX = startLocationX + deltaX * percentage;
     positionY = startLocationY + deltaY * percentage;
     render(Math.floor(positionX), Math.floor(positionY));
@@ -74,16 +77,16 @@ export function goScrolling(
  * 3. Config
  */
 export function _install(
-  mixedComponents = [],
   renderChildrenFunction,
   extraConfigs,
   extraMixins = [],
   extraValidators
 ) {
-  const components = {};
-  mixedComponents.forEach(_ => {
-    components[_.name] = _;
-  });
+  const components = {
+    [scrollPanel.name]: scrollPanel,
+    [bar.name]: bar
+  };
+
   const opts = {};
   opts.components = components;
   opts.render = renderChildrenFunction;
@@ -104,7 +107,7 @@ export function getCurrentViewportDom(parent, container) {
   const children = parent.children;
   const domFragment = [];
 
-  const isCurrentview = dom => {
+  const isCurrentview = (dom) => {
     const { left, top, width, height } = dom.getBoundingClientRect();
     const {
       left: parentLeft,

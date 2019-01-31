@@ -64,7 +64,7 @@ export const config = {
  * @export
  * @param {any} ops
  */
-export function validator(ops) {
+export function configValidator(ops) {
   let renderError = false;
   const { vuescroll } = ops;
 

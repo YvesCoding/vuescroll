@@ -2,11 +2,16 @@ import { getComplitableStyle, getVnodeInfo } from 'shared/util';
 import { __REFRESH_DOM_NAME, __LOAD_DOM_NAME } from 'shared/constants';
 import { isIos } from 'shared/util';
 
-export function getPanelData(context) {
+export default function getPanelData(context) {
   // scrollPanel data start
   const data = {
     ref: 'scrollPanel',
-    style: {},
+    style: {
+      'user-select': 'none',
+      '-webkit-user-select': 'none',
+      'min-width': '100%',
+      'min-height': '100%'
+    },
     class: [],
     props: {
       ops: context.mergedOptions.scrollPanel
@@ -16,11 +21,13 @@ export function getPanelData(context) {
   data.class.push('__slide');
   /* istanbul ignore if */
   if (isIos()) {
-    data.class.push('__ios');
+    data.style = {
+      ['-webkit-overflow-scrolling']: 'touch'
+    };
   }
 
   if (context.mergedOptions.vuescroll.renderMethod == 'transform') {
-    data.class.push('__transform');
+    data.cstyle['transform-origin'] = 'left top 0px';
   }
 
   const { scrollingX, scrollingY, padding } = context.mergedOptions.scrollPanel;

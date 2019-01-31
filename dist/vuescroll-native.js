@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.7-rc.1
+    * Vuescroll v4.9.7-rc.2
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -214,8 +214,6 @@ function defineReactive(target, key, source, souceKey) {
   });
 }
 
-
-
 var scrollBarWidth = void 0;
 function getGutter() {
   /* istanbul ignore next */
@@ -268,41 +266,9 @@ function isChildInParent(child, parent) {
   return flag;
 }
 
-function getPrefix(global) {
-  var docStyle = document.documentElement.style;
-  var engine;
-  /* istanbul ignore if */
-  if (global.opera && Object.prototype.toString.call(opera) === '[object Opera]') {
-    engine = 'presto';
-  } /* istanbul ignore next */else if ('MozAppearance' in docStyle) {
-      engine = 'gecko';
-    } else if ('WebkitAppearance' in docStyle) {
-      engine = 'webkit';
-    } /* istanbul ignore next */else if (typeof navigator.cpuClass === 'string') {
-        engine = 'trident';
-      }
-  var vendorPrefix = {
-    trident: 'ms',
-    gecko: 'moz',
-    webkit: 'webkit',
-    presto: 'O'
-  }[engine];
-  return vendorPrefix;
-}
 
-function getComplitableStyle(property, value) {
-  /* istanbul ignore if */
-  if (isServer()) return false;
 
-  var compatibleValue = '-' + getPrefix(window) + '-' + value;
-  var testElm = document.createElement('div');
-  testElm.style[property] = compatibleValue;
-  if (testElm.style[property] == compatibleValue) {
-    return compatibleValue;
-  }
-  /* istanbul ignore next */
-  return false;
-}
+
 
 /**
  * Insert children into user-passed slot at vnode level
@@ -1429,7 +1395,9 @@ var createComponent = function createComponent(_ref) {
         style: {
           height: vm.vuescroll.state.height,
           width: vm.vuescroll.state.width,
-          padding: 0
+          padding: 0,
+          position: 'relative',
+          overflow: 'hidden'
         },
         class: '__vuescroll'
       };
@@ -1725,6 +1693,61 @@ var createComponent = function createComponent(_ref) {
   };
 };
 
+// begin importing
+var scrollPanel = {
+  name: 'scrollPanel',
+  props: { ops: { type: Object, required: true } },
+  methods: {
+    // trigger scrollPanel options initialScrollX,
+    // initialScrollY
+    updateInitialScroll: function updateInitialScroll() {
+      var x = 0;
+      var y = 0;
+
+      var parent = getRealParent(this);
+
+      if (this.ops.initialScrollX) {
+        x = this.ops.initialScrollX;
+      }
+      if (this.ops.initialScrollY) {
+        y = this.ops.initialScrollY;
+      }
+      if (x || y) {
+        parent.scrollTo({ x: x, y: y });
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    setTimeout(function () {
+      if (!_this._isDestroyed) {
+        _this.updateInitialScroll();
+      }
+    }, 0);
+  },
+  render: function render(h) {
+    // eslint-disable-line
+    var data = {
+      class: ['__panel'],
+      style: {}
+    };
+
+    var parent = getRealParent(this);
+
+    var _customPanel = parent.$slots['scroll-panel'];
+    if (_customPanel) {
+      return insertChildrenIntoSlot(h, _customPanel, this.$slots.default, data);
+    }
+
+    return h(
+      'div',
+      data,
+      [[this.$slots.default]]
+    );
+  }
+};
+
 /**
  * Start to scroll to a position
  */
@@ -1773,17 +1796,14 @@ function goScrolling(x, y, startLocationX, startLocationY, maxX, maxY, speed, ea
  * 2. Render
  * 3. Config
  */
-function _install() {
-  var mixedComponents = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var renderChildrenFunction = arguments[1];
-  var extraConfigs = arguments[2];
-  var extraMixins = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-  var extraValidators = arguments[4];
+function _install(renderChildrenFunction, extraConfigs) {
+  var _components;
 
-  var components = {};
-  mixedComponents.forEach(function (_) {
-    components[_.name] = _;
-  });
+  var extraMixins = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var extraValidators = arguments[3];
+
+  var components = (_components = {}, defineProperty(_components, scrollPanel.name, scrollPanel), defineProperty(_components, bar.name, bar), _components);
+
   var opts = {};
   opts.components = components;
   opts.render = renderChildrenFunction;
@@ -1904,61 +1924,6 @@ var api$1 = {
   }
 };
 
-// begin importing
-var scrollPanel = {
-  name: 'scrollPanel',
-  props: { ops: { type: Object, required: true } },
-  methods: {
-    // trigger scrollPanel options initialScrollX,
-    // initialScrollY
-    updateInitialScroll: function updateInitialScroll() {
-      var x = 0;
-      var y = 0;
-
-      var parent = getRealParent(this);
-
-      if (this.ops.initialScrollX) {
-        x = this.ops.initialScrollX;
-      }
-      if (this.ops.initialScrollY) {
-        y = this.ops.initialScrollY;
-      }
-      if (x || y) {
-        parent.scrollTo({ x: x, y: y });
-      }
-    }
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    setTimeout(function () {
-      if (!_this._isDestroyed) {
-        _this.updateInitialScroll();
-      }
-    }, 0);
-  },
-  render: function render(h) {
-    // eslint-disable-line
-    var data = {
-      class: ['__panel'],
-      style: {}
-    };
-
-    var parent = getRealParent(this);
-
-    var _customPanel = parent.$slots['scroll-panel'];
-    if (_customPanel) {
-      return insertChildrenIntoSlot(h, _customPanel, this.$slots.default, data);
-    }
-
-    return h(
-      'div',
-      data,
-      [[this.$slots.default]]
-    );
-  }
-};
-
 function getPanelData(context) {
   // scrollPanel data start
   var data = {
@@ -2028,53 +1993,12 @@ function getPanelData(context) {
  * @param {any} context
  * @returns
  */
-function createPanel(h, context) {
-  var data = {};
-
-  data = getPanelData(context);
-
-  return h(
-    'scrollPanel',
-    data,
-    [getPanelChildren(h, context)]
-  );
-}
-
-function getPanelChildren(h, context) {
-  var viewStyle = {};
-  var data = {
-    style: viewStyle,
-    ref: 'scrollContent',
-    class: '__view'
-  };
-  var _customContent = context.$slots['scroll-content'];
-
-  if (context.mergedOptions.scrollPanel.scrollingX) {
-    viewStyle.width = getComplitableStyle('width', 'fit-content');
-  } else {
-    data.style['width'] = '100%';
-  }
-
-  if (context.mergedOptions.scrollPanel.padding) {
-    data.style.paddingRight = context.mergedOptions.rail.size;
-  }
-
-  if (_customContent) {
-    return insertChildrenIntoSlot(h, _customContent, context.$slots.default, data);
-  }
-
-  return h(
-    'div',
-    data,
-    [context.$slots.default]
-  );
-}
 
 /**
  * These mixes is exclusive for native mode
  */
 
-var updateNative = {
+var update = {
   methods: {
     updateNativeModeBarState: function updateNativeModeBarState() {
       var container = this.scrollPanelElm;
@@ -2105,8 +2029,10 @@ var updateNative = {
   }
 };
 
+var mixins = [api$1, update];
+
 var core$1 = {
-  mixins: [api$1, updateNative],
+  mixins: mixins,
   methods: {
     destroy: function destroy() {
       /* istanbul ignore next */
@@ -2234,9 +2160,7 @@ var core$1 = {
   }
 };
 
-var mixins = [core$1];
-
-var component = _install([scrollPanel, bar], createPanel, [], mixins, []);
+var component = _install(getPanelData, [], core$1, []);
 
 function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -2247,7 +2171,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.7-rc.1',
+  version: '4.9.7-rc.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

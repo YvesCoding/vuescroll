@@ -1,46 +1,26 @@
 import { installResizeDetection } from 'core/third-party/resize-detector/index';
-import api from './api';
-import updateSlide from './update-slide';
+import mixins from './mixins';
 
 export default {
-  mixins: [api, updateSlide],
-  mounted() {
-    this.$nextTick(() => {
-      if (!this._isDestroyed && !this.renderError) {
-        this.updatedCbs.push(() => {
-          this.updateScroller();
-        });
-      }
-    });
-  },
+  mixins,
   methods: {
     destroy() {
-      /* istanbul ignore next */
-      if (this.destroyScroller) {
-        this.scroller.stop();
-        this.destroyScroller();
-        this.destroyScroller = null;
-      }
-
       /* istanbul ignore next */
       if (this.destroyResize) {
         this.destroyResize();
       }
     },
     getCurrentviewDom() {
-      return this.getCurrentviewDomSlide();
+      return this.getCurrentviewDomNative();
     },
-    internalScrollTo(destX, destY, animate, force) {
-      this.slideScrollTo(destX, destY, animate, undefined, force);
+    internalScrollTo(destX, destY, animate) {
+      this.nativeScrollTo(destX, destY, animate);
     },
     handleScroll(nativeEvent) {
       this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
     },
     updateBarStateAndEmitEvent(eventType, nativeEvent = null) {
-      if (!this.scroller) {
-        return;
-      }
-      this.updateSlideModeBarState();
+      this.updateNativeModeBarState();
       if (eventType) {
         this.emitEvent(eventType, nativeEvent);
       }
@@ -74,12 +54,6 @@ export default {
       const horizontal = {
         type: 'horizontal'
       };
-      scrollHeight = this.scroller.__contentHeight;
-      scrollWidth = this.scroller.__contentWidth;
-      scrollTop = this.scroller.__scrollTop;
-      scrollLeft = this.scroller.__scrollLeft;
-      clientHeight = this.$el.clientHeight;
-      clientWidth = this.$el.clientWidth;
 
       vertical['process'] = Math.min(
         scrollTop / (scrollHeight - clientHeight),
@@ -97,17 +71,10 @@ export default {
 
       this.$emit(eventType, vertical, horizontal, nativeEvent);
     },
+
     initVariables() {
       this.$el._isVuescroll = true;
       this.clearScrollingTimes();
-    },
-    refreshMode() {
-      if (this.destroyScroller) {
-        this.scroller.stop();
-        this.destroyScroller();
-        this.destroyScroller = null;
-      }
-      this.destroyScroller = this.registryScroller();
     },
     refreshInternalStatus() {
       // 1.set vuescroll height or width according to
@@ -115,13 +82,9 @@ export default {
       this.setVsSize();
       // 2. registry resize event
       this.registryResize();
-      // 3. registry scroller if mode is 'slide'
-      // or remove 'transform origin' is the mode is not `slide`
-      this.refreshMode();
-      // 4. update scrollbar's height/width
+      // 3. update scrollbar's height/width
       this.updateBarStateAndEmitEvent('refresh-status');
     },
-
     registryResize() {
       const resizeEnable = this.mergedOptions.vuescroll.detectResize;
 
@@ -138,31 +101,29 @@ export default {
         return;
       }
 
-      let contentElm = this.scrollPanelElm;
+      let contentElm = this.scrollContentElm;
+
       const vm = this;
       const handleWindowResize = function() /* istanbul ignore next */ {
         vm.updateBarStateAndEmitEvent('window-resize');
-        vm.updatedCbs.push(vm.updateScroller);
-        vm.$forceUpdate();
       };
-
       const handleDomResize = () => {
         let currentSize = {};
-        currentSize['width'] = this.scroller.__contentWidth;
-        currentSize['height'] = this.scroller.__contentHeight;
+        currentSize['width'] = this.scrollPanelElm.scrollWidth;
+        currentSize['height'] = this.scrollPanelElm.scrollHeight;
         this.updateBarStateAndEmitEvent('handle-resize', currentSize);
-        // update scroller should after rendering
-        this.updatedCbs.push(this.updateScroller);
-        this.$forceUpdate();
 
         // Since content sie changes, we should tell parent to set
         // correct size to fit content's size
         // this.setVsSize();
       };
       window.addEventListener('resize', handleWindowResize, false);
-      const destroyDomResize = resizeEnable
-        ? installResizeDetection(contentElm, handleDomResize)
-        : NOOP;
+
+      const destroyDomResize = installResizeDetection(
+        contentElm,
+        handleDomResize
+      );
+
       const destroyWindowResize = () => {
         window.removeEventListener('resize', handleWindowResize, false);
       };
@@ -175,7 +136,7 @@ export default {
       };
     },
     getPosition() {
-      return this.getSlidePosition();
+      return this.getNativePosition();
     }
   }
 };

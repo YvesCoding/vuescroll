@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.7-rc.1
+    * Vuescroll v4.9.7-rc.2
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -212,28 +212,6 @@ function defineReactive(target, key, source, souceKey) {
 
     configurable: true
   });
-}
-
-function getAccurateSize(dom) {
-  var vague = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-  var clientWidth = void 0;
-  var clientHeight = void 0;
-  try {
-    clientWidth = +window.getComputedStyle(dom).width.slice(0, -2);
-    clientHeight = +window.getComputedStyle(dom).height.slice(0, -2);
-  } catch (error) /* istanbul ignore next */{
-    clientWidth = dom.clientWidth;
-    clientHeight = dom.clientHeight;
-  }
-  if (vague) {
-    clientHeight = Math.round(clientHeight);
-    clientWidth = Math.round(clientWidth);
-  }
-  return {
-    clientHeight: clientHeight,
-    clientWidth: clientWidth
-  };
 }
 
 var scrollBarWidth = void 0;
@@ -1453,7 +1431,9 @@ var createComponent = function createComponent(_ref) {
         style: {
           height: vm.vuescroll.state.height,
           width: vm.vuescroll.state.width,
-          padding: 0
+          padding: 0,
+          position: 'relative',
+          overflow: 'hidden'
         },
         class: '__vuescroll'
       };
@@ -1749,6 +1729,61 @@ var createComponent = function createComponent(_ref) {
   };
 };
 
+// begin importing
+var scrollPanel = {
+  name: 'scrollPanel',
+  props: { ops: { type: Object, required: true } },
+  methods: {
+    // trigger scrollPanel options initialScrollX,
+    // initialScrollY
+    updateInitialScroll: function updateInitialScroll() {
+      var x = 0;
+      var y = 0;
+
+      var parent = getRealParent(this);
+
+      if (this.ops.initialScrollX) {
+        x = this.ops.initialScrollX;
+      }
+      if (this.ops.initialScrollY) {
+        y = this.ops.initialScrollY;
+      }
+      if (x || y) {
+        parent.scrollTo({ x: x, y: y });
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    setTimeout(function () {
+      if (!_this._isDestroyed) {
+        _this.updateInitialScroll();
+      }
+    }, 0);
+  },
+  render: function render(h) {
+    // eslint-disable-line
+    var data = {
+      class: ['__panel'],
+      style: {}
+    };
+
+    var parent = getRealParent(this);
+
+    var _customPanel = parent.$slots['scroll-panel'];
+    if (_customPanel) {
+      return insertChildrenIntoSlot(h, _customPanel, this.$slots.default, data);
+    }
+
+    return h(
+      'div',
+      data,
+      [[this.$slots.default]]
+    );
+  }
+};
+
 /**
  * Start to scroll to a position
  */
@@ -1797,17 +1832,14 @@ function goScrolling(x, y, startLocationX, startLocationY, maxX, maxY, speed, ea
  * 2. Render
  * 3. Config
  */
-function _install() {
-  var mixedComponents = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var renderChildrenFunction = arguments[1];
-  var extraConfigs = arguments[2];
-  var extraMixins = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-  var extraValidators = arguments[4];
+function _install(renderChildrenFunction, extraConfigs) {
+  var _components;
 
-  var components = {};
-  mixedComponents.forEach(function (_) {
-    components[_.name] = _;
-  });
+  var extraMixins = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var extraValidators = arguments[3];
+
+  var components = (_components = {}, defineProperty(_components, scrollPanel.name, scrollPanel), defineProperty(_components, bar.name, bar), _components);
+
   var opts = {};
   opts.components = components;
   opts.render = renderChildrenFunction;
@@ -1925,61 +1957,6 @@ var nativeApi = {
       var domFragment = getCurrentViewportDom(parent, this.$el);
       return domFragment;
     }
-  }
-};
-
-// begin importing
-var scrollPanel = {
-  name: 'scrollPanel',
-  props: { ops: { type: Object, required: true } },
-  methods: {
-    // trigger scrollPanel options initialScrollX,
-    // initialScrollY
-    updateInitialScroll: function updateInitialScroll() {
-      var x = 0;
-      var y = 0;
-
-      var parent = getRealParent(this);
-
-      if (this.ops.initialScrollX) {
-        x = this.ops.initialScrollX;
-      }
-      if (this.ops.initialScrollY) {
-        y = this.ops.initialScrollY;
-      }
-      if (x || y) {
-        parent.scrollTo({ x: x, y: y });
-      }
-    }
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    setTimeout(function () {
-      if (!_this._isDestroyed) {
-        _this.updateInitialScroll();
-      }
-    }, 0);
-  },
-  render: function render(h) {
-    // eslint-disable-line
-    var data = {
-      class: ['__panel'],
-      style: {}
-    };
-
-    var parent = getRealParent(this);
-
-    var _customPanel = parent.$slots['scroll-panel'];
-    if (_customPanel) {
-      return insertChildrenIntoSlot(h, _customPanel, this.$slots.default, data);
-    }
-
-    return h(
-      'div',
-      data,
-      [[this.$slots.default]]
-    );
   }
 };
 
@@ -3857,7 +3834,7 @@ for (var key in members) {
 }
 
 /* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
-function render$1(content, global, suffix, type) {
+function render(content, global, suffix, type) {
   if (type == 'position') {
     return function (left, top) {
       content.style.left = -left + 'px';
@@ -4179,7 +4156,7 @@ var slideMix = {
       var scrollingComplete = this.scrollingComplete.bind(this);
 
       // Initialize Scroller
-      this.scroller = new Scroller(render$1(this.scrollPanelElm, window, 'px', renderMethod), _extends({}, this.mergedOptions.vuescroll.scroller, {
+      this.scroller = new Scroller(render(this.scrollPanelElm, window, 'px', renderMethod), _extends({}, this.mergedOptions.vuescroll.scroller, {
         zooming: zooming,
         scrollingY: scrollingY,
         scrollingX: scrollingX && !this.refreshLoad,
@@ -4252,10 +4229,10 @@ var slideMix = {
       var outerLeft = 0;
       var outerTop = 0;
 
-      var _getAccurateSize = getAccurateSize(this.$el, true /* Use Math.round */
-      ),
-          clientWidth = _getAccurateSize.clientWidth,
-          clientHeight = _getAccurateSize.clientHeight;
+      var _$el = this.$el,
+          clientWidth = _$el.clientWidth,
+          clientHeight = _$el.clientHeight;
+
 
       var contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       var contentHeight = clientHeight + this.scroller.__maxScrollTop;
@@ -4357,8 +4334,12 @@ var nativeMix = {
   }
 };
 
+var update = [slideMix, nativeMix];
+
+var mixins = [api$1].concat(toConsumableArray(update));
+
 var core$1 = {
-  mixins: [api$1, slideMix, nativeMix],
+  mixins: mixins,
   mounted: function mounted() {
     if (!this._isDestroyed && !this.renderError) {
       if (this.mode == 'slide') {
@@ -4566,8 +4547,6 @@ var core$1 = {
   }
 };
 
-var mixins = [core$1];
-
 /**
  * The slide mode config
  */
@@ -4632,7 +4611,7 @@ var config = {
  * @export
  * @param {any} ops
  */
-function validator(ops) {
+function configValidator(ops) {
   var renderError = false;
   var vuescroll = ops.vuescroll;
 
@@ -4645,27 +4624,7 @@ function validator(ops) {
   return renderError;
 }
 
-/**
- * The native mode config
- */
-
 var config$1 = {
-  //
-  scrollContent: {
-    padding: false
-  }
-};
-/**
- * validate the options
- * @export
- * @param {any} ops
- */
-function validator$1() {
-  var renderError = false;
-  return renderError;
-}
-
-var config$2 = {
   // vuescroll
   vuescroll: {
     mode: 'native'
@@ -4676,7 +4635,7 @@ var config$2 = {
  * @export
  * @param {any} ops
  */
-function validator$2(ops) {
+function configValidator$1(ops) {
   var renderError = false;
   var vuescroll = ops.vuescroll;
 
@@ -4689,11 +4648,12 @@ function validator$2(ops) {
 
   return renderError;
 }
+// so, native config is the same as the base config.
+// there is no extra config in native config.
+var configs = [config$1, config];
+var configValidators = [configValidator$1, configValidator];
 
-var configs = [config$2, config, config$1];
-var validators = [validator$2, validator, validator$1];
-
-var component = _install([scrollPanel, bar], createPanel$2, configs, mixins, validators);
+var component = _install(createPanel$2, configs, core$1, configValidators);
 
 function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -4704,7 +4664,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.7-rc.1',
+  version: '4.9.7-rc.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

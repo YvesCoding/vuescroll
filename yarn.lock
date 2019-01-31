@@ -6688,9 +6688,13 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
 
-vue@^2.5.17:
-  version "2.5.17"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.17.tgz#0f8789ad718be68ca1872629832ed533589c6ada"
+vue@^2.0.0:
+  version "2.5.22"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.22.tgz#3bf88041af08b8539c37b268b70ca79245e9cc30"
+
+vuescroll@^4.9.7-rc.2:
+  version "4.9.7-rc.2"
+  resolved "https://registry.yarnpkg.com/vuescroll/-/vuescroll-4.9.7-rc.2.tgz#300baad6ef0f7e57206637fc32f55cb52181f478"
 
 watchpack@^1.4.0:
   version "1.5.0"

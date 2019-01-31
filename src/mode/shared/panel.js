@@ -35,7 +35,10 @@ export default {
     // eslint-disable-line
     let data = {
       class: ['__panel'],
-      style: {}
+      style: {
+        position: 'relative',
+        boxSizing: 'border-box'
+      }
     };
 
     const parent = getRealParent(this);

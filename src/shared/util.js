@@ -1,5 +1,4 @@
 import { isIE, isIos, isSupportTouch, isServer } from './env';
-
 export { isIE, isIos, isSupportTouch, isServer };
 
 export function deepCopy(from, to, shallow) {
@@ -80,26 +79,6 @@ export function defineReactive(target, key, source, souceKey) {
   });
 }
 
-export function getAccurateSize(dom, vague = false) {
-  let clientWidth;
-  let clientHeight;
-  try {
-    clientWidth = +window.getComputedStyle(dom).width.slice(0, -2);
-    clientHeight = +window.getComputedStyle(dom).height.slice(0, -2);
-  } catch (error) /* istanbul ignore next */ {
-    clientWidth = dom.clientWidth;
-    clientHeight = dom.clientHeight;
-  }
-  if (vague) {
-    clientHeight = Math.round(clientHeight);
-    clientWidth = Math.round(clientWidth);
-  }
-  return {
-    clientHeight,
-    clientWidth
-  };
-}
-
 let scrollBarWidth;
 export function getGutter() {
   /* istanbul ignore next */
@@ -138,10 +117,10 @@ export function eventCenter(
     : dom.removeEventListener(eventName, hander, capture);
 }
 
-export const error = msg => {
+export const error = (msg) => {
   console.error(`[vuescroll] ${msg}`);
 };
-export const warn = msg => {
+export const warn = (msg) => {
   console.warn(`[vuescroll] ${msg}`);
 };
 
@@ -276,10 +255,10 @@ export function getRealParent(ctx) {
   return parent;
 }
 
-export const isArray = _ => Array.isArray(_);
-export const isPlainObj = _ =>
+export const isArray = (_) => Array.isArray(_);
+export const isPlainObj = (_) =>
   Object.prototype.toString.call(_) == '[object Object]';
-export const isUndef = _ => typeof _ === 'undefined';
+export const isUndef = (_) => typeof _ === 'undefined';
 
 export function getNumericValue(distance, size) {
   let number;

@@ -1,6 +1,6 @@
 // begin importing
-import { createPanel as createNativePanel } from 'mode/native/render/native-panel';
-import { createPanel as createSlidePanel } from 'mode/slide/render/slide-panel';
+import { createPanel as createNativePanel } from 'mode/native/native-panel';
+import { createPanel as createSlidePanel } from 'mode/slide/slide-panel';
 /**
  * create a scrollPanel
  *
@@ -8,7 +8,7 @@ import { createPanel as createSlidePanel } from 'mode/slide/render/slide-panel';
  * @param {any} vm
  * @returns
  */
-export function createPanel(h, vm) {
+export default function createPanel(h, vm) {
   if (vm.mode == 'native') {
     return createNativePanel(h, vm);
   } else if (vm.mode == 'slide') {

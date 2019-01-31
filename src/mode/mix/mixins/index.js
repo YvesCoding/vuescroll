@@ -1,3 +1,4 @@
-import core from './core';
+import api from './api';
+import update from './update-mix';
 
-export default [core];
+export default [api, ...update];

@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.7-rc.1
+    * Vuescroll v4.9.7-rc.2
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -212,28 +212,6 @@ function defineReactive(target, key, source, souceKey) {
 
     configurable: true
   });
-}
-
-function getAccurateSize(dom) {
-  var vague = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-
-  var clientWidth = void 0;
-  var clientHeight = void 0;
-  try {
-    clientWidth = +window.getComputedStyle(dom).width.slice(0, -2);
-    clientHeight = +window.getComputedStyle(dom).height.slice(0, -2);
-  } catch (error) /* istanbul ignore next */{
-    clientWidth = dom.clientWidth;
-    clientHeight = dom.clientHeight;
-  }
-  if (vague) {
-    clientHeight = Math.round(clientHeight);
-    clientWidth = Math.round(clientWidth);
-  }
-  return {
-    clientHeight: clientHeight,
-    clientWidth: clientWidth
-  };
 }
 
 
@@ -1192,7 +1170,7 @@ function createScrollbarButton(h, barContext, type) {
   );
 }
 
-var bar = {
+var bar$1 = {
   name: 'bar',
   props: {
     ops: Object,
@@ -1429,7 +1407,9 @@ var createComponent = function createComponent(_ref) {
         style: {
           height: vm.vuescroll.state.height,
           width: vm.vuescroll.state.width,
-          padding: 0
+          padding: 0,
+          position: 'relative',
+          overflow: 'hidden'
         },
         class: '__vuescroll'
       };
@@ -1725,6 +1705,61 @@ var createComponent = function createComponent(_ref) {
   };
 };
 
+// begin importing
+var scrollPanel$1 = {
+  name: 'scrollPanel',
+  props: { ops: { type: Object, required: true } },
+  methods: {
+    // trigger scrollPanel options initialScrollX,
+    // initialScrollY
+    updateInitialScroll: function updateInitialScroll() {
+      var x = 0;
+      var y = 0;
+
+      var parent = getRealParent(this);
+
+      if (this.ops.initialScrollX) {
+        x = this.ops.initialScrollX;
+      }
+      if (this.ops.initialScrollY) {
+        y = this.ops.initialScrollY;
+      }
+      if (x || y) {
+        parent.scrollTo({ x: x, y: y });
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    setTimeout(function () {
+      if (!_this._isDestroyed) {
+        _this.updateInitialScroll();
+      }
+    }, 0);
+  },
+  render: function render(h) {
+    // eslint-disable-line
+    var data = {
+      class: ['__panel'],
+      style: {}
+    };
+
+    var parent = getRealParent(this);
+
+    var _customPanel = parent.$slots['scroll-panel'];
+    if (_customPanel) {
+      return insertChildrenIntoSlot(h, _customPanel, this.$slots.default, data);
+    }
+
+    return h(
+      'div',
+      data,
+      [[this.$slots.default]]
+    );
+  }
+};
+
 /**
  * Start to scroll to a position
  */
@@ -1773,17 +1808,14 @@ function goScrolling(x, y, startLocationX, startLocationY, maxX, maxY, speed, ea
  * 2. Render
  * 3. Config
  */
-function _install() {
-  var mixedComponents = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-  var renderChildrenFunction = arguments[1];
-  var extraConfigs = arguments[2];
-  var extraMixins = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-  var extraValidators = arguments[4];
+function _install(renderChildrenFunction, extraConfigs) {
+  var _components;
 
-  var components = {};
-  mixedComponents.forEach(function (_) {
-    components[_.name] = _;
-  });
+  var extraMixins = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var extraValidators = arguments[3];
+
+  var components = (_components = {}, defineProperty(_components, scrollPanel$1.name, scrollPanel$1), defineProperty(_components, bar$1.name, bar$1), _components);
+
   var opts = {};
   opts.components = components;
   opts.render = renderChildrenFunction;
@@ -1891,61 +1923,6 @@ function scrollTo(elm, x, y) {
   }
 }
 
-// begin importing
-var scrollPanel = {
-  name: 'scrollPanel',
-  props: { ops: { type: Object, required: true } },
-  methods: {
-    // trigger scrollPanel options initialScrollX,
-    // initialScrollY
-    updateInitialScroll: function updateInitialScroll() {
-      var x = 0;
-      var y = 0;
-
-      var parent = getRealParent(this);
-
-      if (this.ops.initialScrollX) {
-        x = this.ops.initialScrollX;
-      }
-      if (this.ops.initialScrollY) {
-        y = this.ops.initialScrollY;
-      }
-      if (x || y) {
-        parent.scrollTo({ x: x, y: y });
-      }
-    }
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    setTimeout(function () {
-      if (!_this._isDestroyed) {
-        _this.updateInitialScroll();
-      }
-    }, 0);
-  },
-  render: function render(h) {
-    // eslint-disable-line
-    var data = {
-      class: ['__panel'],
-      style: {}
-    };
-
-    var parent = getRealParent(this);
-
-    var _customPanel = parent.$slots['scroll-panel'];
-    if (_customPanel) {
-      return insertChildrenIntoSlot(h, _customPanel, this.$slots.default, data);
-    }
-
-    return h(
-      'div',
-      data,
-      [[this.$slots.default]]
-    );
-  }
-};
-
 function getPanelData(context) {
   // scrollPanel data start
   var data = {
@@ -1998,128 +1975,7 @@ function getPanelData(context) {
   return data;
 }
 
-function getPanelChildren(h, context) {
-  var renderChildren = getVnodeInfo(context.$slots['scroll-panel']).ch || context.$slots.default;
-  var finalChildren = [];
 
-  /* istanbul ignore if */
-  if (!renderChildren) {
-    context.$slots.default = renderChildren = [];
-  }
-
-  // handle refresh
-  if (context.mergedOptions.vuescroll.pullRefresh.enable) {
-    finalChildren.push(h(
-      'div',
-      {
-        'class': { __refresh: true, __none: !context.refrehDomVisiable },
-        ref: __REFRESH_DOM_NAME,
-        key: __REFRESH_DOM_NAME
-      },
-      [createTipDom(h, context, 'refresh', context.pullRefreshTip)]
-    ));
-  }
-
-  finalChildren.push(renderChildren);
-
-  // handle load
-  if (context.mergedOptions.vuescroll.pushLoad.enable) {
-    finalChildren.push(h(
-      'div',
-      {
-        ref: __LOAD_DOM_NAME,
-        key: __LOAD_DOM_NAME,
-        'class': { __load: true, __none: !context.loadDomVisiable }
-      },
-      [createTipDom(h, context, 'load', context.pushLoadTip)]
-    ));
-  }
-
-  return finalChildren;
-}
-
-// Create load or refresh tip dom of each stages
-function createTipDom(h, context, type, tip) {
-  var stage = context.vuescroll.state[type + 'Stage'];
-  var dom = null;
-  // Return user specified animation dom
-  /* istanbul ignore if */
-  if (dom = context.$slots[type + '-' + stage]) {
-    return dom;
-  }
-
-  switch (stage) {
-    // The dom will show at deactive stage
-    case 'deactive':
-    case 'active':
-      {
-        var className = 'active';
-        if (stage == 'deactive') {
-          className += ' deactive';
-        }
-
-        dom = h(
-          'svg',
-          {
-            'class': className,
-            attrs: { version: '1.1',
-              xmlns: 'http://www.w3.org/2000/svg',
-              xmlnsXlink: 'http://www.w3.org/1999/xlink',
-              x: '0px',
-              y: '0px',
-              viewBox: '0 0 1000 1000',
-              'enable-background': 'new 0 0 1000 1000',
-              xmlSpace: 'preserve'
-            }
-          },
-          [h('metadata', [' Svg Vector Icons : http://www.sfont.cn ']), h('g', [h(
-            'g',
-            {
-              attrs: { transform: 'matrix(1 0 0 -1 0 1008)' }
-            },
-            [h('path', {
-              attrs: { d: 'M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z' }
-            })]
-          )])]
-        );
-      }
-      break;
-    case 'start':
-      dom = h(
-        'svg',
-        {
-          attrs: { viewBox: '0 0 50 50' },
-          'class': 'start' },
-        [h('circle', {
-          attrs: { stroke: 'true', cx: '25', cy: '25', r: '20' },
-          'class': 'bg-path' }), h('circle', {
-          attrs: { cx: '25', cy: '25', r: '20' },
-          'class': 'active-path' })]
-      );
-      break;
-    case 'beforeDeactive':
-      dom = h(
-        'svg',
-        {
-          attrs: {
-            viewBox: '0 0 1024 1024',
-            version: '1.1',
-            xmlns: 'http://www.w3.org/2000/svg',
-            'p-id': '3562'
-          }
-        },
-        [h('path', {
-          attrs: {
-            d: 'M512 0C229.706831 0 0 229.667446 0 512s229.667446 512 512 512c282.293169 0 512-229.667446 512-512S794.332554 0 512 0z m282.994215 353.406031L433.2544 715.145846a31.484062 31.484062 0 0 1-22.275938 9.231754h-0.4096a31.586462 31.586462 0 0 1-22.449231-9.814646L228.430769 546.327631a31.507692 31.507692 0 0 1 45.701908-43.386093l137.4208 144.785724L750.442338 308.854154a31.507692 31.507692 0 1 1 44.551877 44.551877z',
-            fill: '',
-            'p-id': '3563'
-          }
-        })]
-      );
-      break;
-  }
-  return [dom, tip];
-}
 
 /**
  * create a scrollPanel
@@ -2128,15 +1984,6 @@ function createTipDom(h, context, type, tip) {
  * @param {any} context
  * @returns
  */
-function createPanel(h, context) {
-  var data = getPanelData(context);
-
-  return h(
-    'scrollPanel',
-    data,
-    [getPanelChildren(h, context)]
-  );
-}
 
 var api$2 = {
   methods: {
@@ -3673,7 +3520,7 @@ for (var key in members) {
 }
 
 /* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
-function render$1(content, global, suffix, type) {
+function render(content, global, suffix, type) {
   if (type == 'position') {
     return function (left, top) {
       content.style.left = -left + 'px';
@@ -3889,7 +3736,7 @@ function createStateCallbacks(type, stageType, vm, tipDom) {
   };
 }
 
-var updateSlide = {
+var update = {
   mounted: function mounted() {
     this.vsMounted = true;
   },
@@ -3995,7 +3842,7 @@ var updateSlide = {
       var scrollingComplete = this.scrollingComplete.bind(this);
 
       // Initialize Scroller
-      this.scroller = new Scroller(render$1(this.scrollPanelElm, window, 'px', renderMethod), _extends({}, this.mergedOptions.vuescroll.scroller, {
+      this.scroller = new Scroller(render(this.scrollPanelElm, window, 'px', renderMethod), _extends({}, this.mergedOptions.vuescroll.scroller, {
         zooming: zooming,
         scrollingY: scrollingY,
         scrollingX: scrollingX && !this.refreshLoad,
@@ -4068,10 +3915,10 @@ var updateSlide = {
       var outerLeft = 0;
       var outerTop = 0;
 
-      var _getAccurateSize = getAccurateSize(this.$el, true /* Use Math.round */
-      ),
-          clientWidth = _getAccurateSize.clientWidth,
-          clientHeight = _getAccurateSize.clientHeight;
+      var _$el = this.$el,
+          clientWidth = _$el.clientWidth,
+          clientHeight = _$el.clientHeight;
+
 
       var contentWidth = clientWidth + this.scroller.__maxScrollLeft;
       var contentHeight = clientHeight + this.scroller.__maxScrollTop;
@@ -4138,8 +3985,10 @@ var updateSlide = {
   }
 };
 
+var mixins = [api$2, update];
+
 var core$1 = {
-  mixins: [api$2, updateSlide],
+  mixins: mixins,
   mounted: function mounted() {
     var _this = this;
 
@@ -4309,8 +4158,6 @@ var core$1 = {
   }
 };
 
-var mixins = [core$1];
-
 /**
  * The slide mode config
  */
@@ -4375,7 +4222,7 @@ var config = {
  * @export
  * @param {any} ops
  */
-function validator(ops) {
+function configValidator(ops) {
   var renderError = false;
   var vuescroll = ops.vuescroll;
 
@@ -4388,7 +4235,7 @@ function validator(ops) {
   return renderError;
 }
 
-var component = _install([scrollPanel, bar], createPanel, config, mixins, validator);
+var component = _install([scrollPanel, bar], core$1, getPanelData, config, configValidator);
 
 function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
@@ -4399,7 +4246,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.7-rc.1',
+  version: '4.9.7-rc.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

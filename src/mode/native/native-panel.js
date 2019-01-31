@@ -5,11 +5,13 @@ import {
   isIos
 } from 'shared/util';
 
-export function getPanelData(context) {
+export default function getPanelData(context) {
   // scrollPanel data start
   const data = {
     ref: 'scrollPanel',
-    style: {},
+    style: {
+      height: '100%'
+    },
     class: [],
     nativeOn: {
       '&scroll': context.handleScroll
@@ -18,7 +20,6 @@ export function getPanelData(context) {
       ops: context.mergedOptions.scrollPanel
     }
   };
-  data.class.push('__native');
   const { scrollingY, scrollingX } = context.mergedOptions.scrollPanel;
   // dynamic set overflow scroll
   // feat: #11
@@ -39,8 +40,9 @@ export function getPanelData(context) {
   if (!gutter) {
     data.class.push('__hidebar');
     if (isIos()) {
-      data.class.push('__ios');
-      data.class.push('__hide-ios-bar');
+      data.style = {
+        ['-webkit-overflow-scrolling']: 'touch'
+      };
     }
   } else {
     // hide system bar by use a negative value px
@@ -86,7 +88,12 @@ export function createPanel(h, context) {
 }
 
 export function getPanelChildren(h, context) {
-  let viewStyle = {};
+  let viewStyle = {
+    position: 'relative',
+    'box-sizing': 'border-box',
+    'min-width': '100%',
+    'min-height': '100%'
+  };
   const data = {
     style: viewStyle,
     ref: 'scrollContent',
