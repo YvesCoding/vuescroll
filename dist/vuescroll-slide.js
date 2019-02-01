@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.7-rc.2
+    * Vuescroll v4.10.0
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1311,8 +1311,13 @@ var bar$1 = {
 
     if (vm.type == 'vertical') {
       barWrapper.style.width = '100%';
+      // Let bar to be on the center.
+      bar.style.left = 0;
+      bar.style.right = 0;
     } else {
       barWrapper.style.height = '100%';
+      bar.style.top = 0;
+      bar.style.bottom = 0;
     }
 
     /* istanbul ignore if */
@@ -2195,7 +2200,12 @@ function Scroller(callback, options) {
     animationDuration: 250,
 
     /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
-    bouncing: true,
+    bouncing: {
+      top: 100,
+      bottom: 100,
+      left: 100,
+      right: 100
+    },
 
     /** Enable locking to the main axis if user moves only slightly on one of them at start */
     locking: true,
@@ -2997,31 +3007,17 @@ var members = {
         }
       }
 
-      var shouldBounce = false;
+      var bouncing = self.options.bouncing;
 
       if (self.__enableScrollX) {
         scrollLeft -= moveX * this.options.speedMultiplier;
         var maxScrollLeft = self.__maxScrollLeft;
 
         if (scrollLeft > maxScrollLeft || scrollLeft < 0) {
-          // Slow down on the edges
-          if (self.options.bouncing) {
-            if (Array.isArray(self.options.bouncing)) {
-              if (scrollLeft > maxScrollLeft && self.__enableBounce('right') || scrollLeft < 0 && self.__enableBounce('left')) {
-                shouldBounce = true;
-              }
-            } else {
-              shouldBounce = true;
-            }
-          }
+          scrollLeft += moveX / 2 * this.options.speedMultiplier;
 
-          if (shouldBounce) {
-            scrollLeft += moveX / 2 * this.options.speedMultiplier;
-          } else if (scrollLeft > maxScrollLeft) {
-            scrollLeft = maxScrollLeft;
-          } else {
-            scrollLeft = 0;
-          }
+          // fix scrollLeft
+          scrollLeft = Math.min(Math.max(-bouncing.left, scrollLeft), maxScrollLeft + bouncing.right);
         }
       }
 
@@ -3031,51 +3027,36 @@ var members = {
         var maxScrollTop = self.__maxScrollTop;
 
         if (scrollTop > maxScrollTop || scrollTop < 0) {
-          shouldBounce = false;
-          // Slow down on the edges
-          if (self.options.bouncing) {
-            if (Array.isArray(self.options.bouncing)) {
-              if (scrollTop > maxScrollTop && self.__enableBounce('bottom') || scrollTop < 0 && self.__enableBounce('top')) {
-                shouldBounce = true;
-              }
-            } else {
-              shouldBounce = true;
-            }
-          }
+          scrollTop += moveY / 2 * this.options.speedMultiplier;
 
-          if (shouldBounce) {
-            scrollTop += moveY / 2 * this.options.speedMultiplier;
+          // fix scrollTop
+          scrollTop = Math.min(Math.max(-bouncing.top, scrollTop), maxScrollTop + bouncing.bottom);
 
-            // Support pull-to-refresh (only when only y is scrollable)
-            if (!self.__enableScrollX && (self.__refreshHeight != null || self.__loadHeight != null)) {
-              if (!self.__refreshActive && scrollTop <= -self.__refreshHeight) {
-                self.__refreshActive = true;
-                if (self.__refreshActivate) {
-                  self.__refreshActivate();
+          // Trigger pull to refresh or push to load
+          if (!self.__enableScrollX && (self.__refreshHeight != null || self.__loadHeight != null)) {
+            if (!self.__refreshActive && scrollTop <= -self.__refreshHeight) {
+              self.__refreshActive = true;
+              if (self.__refreshActivate) {
+                self.__refreshActivate();
+              }
+            } else if (self.__refreshActive && scrollTop > -self.__refreshHeight) {
+              self.__refreshActive = false;
+              if (self.__refreshDeactivate) {
+                self.__refreshDeactivate();
+              }
+            }
+            // handle for push-load
+            else if (!self.__loadActive && scrollTop >= self.__maxScrollTop + self.__loadHeight && self.__loadHeight > 0) {
+                self.__loadActive = true;
+                if (self.__loadActivate) {
+                  self.__loadActivate();
                 }
-              } else if (self.__refreshActive && scrollTop > -self.__refreshHeight) {
-                self.__refreshActive = false;
-                if (self.__refreshDeactivate) {
-                  self.__refreshDeactivate();
+              } else if (self.__loadActive && scrollTop < self.__maxScrollTop + self.__loadHeight) {
+                self.__loadActive = false;
+                if (self.__loadDeactivate) {
+                  self.__loadDeactivate();
                 }
               }
-              // handle for push-load
-              else if (!self.__loadActive && scrollTop >= self.__maxScrollTop + self.__loadHeight && self.__loadHeight > 0) {
-                  self.__loadActive = true;
-                  if (self.__loadActivate) {
-                    self.__loadActivate();
-                  }
-                } else if (self.__loadActive && scrollTop < self.__maxScrollTop + self.__loadHeight) {
-                  self.__loadActive = false;
-                  if (self.__loadDeactivate) {
-                    self.__loadDeactivate();
-                  }
-                }
-            }
-          } else if (scrollTop > maxScrollTop) {
-            scrollTop = maxScrollTop;
-          } else {
-            scrollTop = 0;
           }
         }
       }
@@ -3249,11 +3230,6 @@ var members = {
     var self = this;
 
     self.__disable = true;
-  },
-  __enableBounce: function __enableBounce(direction) {
-    var self = this;
-    var bouncing = self.options.bouncing;
-    return bouncing === true || Array.isArray(bouncing) && bouncing.indexOf(direction) > -1;
   },
   /*
   ---------------------------------------------------------------------------
@@ -3483,49 +3459,26 @@ var members = {
    */
   __stepThroughDeceleration: function __stepThroughDeceleration(render) {
     var self = this;
-
-    //
-    // COMPUTE NEXT SCROLL POSITION
-    //
-
+    var bouncing = self.options.bouncing;
+    var minLeft = self.__minDecelerationScrollLeft;
+    var maxLeft = self.__maxDecelerationScrollLeft;
+    var minTop = self.__minDecelerationScrollTop;
+    var maxTop = self.__maxDecelerationScrollTop;
     // Add deceleration to scroll position
     var scrollLeft = self.__scrollLeft + self.__decelerationVelocityX;
     var scrollTop = self.__scrollTop + self.__decelerationVelocityY;
 
-    //
-    // HARD LIMIT SCROLL POSITION FOR NON BOUNCING MODE
-    //
-    var bounceX = false;
-    var bounceY = false;
+    var bounceX = scrollLeft < minLeft || scrollLeft > maxLeft;
+    var bounceY = scrollTop < minTop || scrollTop > maxTop;
 
-    if (scrollLeft < 0 && self.__enableBounce('left') || scrollLeft > self.__maxDecelerationScrollLeft && self.__enableBounce('right')) {
-      bounceX = true;
-    }
+    // fix scrollLeft and scrollTop
+    scrollLeft = Math.min(Math.max(minLeft - bouncing.left, scrollLeft), maxLeft + bouncing.right);
 
-    if (scrollTop < 0 && self.__enableBounce('top') || scrollTop > self.__maxDecelerationScrollTop && self.__enableBounce('bottom')) {
-      bounceY = true;
-    }
-
-    if (!bounceX) {
-      var scrollLeftFixed = Math.max(Math.min(self.__maxDecelerationScrollLeft, scrollLeft), self.__minDecelerationScrollLeft);
-      if (scrollLeftFixed !== scrollLeft) {
-        scrollLeft = scrollLeftFixed;
-        self.__decelerationVelocityX = 0;
-      }
-    }
-
-    if (!bounceY) {
-      var scrollTopFixed = Math.max(Math.min(self.__maxDecelerationScrollTop, scrollTop), self.__minDecelerationScrollTop);
-      if (scrollTopFixed !== scrollTop) {
-        scrollTop = scrollTopFixed;
-        self.__decelerationVelocityY = 0;
-      }
-    }
+    scrollTop = Math.min(Math.max(minTop - bouncing.top, scrollTop), maxTop + bouncing.bottom);
 
     //
     // UPDATE SCROLL POSITION
     //
-
     if (render) {
       self.__publish(scrollLeft, scrollTop, self.__zoomLevel);
     } else {
@@ -3552,46 +3505,44 @@ var members = {
     // BOUNCING SUPPORT
     //
 
-    if (self.options.bouncing) {
-      var scrollOutsideX = 0;
-      var scrollOutsideY = 0;
+    var scrollOutsideX = 0;
+    var scrollOutsideY = 0;
 
-      // This configures the amount of change applied to deceleration/acceleration when reaching boundaries
-      var penetrationDeceleration = self.options.penetrationDeceleration;
-      var penetrationAcceleration = self.options.penetrationAcceleration;
+    // This configures the amount of change applied to deceleration/acceleration when reaching boundaries
+    var penetrationDeceleration = self.options.penetrationDeceleration;
+    var penetrationAcceleration = self.options.penetrationAcceleration;
 
-      if (bounceX) {
-        // Check limits
-        if (scrollLeft < self.__minDecelerationScrollLeft) {
-          scrollOutsideX = self.__minDecelerationScrollLeft - scrollLeft;
-        } else if (scrollLeft > self.__maxDecelerationScrollLeft) {
-          scrollOutsideX = self.__maxDecelerationScrollLeft - scrollLeft;
-        }
+    if (bounceX) {
+      // Check limits
+      if (scrollLeft < self.__minDecelerationScrollLeft) {
+        scrollOutsideX = self.__minDecelerationScrollLeft - scrollLeft;
+      } else if (scrollLeft > self.__maxDecelerationScrollLeft) {
+        scrollOutsideX = self.__maxDecelerationScrollLeft - scrollLeft;
       }
+    }
 
-      if (bounceY) {
-        if (scrollTop < self.__minDecelerationScrollTop) {
-          scrollOutsideY = self.__minDecelerationScrollTop - scrollTop;
-        } else if (scrollTop > self.__maxDecelerationScrollTop) {
-          scrollOutsideY = self.__maxDecelerationScrollTop - scrollTop;
-        }
+    if (bounceY) {
+      if (scrollTop < self.__minDecelerationScrollTop) {
+        scrollOutsideY = self.__minDecelerationScrollTop - scrollTop;
+      } else if (scrollTop > self.__maxDecelerationScrollTop) {
+        scrollOutsideY = self.__maxDecelerationScrollTop - scrollTop;
       }
+    }
 
-      // Slow down until slow enough, then flip back to snap position
-      if (scrollOutsideX !== 0) {
-        if (scrollOutsideX * self.__decelerationVelocityX <= 0) {
-          self.__decelerationVelocityX += scrollOutsideX * penetrationDeceleration;
-        } else {
-          self.__decelerationVelocityX = scrollOutsideX * penetrationAcceleration;
-        }
+    // Slow down until slow enough, then flip back to snap position
+    if (scrollOutsideX !== 0) {
+      if (scrollOutsideX * self.__decelerationVelocityX <= 0) {
+        self.__decelerationVelocityX += scrollOutsideX * penetrationDeceleration;
+      } else {
+        self.__decelerationVelocityX = scrollOutsideX * penetrationAcceleration;
       }
+    }
 
-      if (scrollOutsideY !== 0) {
-        if (scrollOutsideY * self.__decelerationVelocityY <= 0) {
-          self.__decelerationVelocityY += scrollOutsideY * penetrationDeceleration;
-        } else {
-          self.__decelerationVelocityY = scrollOutsideY * penetrationAcceleration;
-        }
+    if (scrollOutsideY !== 0) {
+      if (scrollOutsideY * self.__decelerationVelocityY <= 0) {
+        self.__decelerationVelocityY += scrollOutsideY * penetrationDeceleration;
+      } else {
+        self.__decelerationVelocityY = scrollOutsideY * penetrationAcceleration;
       }
     }
   }
@@ -4281,7 +4232,12 @@ var config = {
     /* some scroller options */
     scroller: {
       /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
-      bouncing: true,
+      bouncing: {
+        top: 100,
+        bottom: 100,
+        left: 100,
+        right: 100
+      },
       /** Enable locking to the main axis if user moves only slightly on one of them at start */
       locking: true,
       /** Minimum zoom level */
@@ -4330,7 +4286,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.7-rc.2',
+  version: '4.10.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.9.7-rc.2
+    * Vuescroll v4.10.0
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1301,8 +1301,13 @@ var bar = {
 
     if (vm.type == 'vertical') {
       barWrapper.style.width = '100%';
+      // Let bar to be on the center.
+      bar.style.left = 0;
+      bar.style.right = 0;
     } else {
       barWrapper.style.height = '100%';
+      bar.style.top = 0;
+      bar.style.bottom = 0;
     }
 
     /* istanbul ignore if */
@@ -2252,7 +2257,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.9.7-rc.2',
+  version: '4.10.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
