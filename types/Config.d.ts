@@ -26,11 +26,16 @@ interface Snapping {
  * BounceArray: Specify the bounce direction
  * ['top','bottom','left','right']
  */
-type BounceArray = Array<string>;
+type BounceArray = {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
 
 interface Scroller {
   /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
-  bouncing?: boolean | BounceArray;
+  bouncing?: BounceArray;
   /** Enable locking to the main axis if user moves only slightly on one of them at start */
   locking?: boolean;
   /** Minimum zoom level */

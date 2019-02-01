@@ -373,8 +373,13 @@ export default {
 
     if (vm.type == 'vertical') {
       barWrapper.style.width = '100%';
+      // Let bar to be on the center.
+      bar.style.left = 0;
+      bar.style.right = 0;
     } else {
       barWrapper.style.height = '100%';
+      bar.style.top = 0;
+      bar.style.bottom = 0;
     }
 
     /* istanbul ignore if */
@@ -418,7 +423,7 @@ export default {
       /* istanbul ignore if */
       if (this.isBarDragging || !this.originBarStyle) return;
 
-      Object.keys(this.originBarStyle).forEach((key) => {
+      Object.keys(this.originBarStyle).forEach(key => {
         this.$refs.thumb.style[key] = this.originBarStyle[key];
       });
     },
@@ -429,7 +434,7 @@ export default {
 
       if (!this.originBarStyle) {
         this.originBarStyle = {};
-        Object.keys(hoverBarStyle).forEach((key) => {
+        Object.keys(hoverBarStyle).forEach(key => {
           this.originBarStyle[key] = this.$refs.thumb.style[key];
         });
       }
