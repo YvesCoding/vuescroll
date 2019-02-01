@@ -226,44 +226,44 @@ export default {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
-            case 'mousedown':
-              this.vuescroll.state.isDragging = true;
-              break;
-            case 'onscroll':
-              {
-                /**
+          case 'mousedown':
+            this.vuescroll.state.isDragging = true;
+            break;
+          case 'onscroll':
+            {
+              /**
                  * Trigger auto load
                  */
-                const stage = this.vuescroll.state['loadStage'];
-                const {
-                  enable,
-                  auto,
-                  autoLoadDistance
-                } = this.mergedOptions.vuescroll.pushLoad;
-                const { __scrollTop, __maxScrollTop } = this.scroller;
-                if (
-                  stage != 'start' &&
+              const stage = this.vuescroll.state['loadStage'];
+              const {
+                enable,
+                auto,
+                autoLoadDistance
+              } = this.mergedOptions.vuescroll.pushLoad;
+              const { __scrollTop, __maxScrollTop } = this.scroller;
+              if (
+                stage != 'start' &&
                   enable &&
                   auto &&
                   !this.lockAutoLoad && // auto load debounce
                   autoLoadDistance >= __maxScrollTop - __scrollTop &&
                   __scrollTop > 0
-                ) {
-                  this.lockAutoLoad = true;
-                  this.triggerRefreshOrLoad('load');
-                }
-
-                if (autoLoadDistance < __maxScrollTop - __scrollTop) {
-                  this.lockAutoLoad = false;
-                }
-
-                this.handleScroll(false);
+              ) {
+                this.lockAutoLoad = true;
+                this.triggerRefreshOrLoad('load');
               }
 
-              break;
-            case 'mouseup':
-              this.vuescroll.state.isDragging = false;
-              break;
+              if (autoLoadDistance < __maxScrollTop - __scrollTop) {
+                this.lockAutoLoad = false;
+              }
+
+              this.handleScroll(false);
+            }
+
+            break;
+          case 'mouseup':
+            this.vuescroll.state.isDragging = false;
+            break;
           }
         },
         zooming,

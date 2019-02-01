@@ -5,7 +5,6 @@ const replace = require('rollup-plugin-replace');
 const alias = require('rollup-plugin-alias');
 const path = require('path');
 const version = process.env.VERSION || require('../package.json').version;
-const fs = require('fs');
 
 const banner = `/*
     * Vuescroll v${version}
@@ -18,7 +17,7 @@ const banner = `/*
 
 const aliases = require('./alias');
 
-const resolve = (p) => {
+const resolve = p => {
   const base = p.split('/')[0];
   if (aliases[base]) {
     return path.resolve(aliases[base], p.slice(base.length + 1));
@@ -72,8 +71,6 @@ const builds = {
   }
 };
 
-const len = Object.keys(builds).length;
-let count = 0;
 function genConfig(name) {
   const opts = builds[name];
   const config = {

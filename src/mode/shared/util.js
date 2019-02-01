@@ -48,7 +48,7 @@ export function goScrolling(
 
   const easingMethod = createEasingFunction(easing, easingPattern);
 
-  const stepCallback = (percentage) => {
+  const stepCallback = percentage => {
     positionX = startLocationX + deltaX * percentage;
     positionY = startLocationY + deltaY * percentage;
     render(Math.floor(positionX), Math.floor(positionY));
@@ -77,10 +77,10 @@ export function goScrolling(
  * 3. Config
  */
 export function _install(
-  renderChildrenFunction,
-  extraConfigs,
-  extraMixins = [],
-  extraValidators
+  core,
+  render,
+  extraConfigs = [],
+  extraValidators = []
 ) {
   const components = {
     [scrollPanel.name]: scrollPanel,
@@ -89,8 +89,8 @@ export function _install(
 
   const opts = {};
   opts.components = components;
-  opts.render = renderChildrenFunction;
-  opts.mixins = extraMixins;
+  opts.render = render;
+  opts.mixins = core;
 
   const comp = createComponent(opts);
 
@@ -107,7 +107,7 @@ export function getCurrentViewportDom(parent, container) {
   const children = parent.children;
   const domFragment = [];
 
-  const isCurrentview = (dom) => {
+  const isCurrentview = dom => {
     const { left, top, width, height } = dom.getBoundingClientRect();
     const {
       left: parentLeft,

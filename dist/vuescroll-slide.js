@@ -1229,7 +1229,7 @@ function createScrollbarButton(h, barContext, type) {
   );
 }
 
-var bar$1 = {
+var bar = {
   name: 'bar',
   props: {
     ops: Object,
@@ -1786,7 +1786,7 @@ var createComponent = function createComponent(_ref) {
 };
 
 // begin importing
-var scrollPanel$1 = {
+var scrollPanel = {
   name: 'scrollPanel',
   props: { ops: { type: Object, required: true } },
   methods: {
@@ -1891,18 +1891,18 @@ function goScrolling(x, y, startLocationX, startLocationY, maxX, maxY, speed, ea
  * 2. Render
  * 3. Config
  */
-function _install(renderChildrenFunction, extraConfigs) {
+function _install(core$$1, render) {
   var _components;
 
-  var extraMixins = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-  var extraValidators = arguments[3];
+  var extraConfigs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var extraValidators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
 
-  var components = (_components = {}, defineProperty(_components, scrollPanel$1.name, scrollPanel$1), defineProperty(_components, bar$1.name, bar$1), _components);
+  var components = (_components = {}, defineProperty(_components, scrollPanel.name, scrollPanel), defineProperty(_components, bar.name, bar), _components);
 
   var opts = {};
   opts.components = components;
-  opts.render = renderChildrenFunction;
-  opts.mixins = extraMixins;
+  opts.render = render;
+  opts.mixins = core$$1;
 
   var comp = createComponent(opts);
 
@@ -2063,7 +2063,130 @@ function getPanelData(context) {
   return data;
 }
 
+function getPanelChildren(h, context) {
+  var renderChildren = getVnodeInfo(context.$slots['scroll-panel']).ch || context.$slots.default;
+  var finalChildren = [];
 
+  /* istanbul ignore if */
+  if (!renderChildren) {
+    context.$slots.default = renderChildren = [];
+  }
+
+  // handle refresh
+  if (context.mergedOptions.vuescroll.pullRefresh.enable) {
+    finalChildren.push(h(
+      'div',
+      {
+        'class': '__refresh',
+        style: { visibility: context.refrehDomVisiable ? '' : 'hidden' },
+        ref: __REFRESH_DOM_NAME,
+        key: __REFRESH_DOM_NAME
+      },
+      [createTipDom(h, context, 'refresh', context.pullRefreshTip)]
+    ));
+  }
+
+  finalChildren.push(renderChildren);
+
+  // handle load
+  if (context.mergedOptions.vuescroll.pushLoad.enable) {
+    finalChildren.push(h(
+      'div',
+      {
+        ref: __LOAD_DOM_NAME,
+        key: __LOAD_DOM_NAME,
+        'class': '__load',
+        style: { visibility: context.loadDomVisiable ? '' : 'hidden' }
+      },
+      [createTipDom(h, context, 'load', context.pushLoadTip)]
+    ));
+  }
+
+  return finalChildren;
+}
+
+// Create load or refresh tip dom of each stages
+function createTipDom(h, context, type, tip) {
+  var stage = context.vuescroll.state[type + 'Stage'];
+  var dom = null;
+  // Return user specified animation dom
+  /* istanbul ignore if */
+  if (dom = context.$slots[type + '-' + stage]) {
+    return dom;
+  }
+
+  switch (stage) {
+    // The dom will show at deactive stage
+    case 'deactive':
+    case 'active':
+      {
+        var className = 'active';
+        if (stage == 'deactive') {
+          className += ' deactive';
+        }
+
+        dom = h(
+          'svg',
+          {
+            'class': className,
+            attrs: { version: '1.1',
+              xmlns: 'http://www.w3.org/2000/svg',
+              xmlnsXlink: 'http://www.w3.org/1999/xlink',
+              x: '0px',
+              y: '0px',
+              viewBox: '0 0 1000 1000',
+              'enable-background': 'new 0 0 1000 1000',
+              xmlSpace: 'preserve'
+            }
+          },
+          [h('metadata', [' Svg Vector Icons : http://www.sfont.cn ']), h('g', [h(
+            'g',
+            {
+              attrs: { transform: 'matrix(1 0 0 -1 0 1008)' }
+            },
+            [h('path', {
+              attrs: { d: 'M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z' }
+            })]
+          )])]
+        );
+      }
+      break;
+    case 'start':
+      dom = h(
+        'svg',
+        {
+          attrs: { viewBox: '0 0 50 50' },
+          'class': 'start' },
+        [h('circle', {
+          attrs: { stroke: 'true', cx: '25', cy: '25', r: '20' },
+          'class': 'bg-path' }), h('circle', {
+          attrs: { cx: '25', cy: '25', r: '20' },
+          'class': 'active-path' })]
+      );
+      break;
+    case 'beforeDeactive':
+      dom = h(
+        'svg',
+        {
+          attrs: {
+            viewBox: '0 0 1024 1024',
+            version: '1.1',
+            xmlns: 'http://www.w3.org/2000/svg',
+            'p-id': '3562'
+          }
+        },
+        [h('path', {
+          attrs: {
+            d: 'M512 0C229.706831 0 0 229.667446 0 512s229.667446 512 512 512c282.293169 0 512-229.667446 512-512S794.332554 0 512 0z m282.994215 353.406031L433.2544 715.145846a31.484062 31.484062 0 0 1-22.275938 9.231754h-0.4096a31.586462 31.586462 0 0 1-22.449231-9.814646L228.430769 546.327631a31.507692 31.507692 0 0 1 45.701908-43.386093l137.4208 144.785724L750.442338 308.854154a31.507692 31.507692 0 1 1 44.551877 44.551877z',
+            fill: '',
+            'p-id': '3563'
+          }
+        })]
+      );
+      break;
+  }
+  return [dom, tip];
+}
 
 /**
  * create a scrollPanel
@@ -2072,6 +2195,15 @@ function getPanelData(context) {
  * @param {any} context
  * @returns
  */
+function createPanel(h, context) {
+  var data = getPanelData(context);
+
+  return h(
+    'scrollPanel',
+    data,
+    [getPanelChildren(h, context)]
+  );
+}
 
 var api$2 = {
   methods: {
@@ -4275,7 +4407,7 @@ function configValidator(ops) {
   return renderError;
 }
 
-var component = _install([scrollPanel, bar], core$1, getPanelData, config, configValidator);
+var component = _install(core$1, createPanel, [config], [configValidator]);
 
 function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};

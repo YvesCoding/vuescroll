@@ -266,9 +266,41 @@ function isChildInParent(child, parent) {
   return flag;
 }
 
+function getPrefix(global) {
+  var docStyle = document.documentElement.style;
+  var engine;
+  /* istanbul ignore if */
+  if (global.opera && Object.prototype.toString.call(opera) === '[object Opera]') {
+    engine = 'presto';
+  } /* istanbul ignore next */else if ('MozAppearance' in docStyle) {
+      engine = 'gecko';
+    } else if ('WebkitAppearance' in docStyle) {
+      engine = 'webkit';
+    } /* istanbul ignore next */else if (typeof navigator.cpuClass === 'string') {
+        engine = 'trident';
+      }
+  var vendorPrefix = {
+    trident: 'ms',
+    gecko: 'moz',
+    webkit: 'webkit',
+    presto: 'O'
+  }[engine];
+  return vendorPrefix;
+}
 
+function getComplitableStyle(property, value) {
+  /* istanbul ignore if */
+  if (isServer()) return false;
 
-
+  var compatibleValue = '-' + getPrefix(window) + '-' + value;
+  var testElm = document.createElement('div');
+  testElm.style[property] = compatibleValue;
+  if (testElm.style[property] == compatibleValue) {
+    return compatibleValue;
+  }
+  /* istanbul ignore next */
+  return false;
+}
 
 /**
  * Insert children into user-passed slot at vnode level
@@ -1881,18 +1913,18 @@ function goScrolling(x, y, startLocationX, startLocationY, maxX, maxY, speed, ea
  * 2. Render
  * 3. Config
  */
-function _install(renderChildrenFunction, extraConfigs) {
+function _install(core$$1, render) {
   var _components;
 
-  var extraMixins = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-  var extraValidators = arguments[3];
+  var extraConfigs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var extraValidators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
 
   var components = (_components = {}, defineProperty(_components, scrollPanel.name, scrollPanel), defineProperty(_components, bar.name, bar), _components);
 
   var opts = {};
   opts.components = components;
-  opts.render = renderChildrenFunction;
-  opts.mixins = extraMixins;
+  opts.render = render;
+  opts.mixins = core$$1;
 
   var comp = createComponent(opts);
 
@@ -2079,6 +2111,52 @@ function getPanelData(context) {
  * @param {any} context
  * @returns
  */
+function createPanel(h, context) {
+  var data = {};
+
+  data = getPanelData(context);
+
+  return h(
+    'scrollPanel',
+    data,
+    [getPanelChildren(h, context)]
+  );
+}
+
+function getPanelChildren(h, context) {
+  var viewStyle = {
+    position: 'relative',
+    'box-sizing': 'border-box',
+    'min-width': '100%',
+    'min-height': '100%'
+  };
+  var data = {
+    style: viewStyle,
+    ref: 'scrollContent',
+    class: '__view'
+  };
+  var _customContent = context.$slots['scroll-content'];
+
+  if (context.mergedOptions.scrollPanel.scrollingX) {
+    viewStyle.width = getComplitableStyle('width', 'fit-content');
+  } else {
+    data.style['width'] = '100%';
+  }
+
+  if (context.mergedOptions.scrollPanel.padding) {
+    data.style.paddingRight = context.mergedOptions.rail.size;
+  }
+
+  if (_customContent) {
+    return insertChildrenIntoSlot(h, _customContent, context.$slots.default, data);
+  }
+
+  return h(
+    'div',
+    data,
+    [context.$slots.default]
+  );
+}
 
 /**
  * These mixes is exclusive for native mode
@@ -2246,7 +2324,7 @@ var core$1 = {
   }
 };
 
-var component = _install(getPanelData, [], core$1, []);
+var component = _install(core$1, createPanel);
 
 function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};

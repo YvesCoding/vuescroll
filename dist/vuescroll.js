@@ -1922,18 +1922,18 @@ function goScrolling(x, y, startLocationX, startLocationY, maxX, maxY, speed, ea
  * 2. Render
  * 3. Config
  */
-function _install(renderChildrenFunction, extraConfigs) {
+function _install(core$$1, render) {
   var _components;
 
-  var extraMixins = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-  var extraValidators = arguments[3];
+  var extraConfigs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+  var extraValidators = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
 
   var components = (_components = {}, defineProperty(_components, scrollPanel.name, scrollPanel), defineProperty(_components, bar.name, bar), _components);
 
   var opts = {};
   opts.components = components;
-  opts.render = renderChildrenFunction;
-  opts.mixins = extraMixins;
+  opts.render = render;
+  opts.mixins = core$$1;
 
   var comp = createComponent(opts);
 
@@ -4708,7 +4708,7 @@ function configValidator$1(ops) {
 var configs = [config$1, config];
 var configValidators = [configValidator$1, configValidator];
 
-var component = _install(createPanel$2, configs, core$1, configValidators);
+var component = _install(core$1, createPanel$2, configs, configValidators);
 
 function install(Vue$$1) {
   var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
