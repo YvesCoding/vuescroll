@@ -43,11 +43,7 @@ Please see our [Guide](https://vuescrolljs.yvescoding.org/guide) section of the 
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
-    <script src="https://unpkg.com/vuescroll@4.9.0-beta.15/dist/vuescroll.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/vuescroll@4.9.0-beta.15/dist/vuescroll.css"
-    />
+    <script src="https://unpkg.com/vuescroll@4.10.2/dist/vuescroll.js"></script>
     <style>
       html,
       body {
