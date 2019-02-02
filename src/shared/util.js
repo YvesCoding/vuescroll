@@ -117,10 +117,10 @@ export function eventCenter(
     : dom.removeEventListener(eventName, hander, capture);
 }
 
-export const error = (msg) => {
+export const error = msg => {
   console.error(`[vuescroll] ${msg}`);
 };
-export const warn = (msg) => {
+export const warn = msg => {
   console.warn(`[vuescroll] ${msg}`);
 };
 
@@ -255,10 +255,10 @@ export function getRealParent(ctx) {
   return parent;
 }
 
-export const isArray = (_) => Array.isArray(_);
-export const isPlainObj = (_) =>
+export const isArray = _ => Array.isArray(_);
+export const isPlainObj = _ =>
   Object.prototype.toString.call(_) == '[object Object]';
-export const isUndef = (_) => typeof _ === 'undefined';
+export const isUndef = _ => typeof _ === 'undefined';
 
 export function getNumericValue(distance, size) {
   let number;
@@ -285,7 +285,7 @@ export function createStyle(styleId, cssText) {
 
   /* istanbul ignore if */
   if (style.styleSheet) {
-    style.styleSheet.cssText = css;
+    style.styleSheet.cssText = cssText;
   } else {
     style.appendChild(document.createTextNode(cssText));
   }
