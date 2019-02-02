@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.10.0
+    * Vuescroll v4.10.2
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -386,7 +386,7 @@ function createStyle(styleId, cssText) {
 
   /* istanbul ignore if */
   if (style.styleSheet) {
-    style.styleSheet.cssText = css;
+    style.styleSheet.cssText = cssText;
   } else {
     style.appendChild(document.createTextNode(cssText));
   }
@@ -2273,7 +2273,7 @@ var api$2 = {
         warn('refresh must be enabled!');
         return;
       } else if (type == 'load' && !isLoad) {
-        warn("load must be enabled and content's height > container's height!");
+        warn('load must be enabled and content\'s height > container\'s height!');
         return;
       } else if (type !== 'refresh' && type !== 'load') {
         warn('param must be one of load and refresh!');
@@ -4037,8 +4037,8 @@ var update = {
           case 'onscroll':
             {
               /**
-               * Trigger auto load
-               */
+                 * Trigger auto load
+                 */
               var stage = _this.vuescroll.state['loadStage'];
               var _mergedOptions$vuescr3 = _this.mergedOptions.vuescroll.pushLoad,
                   enable = _mergedOptions$vuescr3.enable,
@@ -4418,7 +4418,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.10.0',
+  version: '4.10.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

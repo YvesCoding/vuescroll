@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.10.0
+    * Vuescroll v4.10.2
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -408,7 +408,7 @@ function createStyle(styleId, cssText) {
 
   /* istanbul ignore if */
   if (style.styleSheet) {
-    style.styleSheet.cssText = css;
+    style.styleSheet.cssText = cssText;
   } else {
     style.appendChild(document.createTextNode(cssText));
   }
@@ -2335,7 +2335,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.10.0',
+  version: '4.10.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
