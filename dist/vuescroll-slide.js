@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.10.2
+    * Vuescroll v4.10.3
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -3661,7 +3661,11 @@ var members = {
       }
     }
 
-    // Slow down until slow enough, then flip back to snap position
+    // Fix __decelerationVelocityX for max-bouncing left or right
+    if (self.__decelerationVelocityX) {
+      self.__decelerationVelocityX = Math.min(Math.abs(scrollOutsideX), Math.abs(self.__decelerationVelocityX)) * self.__decelerationVelocityX / self.__decelerationVelocityX;
+    }
+
     if (scrollOutsideX !== 0) {
       if (scrollOutsideX * self.__decelerationVelocityX <= 0) {
         self.__decelerationVelocityX += scrollOutsideX * penetrationDeceleration;
@@ -3670,6 +3674,10 @@ var members = {
       }
     }
 
+    // Fix __decelerationVelocityY for max-bouncing top or bottom
+    if (self.__decelerationVelocityY) {
+      self.__decelerationVelocityY = Math.min(Math.abs(scrollOutsideY), Math.abs(self.__decelerationVelocityY)) * self.__decelerationVelocityY / self.__decelerationVelocityY;
+    }
     if (scrollOutsideY !== 0) {
       if (scrollOutsideY * self.__decelerationVelocityY <= 0) {
         self.__decelerationVelocityY += scrollOutsideY * penetrationDeceleration;
@@ -4418,7 +4426,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.10.2',
+  version: '4.10.3',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
