@@ -117,10 +117,10 @@ export function eventCenter(
     : dom.removeEventListener(eventName, hander, capture);
 }
 
-export const error = msg => {
+export const error = (msg) => {
   console.error(`[vuescroll] ${msg}`);
 };
-export const warn = msg => {
+export const warn = (msg) => {
   console.warn(`[vuescroll] ${msg}`);
 };
 
@@ -255,10 +255,10 @@ export function getRealParent(ctx) {
   return parent;
 }
 
-export const isArray = _ => Array.isArray(_);
-export const isPlainObj = _ =>
+export const isArray = (_) => Array.isArray(_);
+export const isPlainObj = (_) =>
   Object.prototype.toString.call(_) == '[object Object]';
-export const isUndef = _ => typeof _ === 'undefined';
+export const isUndef = (_) => typeof _ === 'undefined';
 
 export function getNumericValue(distance, size) {
   let number;
@@ -297,7 +297,7 @@ export function createStyle(styleId, cssText) {
 export function createHideBarStyle() {
   /* istanbul ignore next */
   {
-    const cssText = ` &.__hidebar::-webkit-scrollbar {
+    const cssText = `.__hidebar::-webkit-scrollbar {
       width: 0;
       height: 0;
     }`;
