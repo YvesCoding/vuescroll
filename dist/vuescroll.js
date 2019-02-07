@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.10.4
+    * Vuescroll v4.10.5
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -422,7 +422,7 @@ function createStyle(styleId, cssText) {
 function createHideBarStyle() {
   /* istanbul ignore next */
   {
-    var cssText = ' &.__hidebar::-webkit-scrollbar {\n      width: 0;\n      height: 0;\n    }';
+    var cssText = '.__hidebar::-webkit-scrollbar {\n      width: 0;\n      height: 0;\n    }';
 
     createStyle('vuescroll-hide-ios-bar', cssText);
   }
@@ -4730,7 +4730,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.10.4',
+  version: '4.10.5',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
