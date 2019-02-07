@@ -1446,12 +1446,12 @@ var members = {
     var bounceY = scrollTop < minTop || scrollTop > maxTop;
 
     // fix scrollLeft and scrollTop
-    scrollLeft = Math.min(
+    var fixedScrollLeft = Math.min(
       Math.max(minLeft - bouncing.left, scrollLeft),
       maxLeft + bouncing.right
     );
 
-    scrollTop = Math.min(
+    var fixedScrollTop = Math.min(
       Math.max(minTop - bouncing.top, scrollTop),
       maxTop + bouncing.bottom
     );
@@ -1460,7 +1460,7 @@ var members = {
     // UPDATE SCROLL POSITION
     //
     if (render) {
-      self.__publish(scrollLeft, scrollTop, self.__zoomLevel);
+      self.__publish(fixedScrollLeft, fixedScrollTop, self.__zoomLevel);
     } else {
       self.__scrollLeft = scrollLeft;
       self.__scrollTop = scrollTop;
@@ -1509,40 +1509,47 @@ var members = {
       }
     }
 
-    // Fix __decelerationVelocityX for max-bouncing left or right
-    if (self.__decelerationVelocityX) {
-      self.__decelerationVelocityX =
-        (Math.min(
-          Math.abs(scrollOutsideX),
-          Math.abs(self.__decelerationVelocityX)
-        ) *
-          self.__decelerationVelocityX) /
-        self.__decelerationVelocityX;
-    }
-
     if (scrollOutsideX !== 0) {
       if (scrollOutsideX * self.__decelerationVelocityX <= 0) {
         self.__decelerationVelocityX +=
           scrollOutsideX * penetrationDeceleration;
+        if (
+          scrollOutsideX < 0 &&
+          -scrollOutsideX >= bouncing.right &&
+          self.__decelerationVelocityX > 0
+        ) {
+          self.__decelerationVelocityX = -bouncing.right;
+        }
+        if (
+          scrollOutsideX > 0 &&
+          scrollOutsideX >= bouncing.left &&
+          self.__decelerationVelocityX < 0
+        ) {
+          self.__decelerationVelocityX = bouncing.left;
+        }
       } else {
         self.__decelerationVelocityX = scrollOutsideX * penetrationAcceleration;
       }
     }
 
-    // Fix __decelerationVelocityY for max-bouncing top or bottom
-    if (self.__decelerationVelocityY) {
-      self.__decelerationVelocityY =
-        (Math.min(
-          Math.abs(scrollOutsideY),
-          Math.abs(self.__decelerationVelocityY)
-        ) *
-          self.__decelerationVelocityY) /
-        self.__decelerationVelocityY;
-    }
     if (scrollOutsideY !== 0) {
       if (scrollOutsideY * self.__decelerationVelocityY <= 0) {
         self.__decelerationVelocityY +=
           scrollOutsideY * penetrationDeceleration;
+        if (
+          scrollOutsideY < 0 &&
+          -scrollOutsideY >= bouncing.bottom &&
+          self.__decelerationVelocityY > 0
+        ) {
+          self.__decelerationVelocityY = -bouncing.bottom;
+        }
+        if (
+          scrollOutsideY > 0 &&
+          scrollOutsideY >= bouncing.top &&
+          self.__decelerationVelocityY < 0
+        ) {
+          self.__decelerationVelocityY = bouncing.top;
+        }
       } else {
         self.__decelerationVelocityY = scrollOutsideY * penetrationAcceleration;
       }
