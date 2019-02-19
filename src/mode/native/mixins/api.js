@@ -1,15 +1,12 @@
-import { goScrolling, getCurrentViewportDom } from 'mode/shared/util';
+import { getCurrentViewportDom } from 'mode/shared/util';
 import { getNumericValue, warn } from 'shared/util';
+import {
+  createEasingFunction,
+  easingPattern
+} from 'core/third-party/easingPattern/index';
+import animate from './scrollAnimate';
 
-export function scrollTo(
-  elm,
-  x,
-  y,
-  speed = 300,
-  easing,
-  animate = true,
-  scrollingComplete
-) {
+export function scrollTo(elm, x, y, speed = 300, easing, scrollingComplete) {
   let scrollLeft,
     scrollTop,
     scrollHeight,
@@ -18,6 +15,8 @@ export function scrollTo(
     clientHeight;
 
   const { nodeType } = elm;
+  const scrollX = new animate();
+  const scrollY = new animate();
 
   if (!nodeType) {
     warn(
@@ -54,40 +53,95 @@ export function scrollTo(
     y = getNumericValue(y, scrollHeight - clientHeight);
   }
 
-  if (animate) {
-    goScrolling(
-      x,
-      y,
-      scrollLeft,
-      scrollTop,
-      scrollWidth,
-      scrollHeight,
-      speed,
-      easing,
-      scrollingComplete,
-      (x, y) => {
-        elm.scrollLeft = x;
-        elm.scrollTop = y;
-      }
-    );
-  } else {
-    elm.scrollTop = y;
-    elm.scrollLeft = x;
-  }
+  const easingMethod = createEasingFunction(easing, easingPattern);
+  scrollX.startScroll(
+    scrollLeft,
+    x,
+    speed,
+    (dx) => {
+      elm.scrollLeft = dx;
+    },
+    scrollingComplete,
+    undefined,
+    easingMethod
+  );
+  scrollY.startScroll(
+    scrollTop,
+    y,
+    speed,
+    (dy) => {
+      elm.scrollTop = dy;
+    },
+    scrollingComplete,
+    undefined,
+    easingMethod
+  );
 }
 
 export default {
+  mounted() {
+    // registry scroll
+    this.scrollX = new animate();
+    this.scrollY = new animate();
+  },
   methods: {
-    nativeScrollTo(x, y, animate) {
-      scrollTo(
-        this.scrollPanelElm,
-        x,
-        y,
-        this.mergedOptions.scrollPanel.speed,
-        this.mergedOptions.scrollPanel.easing,
-        animate,
-        this.scrollingComplete.bind(this)
-      );
+    nativeScrollTo(x, y, speed, easing) {
+      if (speed === false) {
+        speed == 0;
+      } else if (typeof speed === 'undefined') {
+        speed = this.mergedOptions.scrollPanel.speed;
+      }
+      const elm = this.scrollPanelElm;
+      const {
+        scrollTop,
+        scrollLeft,
+        scrollWidth,
+        clientWidth,
+        scrollHeight,
+        clientHeight
+      } = elm;
+      if (typeof x === 'undefined') {
+        x = scrollLeft;
+      } else {
+        x = getNumericValue(x, scrollWidth - clientWidth);
+      }
+      if (typeof y === 'undefined') {
+        y = scrollTop;
+      } else {
+        y = getNumericValue(y, scrollHeight - clientHeight);
+      }
+
+      if (speed) {
+        easing = easing || this.mergedOptions.scrollPanel.easing;
+        const easingMethod = createEasingFunction(easing, easingPattern);
+        this.scrollX.startScroll(
+          scrollLeft,
+          x,
+          speed,
+          (x) => {
+            elm.scrollLeft = x;
+          },
+          this.scrollingComplete.bind(this),
+          undefined,
+          easingMethod
+        );
+        this.scrollY.startScroll(
+          scrollTop,
+          y,
+          speed,
+          (y) => {
+            elm.scrollTop = y;
+          },
+          this.scrollingComplete.bind(this),
+          undefined,
+          easingMethod
+        );
+
+        this.isScrolling = true;
+      } else {
+        elm.scrollTop = y;
+        elm.scrollLeft = x;
+      }
     },
 
     getCurrentviewDomNative() {

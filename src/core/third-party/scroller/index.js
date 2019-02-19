@@ -610,7 +610,7 @@ var members = {
    * @param animate {Boolean?false} Whether the scrolling should happen using an animation
    * @param zoom {Number?null} Zoom level to go to
    */
-  scrollTo: function(left, top, animate, zoom, force) {
+  scrollTo: function(left, top, animate, zoom, force, speed, easing) {
     var self = this;
 
     // Stop deceleration
@@ -669,7 +669,7 @@ var members = {
 
     // Publish new values
     if (!self.__isTracking) {
-      self.__publish(left, top, zoom, animate);
+      self.__publish(left, top, zoom, animate, speed, easing);
     }
   },
 
@@ -1185,7 +1185,7 @@ var members = {
    * @param top {Number} Top scroll position
    * @param animate {Boolean?false} Whether animation should be used to move to the new coordinates
    */
-  __publish: function(left, top, zoom, animate) {
+  __publish: function(left, top, zoom, animate, speed, easing) {
     var self = this;
     if (self.__disable) {
       return;
@@ -1203,7 +1203,7 @@ var members = {
       self.__isAnimating = false;
     }
 
-    if (animate && self.options.animating) {
+    if (animate && (self.options.animating || speed)) {
       // Keep scheduled positions for scrollBy/zoomBy functionality
       self.__scheduledLeft = left;
       self.__scheduledTop = top;
@@ -1270,13 +1270,18 @@ var members = {
         }
       };
 
+      let easingFunction = animatingMethod;
+      if (easing) {
+        easingFunction = createEasingFunction(easing, easingPattern);
+      }
+
       // When continuing based on previous animation we choose an ease-out animation instead of ease-in-out
       self.__isAnimating = core.effect.Animate.start(
         step,
         verify,
         completed,
-        self.options.animationDuration,
-        wasAnimating ? animatingMethod : noAnimatingMethod
+        speed || self.options.animationDuration,
+        wasAnimating ? easingFunction : noAnimatingMethod
       );
     } else {
       self.__scheduledLeft = self.__scrollLeft = left;

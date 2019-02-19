@@ -6,13 +6,13 @@ export default {
   mixins: [slideApi, nativeApi],
   methods: {
     // private api
-    internalScrollTo(destX, destY, animate, force) {
+    internalScrollTo(destX, destY, speed, easing) {
       if (this.mode == 'native') {
-        this.nativeScrollTo(destX, destY, animate);
+        this.nativeScrollTo(destX, destY, speed, easing);
       }
       // for non-native we use scroller's scorllTo
       else if (this.mode == 'slide') {
-        this.slideScrollTo(destX, destY, animate, force);
+        this.slideScrollTo(destX, destY, speed, easing);
       }
     },
     getCurrentviewDom() {

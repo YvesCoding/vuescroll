@@ -9,68 +9,6 @@ import scrollPanel from 'mode/shared/panel';
 import bar from 'mode/shared/bar';
 
 /**
- * Start to scroll to a position
- */
-export function goScrolling(
-  x,
-  y,
-  startLocationX,
-  startLocationY,
-  maxX,
-  maxY,
-  speed,
-  easing,
-  scrollingComplete,
-  render
-) {
-  // deltaX,
-  // deltaY,
-  let deltaX = x - startLocationX;
-  let deltaY = y - startLocationY;
-  let positionX = startLocationX;
-  let positionY = startLocationY;
-  /**
-   * keep the limit of scroll delta.
-   */
-  /* istanbul ignore next */
-  if (startLocationY + deltaY < 0) {
-    deltaY = -startLocationY;
-  }
-  if (startLocationY + deltaY > maxY) {
-    deltaY = maxY - startLocationY;
-  }
-  if (startLocationX + deltaX < 0) {
-    deltaX = -startLocationX;
-  }
-  if (startLocationX + deltaX > maxX) {
-    deltaX = maxX - startLocationX;
-  }
-
-  const easingMethod = createEasingFunction(easing, easingPattern);
-
-  const stepCallback = percentage => {
-    positionX = startLocationX + deltaX * percentage;
-    positionY = startLocationY + deltaY * percentage;
-    render(Math.floor(positionX), Math.floor(positionY));
-  };
-
-  const verifyCallback = () => {
-    return (
-      Math.abs(positionY - startLocationY) <= Math.abs(deltaY) ||
-      Math.abs(positionX - startLocationX) <= Math.abs(deltaX)
-    );
-  };
-
-  core.effect.Animate.start(
-    stepCallback,
-    verifyCallback,
-    scrollingComplete,
-    speed,
-    easingMethod
-  );
-}
-
-/**
  * Init following things
  * 1. Component
  * 2. Render
@@ -107,7 +45,7 @@ export function getCurrentViewportDom(parent, container) {
   const children = parent.children;
   const domFragment = [];
 
-  const isCurrentview = dom => {
+  const isCurrentview = (dom) => {
     const { left, top, width, height } = dom.getBoundingClientRect();
     const {
       left: parentLeft,

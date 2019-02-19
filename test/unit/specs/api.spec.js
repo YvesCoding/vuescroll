@@ -23,8 +23,8 @@ describe('api', () => {
       {
         template: makeTemplate(
           {
-            w: 200,
-            h: 200
+            w: 1000,
+            h: 1000
           },
           {
             w: 100,
@@ -48,42 +48,42 @@ describe('api', () => {
       .then(() => {
         vs.scrollTo(
           {
-            y: 300
+            y: 300,
+            x: 400
           },
-          true
+          300
         );
       })
       .wait(350)
       .then(() => {
         const scrollPanel = vm.$el.querySelector('.__panel');
-        const { scrollTop } = scrollPanel;
-        expect(Math.ceil(scrollTop)).toBe(100);
+        const { scrollTop, scrollLeft } = scrollPanel;
+        expect(Math.ceil(scrollTop)).toBe(300);
+        expect(Math.ceil(scrollLeft)).toBe(400);
+
         // scroll X axis
         vs.scrollTo(
           {
-            x: 300
+            x: 500,
+            y: 600
           },
-          true
+          400
         );
       })
-      .wait(350)
+      .wait(305)
       .then(() => {
         const scrollPanel = vm.$el.querySelector('.__panel');
-        const { scrollLeft } = scrollPanel;
-        expect(Math.ceil(scrollLeft)).toBe(100);
-        // scroll X axis
-        vs.scrollTo(
-          {
-            x: -200
-          },
-          true
-        );
+        const { scrollTop, scrollLeft } = scrollPanel;
+        expect(Math.ceil(scrollLeft)).not.toBe(500);
+        expect(Math.ceil(scrollTop)).not.toBe(600);
       })
-      .wait(350)
+      .wait(150)
       .then(() => {
         const scrollPanel = vm.$el.querySelector('.__panel');
-        const { scrollLeft } = scrollPanel;
-        expect(scrollLeft).toBe(0);
+        const { scrollTop, scrollLeft } = scrollPanel;
+        expect(Math.ceil(scrollLeft)).toBe(500);
+        expect(Math.ceil(scrollTop)).toBe(600);
+
         done();
       });
   });
@@ -93,8 +93,8 @@ describe('api', () => {
       {
         template: makeTemplate(
           {
-            w: 200,
-            h: 200
+            w: 1000,
+            h: 1000
           },
           {
             w: 100,
@@ -118,39 +118,38 @@ describe('api', () => {
       .then(() => {
         vs.scrollTo(
           {
-            y: 300
+            y: 300,
+            x: 250
           },
-          true
+          300
         );
       })
       .wait(350)
       .then(() => {
-        const { __scrollTop } = vs.scroller;
-        expect(Math.ceil(__scrollTop)).toBe(100);
+        const { __scrollTop, __scrollLeft } = vs.scroller;
+        expect(Math.ceil(__scrollTop)).toBe(300);
+        expect(Math.ceil(__scrollLeft)).toBe(250);
         // scroll X axis
         vs.scrollTo(
           {
-            x: 300
+            x: 500,
+            y: 450
           },
-          true
+          400
         );
       })
       .wait(350)
       .then(() => {
-        const { __scrollLeft } = vs.scroller;
-        expect(Math.ceil(__scrollLeft)).toBe(100);
-        // scroll X axis
-        vs.scrollTo(
-          {
-            x: -200
-          },
-          true
-        );
+        const { __scrollTop, __scrollLeft } = vs.scroller;
+        expect(Math.ceil(__scrollTop)).not.toBe(450);
+        expect(Math.ceil(__scrollLeft)).not.toBe(500);
       })
-      .wait(350)
+      .wait(100)
       .then(() => {
-        const { __scrollLeft } = vs.scroller;
-        expect(__scrollLeft).toBe(0);
+        const { __scrollTop, __scrollLeft } = vs.scroller;
+        expect(Math.ceil(__scrollTop)).toBe(450);
+        expect(Math.ceil(__scrollLeft)).toBe(500);
+
         done();
       });
   });
@@ -183,10 +182,10 @@ describe('api', () => {
             dy: 50,
             dx: 50
           },
-          true
+          350
         );
       })
-      .wait(350)
+      .wait(400)
       .then(() => {
         const scrollPanel = vm.$el.querySelector('.__panel');
         const { scrollTop, scrollLeft } = scrollPanel;
@@ -454,57 +453,6 @@ describe('api', () => {
         let vRails = document.querySelectorAll('.__rail-is-vertical');
         expect(hRails.length).toBe(2);
         expect(vRails.length).toBe(2);
-        done();
-      });
-  });
-
-  // Scrolling times test
-
-  it('Api: getScrollingTimes, clearScrollingTimes', (done) => {
-    vm = createVue(
-      {
-        template: makeTemplate(
-          {
-            w: 100,
-            h: 100
-          },
-          {
-            w: 100,
-            h: 100
-          },
-          '',
-          3
-        ),
-        data: {
-          ops: {
-            vuescroll: {
-              mode: 'slide'
-            }
-          }
-        }
-      },
-      true
-    );
-
-    const vs = vm.$refs['vs'];
-
-    startSchedule()
-      .then(() => {
-        const times = vs.getScrollingTimes();
-        expect(times).toBe(0);
-        vs.scrollTo({ y: '10%' });
-      })
-      .wait(520)
-      .then(() => {
-        let times = vs.getScrollingTimes();
-        expect(times).toBe(1);
-
-        vs.clearScrollingTimes();
-
-        times = vs.getScrollingTimes();
-
-        expect(times).toBe(0);
-
         done();
       });
   });

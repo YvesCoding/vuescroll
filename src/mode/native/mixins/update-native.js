@@ -28,6 +28,31 @@ export default {
         scrollTop: this.scrollPanelElm.scrollTop,
         scrollLeft: this.scrollPanelElm.scrollLeft
       };
+    },
+    onMouseWheel(event) /* istanbul ignore next */ {
+      event.preventDefault();
+      let delta = 0;
+      let dir;
+      if (event.wheelDelta) {
+        if (event.deltaY) {
+          dir = 'dy';
+          delta = event.deltaY;
+        } else {
+          delta = event.deltaX;
+          dir = 'dx';
+        }
+      } else if (event.detail) {
+        // horizontal scroll
+        if (event.axis == 1) {
+          dir = 'dx';
+        } else if (event.axis == 2) {
+          // vertical scroll
+          dir = 'dy';
+        }
+        delta = event.detail * 16;
+      }
+
+      this.scrollBy({ [dir]: delta }, 500);
     }
   },
   computed: {

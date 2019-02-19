@@ -29,8 +29,8 @@ export default {
     getCurrentviewDom() {
       return this.getCurrentviewDomSlide();
     },
-    internalScrollTo(destX, destY, animate, force) {
-      this.slideScrollTo(destX, destY, animate, undefined, force);
+    internalScrollTo(destX, destY, speed, sasing) {
+      this.slideScrollTo(destX, destY, speed, sasing);
     },
     handleScroll(nativeEvent) {
       this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
@@ -98,7 +98,6 @@ export default {
     },
     initVariables() {
       this.$el._isVuescroll = true;
-      this.clearScrollingTimes();
     },
     refreshMode() {
       if (this.destroyScroller) {

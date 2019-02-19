@@ -153,6 +153,10 @@ core.effect.Animate = {
         }
       }
 
+      if (!running[id]) {
+        return;
+      }
+
       // Compute percent value
       if (duration) {
         percent = (now - start) / duration;

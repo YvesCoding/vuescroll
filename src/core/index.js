@@ -1,6 +1,5 @@
 import GCF, { validateOps } from 'shared/global-config';
 import { mergeObject, defineReactive } from 'shared/util';
-
 import api from './mixins/api';
 
 import {
@@ -158,8 +157,6 @@ const createComponent = ({ render, components, mixins }) => ({
           /** Default sizeStrategies */
           height: '100%',
           width: '100%',
-          /** How many times you have scrolled */
-          scrollingTimes: 0,
           // current size strategy
           currentSizeStrategy: 'percent'
         }
@@ -196,7 +193,8 @@ const createComponent = ({ render, components, mixins }) => ({
     /** ------------------------ Handlers --------------------------- */
 
     scrollingComplete() {
-      this.vuescroll.state.scrollingTimes++;
+      this.isScrolling = false;
+
       this.updateBarStateAndEmitEvent('handle-scroll-complete');
     },
     setBarDrag(val) {

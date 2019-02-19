@@ -13,8 +13,8 @@ export default {
     getCurrentviewDom() {
       return this.getCurrentviewDomNative();
     },
-    internalScrollTo(destX, destY, animate) {
-      this.nativeScrollTo(destX, destY, animate);
+    internalScrollTo(destX, destY, animate, easing) {
+      this.nativeScrollTo(destX, destY, animate, easing);
     },
     handleScroll(nativeEvent) {
       this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
@@ -74,7 +74,6 @@ export default {
 
     initVariables() {
       this.$el._isVuescroll = true;
-      this.clearScrollingTimes();
     },
     refreshInternalStatus() {
       // 1.set vuescroll height or width according to

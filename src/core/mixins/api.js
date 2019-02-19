@@ -9,10 +9,14 @@ export default {
   },
   methods: {
     // public api
-    scrollTo({ x, y }, animate = true, force = false) {
-      this.internalScrollTo(x, y, animate, force);
+    scrollTo({ x, y }, speed, easing) {
+      // istanbul ignore if
+      if (speed === true) {
+        speed = this.mergedOptions.scrollPanel.speed;
+      }
+      this.internalScrollTo(x, y, speed, easing);
     },
-    scrollBy({ dx = 0, dy = 0 }, animate = true) {
+    scrollBy({ dx = 0, dy = 0 }, speed, easing) {
       let { scrollLeft = 0, scrollTop = 0 } = this.getPosition();
       if (dx) {
         scrollLeft += getNumericValue(
@@ -26,7 +30,7 @@ export default {
           this.scrollPanelElm.scrollHeight - this.$el.clientHeight
         );
       }
-      this.internalScrollTo(scrollLeft, scrollTop, animate);
+      this.internalScrollTo(scrollLeft, scrollTop, speed, easing);
     },
     scrollIntoView(elm, animate = true) {
       const parentElm = this.$el;
@@ -62,14 +66,6 @@ export default {
       this.refreshInternalStatus();
       // refresh again to keep status is correct
       this.$nextTick(this.refreshInternalStatus);
-    },
-    // Get the times you have scrolled!
-    getScrollingTimes() {
-      return this.vuescroll.state.scrollingTimes;
-    },
-    // Clear the times you have scrolled!
-    clearScrollingTimes() {
-      this.vuescroll.state.scrollingTimes = 0;
     }
   }
 };

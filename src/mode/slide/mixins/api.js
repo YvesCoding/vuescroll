@@ -3,20 +3,13 @@ import { warn, getNumericValue } from 'shared/util';
 
 export default {
   methods: {
-    slideScrollTo(x, y, animate, force) {
+    slideScrollTo(x, y, speed, easing) {
       const { scrollLeft, scrollTop } = this.getPosition();
-      if (typeof x === 'undefined') {
-        x = scrollLeft || 0;
-      } else {
-        x = getNumericValue(x, this.scroller.__maxScrollLeft);
-      }
-      if (typeof y === 'undefined') {
-        y = scrollTop || 0;
-      } else {
-        y = getNumericValue(y, this.scroller.__maxScrollTop);
-      }
 
-      this.scroller.scrollTo(x, y, animate, undefined, force);
+      x = getNumericValue(x || scrollLeft, this.scroller.__maxScrollLeft);
+      y = getNumericValue(y || scrollTop, this.scroller.__maxScrollTop);
+
+      this.scroller.scrollTo(x, y, speed > 0, undefined, false, speed, easing);
     },
     zoomBy(factor, animate, originLeft, originTop, callback) {
       if (!this.scroller) {
@@ -63,7 +56,7 @@ export default {
         warn('refresh must be enabled!');
         return;
       } else if (type == 'load' && !isLoad) {
-        warn('load must be enabled and content\'s height > container\'s height!');
+        warn("load must be enabled and content's height > container's height!");
         return;
       } else if (type !== 'refresh' && type !== 'load') {
         warn('param must be one of load and refresh!');
