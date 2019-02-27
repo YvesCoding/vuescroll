@@ -60,7 +60,8 @@ export const config = {
       /** Whether call e.preventDefault event when sliding the content or not */
       preventDefault: false,
       /** Whether call preventDefault when (mouse/touch)move*/
-      preventDefaultOnMove: true
+      preventDefaultOnMove: true,
+      disable: false
     }
   }
 };

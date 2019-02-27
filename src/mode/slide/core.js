@@ -9,6 +9,15 @@ export default {
         this.updatedCbs.push(() => {
           this.updateScroller();
         });
+
+        this.$watch('mergedOptions.vuescroll.scroller.disable', {
+          sync: true,
+          handler(newVal) {
+            if (this.scroller) {
+              this.scroller.__disable = newVal;
+            }
+          }
+        });
       }
     });
   },

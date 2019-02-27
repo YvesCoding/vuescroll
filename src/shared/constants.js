@@ -6,6 +6,7 @@ export const NOOP = () => {};
 export const smallChangeArray = [
   'mergedOptions.vuescroll.pullRefresh.tips',
   'mergedOptions.vuescroll.pushLoad.tips',
+  'mergedOptions.vuescroll.scroller.disable',
   'mergedOptions.rail',
   'mergedOptions.bar'
 ];

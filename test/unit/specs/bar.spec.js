@@ -13,7 +13,7 @@ describe('rail and scrollButton', () => {
     destroyVM(vm);
   });
 
-  it('vBar and hBar should scroll to middle after clicking the middle of the rail', done => {
+  it('vBar and hBar should scroll to middle after clicking the middle of the rail', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -75,7 +75,7 @@ describe('rail and scrollButton', () => {
       });
   });
 
-  it('clicking scroll button on the bottom should scroll down 180', done => {
+  it('clicking scroll button on the bottom should scroll down 180', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -118,7 +118,7 @@ describe('rail and scrollButton', () => {
       });
   });
 
-  it('bar size should be 6px and rail size should be 10px', done => {
+  it('bar size should be 6px and rail size should be 10px', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -156,6 +156,110 @@ describe('rail and scrollButton', () => {
 
       expect(hRail.style.height).toBe('10px');
       expect(vRail.style.width).toBe('10px');
+
+      done();
+    });
+  });
+
+  // hover style
+  it('hover style , keep show', (done) => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 800,
+            h: 800
+          },
+          {
+            w: 400,
+            h: 400
+          }
+        ),
+        data: {
+          ops: {
+            bar: {
+              onlyShowBarOnScroll: false,
+              keepShow: true,
+              background: 'blue',
+              hoverStyle: {
+                backgroundColor: 'red'
+              }
+            }
+          }
+        }
+      },
+      true
+    );
+
+    let vBar = null;
+    const vsElm = vm.$refs['vs'].$el;
+    startSchedule()
+      // Test for hoverStyle
+      .then(() => {
+        vBar = vm.$el.querySelector('.__bar-is-vertical');
+        trigger(vBar, 'mouseenter');
+      })
+      .then(() => {
+        expect(vBar.style.backgroundColor).toBe('red');
+        trigger(vBar, 'mouseleave');
+      })
+      .then(() => {
+        expect(vBar.style.background).toBe('blue');
+        trigger(vsElm, 'mouseleave');
+      })
+      // Test for keepShow
+      .then(() => {
+        expect(vBar.style.opacity).toBe('1');
+        vm.ops.bar.keepShow = false;
+      })
+      .then(() => {
+        trigger(vsElm, 'mouseleave');
+      })
+      .then(() => {
+        expect(vBar.style.opacity).toBe('0');
+        trigger(vsElm, 'mouseenter');
+      })
+      .then(() => {
+        expect(vBar.style.opacity).toBe('1');
+        done();
+      });
+  });
+
+  it('disable bar', (done) => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 400,
+            h: 400
+          },
+          {
+            w: 100,
+            h: 100
+          }
+        ),
+        data: {
+          ops: {
+            bar: {
+              disable: true
+            }
+          }
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+    startSchedule().then(() => {
+      const hBar = vs.$el.querySelector('.__bar-is-horizontal');
+      const hRail = vs.$el.querySelector('.__rail-is-horizontal');
+      const vBar = vs.$el.querySelector('.__bar-is-vertical');
+      const vRail = vs.$el.querySelector('.__rail-is-vertical');
+
+      expect(hBar).toBe(null);
+      expect(vBar).toBe(null);
+
+      expect(hRail).toBe(null);
+      expect(vRail).toBe(null);
 
       done();
     });

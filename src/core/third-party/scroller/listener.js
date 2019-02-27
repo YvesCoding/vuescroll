@@ -11,9 +11,10 @@ export function listenContainer(
   function touchstart(e) {
     // Don't react if initial down happens on a form element
     if (
-      e.touches[0] &&
-      e.touches[0].target &&
-      e.touches[0].target.tagName.match(/input|textarea|select/i)
+      (e.touches[0] &&
+        e.touches[0].target &&
+        e.touches[0].target.tagName.match(/input|textarea|select/i)) ||
+      scroller.__disable
     ) {
       return;
     }
@@ -30,6 +31,8 @@ export function listenContainer(
     document.addEventListener('touchmove', touchmove, { passive: false });
   }
   function touchmove(e) {
+    if (scroller.__disable) return;
+
     eventCallback('mousemove');
     scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
     if (preventDefaultOnMove) {
@@ -47,7 +50,10 @@ export function listenContainer(
 
   // for mouse
   function mousedownEvent(e) {
-    if (e.target.tagName.match(/input|textarea|select/i)) {
+    if (
+      e.target.tagName.match(/input|textarea|select/i) ||
+      scroller.__disable
+    ) {
       return;
     }
 
@@ -71,7 +77,7 @@ export function listenContainer(
     mousedown = true;
   }
   function mousemove(e) {
-    if (!mousedown) {
+    if (!mousedown || scroller.__disable) {
       return;
     }
     eventCallback('mousemove');

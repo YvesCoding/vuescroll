@@ -47,7 +47,7 @@ function createBarEvent(ctx, type = 'mouse') {
     let delta =
       event[ctx.bar.client] -
       thubmParent.getBoundingClientRect()[ctx.bar.posName];
-    delta = delta / ctx.barScale;
+    delta = delta / ctx.barRatio;
 
     const percent = (delta - ctx.axisStartPos) / thubmParent[ctx.bar.offset];
     parent.scrollTo(
@@ -293,10 +293,9 @@ export default {
       return scrollMap[this.type];
     },
     barSize() {
-      const minSize = this.ops.bar.minSize;
-      return minSize ? Math.max(this.state.size, minSize) : this.state.size;
+      return Math.max(this.state.size, this.ops.bar.minSize);
     },
-    barScale() {
+    barRatio() {
       return (1 - this.barSize) / (1 - this.state.size);
     }
   },
@@ -341,7 +340,7 @@ export default {
     };
 
     const scrollDistance = vm.state.posValue * vm.state.size;
-    const pos = (scrollDistance * vm.barScale) / vm.barSize;
+    const pos = (scrollDistance * vm.barRatio) / vm.barSize;
     /** Scrollbar style */
     let barStyle = {
       cursor: 'pointer',
@@ -423,7 +422,7 @@ export default {
       /* istanbul ignore if */
       if (this.isBarDragging || !this.originBarStyle) return;
 
-      Object.keys(this.originBarStyle).forEach(key => {
+      Object.keys(this.originBarStyle).forEach((key) => {
         this.$refs.thumb.style[key] = this.originBarStyle[key];
       });
     },
@@ -434,7 +433,7 @@ export default {
 
       if (!this.originBarStyle) {
         this.originBarStyle = {};
-        Object.keys(hoverBarStyle).forEach(key => {
+        Object.keys(hoverBarStyle).forEach((key) => {
           this.originBarStyle[key] = this.$refs.thumb.style[key];
         });
       }
@@ -452,7 +451,8 @@ function getBarData(vm, type) {
   const hideBar =
     !vm.bar[barType].state.size ||
     !vm.mergedOptions.scrollPanel['scrolling' + axis] ||
-    (vm.refreshLoad && type !== 'vertical');
+    (vm.refreshLoad && type !== 'vertical') ||
+    vm.mergedOptions.bar.disable;
 
   const keepShowRail = vm.mergedOptions.rail.keepShow;
 

@@ -17,7 +17,7 @@ describe('vuescroll', () => {
     destroyVM(vm);
   });
 
-  it('sizeStrategy', done => {
+  it('sizeStrategy', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -79,7 +79,7 @@ describe('vuescroll', () => {
   }
 
   // test pull refresh
-  it('pull-refresh', done => {
+  it('pull-refresh', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -144,7 +144,7 @@ describe('vuescroll', () => {
       });
   });
 
-  it('push-load', done => {
+  it('push-load', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -213,7 +213,7 @@ describe('vuescroll', () => {
       });
   });
 
-  it('auto-load', done => {
+  it('auto-load', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -269,7 +269,7 @@ describe('vuescroll', () => {
   // Math.round(scrollTop / clientHeight) * clientHeight
   // snapping:
   // Math.round(scrollTop / snapHeight) * snapHeight
-  it('paging', done => {
+  it('paging', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -324,7 +324,7 @@ describe('vuescroll', () => {
   });
 
   // snapping
-  it('snapping', done => {
+  it('snapping', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -382,7 +382,7 @@ describe('vuescroll', () => {
   });
 
   // detectResize
-  it('detectResize', done => {
+  it('detectResize', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -423,7 +423,7 @@ describe('vuescroll', () => {
   });
 
   // renderMethod
-  it('renderMethod', done => {
+  it('renderMethod', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -451,6 +451,65 @@ describe('vuescroll', () => {
 
     startSchedule()
       .then(() => {
+        vs.scrollTo({
+          x: 100,
+          y: 100
+        });
+      })
+      .wait(400)
+      .then(() => {
+        const elm = vs.$el.querySelector('.__panel');
+        expect(elm.style.top).toBe('-100px');
+        expect(elm.style.left).toBe('-100px');
+
+        done();
+      });
+  });
+
+  // disable/enable scroller
+  it('disable/enable scroller', (done) => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 400,
+            h: 400
+          },
+          {
+            w: 200,
+            h: 200
+          }
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'slide',
+              renderMethod: 'position',
+              scroller: {
+                disable: true
+              }
+            }
+          }
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+
+    startSchedule()
+      .then(() => {
+        vs.scrollTo({
+          x: 100,
+          y: 100
+        });
+      })
+      .wait(400)
+      .then(() => {
+        const elm = vs.$el.querySelector('.__panel');
+        expect(elm.style.top).toBe('');
+        expect(elm.style.left).toBe('');
+
+        vm.ops.vuescroll.scroller.disable = false;
         vs.scrollTo({
           x: 100,
           y: 100

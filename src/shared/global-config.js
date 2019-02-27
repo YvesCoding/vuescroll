@@ -58,8 +58,8 @@ const baseConfig = {
     /** bar's size(Height/Width) , default -> 6px */
 
     size: '6px',
-    /** false or a percent, like 10% */
-    minSize: false
+    minSize: 0,
+    disable: false
   },
   scrollButton: {
     enable: false,

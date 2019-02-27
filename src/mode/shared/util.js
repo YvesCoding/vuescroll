@@ -1,8 +1,3 @@
-import {
-  createEasingFunction,
-  easingPattern
-} from 'core/third-party/easingPattern/index';
-import { core } from 'core/third-party/scroller/animate';
 import createComponent from 'core/index';
 import { extendOpts } from 'shared/global-config';
 import scrollPanel from 'mode/shared/panel';

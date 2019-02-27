@@ -205,6 +205,8 @@ export default {
         }
       );
 
+      this.scroller.__disable = this.mergedOptions.vuescroll.scroller.disable;
+
       // Set snap
       if (snapping) {
         this.scroller.setSnapSize(

@@ -30,29 +30,41 @@ export default {
       };
     },
     onMouseWheel(event) /* istanbul ignore next */ {
-      event.preventDefault();
-      let delta = 0;
-      let dir;
-      if (event.wheelDelta) {
-        if (event.deltaY) {
-          dir = 'dy';
-          delta = event.deltaY;
-        } else {
-          delta = event.deltaX;
-          dir = 'dx';
-        }
-      } else if (event.detail) {
-        // horizontal scroll
-        if (event.axis == 1) {
-          dir = 'dx';
-        } else if (event.axis == 2) {
-          // vertical scroll
-          dir = 'dy';
-        }
-        delta = event.detail * 16;
-      }
+      event.stopPropagation();
 
-      this.scrollBy({ [dir]: delta }, 500);
+      if (this.mergedOptions.vuescroll.wheelSmooth) {
+        event.preventDefault();
+        let delta = 0;
+        let dir;
+        if (event.wheelDelta) {
+          if (event.deltaY) {
+            dir = 'dy';
+            delta = event.deltaY;
+          } else if (event.deltaYX) {
+            delta = event.deltaX;
+            dir = 'dx';
+          } else {
+            if (event.shiftKey) {
+              dir = 'dx';
+            } else {
+              dir = 'dy';
+            }
+
+            delta = (-1 * event.wheelDelta) / 2;
+          }
+        } else if (event.detail) {
+          // horizontal scroll
+          if (event.axis == 1) {
+            dir = 'dx';
+          } else if (event.axis == 2) {
+            // vertical scroll
+            dir = 'dy';
+          }
+          delta = event.detail * 16;
+        }
+
+        this.scrollBy({ [dir]: delta }, 500);
+      }
     }
   },
   computed: {

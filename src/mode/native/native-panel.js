@@ -22,11 +22,8 @@ export default function getPanelData(context) {
     }
   };
 
-  /* istanbul ignore if */
-  if (context.mergedOptions.vuescroll.wheelSmooth) {
-    data.nativeOn.DOMMouseScroll = data.nativeOn.mousewheel =
-      context.onMouseWheel;
-  }
+  data.nativeOn.DOMMouseScroll = data.nativeOn.mousewheel =
+    context.onMouseWheel;
 
   const { scrollingY, scrollingX } = context.mergedOptions.scrollPanel;
   // dynamic set overflow scroll
