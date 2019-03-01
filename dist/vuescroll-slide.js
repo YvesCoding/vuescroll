@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.10.5
+    * Vuescroll v4.11.0
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -57,9 +57,29 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
 
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
 
-
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
 
 
 
@@ -414,20 +434,21 @@ var api = {
 
   methods: {
     // public api
-    scrollTo: function scrollTo(_ref) {
+    scrollTo: function scrollTo(_ref, speed, easing) {
       var x = _ref.x,
           y = _ref.y;
-      var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-      var force = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-      this.internalScrollTo(x, y, animate, force);
+      // istanbul ignore if
+      if (speed === true) {
+        speed = this.mergedOptions.scrollPanel.speed;
+      }
+      this.internalScrollTo(x, y, speed, easing);
     },
-    scrollBy: function scrollBy(_ref2) {
+    scrollBy: function scrollBy(_ref2, speed, easing) {
       var _ref2$dx = _ref2.dx,
           dx = _ref2$dx === undefined ? 0 : _ref2$dx,
           _ref2$dy = _ref2.dy,
           dy = _ref2$dy === undefined ? 0 : _ref2$dy;
-      var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
       var _getPosition = this.getPosition(),
           _getPosition$scrollLe = _getPosition.scrollLeft,
@@ -441,7 +462,7 @@ var api = {
       if (dy) {
         scrollTop += getNumericValue(dy, this.scrollPanelElm.scrollHeight - this.$el.clientHeight);
       }
-      this.internalScrollTo(scrollLeft, scrollTop, animate);
+      this.internalScrollTo(scrollLeft, scrollTop, speed, easing);
     },
     scrollIntoView: function scrollIntoView(elm) {
       var animate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
@@ -481,16 +502,6 @@ var api = {
       this.refreshInternalStatus();
       // refresh again to keep status is correct
       this.$nextTick(this.refreshInternalStatus);
-    },
-
-    // Get the times you have scrolled!
-    getScrollingTimes: function getScrollingTimes() {
-      return this.vuescroll.state.scrollingTimes;
-    },
-
-    // Clear the times you have scrolled!
-    clearScrollingTimes: function clearScrollingTimes() {
-      this.vuescroll.state.scrollingTimes = 0;
     }
   }
 };
@@ -506,265 +517,6 @@ function refreshAll() {
     vsInstances[vs].refresh();
   }
 }
-
-/**
- *  Compatible to scroller's animation function
- */
-function createEasingFunction(easing, easingPattern) {
-  return function (time) {
-    return easingPattern(easing, time);
-  };
-}
-
-/**
- * Calculate the easing pattern
- * @link https://github.com/cferdinandi/smooth-scroll/blob/master/src/js/smooth-scroll.js
- * modified by wangyi7099
- * @param {String} type Easing pattern
- * @param {Number} time Time animation should take to complete
- * @returns {Number}
- */
-function easingPattern(easing, time) {
-  var pattern = null;
-  /* istanbul ignore next */
-  {
-    // Default Easing Patterns
-    if (easing === 'easeInQuad') pattern = time * time; // accelerating from zero velocity
-    if (easing === 'easeOutQuad') pattern = time * (2 - time); // decelerating to zero velocity
-    if (easing === 'easeInOutQuad') pattern = time < 0.5 ? 2 * time * time : -1 + (4 - 2 * time) * time; // acceleration until halfway, then deceleration
-    if (easing === 'easeInCubic') pattern = time * time * time; // accelerating from zero velocity
-    if (easing === 'easeOutCubic') pattern = --time * time * time + 1; // decelerating to zero velocity
-    if (easing === 'easeInOutCubic') pattern = time < 0.5 ? 4 * time * time * time : (time - 1) * (2 * time - 2) * (2 * time - 2) + 1; // acceleration until halfway, then deceleration
-    if (easing === 'easeInQuart') pattern = time * time * time * time; // accelerating from zero velocity
-    if (easing === 'easeOutQuart') pattern = 1 - --time * time * time * time; // decelerating to zero velocity
-    if (easing === 'easeInOutQuart') pattern = time < 0.5 ? 8 * time * time * time * time : 1 - 8 * --time * time * time * time; // acceleration until halfway, then deceleration
-    if (easing === 'easeInQuint') pattern = time * time * time * time * time; // accelerating from zero velocity
-    if (easing === 'easeOutQuint') pattern = 1 + --time * time * time * time * time; // decelerating to zero velocity
-    if (easing === 'easeInOutQuint') pattern = time < 0.5 ? 16 * time * time * time * time * time : 1 + 16 * --time * time * time * time * time; // acceleration until halfway, then deceleration
-  }
-  return pattern || time; // no easing, no acceleration
-}
-
-function requestAnimationFrame(global) {
-  // Check for request animation Frame support
-  var requestFrame = global.requestAnimationFrame || global.webkitRequestAnimationFrame || global.mozRequestAnimationFrame || global.oRequestAnimationFrame;
-  var isNative = !!requestFrame;
-
-  if (requestFrame && !/requestAnimationFrame\(\)\s*\{\s*\[native code\]\s*\}/i.test(requestFrame.toString())) {
-    isNative = false;
-  }
-
-  if (isNative) {
-    return function (callback, root) {
-      requestFrame(callback, root);
-    };
-  }
-
-  var TARGET_FPS = 60;
-  var requests = {};
-  var rafHandle = 1;
-  var intervalHandle = null;
-  var lastActive = +new Date();
-
-  return function (callback) {
-    var callbackHandle = rafHandle++;
-
-    // Store callback
-    requests[callbackHandle] = callback;
-
-    // Create timeout at first request
-    if (intervalHandle === null) {
-      intervalHandle = setInterval(function () {
-        var time = +new Date();
-        var currentRequests = requests;
-
-        // Reset data structure before executing callbacks
-        requests = {};
-
-        for (var key in currentRequests) {
-          if (currentRequests.hasOwnProperty(key)) {
-            currentRequests[key](time);
-            lastActive = time;
-          }
-        }
-
-        // Disable the timeout when nothing happens for a certain
-        // period of time
-        if (time - lastActive > 2500) {
-          clearInterval(intervalHandle);
-          intervalHandle = null;
-        }
-      }, 1000 / TARGET_FPS);
-    }
-
-    return callbackHandle;
-  };
-}
-
-/*
- * Scroller
- * http://github.com/zynga/scroller
- *
- * Copyright 2011, Zynga Inc.
- * Licensed under the MIT License.
- * https://raw.github.com/zynga/scroller/master/MIT-LICENSE.txt
- *
- * Based on the work of: Unify Project (unify-project.org)
- * http://unify-project.org
- * Copyright 2011, Deutsche Telekom AG
- * License: MIT + Apache (V2)
- */
-
-/**
- * Generic animation class with support for dropped frames both optional easing and duration.
- *
- * Optional duration is useful when the lifetime is defined by another condition than time
- * e.g. speed of an animating object, etc.
- *
- * Dropped frame logic allows to keep using the same updater logic independent from the actual
- * rendering. This eases a lot of cases where it might be pretty complex to break down a state
- * based on the pure time difference.
- */
-var time = Date.now || function () {
-  return +new Date();
-};
-var desiredFrames = 60;
-var millisecondsPerSecond = 1000;
-var running = {};
-var counter = 1;
-
-var core = { effect: {} };
-var global$1 = null;
-
-if (typeof window !== 'undefined') {
-  global$1 = window;
-} else {
-  global$1 = {};
-}
-
-core.effect.Animate = {
-  /**
-   * A requestAnimationFrame wrapper / polyfill.
-   *
-   * @param callback {Function} The callback to be invoked before the next repaint.
-   * @param root {HTMLElement} The root element for the repaint
-   */
-  requestAnimationFrame: requestAnimationFrame(global$1),
-  /**
-   * Stops the given animation.
-   *
-   * @param id {Integer} Unique animation ID
-   * @return {Boolean} Whether the animation was stopped (aka, was running before)
-   */
-  stop: function stop(id) {
-    var cleared = running[id] != null;
-    if (cleared) {
-      running[id] = null;
-    }
-
-    return cleared;
-  },
-
-  /**
-   * Whether the given animation is still running.
-   *
-   * @param id {Integer} Unique animation ID
-   * @return {Boolean} Whether the animation is still running
-   */
-  isRunning: function isRunning(id) {
-    return running[id] != null;
-  },
-
-  /**
-   * Start the animation.
-   *
-   * @param stepCallback {Function} Pointer to function which is executed on every step.
-   *   Signature of the method should be `function(percent, now, virtual) { return continueWithAnimation; }`
-   * @param verifyCallback {Function} Executed before every animation step.
-   *   Signature of the method should be `function() { return continueWithAnimation; }`
-   * @param completedCallback {Function}
-   *   Signature of the method should be `function(droppedFrames, finishedAnimation) {}`
-   * @param duration {Integer} Milliseconds to run the animation
-   * @param easingMethod {Function} Pointer to easing function
-   *   Signature of the method should be `function(percent) { return modifiedValue; }`
-   * @param root {Element ? document.body} Render root, when available. Used for internal
-   *   usage of requestAnimationFrame.
-   * @return {Integer} Identifier of animation. Can be used to stop it any time.
-   */
-  start: function start(stepCallback, verifyCallback, completedCallback, duration, easingMethod, root) {
-    var start = time();
-    var lastFrame = start;
-    var percent = 0;
-    var dropCounter = 0;
-    var id = counter++;
-
-    if (!root) {
-      root = document.body;
-    }
-
-    // Compacting running db automatically every few new animations
-    if (id % 20 === 0) {
-      var newRunning = {};
-      for (var usedId in running) {
-        newRunning[usedId] = true;
-      }
-      running = newRunning;
-    }
-
-    // This is the internal step method which is called every few milliseconds
-    var step = function step(virtual) {
-      // Normalize virtual value
-      var render = virtual !== true;
-
-      // Get current time
-      var now = time();
-
-      // Verification is executed before next animation step
-      if (!running[id] || verifyCallback && !verifyCallback(id)) {
-        running[id] = null;
-        completedCallback && completedCallback(desiredFrames - dropCounter / ((now - start) / millisecondsPerSecond), id, false);
-        return;
-      }
-
-      // For the current rendering to apply let's update omitted steps in memory.
-      // This is important to bring internal state variables up-to-date with progress in time.
-      if (render) {
-        var droppedFrames = Math.round((now - lastFrame) / (millisecondsPerSecond / desiredFrames)) - 1;
-        for (var j = 0; j < Math.min(droppedFrames, 4); j++) {
-          step(true);
-          dropCounter++;
-        }
-      }
-
-      // Compute percent value
-      if (duration) {
-        percent = (now - start) / duration;
-        if (percent > 1) {
-          percent = 1;
-        }
-      }
-
-      // Execute step callback, then...
-      var value = easingMethod ? easingMethod(percent) : percent;
-      if ((stepCallback(value, now, render) === false || percent === 1) && render) {
-        running[id] = null;
-        completedCallback && completedCallback(desiredFrames - dropCounter / ((now - start) / millisecondsPerSecond), id, percent === 1 || duration == null);
-      } else if (render) {
-        lastFrame = now;
-        core.effect.Animate.requestAnimationFrame(step, root);
-      }
-    };
-
-    // Mark as running
-    running[id] = true;
-
-    // Init first step
-    core.effect.Animate.requestAnimationFrame(step, root);
-
-    // Return unique animation ID
-    return id;
-  }
-};
 
 var baseConfig = {
   // vuescroll
@@ -824,8 +576,8 @@ var baseConfig = {
     /** bar's size(Height/Width) , default -> 6px */
 
     size: '6px',
-    /** false or a percent, like 10% */
-    minSize: false
+    minSize: 0,
+    disable: false
   },
   scrollButton: {
     enable: false,
@@ -893,7 +645,7 @@ var extendOpts = function extendOpts(extraOpts, extraValidate) {
 // do nothing
 var NOOP$1 = function NOOP() {};
 // some small changes.
-var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.rail', 'mergedOptions.bar'];
+var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.vuescroll.scroller.disable', 'mergedOptions.rail', 'mergedOptions.bar'];
 // refresh/load dom ref/key...
 var __REFRESH_DOM_NAME = 'refreshDom';
 var __LOAD_DOM_NAME = 'loadDom';
@@ -979,6 +731,62 @@ var scrollMap = {
   }
 };
 
+function requestAnimationFrame(global) {
+  // Check for request animation Frame support
+  var requestFrame = global.requestAnimationFrame || global.webkitRequestAnimationFrame || global.mozRequestAnimationFrame || global.oRequestAnimationFrame;
+  var isNative = !!requestFrame;
+
+  if (requestFrame && !/requestAnimationFrame\(\)\s*\{\s*\[native code\]\s*\}/i.test(requestFrame.toString())) {
+    isNative = false;
+  }
+
+  if (isNative) {
+    return function (callback, root) {
+      requestFrame(callback, root);
+    };
+  }
+
+  var TARGET_FPS = 60;
+  var requests = {};
+  var rafHandle = 1;
+  var intervalHandle = null;
+  var lastActive = +new Date();
+
+  return function (callback) {
+    var callbackHandle = rafHandle++;
+
+    // Store callback
+    requests[callbackHandle] = callback;
+
+    // Create timeout at first request
+    if (intervalHandle === null) {
+      intervalHandle = setInterval(function () {
+        var time = +new Date();
+        var currentRequests = requests;
+
+        // Reset data structure before executing callbacks
+        requests = {};
+
+        for (var key in currentRequests) {
+          if (currentRequests.hasOwnProperty(key)) {
+            currentRequests[key](time);
+            lastActive = time;
+          }
+        }
+
+        // Disable the timeout when nothing happens for a certain
+        // period of time
+        if (time - lastActive > 2500) {
+          clearInterval(intervalHandle);
+          intervalHandle = null;
+        }
+      }, 1000 / TARGET_FPS);
+    }
+
+    return callbackHandle;
+  };
+}
+
 var colorCache = {};
 var rgbReg = /rgb\(/;
 var extractRgbColor = /rgb\((.*)\)/;
@@ -1018,7 +826,7 @@ function createBarEvent(ctx) {
     var event = type == 'mouse' ? e : e.touches[0];
 
     var delta = event[ctx.bar.client] - thubmParent.getBoundingClientRect()[ctx.bar.posName];
-    delta = delta / ctx.barScale;
+    delta = delta / ctx.barRatio;
 
     var percent = (delta - ctx.axisStartPos) / thubmParent[ctx.bar.offset];
     parent.scrollTo(defineProperty({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
@@ -1243,10 +1051,9 @@ var bar = {
       return scrollMap[this.type];
     },
     barSize: function barSize() {
-      var minSize = this.ops.bar.minSize;
-      return minSize ? Math.max(this.state.size, minSize) : this.state.size;
+      return Math.max(this.state.size, this.ops.bar.minSize);
     },
-    barScale: function barScale() {
+    barRatio: function barRatio() {
       return (1 - this.barSize) / (1 - this.state.size);
     }
   },
@@ -1284,7 +1091,7 @@ var bar = {
     };
 
     var scrollDistance = vm.state.posValue * vm.state.size;
-    var pos = scrollDistance * vm.barScale / vm.barSize;
+    var pos = scrollDistance * vm.barRatio / vm.barSize;
     /** Scrollbar style */
     var barStyle = (_barStyle = {
       cursor: 'pointer',
@@ -1390,7 +1197,7 @@ function getBarData(vm, type) {
   /** type.charAt(0) = vBar/hBar */
   var barType = type.charAt(0) + 'Bar';
 
-  var hideBar = !vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel['scrolling' + axis] || vm.refreshLoad && type !== 'vertical';
+  var hideBar = !vm.bar[barType].state.size || !vm.mergedOptions.scrollPanel['scrolling' + axis] || vm.refreshLoad && type !== 'vertical' || vm.mergedOptions.bar.disable;
 
   var keepShowRail = vm.mergedOptions.rail.keepShow;
 
@@ -1593,8 +1400,6 @@ var createComponent = function createComponent(_ref) {
             /** Default sizeStrategies */
             height: '100%',
             width: '100%',
-            /** How many times you have scrolled */
-            scrollingTimes: 0,
             // current size strategy
             currentSizeStrategy: 'percent'
           }
@@ -1632,7 +1437,8 @@ var createComponent = function createComponent(_ref) {
       /** ------------------------ Handlers --------------------------- */
 
       scrollingComplete: function scrollingComplete() {
-        this.vuescroll.state.scrollingTimes++;
+        this.isScrolling = false;
+
         this.updateBarStateAndEmitEvent('handle-scroll-complete');
       },
       setBarDrag: function setBarDrag(val) {
@@ -1844,54 +1650,12 @@ var scrollPanel = {
 };
 
 /**
- * Start to scroll to a position
- */
-function goScrolling(x, y, startLocationX, startLocationY, maxX, maxY, speed, easing, scrollingComplete, render) {
-  // deltaX,
-  // deltaY,
-  var deltaX = x - startLocationX;
-  var deltaY = y - startLocationY;
-  var positionX = startLocationX;
-  var positionY = startLocationY;
-  /**
-   * keep the limit of scroll delta.
-   */
-  /* istanbul ignore next */
-  if (startLocationY + deltaY < 0) {
-    deltaY = -startLocationY;
-  }
-  if (startLocationY + deltaY > maxY) {
-    deltaY = maxY - startLocationY;
-  }
-  if (startLocationX + deltaX < 0) {
-    deltaX = -startLocationX;
-  }
-  if (startLocationX + deltaX > maxX) {
-    deltaX = maxX - startLocationX;
-  }
-
-  var easingMethod = createEasingFunction(easing, easingPattern);
-
-  var stepCallback = function stepCallback(percentage) {
-    positionX = startLocationX + deltaX * percentage;
-    positionY = startLocationY + deltaY * percentage;
-    render(Math.floor(positionX), Math.floor(positionY));
-  };
-
-  var verifyCallback = function verifyCallback() {
-    return Math.abs(positionY - startLocationY) <= Math.abs(deltaY) || Math.abs(positionX - startLocationX) <= Math.abs(deltaX);
-  };
-
-  core.effect.Animate.start(stepCallback, verifyCallback, scrollingComplete, speed, easingMethod);
-}
-
-/**
  * Init following things
  * 1. Component
  * 2. Render
  * 3. Config
  */
-function _install(core$$1, render) {
+function _install(core, render) {
   var _components;
 
   var extraConfigs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -1902,7 +1666,7 @@ function _install(core$$1, render) {
   var opts = {};
   opts.components = components;
   opts.render = render;
-  opts.mixins = core$$1;
+  opts.mixins = core;
 
   var comp = createComponent(opts);
 
@@ -1947,11 +1711,148 @@ function getCurrentViewportDom(parent, container) {
   return domFragment;
 }
 
+/**
+ *  Compatible to scroller's animation function
+ */
+function createEasingFunction(easing, easingPattern) {
+  return function (time) {
+    return easingPattern(easing, time);
+  };
+}
+
+/**
+ * Calculate the easing pattern
+ * @link https://github.com/cferdinandi/smooth-scroll/blob/master/src/js/smooth-scroll.js
+ * modified by wangyi7099
+ * @param {String} type Easing pattern
+ * @param {Number} time Time animation should take to complete
+ * @returns {Number}
+ */
+function easingPattern(easing, time) {
+  var pattern = null;
+  /* istanbul ignore next */
+  {
+    // Default Easing Patterns
+    if (easing === 'easeInQuad') pattern = time * time; // accelerating from zero velocity
+    if (easing === 'easeOutQuad') pattern = time * (2 - time); // decelerating to zero velocity
+    if (easing === 'easeInOutQuad') pattern = time < 0.5 ? 2 * time * time : -1 + (4 - 2 * time) * time; // acceleration until halfway, then deceleration
+    if (easing === 'easeInCubic') pattern = time * time * time; // accelerating from zero velocity
+    if (easing === 'easeOutCubic') pattern = --time * time * time + 1; // decelerating to zero velocity
+    if (easing === 'easeInOutCubic') pattern = time < 0.5 ? 4 * time * time * time : (time - 1) * (2 * time - 2) * (2 * time - 2) + 1; // acceleration until halfway, then deceleration
+    if (easing === 'easeInQuart') pattern = time * time * time * time; // accelerating from zero velocity
+    if (easing === 'easeOutQuart') pattern = 1 - --time * time * time * time; // decelerating to zero velocity
+    if (easing === 'easeInOutQuart') pattern = time < 0.5 ? 8 * time * time * time * time : 1 - 8 * --time * time * time * time; // acceleration until halfway, then deceleration
+    if (easing === 'easeInQuint') pattern = time * time * time * time * time; // accelerating from zero velocity
+    if (easing === 'easeOutQuint') pattern = 1 + --time * time * time * time * time; // decelerating to zero velocity
+    if (easing === 'easeInOutQuint') pattern = time < 0.5 ? 16 * time * time * time * time * time : 1 + 16 * --time * time * time * time * time; // acceleration until halfway, then deceleration
+  }
+  return pattern || time; // no easing, no acceleration
+}
+
+function noop() {
+  return true;
+}
+
+/* istanbul ignore next */
+var now = Date.now || function () {
+  return new Date().getTime();
+};
+
+var ScrollControl = function () {
+  function ScrollControl() {
+    classCallCheck(this, ScrollControl);
+
+    this.init();
+
+    this.isRunning = false;
+  }
+
+  createClass(ScrollControl, [{
+    key: 'startScroll',
+    value: function startScroll(st, ed, spd) {
+      var stepCb = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : noop;
+      var completeCb = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : noop;
+      var vertifyCb = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : noop;
+      var easingMethod = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : noop;
+
+      var df = ed - st;
+      var dir = df > 0 ? -1 : 1;
+
+      if (!this.isRunning) {
+        this.init();
+      }
+
+      if (dir != this.dir) {
+        this.ts = now();
+
+        this.dir = dir;
+        this.st = st;
+        this.ed = ed;
+        this.df = df;
+      } /* istanbul ignore next */else {
+          this.df += df;
+        }
+
+      this.spd = spd;
+
+      this.completeCb = completeCb;
+      this.vertifyCb = vertifyCb;
+      this.stepCb = stepCb;
+      this.easingMethod = easingMethod;
+
+      this.ref = requestAnimationFrame(window);
+
+      if (!this.isRunning) this.execScroll();
+    }
+  }, {
+    key: 'execScroll',
+    value: function execScroll() {
+      var _this = this;
+
+      var percent = 0;
+      this.isRunning = true;
+
+      var loop = function loop() {
+        /* istanbul ignore if */
+        if (!_this.isRunning || !_this.vertifyCb(percent)) {
+          _this.isRunning = false;
+          return;
+        }
+
+        percent = (now() - _this.ts) / _this.spd;
+        if (percent < 1) {
+          var value = _this.st + _this.df * _this.easingMethod(percent);
+          _this.stepCb(value);
+          _this.ref(loop);
+        } else {
+          // trigger complete
+          _this.stepCb(_this.st + _this.df);
+          _this.completeCb();
+
+          _this.isRunning = false;
+        }
+      };
+
+      this.ref(loop);
+    }
+  }, {
+    key: 'init',
+    value: function init() {
+      this.st = 0;
+      this.ed = 0;
+      this.df = 0;
+      this.spd = 0;
+      this.ts = 0;
+      this.dir = 0;
+    }
+  }]);
+  return ScrollControl;
+}();
+
 function scrollTo(elm, x, y) {
   var speed = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 300;
   var easing = arguments[4];
-  var animate = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : true;
-  var scrollingComplete = arguments[6];
+  var scrollingComplete = arguments[5];
 
   var scrollLeft = void 0,
       scrollTop = void 0,
@@ -1963,6 +1864,8 @@ function scrollTo(elm, x, y) {
   var _elm = elm,
       nodeType = _elm.nodeType;
 
+  var scrollX = new ScrollControl();
+  var scrollY = new ScrollControl();
 
   if (!nodeType) {
     warn('You must pass a dom for the first param, ' + 'for window scrolling, ' + 'you can pass document as the first param.');
@@ -1995,15 +1898,13 @@ function scrollTo(elm, x, y) {
     y = getNumericValue(y, scrollHeight - clientHeight);
   }
 
-  if (animate) {
-    goScrolling(x, y, scrollLeft, scrollTop, scrollWidth, scrollHeight, speed, easing, scrollingComplete, function (x, y) {
-      elm.scrollLeft = x;
-      elm.scrollTop = y;
-    });
-  } else {
-    elm.scrollTop = y;
-    elm.scrollLeft = x;
-  }
+  var easingMethod = createEasingFunction(easing, easingPattern);
+  scrollX.startScroll(scrollLeft, x, speed, function (dx) {
+    elm.scrollLeft = dx;
+  }, scrollingComplete, undefined, easingMethod);
+  scrollY.startScroll(scrollTop, y, speed, function (dy) {
+    elm.scrollTop = dy;
+  }, scrollingComplete, undefined, easingMethod);
 }
 
 function getPanelData(context) {
@@ -2207,23 +2108,15 @@ function createPanel(h, context) {
 
 var api$2 = {
   methods: {
-    slideScrollTo: function slideScrollTo(x, y, animate, force) {
+    slideScrollTo: function slideScrollTo(x, y, speed, easing) {
       var _getPosition = this.getPosition(),
           scrollLeft = _getPosition.scrollLeft,
           scrollTop = _getPosition.scrollTop;
 
-      if (typeof x === 'undefined') {
-        x = scrollLeft || 0;
-      } else {
-        x = getNumericValue(x, this.scroller.__maxScrollLeft);
-      }
-      if (typeof y === 'undefined') {
-        y = scrollTop || 0;
-      } else {
-        y = getNumericValue(y, this.scroller.__maxScrollTop);
-      }
+      x = getNumericValue(x || scrollLeft, this.scroller.__maxScrollLeft);
+      y = getNumericValue(y || scrollTop, this.scroller.__maxScrollTop);
 
-      this.scroller.scrollTo(x, y, animate, undefined, force);
+      this.scroller.scrollTo(x, y, speed > 0, undefined, false, speed, easing);
     },
     zoomBy: function zoomBy(factor, animate, originLeft, originTop, callback) {
       if (!this.scroller) {
@@ -2293,6 +2186,175 @@ var api$2 = {
       var domFragment = getCurrentViewportDom(parent, this.$el);
       return domFragment;
     }
+  }
+};
+
+/*
+ * Scroller
+ * http://github.com/zynga/scroller
+ *
+ * Copyright 2011, Zynga Inc.
+ * Licensed under the MIT License.
+ * https://raw.github.com/zynga/scroller/master/MIT-LICENSE.txt
+ *
+ * Based on the work of: Unify Project (unify-project.org)
+ * http://unify-project.org
+ * Copyright 2011, Deutsche Telekom AG
+ * License: MIT + Apache (V2)
+ */
+
+/**
+ * Generic animation class with support for dropped frames both optional easing and duration.
+ *
+ * Optional duration is useful when the lifetime is defined by another condition than time
+ * e.g. speed of an animating object, etc.
+ *
+ * Dropped frame logic allows to keep using the same updater logic independent from the actual
+ * rendering. This eases a lot of cases where it might be pretty complex to break down a state
+ * based on the pure time difference.
+ */
+var time = Date.now || function () {
+  return +new Date();
+};
+var desiredFrames = 60;
+var millisecondsPerSecond = 1000;
+var running = {};
+var counter = 1;
+
+var core = { effect: {} };
+var global$1 = null;
+
+if (typeof window !== 'undefined') {
+  global$1 = window;
+} else {
+  global$1 = {};
+}
+
+core.effect.Animate = {
+  /**
+   * A requestAnimationFrame wrapper / polyfill.
+   *
+   * @param callback {Function} The callback to be invoked before the next repaint.
+   * @param root {HTMLElement} The root element for the repaint
+   */
+  requestAnimationFrame: requestAnimationFrame(global$1),
+  /**
+   * Stops the given animation.
+   *
+   * @param id {Integer} Unique animation ID
+   * @return {Boolean} Whether the animation was stopped (aka, was running before)
+   */
+  stop: function stop(id) {
+    var cleared = running[id] != null;
+    if (cleared) {
+      running[id] = null;
+    }
+
+    return cleared;
+  },
+
+  /**
+   * Whether the given animation is still running.
+   *
+   * @param id {Integer} Unique animation ID
+   * @return {Boolean} Whether the animation is still running
+   */
+  isRunning: function isRunning(id) {
+    return running[id] != null;
+  },
+
+  /**
+   * Start the animation.
+   *
+   * @param stepCallback {Function} Pointer to function which is executed on every step.
+   *   Signature of the method should be `function(percent, now, virtual) { return continueWithAnimation; }`
+   * @param verifyCallback {Function} Executed before every animation step.
+   *   Signature of the method should be `function() { return continueWithAnimation; }`
+   * @param completedCallback {Function}
+   *   Signature of the method should be `function(droppedFrames, finishedAnimation) {}`
+   * @param duration {Integer} Milliseconds to run the animation
+   * @param easingMethod {Function} Pointer to easing function
+   *   Signature of the method should be `function(percent) { return modifiedValue; }`
+   * @param root {Element ? document.body} Render root, when available. Used for internal
+   *   usage of requestAnimationFrame.
+   * @return {Integer} Identifier of animation. Can be used to stop it any time.
+   */
+  start: function start(stepCallback, verifyCallback, completedCallback, duration, easingMethod, root) {
+    var start = time();
+    var lastFrame = start;
+    var percent = 0;
+    var dropCounter = 0;
+    var id = counter++;
+
+    if (!root) {
+      root = document.body;
+    }
+
+    // Compacting running db automatically every few new animations
+    if (id % 20 === 0) {
+      var newRunning = {};
+      for (var usedId in running) {
+        newRunning[usedId] = true;
+      }
+      running = newRunning;
+    }
+
+    // This is the internal step method which is called every few milliseconds
+    var step = function step(virtual) {
+      // Normalize virtual value
+      var render = virtual !== true;
+
+      // Get current time
+      var now = time();
+
+      // Verification is executed before next animation step
+      if (!running[id] || verifyCallback && !verifyCallback(id)) {
+        running[id] = null;
+        completedCallback && completedCallback(desiredFrames - dropCounter / ((now - start) / millisecondsPerSecond), id, false);
+        return;
+      }
+
+      // For the current rendering to apply let's update omitted steps in memory.
+      // This is important to bring internal state variables up-to-date with progress in time.
+      if (render) {
+        var droppedFrames = Math.round((now - lastFrame) / (millisecondsPerSecond / desiredFrames)) - 1;
+        for (var j = 0; j < Math.min(droppedFrames, 4); j++) {
+          step(true);
+          dropCounter++;
+        }
+      }
+
+      if (!running[id]) {
+        return;
+      }
+
+      // Compute percent value
+      if (duration) {
+        percent = (now - start) / duration;
+        if (percent > 1) {
+          percent = 1;
+        }
+      }
+
+      // Execute step callback, then...
+      var value = easingMethod ? easingMethod(percent) : percent;
+      if ((stepCallback(value, now, render) === false || percent === 1) && render) {
+        running[id] = null;
+        completedCallback && completedCallback(desiredFrames - dropCounter / ((now - start) / millisecondsPerSecond), id, percent === 1 || duration == null);
+      } else if (render) {
+        lastFrame = now;
+        core.effect.Animate.requestAnimationFrame(step, root);
+      }
+    };
+
+    // Mark as running
+    running[id] = true;
+
+    // Init first step
+    core.effect.Animate.requestAnimationFrame(step, root);
+
+    // Return unique animation ID
+    return id;
   }
 };
 
@@ -2869,7 +2931,7 @@ var members = {
    * @param animate {Boolean?false} Whether the scrolling should happen using an animation
    * @param zoom {Number?null} Zoom level to go to
    */
-  scrollTo: function scrollTo(left, top, animate, zoom, force) {
+  scrollTo: function scrollTo(left, top, animate, zoom, force, speed, easing) {
     var self = this;
 
     // Stop deceleration
@@ -2928,7 +2990,7 @@ var members = {
 
     // Publish new values
     if (!self.__isTracking) {
-      self.__publish(left, top, zoom, animate);
+      self.__publish(left, top, zoom, animate, speed, easing);
     }
   },
 
@@ -3376,7 +3438,7 @@ var members = {
    * @param top {Number} Top scroll position
    * @param animate {Boolean?false} Whether animation should be used to move to the new coordinates
    */
-  __publish: function __publish(left, top, zoom, animate) {
+  __publish: function __publish(left, top, zoom, animate, speed, easing) {
     var self = this;
     if (self.__disable) {
       return;
@@ -3394,7 +3456,7 @@ var members = {
       self.__isAnimating = false;
     }
 
-    if (animate && self.options.animating) {
+    if (animate && (self.options.animating || speed)) {
       // Keep scheduled positions for scrollBy/zoomBy functionality
       self.__scheduledLeft = left;
       self.__scheduledTop = top;
@@ -3453,8 +3515,13 @@ var members = {
         }
       };
 
+      var easingFunction = animatingMethod;
+      if (easing) {
+        easingFunction = createEasingFunction(easing, easingPattern);
+      }
+
       // When continuing based on previous animation we choose an ease-out animation instead of ease-in-out
-      self.__isAnimating = core.effect.Animate.start(step, verify, completed, self.options.animationDuration, wasAnimating ? animatingMethod : noAnimatingMethod);
+      self.__isAnimating = core.effect.Animate.start(step, verify, completed, speed || self.options.animationDuration, wasAnimating ? easingFunction : noAnimatingMethod);
     } else {
       self.__scheduledLeft = self.__scrollLeft = left;
       self.__scheduledTop = self.__scrollTop = top;
@@ -3729,7 +3796,7 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
   // for touch
   function touchstart(e) {
     // Don't react if initial down happens on a form element
-    if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i)) {
+    if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i) || scroller.__disable) {
       return;
     }
     eventCallback('mousedown');
@@ -3745,6 +3812,8 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
     document.addEventListener('touchmove', touchmove, { passive: false });
   }
   function touchmove(e) {
+    if (scroller.__disable) return;
+
     eventCallback('mousemove');
     scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
     if (preventDefaultOnMove) {
@@ -3762,7 +3831,7 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
 
   // for mouse
   function mousedownEvent(e) {
-    if (e.target.tagName.match(/input|textarea|select/i)) {
+    if (e.target.tagName.match(/input|textarea|select/i) || scroller.__disable) {
       return;
     }
 
@@ -3781,7 +3850,7 @@ function listenContainer(container, scroller, eventCallback, zooming, preventDef
     mousedown = true;
   }
   function mousemove(e) {
-    if (!mousedown) {
+    if (!mousedown || scroller.__disable) {
       return;
     }
     eventCallback('mousemove');
@@ -4030,6 +4099,8 @@ var update = {
         scrollingComplete: scrollingComplete
       }));
 
+      this.scroller.__disable = this.mergedOptions.vuescroll.scroller.disable;
+
       // Set snap
       if (snapping) {
         this.scroller.setSnapSize(this.mergedOptions.vuescroll.snapping.width, this.mergedOptions.vuescroll.snapping.height);
@@ -4175,6 +4246,15 @@ var core$1 = {
         _this.updatedCbs.push(function () {
           _this.updateScroller();
         });
+
+        _this.$watch('mergedOptions.vuescroll.scroller.disable', {
+          sync: true,
+          handler: function handler(newVal) {
+            if (this.scroller) {
+              this.scroller.__disable = newVal;
+            }
+          }
+        });
       }
     });
   },
@@ -4196,8 +4276,8 @@ var core$1 = {
     getCurrentviewDom: function getCurrentviewDom() {
       return this.getCurrentviewDomSlide();
     },
-    internalScrollTo: function internalScrollTo(destX, destY, animate, force) {
-      this.slideScrollTo(destX, destY, animate, undefined, force);
+    internalScrollTo: function internalScrollTo(destX, destY, speed, sasing) {
+      this.slideScrollTo(destX, destY, speed, sasing);
     },
     handleScroll: function handleScroll(nativeEvent) {
       this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
@@ -4256,7 +4336,6 @@ var core$1 = {
     },
     initVariables: function initVariables() {
       this.$el._isVuescroll = true;
-      this.clearScrollingTimes();
     },
     refreshMode: function refreshMode() {
       if (this.destroyScroller) {
@@ -4396,7 +4475,8 @@ var config = {
       /** Whether call e.preventDefault event when sliding the content or not */
       preventDefault: false,
       /** Whether call preventDefault when (mouse/touch)move*/
-      preventDefaultOnMove: true
+      preventDefaultOnMove: true,
+      disable: false
     }
   }
 };
@@ -4429,7 +4509,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.10.5',
+  version: '4.11.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

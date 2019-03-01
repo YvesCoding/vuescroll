@@ -12,6 +12,7 @@ declare module 'vue/types/vue' {
 interface Container {
   sizeStrategy?: 'percent' | 'number';
   detectResize?: boolean;
+  wheelScrollDuration?: number;
 }
 
 declare type easing =
@@ -77,9 +78,11 @@ interface bar {
   // Sometimes, the nativebar maybe on the left,
   // See https://github.com/YvesCoding/vuescroll/issues/64
   verticalNativeBarPos: 'right';
-  // Should be false or a number in a range of (0, 1),
+  // A number in a range of (0, 1),
   // such as 0.5, means 50%. 0.3 means 30%.
-  minSize: false | number;
+  minSize: number;
+  // disable bar or not
+  disable: boolean;
 }
 
 interface scrollButton {
