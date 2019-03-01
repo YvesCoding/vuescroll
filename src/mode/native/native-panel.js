@@ -46,9 +46,7 @@ export default function getPanelData(context) {
     createHideBarStyle();
     data.class.push('__hidebar');
     if (isIos()) {
-      data.style = {
-        ['-webkit-overflow-scrolling']: 'touch'
-      };
+      data.style['-webkit-overflow-scrolling'] = 'touch';
     }
   } else {
     // hide system bar by use a negative value px
