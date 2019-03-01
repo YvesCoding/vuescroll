@@ -1,5 +1,5 @@
 export const config = {
   vuescroll: {
-    wheelSmooth: false
+    wheelScrollDuration: 0
   }
 };

@@ -5,6 +5,8 @@ import {
   configValidator as slideValidator
 } from 'mode/slide/config';
 
+import { config as nativeConfig } from 'mode/native/config';
+
 const config = {
   // vuescroll
   vuescroll: {
@@ -32,7 +34,6 @@ function configValidator(ops) {
 
   return renderError;
 }
-// so, native config is the same as the base config.
-// there is no extra config in native config.
-export const configs = [config, slideConfig];
+
+export const configs = [config, slideConfig, nativeConfig];
 export const configValidators = [configValidator, slideValidator];

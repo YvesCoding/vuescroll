@@ -12,6 +12,7 @@ declare module 'vue/types/vue' {
 interface Container {
   sizeStrategy?: 'percent' | 'number';
   detectResize?: boolean;
+  wheelScrollDuration?: number;
 }
 
 declare type easing =

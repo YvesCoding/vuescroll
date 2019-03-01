@@ -13,11 +13,7 @@ const now =
 
 export default class ScrollControl {
   constructor() {
-    this.st = 0;
-    this.ed = 0;
-    this.df = 0;
-    this.spd = 0;
-    this.ts = 0;
+    this.init();
 
     this.isRunning = false;
   }
@@ -31,13 +27,25 @@ export default class ScrollControl {
     vertifyCb = noop,
     easingMethod = noop
   ) {
+    const df = ed - st;
+    const dir = df > 0 ? -1 : 1;
+
     if (!this.isRunning) {
+      this.init();
+    }
+
+    if (dir != this.dir) {
+      this.ts = now();
+
+      this.dir = dir;
       this.st = st;
       this.ed = ed;
+      this.df = df;
+    } /* istanbul ignore next */ else {
+      this.df += df;
     }
 
     this.spd = spd;
-    this.df += ed - st;
 
     this.completeCb = completeCb;
     this.vertifyCb = vertifyCb;
@@ -50,7 +58,6 @@ export default class ScrollControl {
   }
 
   execScroll() {
-    this.ts = now();
     let percent = 0;
     this.isRunning = true;
 
@@ -70,11 +77,20 @@ export default class ScrollControl {
         // trigger complete
         this.stepCb(this.st + this.df);
         this.completeCb();
+
         this.isRunning = false;
-        this.df = 0;
       }
     };
 
     this.ref(loop);
+  }
+
+  init() {
+    this.st = 0;
+    this.ed = 0;
+    this.df = 0;
+    this.spd = 0;
+    this.ts = 0;
+    this.dir = 0;
   }
 }
