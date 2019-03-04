@@ -29,13 +29,14 @@ export default class ScrollControl {
   ) {
     const df = ed - st;
     const dir = df > 0 ? -1 : 1;
+    const nt = now();
 
     if (!this.isRunning) {
       this.init();
     }
 
-    if (dir != this.dir) {
-      this.ts = now();
+    if (dir != this.dir || nt - this.ts > 200) {
+      this.ts = nt;
 
       this.dir = dir;
       this.st = st;
