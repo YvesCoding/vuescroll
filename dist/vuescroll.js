@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.11.0
+    * Vuescroll v4.11.1
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1808,13 +1808,14 @@ var ScrollControl = function () {
 
       var df = ed - st;
       var dir = df > 0 ? -1 : 1;
+      var nt = now();
 
       if (!this.isRunning) {
         this.init();
       }
 
-      if (dir != this.dir) {
-        this.ts = now();
+      if (dir != this.dir || nt - this.ts > 200) {
+        this.ts = nt;
 
         this.dir = dir;
         this.st = st;
@@ -4897,7 +4898,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.11.0',
+  version: '4.11.1',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
