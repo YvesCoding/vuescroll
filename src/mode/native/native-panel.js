@@ -11,7 +11,9 @@ export default function getPanelData(context) {
   const data = {
     ref: 'scrollPanel',
     style: {
-      height: '100%'
+      height: '100%',
+      overflowY: 'scroll',
+      overflowX: 'scroll'
     },
     class: [],
     nativeOn: {
@@ -22,22 +24,22 @@ export default function getPanelData(context) {
     }
   };
 
+  context.scrollYEnable = true;
+  context.scrollXEnable = true;
+
   data.nativeOn.DOMMouseScroll = data.nativeOn.mousewheel =
     context.onMouseWheel;
 
   const { scrollingY, scrollingX } = context.mergedOptions.scrollPanel;
-  // dynamic set overflow scroll
-  // feat: #11
-  if (scrollingY) {
-    data.style['overflowY'] = context.bar.vBar.state.size ? 'scroll' : '';
-  } else {
-    data.style['overflowY'] = 'hidden';
+
+  if (!context.bar.hBar.state.size || !scrollingX) {
+    context.scrollXEnable = false;
+    data.style.overflowX = 'hidden';
   }
 
-  if (scrollingX) {
-    data.style['overflowX'] = context.bar.hBar.state.size ? 'scroll' : '';
-  } else {
-    data.style['overflowX'] = 'hidden';
+  if (!context.bar.vBar.state.size || !scrollingY) {
+    context.scrollYEnable = false;
+    data.style.overflowY = 'hidden';
   }
 
   let gutter = getGutter();

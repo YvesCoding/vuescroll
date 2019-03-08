@@ -1523,14 +1523,14 @@ var members = {
           -scrollOutsideX >= bouncing.right &&
           self.__decelerationVelocityX > 0
         ) {
-          self.__decelerationVelocityX = -bouncing.right;
+          self.__decelerationVelocityX = -bouncing.right / 2;
         }
         if (
           scrollOutsideX > 0 &&
           scrollOutsideX >= bouncing.left &&
           self.__decelerationVelocityX < 0
         ) {
-          self.__decelerationVelocityX = bouncing.left;
+          self.__decelerationVelocityX = bouncing.left / 2;
         }
       } else {
         self.__decelerationVelocityX = scrollOutsideX * penetrationAcceleration;
@@ -1553,10 +1553,11 @@ var members = {
           scrollOutsideY >= bouncing.top &&
           self.__decelerationVelocityY < 0
         ) {
-          self.__decelerationVelocityY = bouncing.top;
+          self.__decelerationVelocityY = bouncing.top / 2;
         }
       } else {
-        self.__decelerationVelocityY = scrollOutsideY * penetrationAcceleration;
+        self.__decelerationVelocityY =
+          (scrollOutsideY * penetrationAcceleration) / 2;
       }
     }
   }

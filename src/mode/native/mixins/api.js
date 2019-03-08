@@ -114,30 +114,34 @@ export default {
       if (speed) {
         easing = easing || this.mergedOptions.scrollPanel.easing;
         const easingMethod = createEasingFunction(easing, easingPattern);
-        this.scrollX.startScroll(
-          scrollLeft,
-          x,
-          speed,
-          (x) => {
-            elm.scrollLeft = x;
-          },
-          this.scrollingComplete.bind(this),
-          undefined,
-          easingMethod
-        );
-        this.scrollY.startScroll(
-          scrollTop,
-          y,
-          speed,
-          (y) => {
-            elm.scrollTop = y;
-          },
-          this.scrollingComplete.bind(this),
-          undefined,
-          easingMethod
-        );
 
-        this.isScrolling = true;
+        if (x != scrollLeft) {
+          this.scrollX.startScroll(
+            scrollLeft,
+            x,
+            speed,
+            (x) => {
+              elm.scrollLeft = x;
+            },
+            this.scrollingComplete.bind(this),
+            undefined,
+            easingMethod
+          );
+        }
+
+        if (y != scrollTop) {
+          this.scrollY.startScroll(
+            scrollTop,
+            y,
+            speed,
+            (y) => {
+              elm.scrollTop = y;
+            },
+            this.scrollingComplete.bind(this),
+            undefined,
+            easingMethod
+          );
+        }
       } else {
         elm.scrollTop = y;
         elm.scrollLeft = x;

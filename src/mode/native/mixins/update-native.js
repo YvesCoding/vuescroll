@@ -30,9 +30,6 @@ export default {
       };
     },
     onMouseWheel(event) /* istanbul ignore next */ {
-      event.stopPropagation();
-      event.preventDefault();
-
       let delta = 0;
       let dir;
       if (event.wheelDelta) {
@@ -61,11 +58,16 @@ export default {
         }
         delta = event.detail * 16;
       }
-
-      this.scrollBy(
-        { [dir]: delta },
-        this.mergedOptions.vuescroll.wheelScrollDuration
-      );
+      const duration = this.mergedOptions.vuescroll.wheelScrollDuration;
+      if (
+        duration &&
+        ((this.scrollXEnable && dir == 'dx') ||
+          (this.scrollYEnable && dir == 'dy'))
+      ) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.scrollBy({ [dir]: delta }, duration);
+      }
     }
   },
   computed: {

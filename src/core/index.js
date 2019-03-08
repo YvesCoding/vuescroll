@@ -193,8 +193,6 @@ const createComponent = ({ render, components, mixins }) => ({
     /** ------------------------ Handlers --------------------------- */
 
     scrollingComplete() {
-      this.isScrolling = false;
-
       this.updateBarStateAndEmitEvent('handle-scroll-complete');
     },
     setBarDrag(val) {
