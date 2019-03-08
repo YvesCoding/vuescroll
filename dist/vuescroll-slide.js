@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.11.1
+    * Vuescroll v4.11.2
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1437,8 +1437,6 @@ var createComponent = function createComponent(_ref) {
       /** ------------------------ Handlers --------------------------- */
 
       scrollingComplete: function scrollingComplete() {
-        this.isScrolling = false;
-
         this.updateBarStateAndEmitEvent('handle-scroll-complete');
       },
       setBarDrag: function setBarDrag(val) {
@@ -3733,10 +3731,10 @@ var members = {
       if (scrollOutsideX * self.__decelerationVelocityX <= 0) {
         self.__decelerationVelocityX += scrollOutsideX * penetrationDeceleration;
         if (scrollOutsideX < 0 && -scrollOutsideX >= bouncing.right && self.__decelerationVelocityX > 0) {
-          self.__decelerationVelocityX = -bouncing.right;
+          self.__decelerationVelocityX = -bouncing.right / 2;
         }
         if (scrollOutsideX > 0 && scrollOutsideX >= bouncing.left && self.__decelerationVelocityX < 0) {
-          self.__decelerationVelocityX = bouncing.left;
+          self.__decelerationVelocityX = bouncing.left / 2;
         }
       } else {
         self.__decelerationVelocityX = scrollOutsideX * penetrationAcceleration;
@@ -3750,10 +3748,10 @@ var members = {
           self.__decelerationVelocityY = -bouncing.bottom;
         }
         if (scrollOutsideY > 0 && scrollOutsideY >= bouncing.top && self.__decelerationVelocityY < 0) {
-          self.__decelerationVelocityY = bouncing.top;
+          self.__decelerationVelocityY = bouncing.top / 2;
         }
       } else {
-        self.__decelerationVelocityY = scrollOutsideY * penetrationAcceleration;
+        self.__decelerationVelocityY = scrollOutsideY * penetrationAcceleration / 2;
       }
     }
   }
@@ -4510,7 +4508,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.11.1',
+  version: '4.11.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.11.1
+    * Vuescroll v4.11.2
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1459,8 +1459,6 @@ var createComponent = function createComponent(_ref) {
       /** ------------------------ Handlers --------------------------- */
 
       scrollingComplete: function scrollingComplete() {
-        this.isScrolling = false;
-
         this.updateBarStateAndEmitEvent('handle-scroll-complete');
       },
       setBarDrag: function setBarDrag(val) {
@@ -1966,14 +1964,18 @@ var api$1 = {
       if (speed) {
         easing = easing || this.mergedOptions.scrollPanel.easing;
         var easingMethod = createEasingFunction(easing, easingPattern);
-        this.scrollX.startScroll(scrollLeft, x, speed, function (x) {
-          elm.scrollLeft = x;
-        }, this.scrollingComplete.bind(this), undefined, easingMethod);
-        this.scrollY.startScroll(scrollTop, y, speed, function (y) {
-          elm.scrollTop = y;
-        }, this.scrollingComplete.bind(this), undefined, easingMethod);
 
-        this.isScrolling = true;
+        if (x != scrollLeft) {
+          this.scrollX.startScroll(scrollLeft, x, speed, function (x) {
+            elm.scrollLeft = x;
+          }, this.scrollingComplete.bind(this), undefined, easingMethod);
+        }
+
+        if (y != scrollTop) {
+          this.scrollY.startScroll(scrollTop, y, speed, function (y) {
+            elm.scrollTop = y;
+          }, this.scrollingComplete.bind(this), undefined, easingMethod);
+        }
       } else {
         elm.scrollTop = y;
         elm.scrollLeft = x;
@@ -1992,7 +1994,9 @@ function getPanelData(context) {
   var data = {
     ref: 'scrollPanel',
     style: {
-      height: '100%'
+      height: '100%',
+      overflowY: 'scroll',
+      overflowX: 'scroll'
     },
     class: [],
     nativeOn: {
@@ -2003,24 +2007,24 @@ function getPanelData(context) {
     }
   };
 
+  context.scrollYEnable = true;
+  context.scrollXEnable = true;
+
   data.nativeOn.DOMMouseScroll = data.nativeOn.mousewheel = context.onMouseWheel;
 
   var _context$mergedOption = context.mergedOptions.scrollPanel,
       scrollingY = _context$mergedOption.scrollingY,
       scrollingX = _context$mergedOption.scrollingX;
-  // dynamic set overflow scroll
-  // feat: #11
 
-  if (scrollingY) {
-    data.style['overflowY'] = context.bar.vBar.state.size ? 'scroll' : '';
-  } else {
-    data.style['overflowY'] = 'hidden';
+
+  if (!context.bar.hBar.state.size || !scrollingX) {
+    context.scrollXEnable = false;
+    data.style.overflowX = 'hidden';
   }
 
-  if (scrollingX) {
-    data.style['overflowX'] = context.bar.hBar.state.size ? 'scroll' : '';
-  } else {
-    data.style['overflowX'] = 'hidden';
+  if (!context.bar.vBar.state.size || !scrollingY) {
+    context.scrollYEnable = false;
+    data.style.overflowY = 'hidden';
   }
 
   var gutter = getGutter();
@@ -2135,9 +2139,6 @@ var update = {
       };
     },
     onMouseWheel: function onMouseWheel(event) /* istanbul ignore next */{
-      event.stopPropagation();
-      event.preventDefault();
-
       var delta = 0;
       var dir = void 0;
       if (event.wheelDelta) {
@@ -2166,8 +2167,12 @@ var update = {
         }
         delta = event.detail * 16;
       }
-
-      this.scrollBy(defineProperty({}, dir, delta), this.mergedOptions.vuescroll.wheelScrollDuration);
+      var duration = this.mergedOptions.vuescroll.wheelScrollDuration;
+      if (duration && (this.scrollXEnable && dir == 'dx' || this.scrollYEnable && dir == 'dy')) {
+        event.stopPropagation();
+        event.preventDefault();
+        this.scrollBy(defineProperty({}, dir, delta), duration);
+      }
     }
   },
   computed: {
@@ -2324,7 +2329,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.11.1',
+  version: '4.11.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
