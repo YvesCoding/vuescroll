@@ -11,7 +11,7 @@ export default {
     // public api
     scrollTo({ x, y }, speed, easing) {
       // istanbul ignore if
-      if (speed === true) {
+      if (speed === true || typeof speed == 'undefined') {
         speed = this.mergedOptions.scrollPanel.speed;
       }
       this.internalScrollTo(x, y, speed, easing);

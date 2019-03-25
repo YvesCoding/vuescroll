@@ -62,7 +62,7 @@ const createComponent = ({ render, components, mixins }) => ({
         position: 'relative',
         overflow: 'hidden'
       },
-      class: '__vuescroll'
+      class: { __vuescroll: true, ...vm.classHooks }
     };
 
     if (!isSupportTouch()) {
@@ -70,10 +70,14 @@ const createComponent = ({ render, components, mixins }) => ({
         mouseenter() {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
+
+          vm.setClassHook('mouseEnter', true);
         },
         mouseleave() {
           vm.vuescroll.state.pointerLeave = true;
           vm.hideBar();
+
+          vm.setClassHook('mouseEnter', false);
         },
         mousemove() /* istanbul ignore next */ {
           vm.vuescroll.state.pointerLeave = false;
@@ -185,7 +189,25 @@ const createComponent = ({ render, components, mixins }) => ({
         bar: {}
       },
       updatedCbs: [],
-      renderError: false
+      renderError: false,
+
+      classHooks: {
+        hasVBar: false,
+        hasHBar: false,
+
+        vBarVisible: false,
+        hBarVisible: false,
+
+        vBarDragging: false,
+        hBarDragging: false,
+
+        clikingVerticalStartButton: false,
+        clikingVerticalEndButton: false,
+        clikingHorizontalStartButton: false,
+        clikingHorizontalEndButton: false,
+
+        mouseEnter: false
+      }
     };
   },
   /** ------------------------------- Methods -------------------------------- */
@@ -198,6 +220,9 @@ const createComponent = ({ render, components, mixins }) => ({
     setBarDrag(val) {
       /* istanbul ignore next */
       this.vuescroll.state.isDragging = val;
+    },
+    setClassHook(name, value) {
+      this.classHooks[name] = value;
     },
 
     /** ------------------------ Some Helpers --------------------------- */
@@ -256,6 +281,8 @@ const createComponent = ({ render, components, mixins }) => ({
         const el = this.$el;
         this.vuescroll.state.height = el.offsetHeight + 'px';
         this.vuescroll.state.width = el.offsetWidth + 'px';
+
+        this.updateBarStateAndEmitEvent('handle-resize');
       }, 0);
     },
     usePercentSize() {

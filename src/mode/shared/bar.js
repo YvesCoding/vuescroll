@@ -76,12 +76,17 @@ function createBarEvent(ctx, type = 'mouse') {
 /* istanbul ignore next */
 function createScrollButtonEvent(ctx, type, env = 'mouse') {
   const parent = getRealParent(ctx);
+
   const endEventName = env == 'mouse' ? 'mouseup' : 'touchend';
   const { step, mousedownStep } = ctx.ops.scrollButton;
+
   const stepWithDirection = type == 'start' ? -step : step;
   const mousedownStepWithDirection =
     type == 'start' ? -mousedownStep : mousedownStep;
   const ref = requestAnimationFrame(window);
+
+  // bar props: type
+  const barType = ctx.type;
 
   let isMouseDown = false;
   let isMouseout = true;
@@ -93,6 +98,9 @@ function createScrollButtonEvent(ctx, type, env = 'mouse') {
     if (3 == e.which) {
       return;
     }
+
+    // set class hook
+    parent.setClassHook(`cliking${barType}${type}Button`, true);
 
     e.stopImmediatePropagation();
     e.preventDefault();
@@ -139,6 +147,8 @@ function createScrollButtonEvent(ctx, type, env = 'mouse') {
       eventCenter(elm, 'mouseenter', enter, false, 'off');
       eventCenter(elm, 'mouseleave', leave, false, 'off');
     }
+
+    parent.setClassHook(`cliking${barType}${type}Button`, false);
   }
 
   function enter() {
@@ -341,6 +351,15 @@ export default {
 
     const scrollDistance = vm.state.posValue * vm.state.size;
     const pos = (scrollDistance * vm.barRatio) / vm.barSize;
+    const opacity = vm.state.opacity;
+    const parent = getRealParent(this);
+
+    // set class hook
+    parent.setClassHook(
+      this.type == 'vertical' ? 'vBarVisible' : 'hBarVisible',
+      !!opacity
+    );
+
     /** Scrollbar style */
     let barStyle = {
       cursor: 'pointer',
@@ -353,7 +372,7 @@ export default {
       [vm.bar.size]: vm.barSize * 100 + '%',
       background: vm.ops.bar.background,
       [vm.bar.opsSize]: vm.ops.bar.size,
-      opacity: vm.state.opacity,
+      opacity,
       transform: `translate${scrollMap[vm.type].axis}(${pos}%)`
     };
     const bar = {
@@ -413,6 +432,15 @@ export default {
   methods: {
     setBarDrag(val) /* istanbul ignore next */ {
       this.$emit('setBarDrag', (this.isBarDragging = val));
+
+      // set class hooks
+
+      const parent = getRealParent(this);
+      // set class hook
+      parent.setClassHook(
+        this.type == 'vertical' ? 'vBarDragging' : 'hBarDragging',
+        !!val
+      );
 
       if (!val) {
         this.tryRestoreBarStyles();
@@ -488,6 +516,10 @@ function getBarData(vm, type) {
 export function createBar(h, vm) {
   const verticalBarProps = getBarData(vm, 'vertical');
   const horizontalBarProps = getBarData(vm, 'horizontal');
+
+  // set class hooks
+  vm.setClassHook('hasVBar', !!verticalBarProps);
+  vm.setClassHook('hasHBar', !!horizontalBarProps);
 
   return [
     verticalBarProps ? (

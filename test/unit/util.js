@@ -79,7 +79,7 @@ export function makeTemplate(
   extraTmpl = ''
 ) {
   return `
-    <div style="width:${parent.w}px;height:${parent.h}px">
+    <div style="width:${parent.w}px;height:${parent.h}px;position:relative">
       <vue-scroll ref="vs" ${templateAttribute || ''} :ops="ops">
         <div 
         v-for="i in ${num}"
