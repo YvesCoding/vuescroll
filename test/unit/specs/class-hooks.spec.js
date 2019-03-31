@@ -89,7 +89,6 @@ describe('vuescroll', () => {
       true
     );
     const vs = vm.$refs['vs'].$el;
-    const vmel = vm.$el;
 
     startSchedule(1000)
       .then(() => {
