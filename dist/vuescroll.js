@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.11.2
+    * Vuescroll v4.12.0-rc
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -470,7 +470,7 @@ var api = {
           y = _ref.y;
 
       // istanbul ignore if
-      if (speed === true) {
+      if (speed === true || typeof speed == 'undefined') {
         speed = this.mergedOptions.scrollPanel.speed;
       }
       this.internalScrollTo(x, y, speed, easing);
@@ -882,14 +882,19 @@ function createScrollButtonEvent(ctx, type) {
   var env = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'mouse';
 
   var parent = getRealParent(ctx);
+
   var endEventName = env == 'mouse' ? 'mouseup' : 'touchend';
   var _ctx$ops$scrollButton = ctx.ops.scrollButton,
       step = _ctx$ops$scrollButton.step,
       mousedownStep = _ctx$ops$scrollButton.mousedownStep;
 
+
   var stepWithDirection = type == 'start' ? -step : step;
   var mousedownStepWithDirection = type == 'start' ? -mousedownStep : mousedownStep;
   var ref = requestAnimationFrame(window);
+
+  // bar props: type
+  var barType = ctx.type;
 
   var isMouseDown = false;
   var isMouseout = true;
@@ -901,6 +906,9 @@ function createScrollButtonEvent(ctx, type) {
     if (3 == e.which) {
       return;
     }
+
+    // set class hook
+    parent.setClassHook('cliking' + barType + type + 'Button', true);
 
     e.stopImmediatePropagation();
     e.preventDefault();
@@ -940,6 +948,8 @@ function createScrollButtonEvent(ctx, type) {
       eventCenter(elm, 'mouseenter', enter, false, 'off');
       eventCenter(elm, 'mouseleave', leave, false, 'off');
     }
+
+    parent.setClassHook('cliking' + barType + type + 'Button', false);
   }
 
   function enter() {
@@ -1123,6 +1133,12 @@ var bar = {
 
     var scrollDistance = vm.state.posValue * vm.state.size;
     var pos = scrollDistance * vm.barRatio / vm.barSize;
+    var opacity = vm.state.opacity;
+    var parent = getRealParent(this);
+
+    // set class hook
+    parent.setClassHook(this.type == 'vertical' ? 'vBarVisible' : 'hBarVisible', !!opacity);
+
     /** Scrollbar style */
     var barStyle = (_barStyle = {
       cursor: 'pointer',
@@ -1132,7 +1148,7 @@ var bar = {
       'user-select': 'none',
       'border-radius': 'inherit'
 
-    }, defineProperty(_barStyle, vm.bar.size, vm.barSize * 100 + '%'), defineProperty(_barStyle, 'background', vm.ops.bar.background), defineProperty(_barStyle, vm.bar.opsSize, vm.ops.bar.size), defineProperty(_barStyle, 'opacity', vm.state.opacity), defineProperty(_barStyle, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + pos + '%)'), _barStyle);
+    }, defineProperty(_barStyle, vm.bar.size, vm.barSize * 100 + '%'), defineProperty(_barStyle, 'background', vm.ops.bar.background), defineProperty(_barStyle, vm.bar.opsSize, vm.ops.bar.size), defineProperty(_barStyle, 'opacity', opacity), defineProperty(_barStyle, 'transform', 'translate' + scrollMap[vm.type].axis + '(' + pos + '%)'), _barStyle);
     var bar = {
       style: barStyle,
       class: '__bar-is-' + vm.type,
@@ -1189,6 +1205,12 @@ var bar = {
   methods: {
     setBarDrag: function setBarDrag(val) /* istanbul ignore next */{
       this.$emit('setBarDrag', this.isBarDragging = val);
+
+      // set class hooks
+
+      var parent = getRealParent(this);
+      // set class hook
+      parent.setClassHook(this.type == 'vertical' ? 'vBarDragging' : 'hBarDragging', !!val);
 
       if (!val) {
         this.tryRestoreBarStyles();
@@ -1265,6 +1287,10 @@ function createBar(h, vm) {
   var verticalBarProps = getBarData(vm, 'vertical');
   var horizontalBarProps = getBarData(vm, 'horizontal');
 
+  // set class hooks
+  vm.setClassHook('hasVBar', !!verticalBarProps);
+  vm.setClassHook('hasHBar', !!horizontalBarProps);
+
   return [verticalBarProps ? h('bar', _extends({}, verticalBarProps, {
     props: _extends({ otherBarHide: !horizontalBarProps }, verticalBarProps.props)
   })) : null, horizontalBarProps ? h('bar', _extends({}, horizontalBarProps, {
@@ -1329,7 +1355,7 @@ var createComponent = function createComponent(_ref) {
           position: 'relative',
           overflow: 'hidden'
         },
-        class: '__vuescroll'
+        class: _extends({ __vuescroll: true }, vm.classHooks)
       };
 
       if (!isSupportTouch()) {
@@ -1337,10 +1363,14 @@ var createComponent = function createComponent(_ref) {
           mouseenter: function mouseenter() {
             vm.vuescroll.state.pointerLeave = false;
             vm.updateBarStateAndEmitEvent();
+
+            vm.setClassHook('mouseEnter', true);
           },
           mouseleave: function mouseleave() {
             vm.vuescroll.state.pointerLeave = true;
             vm.hideBar();
+
+            vm.setClassHook('mouseEnter', false);
           },
           mousemove: function mousemove() /* istanbul ignore next */{
             vm.vuescroll.state.pointerLeave = false;
@@ -1459,7 +1489,25 @@ var createComponent = function createComponent(_ref) {
           bar: {}
         },
         updatedCbs: [],
-        renderError: false
+        renderError: false,
+
+        classHooks: {
+          hasVBar: false,
+          hasHBar: false,
+
+          vBarVisible: false,
+          hBarVisible: false,
+
+          vBarDragging: false,
+          hBarDragging: false,
+
+          clikingVerticalStartButton: false,
+          clikingVerticalEndButton: false,
+          clikingHorizontalStartButton: false,
+          clikingHorizontalEndButton: false,
+
+          mouseEnter: false
+        }
       };
     },
 
@@ -1473,6 +1521,9 @@ var createComponent = function createComponent(_ref) {
       setBarDrag: function setBarDrag(val) {
         /* istanbul ignore next */
         this.vuescroll.state.isDragging = val;
+      },
+      setClassHook: function setClassHook(name, value) {
+        this.classHooks[name] = value;
       },
 
 
@@ -1532,6 +1583,8 @@ var createComponent = function createComponent(_ref) {
           var el = _this5.$el;
           _this5.vuescroll.state.height = el.offsetHeight + 'px';
           _this5.vuescroll.state.width = el.offsetWidth + 'px';
+
+          _this5.updateBarStateAndEmitEvent('handle-resize');
         }, 0);
       },
       usePercentSize: function usePercentSize() {
@@ -4319,6 +4372,14 @@ var slideMix = {
     registryScroller: function registryScroller() {
       var _this = this;
 
+      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+          _ref$left = _ref.left,
+          left = _ref$left === undefined ? 0 : _ref$left,
+          _ref$top = _ref.top,
+          top = _ref$top === undefined ? 0 : _ref$top,
+          _ref$zoom = _ref.zoom,
+          zoom = _ref$zoom === undefined ? 1 : _ref$zoom;
+
       var _mergedOptions$vuescr = this.mergedOptions.vuescroll.scroller,
           preventDefault = _mergedOptions$vuescr.preventDefault,
           preventDefaultOnMove = _mergedOptions$vuescr.preventDefaultOnMove;
@@ -4349,6 +4410,9 @@ var slideMix = {
       }));
 
       this.scroller.__disable = this.mergedOptions.vuescroll.scroller.disable;
+      this.scroller.__scrollLeft = left;
+      this.scroller.__scrollTop = top;
+      this.scroller.__zoomLevel = zoom;
 
       // Set snap
       if (snapping) {
@@ -4664,6 +4728,11 @@ var core$1 = {
       this.$el._isVuescroll = true;
     },
     refreshMode: function refreshMode() {
+      var initPos = void 0;
+      if (this.scroller) {
+        initPos = this.scroller.getValues();
+      }
+
       if (this.destroyScroller) {
         this.scroller.stop();
         this.destroyScroller();
@@ -4671,7 +4740,7 @@ var core$1 = {
       }
 
       if (this.mode == 'slide') {
-        this.destroyScroller = this.registryScroller();
+        this.destroyScroller = this.registryScroller(initPos);
       } else if (this.mode == 'native') {
         // remove the legacy transform style attribute
         this.scrollPanelElm.style.transform = '';
@@ -4903,7 +4972,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.11.2',
+  version: '4.12.0-rc',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
