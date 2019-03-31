@@ -173,7 +173,7 @@ export default {
         this.registryEvent('load');
       }
     },
-    registryScroller() {
+    registryScroller({ left = 0, top = 0, zoom = 1 } = {}) {
       const {
         preventDefault,
         preventDefaultOnMove
@@ -206,6 +206,9 @@ export default {
       );
 
       this.scroller.__disable = this.mergedOptions.vuescroll.scroller.disable;
+      this.scroller.__scrollLeft = left;
+      this.scroller.__scrollTop = top;
+      this.scroller.__zoomLevel = zoom;
 
       // Set snap
       if (snapping) {
@@ -228,44 +231,44 @@ export default {
           // Thie is to dispatch the event from the scroller.
           // to let vuescroll refresh the dom
           switch (eventType) {
-          case 'mousedown':
-            this.vuescroll.state.isDragging = true;
-            break;
-          case 'onscroll':
-            {
-              /**
+            case 'mousedown':
+              this.vuescroll.state.isDragging = true;
+              break;
+            case 'onscroll':
+              {
+                /**
                  * Trigger auto load
                  */
-              const stage = this.vuescroll.state['loadStage'];
-              const {
-                enable,
-                auto,
-                autoLoadDistance
-              } = this.mergedOptions.vuescroll.pushLoad;
-              const { __scrollTop, __maxScrollTop } = this.scroller;
-              if (
-                stage != 'start' &&
+                const stage = this.vuescroll.state['loadStage'];
+                const {
+                  enable,
+                  auto,
+                  autoLoadDistance
+                } = this.mergedOptions.vuescroll.pushLoad;
+                const { __scrollTop, __maxScrollTop } = this.scroller;
+                if (
+                  stage != 'start' &&
                   enable &&
                   auto &&
                   !this.lockAutoLoad && // auto load debounce
                   autoLoadDistance >= __maxScrollTop - __scrollTop &&
                   __scrollTop > 0
-              ) {
-                this.lockAutoLoad = true;
-                this.triggerRefreshOrLoad('load');
+                ) {
+                  this.lockAutoLoad = true;
+                  this.triggerRefreshOrLoad('load');
+                }
+
+                if (autoLoadDistance < __maxScrollTop - __scrollTop) {
+                  this.lockAutoLoad = false;
+                }
+
+                this.handleScroll(false);
               }
 
-              if (autoLoadDistance < __maxScrollTop - __scrollTop) {
-                this.lockAutoLoad = false;
-              }
-
-              this.handleScroll(false);
-            }
-
-            break;
-          case 'mouseup':
-            this.vuescroll.state.isDragging = false;
-            break;
+              break;
+            case 'mouseup':
+              this.vuescroll.state.isDragging = false;
+              break;
           }
         },
         zooming,

@@ -109,12 +109,17 @@ export default {
       this.$el._isVuescroll = true;
     },
     refreshMode() {
+      let initPos;
+      if (this.scroller) {
+        initPos = this.scroller.getValues();
+      }
+
       if (this.destroyScroller) {
         this.scroller.stop();
         this.destroyScroller();
         this.destroyScroller = null;
       }
-      this.destroyScroller = this.registryScroller();
+      this.destroyScroller = this.registryScroller(initPos);
     },
     refreshInternalStatus() {
       // 1.set vuescroll height or width according to

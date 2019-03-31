@@ -19,7 +19,7 @@ describe('vuescroll', () => {
   let vm;
 
   afterEach(() => {
-    // destroyVM(vm);
+    destroyVM(vm);
   });
 
   it('class hook: hasVBar, hasHBar', (done) => {
@@ -79,7 +79,11 @@ describe('vuescroll', () => {
           }
         ),
         data: {
-          ops: {}
+          ops: {
+            bar: {
+              onlyShowBarOnScroll: false
+            }
+          }
         }
       },
       true
@@ -92,16 +96,16 @@ describe('vuescroll', () => {
         expect(hasClass(vs, 'vBarVisible')).toBe(false);
         expect(hasClass(vs, 'hBarVisible')).toBe(false);
 
-        trigger(vs, 'mosueenter');
+        trigger(vs, 'mouseenter');
       })
-      .wait(100)
+      .wait(1)
       .then(() => {
         expect(hasClass(vs, 'vBarVisible')).toBe(true);
         expect(hasClass(vs, 'hBarVisible')).toBe(true);
 
         trigger(vs, 'mouseleave');
       })
-      .wait(100)
+      .wait(1)
       .then(() => {
         expect(hasClass(vs, 'vBarVisible')).toBe(false);
         expect(hasClass(vs, 'hBarVisible')).toBe(false);

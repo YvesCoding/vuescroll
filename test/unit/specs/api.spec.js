@@ -381,14 +381,7 @@ describe('api', () => {
         data: {
           ops: {
             vuescroll: {
-              mode: 'slide',
-              paging: true,
-              pullRefresh: {
-                enable: false
-              },
-              pushLoad: {
-                enable: false
-              }
+              mode: 'slide'
             }
           }
         }
@@ -412,14 +405,7 @@ describe('api', () => {
         data: {
           ops: {
             vuescroll: {
-              mode: 'slide',
-              paging: true,
-              pullRefresh: {
-                enable: false
-              },
-              pushLoad: {
-                enable: false
-              }
+              mode: 'slide'
             }
           }
         }
@@ -429,14 +415,20 @@ describe('api', () => {
     // create two instances to test refreshAll api
     const vs0 = vm[0].$refs['vs'];
     const vs1 = vm[1].$refs['vs'];
-    vs0.$el.style.display = 'none';
-    vs1.$el.style.display = 'none';
-    _vs.refreshAll();
+
     startSchedule()
+      .then(() => {
+        vs0.$el.style.display = 'none';
+        vs1.$el.style.display = 'none';
+
+        _vs.refreshAll();
+      })
+      .wait(1)
       .then(() => {
         let vsAmout = document.querySelectorAll('.__rail-is-vertical').length;
         expect(vsAmout).toBe(0);
         vs0.$el.style.display = 'block';
+
         vs0.refresh();
       })
       .then(() => {
@@ -446,6 +438,16 @@ describe('api', () => {
         expect(vRails.length).toBe(1);
         vs1.$el.style.display = 'block';
 
+        // #114
+        // refresh should remember position.
+        vs0.scrollTo(
+          {
+            x: 50,
+            y: 50
+          },
+          0
+        );
+
         _vs.refreshAll();
       })
       .then(() => {
@@ -453,6 +455,11 @@ describe('api', () => {
         let vRails = document.querySelectorAll('.__rail-is-vertical');
         expect(hRails.length).toBe(2);
         expect(vRails.length).toBe(2);
+
+        const { scrollLeft, scrollTop } = vs0.getPosition();
+        expect(scrollLeft).toBe(50);
+        expect(scrollTop).toBe(50);
+
         done();
       });
   });

@@ -115,6 +115,11 @@ export default {
       this.$el._isVuescroll = true;
     },
     refreshMode() {
+      let initPos;
+      if (this.scroller) {
+        initPos = this.scroller.getValues();
+      }
+
       if (this.destroyScroller) {
         this.scroller.stop();
         this.destroyScroller();
@@ -122,7 +127,7 @@ export default {
       }
 
       if (this.mode == 'slide') {
-        this.destroyScroller = this.registryScroller();
+        this.destroyScroller = this.registryScroller(initPos);
       } else if (this.mode == 'native') {
         // remove the legacy transform style attribute
         this.scrollPanelElm.style.transform = '';
