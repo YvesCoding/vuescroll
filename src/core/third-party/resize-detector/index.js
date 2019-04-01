@@ -1,5 +1,5 @@
 // detect content size change
-import { eventCenter, isIE, isIos } from 'shared/util';
+import { eventCenter, isIE } from 'shared/util';
 export function installResizeDetection(element, callback) {
   return injectObject(element, callback);
 }
