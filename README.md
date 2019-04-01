@@ -28,88 +28,11 @@ _Vuescroll's compatibility is the same as `Vue.js 2.X`._
 
 For detailed docs, please see [Guide](https://vuescrolljs.yvescoding.org/guide) section on the website.
 
-## Example in local
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
-    <script src="https://unpkg.com/vue@2.5.17/dist/vue.js"></script>
-    <script src="https://unpkg.com/vuescroll@4.10.2/dist/vuescroll.js"></script>
-    <style>
-      html,
-      body {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-      }
-
-      #app {
-        width: 100%;
-        height: 100%;
-        text-align: center;
-      }
-
-      #parent {
-        width: 400px;
-        height: 400px;
-        display: inline-block;
-      }
-
-      #child {
-        width: 800px;
-        height: 800px;
-        background: -webkit-linear-gradient(left top, red, blue);
-        /* Safari 5.1 to 6.0 */
-        background: -o-linear-gradient(bottom right, red, blue);
-        /* Opera 11.1 to 12.0 */
-        background: -moz-linear-gradient(bottom right, red, blue);
-        /* Firefox 3.6 to 15 */
-        background: linear-gradient(to bottom right, red, blue);
-        /* 标准语法 */
-      }
-    </style>
-  </head>
-
-  <body>
-    <div id="app">
-      <div id="parent">
-        <vue-scroll :ops="ops"> <div id="child"></div> </vue-scroll>
-      </div>
-    </div>
-    <script>
-      new Vue({
-        el: '#app',
-        data: {
-          ops: {
-            bar: {
-              background: 'rgb(24, 144, 255)'
-            },
-            rail: {
-              border: '1px solid #cecece',
-              size: '20px'
-            },
-            scrollButton: {
-              enable: true,
-              background: '#cecece'
-            }
-          }
-        }
-      });
-    </script>
-  </body>
-</html>
-```
-
 ## Communication
 
 - Tell me on my twitter: [@wangyi70991](https://twitter.com/wangyi70991?s=01)
 
-- WeChat group:
+- Add my wechat
 
  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400" alt="Demo" style="max-width:100%;">
 
