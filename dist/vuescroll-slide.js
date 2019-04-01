@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.12.0-rc
+    * Vuescroll v4.12.0-rc.1
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -668,15 +668,12 @@ function injectObject(element, callback) {
   object.style.cssText = OBJECT_STYLE;
   object.type = 'text/html';
   object.tabIndex = -1;
-  // Set # to make it work on safari mobile
-  if (isIos()) {
-    object.data = '#';
-  }
+
   object.onload = function () {
     eventCenter(object.contentDocument.defaultView, 'resize', callback);
   };
   // https://github.com/wnr/element-resize-detector/blob/aafe9f7ea11d1eebdab722c7c5b86634e734b9b8/src/detection-strategy/object.js#L159
-  if (!isIE() && !isIos()) {
+  if (!isIE()) {
     object.data = 'about:blank';
   }
   objWrap.isResizeElm = true;
@@ -4577,7 +4574,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.12.0-rc',
+  version: '4.12.0-rc.1',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
