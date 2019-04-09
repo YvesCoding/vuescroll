@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.12.0-rc.1
+    * Vuescroll v4.12.0
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1568,7 +1568,7 @@ var createComponent = function createComponent(_ref) {
         setTimeout(function () {
           _this5.vuescroll.state.currentSizeStrategy = 'number';
 
-          var el = _this5.$el;
+          var el = _this5.$el.parentNode || _this5.$el;
           _this5.vuescroll.state.height = el.offsetHeight + 'px';
           _this5.vuescroll.state.width = el.offsetWidth + 'px';
 
@@ -2379,7 +2379,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.12.0-rc.1',
+  version: '4.12.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
