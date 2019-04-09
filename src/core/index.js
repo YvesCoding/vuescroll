@@ -278,7 +278,7 @@ const createComponent = ({ render, components, mixins }) => ({
       setTimeout(() => {
         this.vuescroll.state.currentSizeStrategy = 'number';
 
-        const el = this.$el;
+        const el = this.$el.parentNode || this.$el;
         this.vuescroll.state.height = el.offsetHeight + 'px';
         this.vuescroll.state.width = el.offsetWidth + 'px';
 
