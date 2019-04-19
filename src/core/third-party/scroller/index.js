@@ -1546,7 +1546,7 @@ var members = {
           -scrollOutsideY >= bouncing.bottom &&
           self.__decelerationVelocityY > 0
         ) {
-          self.__decelerationVelocityY = -bouncing.bottom;
+          self.__decelerationVelocityY = -bouncing.bottom / 2;
         }
         if (
           scrollOutsideY > 0 &&
