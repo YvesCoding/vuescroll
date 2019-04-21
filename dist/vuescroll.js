@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.12.0
+    * Vuescroll v4.12.1
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -4045,7 +4045,7 @@ var members = {
       if (scrollOutsideY * self.__decelerationVelocityY <= 0) {
         self.__decelerationVelocityY += scrollOutsideY * penetrationDeceleration;
         if (scrollOutsideY < 0 && -scrollOutsideY >= bouncing.bottom && self.__decelerationVelocityY > 0) {
-          self.__decelerationVelocityY = -bouncing.bottom;
+          self.__decelerationVelocityY = -bouncing.bottom / 2;
         }
         if (scrollOutsideY > 0 && scrollOutsideY >= bouncing.top && self.__decelerationVelocityY < 0) {
           self.__decelerationVelocityY = bouncing.top / 2;
@@ -4969,7 +4969,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.12.0',
+  version: '4.12.1',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
