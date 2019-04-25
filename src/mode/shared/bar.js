@@ -489,6 +489,7 @@ function getBarData(vm, type) {
   }
 
   return {
+    hideBar,
     props: {
       type: type,
       ops: {
@@ -518,8 +519,11 @@ export function createBar(h, vm) {
   const horizontalBarProps = getBarData(vm, 'horizontal');
 
   // set class hooks
-  vm.setClassHook('hasVBar', !!verticalBarProps);
-  vm.setClassHook('hasHBar', !!horizontalBarProps);
+  vm.setClassHook('hasVBar', !!(verticalBarProps && !verticalBarProps.hideBar));
+  vm.setClassHook(
+    'hasHBar',
+    !!(horizontalBarProps && !horizontalBarProps.hideBar)
+  );
 
   return [
     verticalBarProps ? (
