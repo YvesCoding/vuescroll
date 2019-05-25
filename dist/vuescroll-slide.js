@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.12.2
+    * Vuescroll v4.13.0-beta
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -13,33 +13,6 @@
 }(this, (function (Vue) { 'use strict';
 
 Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
-
-function isIE() {
-  /* istanbul ignore if */
-  if (isServer()) return false;
-
-  var agent = navigator.userAgent.toLowerCase();
-  return agent.indexOf('msie') !== -1 || agent.indexOf('trident') !== -1 || agent.indexOf(' edge/') !== -1;
-}
-
-var isIos = function isIos() {
-  /* istanbul ignore if */
-  if (isServer()) return false;
-
-  var u = navigator.userAgent;
-  return !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
-};
-
-function isSupportTouch() {
-  /* istanbul ignore if */
-  if (isServer()) return false;
-  return 'ontouchstart' in window;
-}
-
-/* istanbul ignore next */
-var isServer = function isServer() {
-  return Vue.prototype.$isServer;
-};
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -157,6 +130,100 @@ var toConsumableArray = function (arr) {
     return Array.from(arr);
   }
 };
+
+function isIE() {
+  /* istanbul ignore if */
+  if (isServer()) return false;
+
+  var agent = navigator.userAgent.toLowerCase();
+  return agent.indexOf('msie') !== -1 || agent.indexOf('trident') !== -1 || agent.indexOf(' edge/') !== -1;
+}
+
+var isIos = function isIos() {
+  /* istanbul ignore if */
+  if (isServer()) return false;
+
+  var u = navigator.userAgent;
+  return !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+};
+
+/* istanbul ignore next */
+var isServer = function isServer() {
+  return Vue.prototype.$isServer;
+};
+
+var touchManager = function () {
+  function touchManager() {
+    classCallCheck(this, touchManager);
+  }
+
+  createClass(touchManager, [{
+    key: 'getEventObject',
+    value: function getEventObject(originEvent) {
+      return this.touchObject ? this.isTouch ? originEvent.touches : [originEvent] : null;
+    }
+  }, {
+    key: 'getTouchObject',
+    value: function getTouchObject() {
+      /* istanbul ignore if */
+      if (isServer()) return null;
+
+      this.isTouch = false;
+      var agent = navigator.userAgent,
+          platform = navigator.platform,
+          touchObject = {};
+      touchObject.touch = !!('ontouchstart' in window && !window.opera || 'msmaxtouchpoints' in window.navigator || 'maxtouchpoints' in window.navigator || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0);
+      touchObject.nonDeskTouch = touchObject.touch && !/win32/i.test(platform) || touchObject.touch && /win32/i.test(platform) && /mobile/i.test(agent);
+
+      touchObject.eventType = 'onmousedown' in window && !touchObject.nonDeskTouch ? 'mouse' : 'ontouchstart' in window ? 'touch' : 'msmaxtouchpoints' in window.navigator || navigator.msMaxTouchPoints > 0 ? 'mstouchpoints' : 'maxtouchpoints' in window.navigator || navigator.maxTouchPoints > 0 ? 'touchpoints' : 'mouse';
+      switch (touchObject.eventType) {
+        case 'mouse':
+          touchObject.touchstart = 'mousedown';
+          touchObject.touchend = 'mouseup';
+          touchObject.touchmove = 'mousemove';
+
+          touchObject.touchenter = 'mouseenter';
+          touchObject.touchmove = 'mousemove';
+          touchObject.touchleave = 'mouseleave';
+          break;
+        case 'touch':
+          touchObject.touchstart = 'touchstart';
+          touchObject.touchend = 'touchend';
+          touchObject.touchmove = 'touchmove';
+          touchObject.touchcancel = 'touchcancel';
+
+          touchObject.touchenter = 'touchstart';
+          touchObject.touchmove = 'touchmove';
+          touchObject.touchleave = 'touchend';
+          this.isTouch = true;
+          break;
+        case 'mstouchpoints':
+          touchObject.touchstart = 'MSPointerDown';
+          touchObject.touchend = 'MSPointerUp';
+          touchObject.touchmove = 'MSPointerMove';
+          touchObject.touchcancel = 'MSPointerCancel';
+
+          touchObject.touchenter = 'MSPointerDown';
+          touchObject.touchmove = 'MSPointerMove';
+          touchObject.touchleave = 'MSPointerUp';
+          break;
+        case 'touchpoints':
+          touchObject.touchstart = 'pointerdown';
+          touchObject.touchend = 'pointerup';
+          touchObject.touchmove = 'pointermove';
+          touchObject.touchcancel = 'pointercancel';
+
+          touchObject.touchenter = 'pointerdown';
+          touchObject.touchmove = 'pointermove';
+          touchObject.touchleave = 'pointerup';
+          break;
+      }
+
+      return this.touchObject = touchObject;
+    }
+  }]);
+  return touchManager;
+}();
 
 function deepCopy(from, to, shallow) {
   if (shallow && isUndef(to)) {
@@ -571,8 +638,6 @@ var baseConfig = {
     background: 'rgb(3, 185, 118)',
     /** Bar's opacity, default -> 1  */
     opacity: 1,
-    /** Styles when you hover scrollbar, it will merge into the current style */
-    hoverStyle: false,
     /** bar's size(Height/Width) , default -> 6px */
 
     size: '6px',
@@ -788,148 +853,6 @@ var colorCache = {};
 var rgbReg = /rgb\(/;
 var extractRgbColor = /rgb\((.*)\)/;
 
-/* istanbul ignore next */
-function createBarEvent(ctx) {
-  var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'mouse';
-
-  var parent = getRealParent(ctx);
-  var moveEventName = type == 'mouse' ? 'mousemove' : 'touchmove';
-  var endEventName = type == 'mouse' ? 'mouseup' : 'touchend';
-
-  function mousedown(e) {
-    e.stopImmediatePropagation();
-    e.preventDefault();
-
-    var event = type == 'mouse' ? e : e.touches[0];
-
-    document.onselectstart = function () {
-      return false;
-    };
-    ctx.axisStartPos = event[ctx.bar.client] - ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
-
-    // Tell parent that the mouse has been down.
-    ctx.setBarDrag(true);
-    eventCenter(document, moveEventName, mousemove);
-    eventCenter(document, endEventName, mouseup);
-  }
-
-  function mousemove(e) {
-    if (!ctx.axisStartPos) {
-      return;
-    }
-
-    var thubmParent = ctx.$refs.thumb.parentNode;
-
-    var event = type == 'mouse' ? e : e.touches[0];
-
-    var delta = event[ctx.bar.client] - thubmParent.getBoundingClientRect()[ctx.bar.posName];
-    delta = delta / ctx.barRatio;
-
-    var percent = (delta - ctx.axisStartPos) / thubmParent[ctx.bar.offset];
-    parent.scrollTo(defineProperty({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
-  }
-
-  function mouseup() {
-    ctx.setBarDrag(false);
-    parent.hideBar();
-
-    document.onselectstart = null;
-    ctx.axisStartPos = 0;
-
-    eventCenter(document, moveEventName, mousemove, false, 'off');
-    eventCenter(document, endEventName, mouseup, false, 'off');
-  }
-
-  return mousedown;
-}
-
-/* istanbul ignore next */
-function createScrollButtonEvent(ctx, type) {
-  var env = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'mouse';
-
-  var parent = getRealParent(ctx);
-
-  var endEventName = env == 'mouse' ? 'mouseup' : 'touchend';
-  var _ctx$ops$scrollButton = ctx.ops.scrollButton,
-      step = _ctx$ops$scrollButton.step,
-      mousedownStep = _ctx$ops$scrollButton.mousedownStep;
-
-
-  var stepWithDirection = type == 'start' ? -step : step;
-  var mousedownStepWithDirection = type == 'start' ? -mousedownStep : mousedownStep;
-  var ref = requestAnimationFrame(window);
-
-  // bar props: type
-  var barType = ctx.type;
-
-  var isMouseDown = false;
-  var isMouseout = true;
-  var timeoutId = void 0;
-
-  function start(e) {
-    /* istanbul ignore if */
-
-    if (3 == e.which) {
-      return;
-    }
-
-    // set class hook
-    parent.setClassHook('cliking' + barType + type + 'Button', true);
-
-    e.stopImmediatePropagation();
-    e.preventDefault();
-
-    isMouseout = false;
-
-    parent.scrollBy(defineProperty({}, 'd' + ctx.bar.axis.toLowerCase(), stepWithDirection));
-
-    eventCenter(document, endEventName, endPress, false);
-
-    if (env == 'mouse') {
-      var elm = ctx.$refs[type];
-      eventCenter(elm, 'mouseenter', enter, false);
-      eventCenter(elm, 'mouseleave', leave, false);
-    }
-
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(function () {
-      isMouseDown = true;
-      ref(pressing, window);
-    }, 500);
-  }
-
-  function pressing() {
-    if (isMouseDown && !isMouseout) {
-      parent.scrollBy(defineProperty({}, 'd' + ctx.bar.axis.toLowerCase(), mousedownStepWithDirection), false);
-      ref(pressing, window);
-    }
-  }
-
-  function endPress() {
-    clearTimeout(timeoutId);
-    isMouseDown = false;
-    eventCenter(document, endEventName, endPress, false, 'off');
-    if (env == 'mouse') {
-      var elm = ctx.$refs[type];
-      eventCenter(elm, 'mouseenter', enter, false, 'off');
-      eventCenter(elm, 'mouseleave', leave, false, 'off');
-    }
-
-    parent.setClassHook('cliking' + barType + type + 'Button', false);
-  }
-
-  function enter() {
-    isMouseout = false;
-    pressing();
-  }
-
-  function leave() {
-    isMouseout = true;
-  }
-
-  return start;
-}
-
 // Transform a common color int oa `rgbA` color
 function getRgbAColor(color, opacity) {
   var id = color + '&' + opacity;
@@ -949,99 +872,6 @@ function getRgbAColor(color, opacity) {
   }
 
   return colorCache[id] = 'rgba(' + extractRgbColor.exec(computedColor)[1] + ', ' + opacity + ')';
-}
-
-function createTrackEvent(ctx, type) {
-  return function handleClickTrack(e) {
-    var parent = getRealParent(ctx);
-
-    var _ctx$bar = ctx.bar,
-        client = _ctx$bar.client,
-        offset = _ctx$bar.offset,
-        posName = _ctx$bar.posName,
-        axis = _ctx$bar.axis;
-
-    var thumb = ctx.$refs['thumb'];
-
-    e.preventDefault();
-    e.stopImmediatePropagation();
-
-    /* istanbul ignore if */
-    if (!thumb) return;
-
-    var barOffset = thumb[offset];
-    var event = type == 'touchstart' ? e.touches[0] : e;
-
-    var percent = (event[client] - e.currentTarget.getBoundingClientRect()[posName] - barOffset / 2) / (e.currentTarget[offset] - barOffset);
-
-    parent.scrollTo(defineProperty({}, axis.toLowerCase(), percent * 100 + '%'));
-  };
-}
-
-function createScrollbarButton(h, barContext, type) {
-  var _style;
-
-  if (!barContext.ops.scrollButton.enable) {
-    return null;
-  }
-
-  var size = barContext.ops.rail.size;
-  var borderColor = barContext.ops.scrollButton.background;
-
-  var wrapperProps = {
-    class: ['__bar-button', '__bar-button-is-' + barContext.type + '-' + type],
-    style: (_style = {}, defineProperty(_style, barContext.bar.scrollButton[type], 0), defineProperty(_style, 'width', size), defineProperty(_style, 'height', size), defineProperty(_style, 'position', 'absolute'), defineProperty(_style, 'cursor', 'pointer'), defineProperty(_style, 'display', 'table'), _style),
-    ref: type
-  };
-
-  var innerProps = {
-    class: '__bar-button-inner',
-    style: {
-      border: 'calc(' + size + ' / 2.5) solid transparent',
-      width: '0',
-      height: '0',
-      margin: 'auto',
-      position: 'absolute',
-      top: '0',
-      bottom: '0',
-      right: '0',
-      left: '0'
-    },
-    on: {}
-  };
-
-  if (barContext.type == 'vertical') {
-    if (type == 'start') {
-      innerProps.style['border-bottom-color'] = borderColor;
-      innerProps.style['transform'] = 'translateY(-25%)';
-    } else {
-      innerProps.style['border-top-color'] = borderColor;
-      innerProps.style['transform'] = 'translateY(25%)';
-    }
-  } else {
-    if (type == 'start') {
-      innerProps.style['border-right-color'] = borderColor;
-      innerProps.style['transform'] = 'translateX(-25%)';
-    } else {
-      innerProps.style['border-left-color'] = borderColor;
-      innerProps.style['transform'] = 'translateX(25%)';
-    }
-  }
-
-  /* istanbul ignore next */
-  {
-    if (isSupportTouch()) {
-      innerProps.on['touchstart'] = createScrollButtonEvent(barContext, type, 'touch');
-    } else {
-      innerProps.on['mousedown'] = createScrollButtonEvent(barContext, type);
-    }
-  }
-
-  return h(
-    'div',
-    wrapperProps,
-    [h('div', innerProps)]
-  );
 }
 
 var bar = {
@@ -1065,35 +895,39 @@ var bar = {
     }
   },
   render: function render(h) {
-    var _style2, _style3, _barStyle;
+    var _style, _style2, _barStyle;
 
     var vm = this;
     /** Get rgbA format background color */
     var railBackgroundColor = getRgbAColor(vm.ops.rail.background, vm.ops.rail.opacity);
+
+    if (!this.touchManager) {
+      this.touchManager = new touchManager();
+    }
 
     /** Rail Data */
     var railSize = vm.ops.rail.size;
     var endPos = vm.otherBarHide ? 0 : railSize;
     var rail = {
       class: '__rail-is-' + vm.type,
-      style: (_style2 = {
+      style: (_style = {
         position: 'absolute',
         'z-index': '1',
 
         borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
         background: railBackgroundColor,
         border: vm.ops.rail.border
-      }, defineProperty(_style2, vm.bar.opsSize, railSize), defineProperty(_style2, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || 0), defineProperty(_style2, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || endPos), defineProperty(_style2, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style2)
+      }, defineProperty(_style, vm.bar.opsSize, railSize), defineProperty(_style, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || 0), defineProperty(_style, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || endPos), defineProperty(_style, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style)
     };
 
     // left space for scroll button
     var buttonSize = vm.ops.scrollButton.enable ? railSize : 0;
     var barWrapper = {
       class: '__bar-wrap-is-' + vm.type,
-      style: (_style3 = {
+      style: (_style2 = {
         position: 'absolute',
         borderRadius: vm.ops.rail.specifyBorderRadius || railSize
-      }, defineProperty(_style3, vm.bar.posName, buttonSize), defineProperty(_style3, vm.bar.opposName, buttonSize), _style3),
+      }, defineProperty(_style2, vm.bar.posName, buttonSize), defineProperty(_style2, vm.bar.opposName, buttonSize), _style2),
       on: {}
     };
 
@@ -1119,14 +953,7 @@ var bar = {
       style: barStyle,
       class: '__bar-is-' + vm.type,
       ref: 'thumb',
-      on: {
-        mouseenter: function mouseenter() {
-          vm.setBarHoverStyles();
-        },
-        mouseleave: function mouseleave() {
-          vm.tryRestoreBarStyles();
-        }
-      }
+      on: {}
     };
 
     if (vm.type == 'vertical') {
@@ -1140,30 +967,25 @@ var bar = {
       bar.style.bottom = 0;
     }
 
-    /* istanbul ignore if */
-    if (isSupportTouch()) {
-      bar.on['touchstart'] = createBarEvent(this, 'touch');
-      barWrapper.on['touchstart'] = createTrackEvent(this, 'touchstart');
-    } else {
-      bar.on['mousedown'] = createBarEvent(this);
-      barWrapper.on['mousedown'] = createTrackEvent(this, 'mousedown');
+    /* istanbul ignore next */
+    {
+      var touchObj = this.touchManager.getTouchObject();
+      bar.on[touchObj.touchstart] = this.createBarEvent();
+      barWrapper.on[touchObj.touchstart] = this.createTrackEvent();
     }
 
     return h(
       'div',
       rail,
-      [createScrollbarButton(h, this, 'start'), this.hideBar ? null : h(
+      [this.createScrollbarButton(h, 'start'), this.hideBar ? null : h(
         'div',
         barWrapper,
         [h('div', bar)]
-      ), createScrollbarButton(h, this, 'end')]
+      ), this.createScrollbarButton(h, 'end')]
     );
   },
   data: function data() {
     return {
-      // Use to restore bar styles after hovering the bars, on enable
-      // when option hoverStyle is not `falsy`.
-      originBarStyle: null,
       isBarDragging: false
     };
   },
@@ -1172,41 +994,245 @@ var bar = {
     setBarDrag: function setBarDrag(val) /* istanbul ignore next */{
       this.$emit('setBarDrag', this.isBarDragging = val);
 
-      // set class hooks
-
       var parent = getRealParent(this);
       // set class hook
       parent.setClassHook(this.type == 'vertical' ? 'vBarDragging' : 'hBarDragging', !!val);
+    },
+    createBarEvent: function createBarEvent() {
+      var ctx = this;
 
-      if (!val) {
-        this.tryRestoreBarStyles();
+      var parent = getRealParent(ctx);
+      var touchObj = ctx.touchManager.getTouchObject();
+
+      function mousedown(e) {
+        var event = ctx.touchManager.getEventObject(e);
+        if (!event) return;
+
+        e.stopImmediatePropagation();
+        e.preventDefault();
+        event = event[0];
+
+        document.onselectstart = function () {
+          return false;
+        };
+        ctx.axisStartPos = event[ctx.bar.client] - ctx.$refs['thumb'].getBoundingClientRect()[ctx.bar.posName];
+
+        // Tell parent that the mouse has been down.
+        ctx.setBarDrag(true);
+        eventCenter(document, touchObj.touchmove, mousemove);
+        eventCenter(document, touchObj.touchend, mouseup);
       }
+
+      function mousemove(e) {
+        if (!ctx.axisStartPos) {
+          return;
+        }
+
+        var event = ctx.touchManager.getEventObject(e);
+        if (!event) return;
+
+        event = event[0];
+
+        var thubmParent = ctx.$refs.thumb.parentNode;
+
+        var delta = event[ctx.bar.client] - thubmParent.getBoundingClientRect()[ctx.bar.posName];
+        delta = delta / ctx.barRatio;
+
+        var percent = (delta - ctx.axisStartPos) / thubmParent[ctx.bar.offset];
+        parent.scrollTo(defineProperty({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
+      }
+
+      function mouseup() {
+        ctx.setBarDrag(false);
+        parent.hideBar();
+
+        document.onselectstart = null;
+        ctx.axisStartPos = 0;
+
+        eventCenter(document, touchObj.touchmove, mousemove, false, 'off');
+        eventCenter(document, touchObj.touchend, mouseup, false, 'off');
+      }
+
+      return mousedown;
     },
-    tryRestoreBarStyles: function tryRestoreBarStyles() {
-      var _this = this;
+    createTrackEvent: function createTrackEvent() {
+      var ctx = this;
 
-      /* istanbul ignore if */
-      if (this.isBarDragging || !this.originBarStyle) return;
+      return function handleClickTrack(e) {
+        var parent = getRealParent(ctx);
 
-      Object.keys(this.originBarStyle).forEach(function (key) {
-        _this.$refs.thumb.style[key] = _this.originBarStyle[key];
-      });
+        var _ctx$bar = ctx.bar,
+            client = _ctx$bar.client,
+            offset = _ctx$bar.offset,
+            posName = _ctx$bar.posName,
+            axis = _ctx$bar.axis;
+
+        var thumb = ctx.$refs['thumb'];
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        /* istanbul ignore if */
+        if (!thumb) return;
+
+        var barOffset = thumb[offset];
+        var event = ctx.touchManager.getEventObject(e)[0];
+
+        var percent = (event[client] - e.currentTarget.getBoundingClientRect()[posName] - barOffset / 2) / (e.currentTarget[offset] - barOffset);
+
+        parent.scrollTo(defineProperty({}, axis.toLowerCase(), percent * 100 + '%'));
+      };
     },
-    setBarHoverStyles: function setBarHoverStyles() {
-      var _this2 = this;
 
-      var hoverBarStyle = this.ops.bar.hoverStyle;
+
+    // Scrollbuton relative things...
+    createScrollbarButton: function createScrollbarButton(h, type /* start or end  */) {
+      var _style3;
+
+      var barContext = this;
+
+      if (!barContext.ops.scrollButton.enable) {
+        return null;
+      }
+
+      var size = barContext.ops.rail.size;
+      var borderColor = barContext.ops.scrollButton.background;
+
+      var wrapperProps = {
+        class: ['__bar-button', '__bar-button-is-' + barContext.type + '-' + type],
+        style: (_style3 = {}, defineProperty(_style3, barContext.bar.scrollButton[type], 0), defineProperty(_style3, 'width', size), defineProperty(_style3, 'height', size), defineProperty(_style3, 'position', 'absolute'), defineProperty(_style3, 'cursor', 'pointer'), defineProperty(_style3, 'display', 'table'), _style3),
+        ref: type
+      };
+
+      var innerProps = {
+        class: '__bar-button-inner',
+        style: {
+          border: 'calc(' + size + ' / 2.5) solid transparent',
+          width: '0',
+          height: '0',
+          margin: 'auto',
+          position: 'absolute',
+          top: '0',
+          bottom: '0',
+          right: '0',
+          left: '0'
+        },
+        on: {}
+      };
+
+      if (barContext.type == 'vertical') {
+        if (type == 'start') {
+          innerProps.style['border-bottom-color'] = borderColor;
+          innerProps.style['transform'] = 'translateY(-25%)';
+        } else {
+          innerProps.style['border-top-color'] = borderColor;
+          innerProps.style['transform'] = 'translateY(25%)';
+        }
+      } else {
+        if (type == 'start') {
+          innerProps.style['border-right-color'] = borderColor;
+          innerProps.style['transform'] = 'translateX(-25%)';
+        } else {
+          innerProps.style['border-left-color'] = borderColor;
+          innerProps.style['transform'] = 'translateX(25%)';
+        }
+      }
+
       /* istanbul ignore next */
-      if (!hoverBarStyle) return;
-
-      if (!this.originBarStyle) {
-        this.originBarStyle = {};
-        Object.keys(hoverBarStyle).forEach(function (key) {
-          _this2.originBarStyle[key] = _this2.$refs.thumb.style[key];
-        });
+      {
+        var touchObj = this.touchManager.getTouchObject();
+        innerProps.on[touchObj.touchstart] = this.createScrollButtonEvent(type, touchObj);
       }
 
-      mergeObject(hoverBarStyle, this.$refs.thumb.style, true);
+      return h(
+        'div',
+        wrapperProps,
+        [h('div', innerProps)]
+      );
+    },
+    createScrollButtonEvent: function createScrollButtonEvent(type, touchObj) {
+      var ctx = this;
+      var parent = getRealParent(ctx);
+
+      var _ctx$ops$scrollButton = ctx.ops.scrollButton,
+          step = _ctx$ops$scrollButton.step,
+          mousedownStep = _ctx$ops$scrollButton.mousedownStep;
+
+
+      var stepWithDirection = type == 'start' ? -step : step;
+      var mousedownStepWithDirection = type == 'start' ? -mousedownStep : mousedownStep;
+      var ref = requestAnimationFrame(window);
+
+      // bar props: type
+      var barType = ctx.type;
+
+      var isMouseDown = false;
+      var isMouseout = true;
+      var timeoutId = void 0;
+
+      function start(e) {
+        /* istanbul ignore if */
+
+        if (3 == e.which) {
+          return;
+        }
+
+        // set class hook
+        parent.setClassHook('cliking' + barType + type + 'Button', true);
+
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        isMouseout = false;
+
+        parent.scrollBy(defineProperty({}, 'd' + ctx.bar.axis.toLowerCase(), stepWithDirection));
+
+        eventCenter(document, touchObj.touchend, endPress, false);
+
+        if (touchObj.touchstart == 'mousedown') {
+          var elm = ctx.$refs[type];
+          eventCenter(elm, 'mouseenter', enter, false);
+          eventCenter(elm, 'mouseleave', leave, false);
+        }
+
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(function () {
+          isMouseDown = true;
+          ref(pressing, window);
+        }, 500);
+      }
+
+      function pressing() {
+        if (isMouseDown && !isMouseout) {
+          parent.scrollBy(defineProperty({}, 'd' + ctx.bar.axis.toLowerCase(), mousedownStepWithDirection), false);
+          ref(pressing, window);
+        }
+      }
+
+      function endPress() {
+        clearTimeout(timeoutId);
+        isMouseDown = false;
+        eventCenter(document, touchObj.touchend, endPress, false, 'off');
+
+        if (touchObj.touchstart == 'mousedown') {
+          var elm = ctx.$refs[type];
+          eventCenter(elm, 'mouseenter', enter, false, 'off');
+          eventCenter(elm, 'mouseleave', leave, false, 'off');
+        }
+
+        parent.setClassHook('cliking' + barType + type + 'Button', false);
+      }
+
+      function enter() {
+        isMouseout = false;
+        pressing();
+      }
+
+      function leave() {
+        isMouseout = true;
+      }
+
+      return start;
     }
   }
 };
@@ -1313,6 +1339,8 @@ var createComponent = function createComponent(_ref) {
         return h('div', [[vm.$slots['default']]]);
       }
 
+      if (!vm.touchManager) vm.touchManager = new touchManager();
+
       // vuescroll data
       var data = {
         style: {
@@ -1325,41 +1353,25 @@ var createComponent = function createComponent(_ref) {
         class: _extends({ __vuescroll: true }, vm.classHooks)
       };
 
-      if (!isSupportTouch()) {
-        data.on = {
-          mouseenter: function mouseenter() {
-            vm.vuescroll.state.pointerLeave = false;
-            vm.updateBarStateAndEmitEvent();
+      var touchObj = vm.touchManager.getTouchObject();
+      if (touchObj) {
+        var _data$on;
 
-            vm.setClassHook('mouseEnter', true);
-          },
-          mouseleave: function mouseleave() {
-            vm.vuescroll.state.pointerLeave = true;
-            vm.hideBar();
+        data.on = (_data$on = {}, defineProperty(_data$on, touchObj.touchenter, function () {
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
 
-            vm.setClassHook('mouseEnter', false);
-          },
-          mousemove: function mousemove() /* istanbul ignore next */{
-            vm.vuescroll.state.pointerLeave = false;
-            vm.updateBarStateAndEmitEvent();
-          }
-        };
-      } /* istanbul ignore next */else {
-          data.on = {
-            touchstart: function touchstart() {
-              vm.vuescroll.state.pointerLeave = false;
-              vm.updateBarStateAndEmitEvent();
-            },
-            touchend: function touchend() {
-              vm.vuescroll.state.pointerLeave = true;
-              vm.hideBar();
-            },
-            touchmove: function touchmove() /* istanbul ignore next */{
-              vm.vuescroll.state.pointerLeave = false;
-              vm.updateBarStateAndEmitEvent();
-            }
-          };
-        }
+          vm.setClassHook('mouseEnter', true);
+        }), defineProperty(_data$on, touchObj.touchleave, function () {
+          vm.vuescroll.state.pointerLeave = true;
+          vm.hideBar();
+
+          vm.setClassHook('mouseEnter', false);
+        }), defineProperty(_data$on, touchObj.touchmove, function () /* istanbul ignore next */{
+          vm.vuescroll.state.pointerLeave = false;
+          vm.updateBarStateAndEmitEvent();
+        }), _data$on);
+      }
 
       var ch = [_render(h, vm)].concat(toConsumableArray(createBar(h, vm)));
 
@@ -3841,125 +3853,78 @@ function render(content, global, suffix, type) {
   }
 }
 
+var touch = new touchManager();
 function listenContainer(container, scroller, eventCallback, zooming, preventDefault, preventDefaultOnMove) {
   var destroy = null;
-  // for touch
+  var mousedown = false;
+  var touchObj = touch.getTouchObject();
+
   function touchstart(e) {
+    var event = touch.getEventObject(e);
     // Don't react if initial down happens on a form element
-    if (e.touches[0] && e.touches[0].target && e.touches[0].target.tagName.match(/input|textarea|select/i) || scroller.__disable) {
+    if (event[0] && event[0].target && event[0].target.tagName.match(/input|textarea|select/i) || scroller.__disable) {
       return;
     }
     eventCallback('mousedown');
-    scroller.doTouchStart(e.touches, e.timeStamp);
+    mousedown = true;
+    scroller.doTouchStart(event, e.timeStamp);
+
     if (preventDefault) {
       e.preventDefault();
     }
-
     e.stopPropagation();
+
     // here , we want to manully prevent default, so we
     // set passive to false
     // see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
-    document.addEventListener('touchmove', touchmove, { passive: false });
+    document.addEventListener(touchObj.touchmove, touchmove, {
+      passive: false
+    });
   }
-  function touchmove(e) {
-    if (scroller.__disable) return;
 
+  function touchmove(e) {
+    if (scroller.__disable || !mousedown) return;
+
+    var event = touch.getEventObject(e);
     eventCallback('mousemove');
-    scroller.doTouchMove(e.touches, e.timeStamp, e.scale);
+    scroller.doTouchMove(event, e.timeStamp, e.scale);
     if (preventDefaultOnMove) {
       e.preventDefault();
     }
   }
+
   function touchend(e) {
     eventCallback('mouseup');
+    mousedown = false;
     scroller.doTouchEnd(e.timeStamp);
-    document.removeEventListener('touchmove', touchmove);
+    document.removeEventListener(touchObj.touchmove, touchmove);
   }
   function touchcancel(e) {
     scroller.doTouchEnd(e.timeStamp);
   }
 
-  // for mouse
-  function mousedownEvent(e) {
-    if (e.target.tagName.match(/input|textarea|select/i) || scroller.__disable) {
-      return;
-    }
-
-    e.stopPropagation();
-
-    eventCallback('mousedown');
-    scroller.doTouchStart([{
-      pageX: e.pageX,
-      pageY: e.pageY
-    }], e.timeStamp);
-
-    if (preventDefault) {
-      e.preventDefault();
-    }
-
-    mousedown = true;
-  }
-  function mousemove(e) {
-    if (!mousedown || scroller.__disable) {
-      return;
-    }
-    eventCallback('mousemove');
-    scroller.doTouchMove([{
-      pageX: e.pageX,
-      pageY: e.pageY
-    }], e.timeStamp);
-    if (preventDefaultOnMove) {
-      e.preventDefault();
-    }
-    mousedown = true;
-  }
-  function mouseup(e) {
-    if (!mousedown) {
-      return;
-    }
-    eventCallback('mouseup');
-    scroller.doTouchEnd(e.timeStamp);
-
-    mousedown = false;
-  }
   function zoomHandle(e) {
     scroller.doMouseZoom(e.detail ? e.detail * -120 : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
   }
-  if ('ontouchstart' in window) {
-    container.addEventListener('touchstart', touchstart, false);
 
-    document.addEventListener('touchend', touchend, false);
+  container.addEventListener(touchObj.touchstart, touchstart, false);
 
-    document.addEventListener('touchcancel', touchcancel, false);
+  document.addEventListener(touchObj.touchend, touchend, false);
+  document.addEventListener(touchObj.touchcancel, touchcancel, false);
 
-    destroy = function destroy() {
-      container.removeEventListener('touchstart', touchstart, false);
-
-      document.removeEventListener('touchend', touchend, false);
-
-      document.removeEventListener('touchcancel', touchcancel, false);
-    };
-  } else {
-    var mousedown = false;
-
-    container.addEventListener('mousedown', mousedownEvent, false);
-
-    document.addEventListener('mousemove', mousemove, false);
-
-    document.addEventListener('mouseup', mouseup, false);
-    if (zooming) {
-      container.addEventListener(navigator.userAgent.indexOf('Firefox') > -1 ? 'DOMMouseScroll' : 'mousewheel', zoomHandle, false);
-    }
-    // container.addEventListener(navigator.userAgent.indexOf("Firefox") > -1 ? "DOMMouseScroll" :  "mousewheel", function(e) {
-    //     scroller.doMouseZoom(e.detail ? (e.detail * -120) : e.wheelDelta, e.timeStamp, e.pageX, e.pageY);
-    // }, false);
-    destroy = function destroy() {
-      container.removeEventListener('mousedown', mousedownEvent, false);
-      document.removeEventListener('mousemove', mousemove, false);
-      document.removeEventListener('mouseup', mouseup, false);
-      container.removeEventListener(navigator.userAgent.indexOf('Firefox') > -1 ? 'DOMMouseScroll' : 'mousewheel', zoomHandle, false);
-    };
+  if (zooming && !touch.isTouch) {
+    container.addEventListener(navigator.userAgent.indexOf('Firefox') > -1 ? 'DOMMouseScroll' : 'mousewheel', zoomHandle, false);
   }
+
+  destroy = function destroy() {
+    container.removeEventListener(touchObj.touchstart, touchstart, false);
+
+    document.removeEventListener(touchObj.touchend, touchend, false);
+    document.removeEventListener(touchObj.touchcancel, touchcancel, false);
+
+    container.removeEventListener(navigator.userAgent.indexOf('Firefox') > -1 ? 'DOMMouseScroll' : 'mousewheel', zoomHandle, false);
+  };
+
   // handle __publish event
   scroller.onScroll = function () {
     eventCallback('onscroll');
@@ -4575,7 +4540,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.12.2',
+  version: '4.13.0-beta',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

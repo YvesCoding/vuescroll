@@ -1,7 +1,29 @@
 {
+  "name": "vuescroll",
+  "version": "4.13.0-beta",
   "author": {
     "name": "Yves Wang"
   },
+  "description": "A powerful, customizable, multi-mode scrollbar plugin based on Vue.js",
+  "scripts": {
+    "build": "cross-env BABEL_ENV=build node scripts/build.js",
+    "debug-build": "cross-env BABEL_ENV=build node scripts/debug-build.js",
+    "test": "npm run test:cover",
+    "lint": "eslint --fix src scripts test",
+    "test:cover": "karma start test/unit/karma.conf.js",
+    "debug-test": "karma start test/unit/karma.conf.js --no-single-run",
+    "report-coverage": "codecov",
+    "gen-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/YvesCoding/vuescroll#readme",
+  "keywords": [
+    "vuescroll",
+    "scrollbar",
+    "vuescrollbar",
+    "vue"
+  ],
+  "unpkg": "./dist/vuescroll.js",
   "bugs": {
     "url": "https://github.com/YvesCoding/vuescroll/issues"
   },
@@ -16,34 +38,12 @@
     "types/*.d.ts"
   ],
   "deprecated": false,
-  "description": "A powerful, customizable, multi-mode scrollbar plugin based on Vue.js",
-  "homepage": "https://github.com/YvesCoding/vuescroll#readme",
-  "keywords": [
-    "vuescroll",
-    "scrollbar",
-    "vuescrollbar",
-    "vue"
-  ],
-  "license": "MIT",
-  "unpkg": "./dist/vuescroll.js",
   "jsdelivr": "./dist/vuescroll.js",
   "main": "./dist/vuescroll.js",
-  "name": "vuescroll",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/YvesCoding/vuescroll.git"
   },
-  "scripts": {
-    "build": "cross-env BABEL_ENV=build node scripts/build.js",
-    "debug-build": "cross-env BABEL_ENV=build node scripts/debug-build.js",
-    "test": "npm run test:cover",
-    "lint": "eslint --fix src scripts test",
-    "test:cover": "karma start test/unit/karma.conf.js",
-    "debug-test": "karma start test/unit/karma.conf.js --no-single-run",
-    "report-coverage": "codecov",
-    "gen-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
-  },
-  "version": "4.12.2",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.5",
