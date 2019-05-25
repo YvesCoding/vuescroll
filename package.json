@@ -60,6 +60,7 @@
     "cross-env": "^5.2.0",
     "css-loader": "^0.28.11",
     "eslint": "^4.13.1",
+    "husky": "^2.3.0",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.1",
     "karma": "^2.0.0",
@@ -78,5 +79,10 @@
     "rollup-plugin-uglify": "^4.0.0",
     "vue": "^2.0.0",
     "webpack": "^3.10.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   }
 }
