@@ -1,5 +1,5 @@
-import { isIE, isIos, isSupportTouch, isServer } from './env';
-export { isIE, isIos, isSupportTouch, isServer };
+import { isIE, isIos, touchManager, isServer } from './env';
+export { isIE, isIos, touchManager, isServer };
 
 export function deepCopy(from, to, shallow) {
   if (shallow && isUndef(to)) {

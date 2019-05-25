@@ -136,8 +136,6 @@ interface bar {
   background?: string;
   /** Bar's opacity, default -> 1  */
   opacity?: number;
-  /** Styles when you hover scrollbar, it will merge into the current style */
-  hoverStyle?: false | Style;
   // Sometimes, the nativebar maybe on the left,
   // See https://github.com/YvesCoding/vuescroll/issues/64
   verticalNativeBarPos: 'right';

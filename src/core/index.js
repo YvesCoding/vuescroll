@@ -3,7 +3,7 @@ import { mergeObject, defineReactive } from 'shared/util';
 import api from './mixins/api';
 
 import {
-  isSupportTouch,
+  touchManager,
   isChildInParent,
   insertChildrenIntoSlot
 } from 'shared/util';
@@ -53,6 +53,8 @@ const createComponent = ({ render, components, mixins }) => ({
       return <div>{[vm.$slots['default']]}</div>;
     }
 
+    if (!vm.touchManager) vm.touchManager = new touchManager();
+
     // vuescroll data
     const data = {
       style: {
@@ -65,36 +67,22 @@ const createComponent = ({ render, components, mixins }) => ({
       class: { __vuescroll: true, ...vm.classHooks }
     };
 
-    if (!isSupportTouch()) {
+    const touchObj = vm.touchManager.getTouchObject();
+    if (touchObj) {
       data.on = {
-        mouseenter() {
+        [touchObj.touchenter]() {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
 
           vm.setClassHook('mouseEnter', true);
         },
-        mouseleave() {
+        [touchObj.touchleave]() {
           vm.vuescroll.state.pointerLeave = true;
           vm.hideBar();
 
           vm.setClassHook('mouseEnter', false);
         },
-        mousemove() /* istanbul ignore next */ {
-          vm.vuescroll.state.pointerLeave = false;
-          vm.updateBarStateAndEmitEvent();
-        }
-      };
-    } /* istanbul ignore next */ else {
-      data.on = {
-        touchstart() {
-          vm.vuescroll.state.pointerLeave = false;
-          vm.updateBarStateAndEmitEvent();
-        },
-        touchend() {
-          vm.vuescroll.state.pointerLeave = true;
-          vm.hideBar();
-        },
-        touchmove() /* istanbul ignore next */ {
+        [touchObj.touchmove]() /* istanbul ignore next */ {
           vm.vuescroll.state.pointerLeave = false;
           vm.updateBarStateAndEmitEvent();
         }

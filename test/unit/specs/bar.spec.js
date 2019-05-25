@@ -161,8 +161,7 @@ describe('rail and scrollButton', () => {
     });
   });
 
-  // hover style
-  it('hover style , keep show', (done) => {
+  it('keep show', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -180,10 +179,7 @@ describe('rail and scrollButton', () => {
             bar: {
               onlyShowBarOnScroll: false,
               keepShow: true,
-              background: 'blue',
-              hoverStyle: {
-                backgroundColor: 'red'
-              }
+              background: 'blue'
             }
           }
         }
@@ -194,17 +190,8 @@ describe('rail and scrollButton', () => {
     let vBar = null;
     const vsElm = vm.$refs['vs'].$el;
     startSchedule()
-      // Test for hoverStyle
       .then(() => {
         vBar = vm.$el.querySelector('.__bar-is-vertical');
-        trigger(vBar, 'mouseenter');
-      })
-      .then(() => {
-        expect(vBar.style.backgroundColor).toBe('red');
-        trigger(vBar, 'mouseleave');
-      })
-      .then(() => {
-        expect(vBar.style.background).toBe('blue');
         trigger(vsElm, 'mouseleave');
       })
       // Test for keepShow
