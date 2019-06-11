@@ -12,7 +12,7 @@
   <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show.gif?raw=true" width="800"  alt="Demo"/> 
 </p>
 
-Vuescroll is a scrollbar plugin based on Vue.js 2.X, it is very easy to use, no complex options and every options has its default value. Just wrap the content by `<vue-scroll>` and a custom scrollbar will show. It supports:
+Vuescroll is a scrollbar plugin based on Vue.js 2.X, it is very easy to use, no complex options and each option has its default value(It means you don't even have to write any configuration). Just wrap the content by `<vue-scroll>` and a custom scrollbar will show. It supports:
 
 - Customizable scrollbar
 - Pull-to-refresh, push-to-load
@@ -22,7 +22,7 @@ _Vuescroll's compatibility is the same as `Vue.js 2.X`._
 
 ## Demo
 
-[Live Demo](https://vuescrolljs.yvescoding.org/demo) on the website.
+You can see the full features on [Live Demo](https://vuescrolljs.yvescoding.org/demo) of the website.
 
 ## Documentation
 

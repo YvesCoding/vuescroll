@@ -7,7 +7,7 @@
   "description": "A powerful, customizable, multi-mode scrollbar plugin based on Vue.js",
   "scripts": {
     "build": "cross-env BABEL_ENV=build node scripts/build.js",
-    "debug-build": "cross-env BABEL_ENV=build node scripts/debug-build.js",
+    "debug": "cross-env BABEL_ENV=build VS_ENV=DEBUG node scripts/debug-build.js",
     "test": "npm run test:cover",
     "lint": "eslint --fix src scripts test",
     "test:cover": "karma start test/unit/karma.conf.js",

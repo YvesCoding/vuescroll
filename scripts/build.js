@@ -21,7 +21,9 @@ function build(builds) {
         if (built < total) {
           next();
         } else {
-          copyOtherFiles();
+          if (process.env.VS_ENV != 'DEBUG') {
+            copyOtherFiles();
+          }
         }
       })
       .catch(logError);

@@ -26,14 +26,17 @@ const resolve = p => {
   }
 };
 
-const builds = {
+let builds = {
   mix: {
     entry: resolve('entry-mix-mode.js'),
     dest: resolve('dist/vuescroll.js'),
     format: 'umd',
     external: ['vue'],
     banner
-  },
+  }
+};
+
+const notDebugBuilds = {
   'mix-prod': {
     entry: resolve('entry-mix-mode.js'),
     dest: resolve('dist/vuescroll.min.js'),
@@ -70,6 +73,10 @@ const builds = {
     banner
   }
 };
+
+if (process.env.VS_ENV != 'DEBUG') {
+  builds = [...builds, ...notDebugBuilds];
+}
 
 function genConfig(name) {
   const opts = builds[name];

@@ -279,7 +279,8 @@ export default {
       }
 
       const size = barContext.ops.rail.size;
-      const borderColor = barContext.ops.scrollButton.background;
+      const { opacity, background } = barContext.ops.scrollButton;
+      const borderColor = getRgbAColor(background, opacity);
 
       const wrapperProps = {
         class: [
