@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.13.0-beta
+    * Vuescroll v4.13.0
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -164,8 +164,7 @@ var touchManager = function () {
     }
   }, {
     key: 'getTouchObject',
-    value: function getTouchObject() {
-      /* istanbul ignore if */
+    value: function getTouchObject() /* istanbul ignore next */{
       if (isServer()) return null;
 
       this.isTouch = false;
@@ -1004,7 +1003,7 @@ var bar = {
       var parent = getRealParent(ctx);
       var touchObj = ctx.touchManager.getTouchObject();
 
-      function mousedown(e) {
+      function mousedown(e) /* istanbul ignore next */{
         var event = ctx.touchManager.getEventObject(e);
         if (!event) return;
 
@@ -1023,7 +1022,7 @@ var bar = {
         eventCenter(document, touchObj.touchend, mouseup);
       }
 
-      function mousemove(e) {
+      function mousemove(e) /* istanbul ignore next */{
         if (!ctx.axisStartPos) {
           return;
         }
@@ -1042,7 +1041,7 @@ var bar = {
         parent.scrollTo(defineProperty({}, ctx.bar.axis.toLowerCase(), parent.scrollPanelElm[ctx.bar.scrollSize] * percent), false);
       }
 
-      function mouseup() {
+      function mouseup() /* istanbul ignore next */{
         ctx.setBarDrag(false);
         parent.hideBar();
 
@@ -1096,7 +1095,11 @@ var bar = {
       }
 
       var size = barContext.ops.rail.size;
-      var borderColor = barContext.ops.scrollButton.background;
+      var _barContext$ops$scrol = barContext.ops.scrollButton,
+          opacity = _barContext$ops$scrol.opacity,
+          background = _barContext$ops$scrol.background;
+
+      var borderColor = getRgbAColor(background, opacity);
 
       var wrapperProps = {
         class: ['__bar-button', '__bar-button-is-' + barContext.type + '-' + type],
@@ -1196,13 +1199,13 @@ var bar = {
         }
 
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(function () {
+        timeoutId = setTimeout(function () /* istanbul ignore next */{
           isMouseDown = true;
           ref(pressing, window);
         }, 500);
       }
 
-      function pressing() {
+      function pressing() /* istanbul ignore next */{
         if (isMouseDown && !isMouseout) {
           parent.scrollBy(defineProperty({}, 'd' + ctx.bar.axis.toLowerCase(), mousedownStepWithDirection), false);
           ref(pressing, window);
@@ -1223,12 +1226,12 @@ var bar = {
         parent.setClassHook('cliking' + barType + type + 'Button', false);
       }
 
-      function enter() {
+      function enter() /* istanbul ignore next */{
         isMouseout = false;
         pressing();
       }
 
-      function leave() {
+      function leave() /* istanbul ignore next */{
         isMouseout = true;
       }
 
@@ -4540,7 +4543,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.13.0-beta',
+  version: '4.13.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

@@ -75,7 +75,7 @@ const notDebugBuilds = {
 };
 
 if (process.env.VS_ENV != 'DEBUG') {
-  builds = [...builds, ...notDebugBuilds];
+  builds = { ...builds, ...notDebugBuilds };
 }
 
 function genConfig(name) {
