@@ -180,7 +180,7 @@ export default {
       const parent = getRealParent(ctx);
       const touchObj = ctx.touchManager.getTouchObject();
 
-      function mousedown(e) {
+      function mousedown(e) /* istanbul ignore next */ {
         let event = ctx.touchManager.getEventObject(e);
         if (!event) return;
 
@@ -199,7 +199,7 @@ export default {
         eventCenter(document, touchObj.touchend, mouseup);
       }
 
-      function mousemove(e) {
+      function mousemove(e) /* istanbul ignore next */ {
         if (!ctx.axisStartPos) {
           return;
         }
@@ -227,7 +227,7 @@ export default {
         );
       }
 
-      function mouseup() {
+      function mouseup() /* istanbul ignore next */ {
         ctx.setBarDrag(false);
         parent.hideBar();
 
@@ -393,13 +393,13 @@ export default {
         }
 
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
+        timeoutId = setTimeout(() => /* istanbul ignore next */ {
           isMouseDown = true;
           ref(pressing, window);
         }, 500);
       }
 
-      function pressing() {
+      function pressing() /* istanbul ignore next */ {
         if (isMouseDown && !isMouseout) {
           parent.scrollBy(
             {
@@ -425,12 +425,12 @@ export default {
         parent.setClassHook(`cliking${barType}${type}Button`, false);
       }
 
-      function enter() {
+      function enter() /* istanbul ignore next */ {
         isMouseout = false;
         pressing();
       }
 
-      function leave() {
+      function leave() /* istanbul ignore next */ {
         isMouseout = true;
       }
 
