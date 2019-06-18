@@ -28,11 +28,13 @@ You can see the full features on [Live Demo](https://vuescrolljs.yvescoding.org/
 
 For detailed docs, please see [Guide](https://vuescrolljs.yvescoding.org/guide) section on the website.
 
+## Donate
+
+|      |                                                    <center> WeChatPay </center>                                                     |                                                                                                        <center> AliPay </center> |
+| ---- | :---------------------------------------------------------------------------------------------------------------------------------: | -------------------------------------------------------------------------------------------------------------------------------: |
+| 图片 | <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wechatpay.png?raw=true" width="200" height="270" /> | <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/alipay.jpg?raw=true" width="200" height="270" /> |
+
 ## Communication
-
-- Tell me on my twitter: [@wangyi70991](https://twitter.com/wangyi70991?s=01)
-
-- WeChat Group
 
 Add my wechat, I will invite you to the group.
 
@@ -40,4 +42,4 @@ Add my wechat, I will invite you to the group.
 
 ## License
 
-**MIT**
+**MIT** By Yves Wang(Wangyi Yi)
