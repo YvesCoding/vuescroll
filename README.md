@@ -12,6 +12,15 @@
   <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show.gif?raw=true" width="800"  alt="Demo"/> 
 </p>
 
+## Supporting vuescroll
+
+You can donate by scanning the QR codes below via Wechat or Alipay. Thanks a lot!
+| Wechat | Alipay |  
+|----------|:-------------:|  
+| <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wechatpay.png?raw=true" width="200" height="270" /> | <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/alipay.jpg?raw=true" width="200" height="270" />|
+
+## Introduction
+
 Vuescroll is a scrollbar plugin based on Vue.js 2.X, it is very easy to use, no complex options and each option has its default value(It means you don't even have to write any configuration). Just wrap the content by `<vue-scroll>` and a custom scrollbar will show. It supports:
 
 - Customizable scrollbar
@@ -28,15 +37,9 @@ You can see the full features on [Live Demo](https://vuescrolljs.yvescoding.org/
 
 For detailed docs, please see [Guide](https://vuescrolljs.yvescoding.org/guide) section on the website.
 
-## Donate
-
-|      |                                                    <center> WeChatPay </center>                                                     |                                                                                                        <center> AliPay </center> |
-| ---- | :---------------------------------------------------------------------------------------------------------------------------------: | -------------------------------------------------------------------------------------------------------------------------------: |
-| 图片 | <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wechatpay.png?raw=true" width="200" height="270" /> | <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/alipay.jpg?raw=true" width="200" height="270" /> |
-
 ## Communication
 
-Add my wechat, I will invite you to the group.
+Add my wechat to invite you to communication group.
 
  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400" alt="Demo" style="max-width:100%;">
 
