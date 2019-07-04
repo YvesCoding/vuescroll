@@ -12,8 +12,8 @@ interface PullRefreshOrPushLoad {
 
 interface PushLoad {
   /** Whether auto load or not */
-  auto: boolean;
-  autoLoadDistance: number;
+  auto?: boolean;
+  autoLoadDistance?: number;
 }
 
 interface Snapping {
@@ -27,10 +27,10 @@ interface Snapping {
  * ['top','bottom','left','right']
  */
 type BounceArray = {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 };
 
 interface Scroller {
@@ -95,7 +95,7 @@ interface scrollPanel {
 interface rail {
   border?: string;
   /** Specify rail's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
-  specifyBorderRadius: boolean | string;
+  specifyBorderRadius?: boolean | string;
   /** Rail's background , default -> #01a99a */
   background?: string;
   /** Rail's opacity, default -> 0  */
@@ -115,7 +115,7 @@ type Style = Partial<CSSStyleDeclaration>;
 
 interface bar {
   /** Specify bar's border-radius, or the border-radius of rail and bar will be equal to the rail's size. default -> false **/
-  specifyBorderRadius: boolean | string;
+  specifyBorderRadius?: boolean | string;
   /** How long to hide bar after mouseleave, default -> 500 */
   showDelay?: number;
   /** Whether to keep show or not, default -> false */
@@ -128,20 +128,22 @@ interface bar {
   opacity?: number;
   // Sometimes, the nativebar maybe on the left,
   // See https://github.com/YvesCoding/vuescroll/issues/64
-  verticalNativeBarPos: 'right';
+  verticalNativeBarPos?: 'right';
   // A number in a range of (0, 1),
   // such as 0.5, means 50%. 0.3 means 30%.
-  minSize: number;
+  minSize?: number;
+  // fix #142
+  size?: string;
   // disable bar or not
-  disable: boolean;
+  disable?: boolean;
 }
 
 interface scrollButton {
-  enable: boolean;
-  background: string;
-  opacity: number;
-  step: number;
-  mousedownStep: number;
+  enable?: boolean;
+  background?: string;
+  opacity?: number;
+  step?: number;
+  mousedownStep?: number;
 }
 
 export default interface Config {

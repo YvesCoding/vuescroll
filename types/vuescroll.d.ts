@@ -2,13 +2,13 @@ import Vue from 'vue';
 import { easing } from './Config';
 
 type Pos = {
-  x: number | string;
-  y: number | string;
+  x?: number | string;
+  y?: number | string;
 };
 
 type Page = {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 };
 
 export declare class vuescroll extends Vue {
