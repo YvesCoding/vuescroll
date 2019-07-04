@@ -15,9 +15,10 @@
 ## Supporting vuescroll
 
 You can donate by scanning the QR codes below via Wechat or Alipay. Thanks a lot!
-| Wechat | Alipay |  
-|----------|:-------------:|  
-| <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wechatpay.png?raw=true" width="200" height="270" /> | <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/alipay.jpg?raw=true" width="200" height="270" />|
+
+| Wechat                                                                                                                              |                                                              Alipay                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------: |
+| <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wechatpay.png?raw=true" width="200" height="270" /> | <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/alipay.jpg?raw=true" width="200" height="270" /> |
 
 ## Introduction
 
