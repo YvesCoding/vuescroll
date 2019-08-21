@@ -30,40 +30,37 @@ export default {
       };
     },
     onMouseWheel(event) /* istanbul ignore next */ {
-      let delta = 0;
-      let dir;
-      if (event.wheelDelta) {
-        if (event.deltaY) {
-          dir = 'dy';
-          delta = event.deltaY;
-        } else if (event.deltaYX) {
-          delta = event.deltaX;
-          dir = 'dx';
-        } else {
-          if (event.shiftKey) {
+      const duration = this.mergedOptions.vuescroll.wheelScrollDuration;
+      if (duration) {
+        let delta = 0;
+        let dir;
+        if (event.wheelDelta) {
+          if (event.deltaY) {
+            dir = 'dy';
+            delta = event.deltaY;
+          } else if (event.deltaX) {
+            delta = event.deltaX;
             dir = 'dx';
           } else {
+            delta = (-1 * event.wheelDelta) / 2;
+          }
+        } else if (event.detail) {
+          // horizontal scroll
+          if (event.axis == 1) {
+            dir = 'dx';
+          } else if (event.axis == 2) {
+            // vertical scroll
             dir = 'dy';
           }
-
-          delta = (-1 * event.wheelDelta) / 2;
+          delta = event.detail * 16;
         }
-      } else if (event.detail) {
-        // horizontal scroll
-        if (event.axis == 1) {
+
+        if (event.shiftKey) {
           dir = 'dx';
-        } else if (event.axis == 2) {
-          // vertical scroll
+        } else {
           dir = 'dy';
         }
-        delta = event.detail * 16;
-      }
-      const duration = this.mergedOptions.vuescroll.wheelScrollDuration;
-      if (
-        duration &&
-        ((this.scrollXEnable && dir == 'dx') ||
-          (this.scrollYEnable && dir == 'dy'))
-      ) {
+
         event.stopPropagation();
         event.preventDefault();
         this.scrollBy({ [dir]: delta }, duration);
