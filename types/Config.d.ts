@@ -66,6 +66,7 @@ interface Container {
   snapping?: Snapping;
   scroller?: Scroller;
   wheelScrollDuration?: number;
+  wheelDirectionReverse?: boolean;
 }
 
 export declare type easing =

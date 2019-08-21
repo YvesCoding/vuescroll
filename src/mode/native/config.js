@@ -1,5 +1,6 @@
 export const config = {
   vuescroll: {
-    wheelScrollDuration: 0
+    wheelScrollDuration: 0,
+    wheelDirectionReverse: false
   }
 };
