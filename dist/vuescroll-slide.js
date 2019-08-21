@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.13.1
+    * Vuescroll v4.14.0
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -4543,7 +4543,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.13.1',
+  version: '4.14.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

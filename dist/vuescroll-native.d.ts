@@ -13,6 +13,7 @@ interface Container {
   sizeStrategy?: 'percent' | 'number';
   detectResize?: boolean;
   wheelScrollDuration?: number;
+  wheelDirectionReverse?: boolean;
 }
 
 declare type easing =

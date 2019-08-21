@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.13.1
+    * Vuescroll v4.14.0
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -2205,22 +2205,19 @@ var update = {
       };
     },
     onMouseWheel: function onMouseWheel(event) /* istanbul ignore next */{
+      var duration = this.mergedOptions.vuescroll.wheelScrollDuration;
+      var isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
+
       var delta = 0;
       var dir = void 0;
       if (event.wheelDelta) {
         if (event.deltaY) {
           dir = 'dy';
           delta = event.deltaY;
-        } else if (event.deltaYX) {
+        } else if (event.deltaX) {
           delta = event.deltaX;
           dir = 'dx';
         } else {
-          if (event.shiftKey) {
-            dir = 'dx';
-          } else {
-            dir = 'dy';
-          }
-
           delta = -1 * event.wheelDelta / 2;
         }
       } else if (event.detail) {
@@ -2233,12 +2230,23 @@ var update = {
         }
         delta = event.detail * 16;
       }
-      var duration = this.mergedOptions.vuescroll.wheelScrollDuration;
-      if (duration && (this.scrollXEnable && dir == 'dx' || this.scrollYEnable && dir == 'dy')) {
+
+      if (event.shiftKey) {
+        dir = 'dx';
+      } else {
+        dir = 'dy';
+      }
+
+      if (duration || isReverse) {
         event.stopPropagation();
         event.preventDefault();
-        this.scrollBy(defineProperty({}, dir, delta), duration);
       }
+
+      if (isReverse) {
+        dir = dir == 'dx' ? 'dy' : 'dx';
+      }
+
+      this.scrollBy(defineProperty({}, dir, delta), duration);
     }
   },
   computed: {
@@ -2380,7 +2388,8 @@ var core = {
 
 var config = {
   vuescroll: {
-    wheelScrollDuration: 0
+    wheelScrollDuration: 0,
+    wheelDirectionReverse: false
   }
 };
 
@@ -2395,7 +2404,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.13.1',
+  version: '4.14.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
