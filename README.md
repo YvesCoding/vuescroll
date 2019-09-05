@@ -11,15 +11,7 @@
 <p align="center">
   <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/show.gif?raw=true" width="800"  alt="Demo"/> 
 </p>
-
-## Supporting vuescroll
-
-You can donate by scanning the QR codes below via Wechat or Alipay. Thanks a lot!
-
-| Wechat                                                                                                                              |                                                              Alipay                                                              |
-| ----------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wechatpay.png?raw=true" width="200" height="270" /> | <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/alipay.jpg?raw=true" width="200" height="270" /> |
-
+ 
 ## Introduction
 
 Vuescroll is a scrollbar plugin based on Vue.js 2.X, it is very easy to use, no complex options and each option has its default value(It means you don't even have to write any configuration). Just wrap the content by `<vue-scroll>` and a custom scrollbar will show. It supports:
@@ -34,15 +26,55 @@ _Vuescroll's compatibility is the same as `Vue.js 2.X`._
 
 You can see the full features on [Live Demo](https://vuescrolljs.yvescoding.org/demo) of the website.
 
+## Install
+
+```bash
+npm i vuescroll -S
+
+# OR
+
+yarn add vuescroll
+
+```
+
+## Usage
+
+### Import and registry
+
+```js
+import vuescroll from 'vuescroll';
+import Vue from 'vue';
+
+Vue.use(vuescroll);
+
+// OR
+
+Vue.component('vue-scroll', vuescroll);
+```
+
+### Wrap the content by vue-scroll
+
+```html
+<div class="container">
+  <vue-scroll>
+    <div class="content"></div>
+  </vue-scroll>
+</div>
+```
+
 ## Documentation
 
 For detailed docs, please see [Guide](https://vuescrolljs.yvescoding.org/guide) section on the website.
 
 ## Communication
 
-Add my wechat to invite you to communication group.
+- Wechat
 
  <img src="https://github.com/wangyi7099/pictureCdn/blob/master/allPic/vuescroll/wx.png?raw=true" width="400" alt="Demo" style="max-width:100%;">
+
+- Twitter
+
+[@wangyi70991](https://twitter.com/wangyi70991)
 
 ## License
 
