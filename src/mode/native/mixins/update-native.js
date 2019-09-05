@@ -32,6 +32,10 @@ export default {
     onMouseWheel(event) /* istanbul ignore next */ {
       const duration = this.mergedOptions.vuescroll.wheelScrollDuration;
       const isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
+      // we should always call stopPropagation() because
+      // we have handled the wheel scroll by ourselves.
+      // or the outer container will scroll to.
+      event.stopPropagation();
 
       let delta = 0;
       let dir;
@@ -63,7 +67,6 @@ export default {
       }
 
       if (duration || isReverse) {
-        event.stopPropagation();
         event.preventDefault();
       }
 
