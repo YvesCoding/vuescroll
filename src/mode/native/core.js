@@ -38,7 +38,7 @@ export default {
         this.showAndDefferedHideBar();
       }
     },
-    emitEvent(eventType, nativeEvent = null) {
+    getScrollProcess() {
       let {
         scrollHeight,
         scrollWidth,
@@ -48,6 +48,17 @@ export default {
         scrollLeft
       } = this.scrollPanelElm;
 
+      const v = Math.min(scrollTop / (scrollHeight - clientHeight || 1), 1);
+      const h = Math.min(scrollLeft / (scrollWidth - clientWidth || 1), 1);
+
+      return {
+        v,
+        h
+      };
+    },
+    emitEvent(eventType, nativeEvent = null) {
+      let { scrollTop, scrollLeft } = this.scrollPanelElm;
+
       const vertical = {
         type: 'vertical'
       };
@@ -55,14 +66,10 @@ export default {
         type: 'horizontal'
       };
 
-      vertical['process'] = Math.min(
-        scrollTop / (scrollHeight - clientHeight),
-        1
-      );
-      horizontal['process'] = Math.min(
-        scrollLeft / (scrollWidth - clientWidth),
-        1
-      );
+      const { v, h } = this.getScrollProcess();
+
+      vertical.process = v;
+      horizontal.process = h;
 
       vertical['barSize'] = this.bar.vBar.state.size;
       horizontal['barSize'] = this.bar.hBar.state.size;

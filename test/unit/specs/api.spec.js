@@ -10,7 +10,7 @@ describe('api', () => {
 
   afterEach(() => {
     if (Array.isArray(vm)) {
-      vm.forEach((v) => {
+      vm.forEach(v => {
         destroyVM(v);
       });
     } else {
@@ -18,7 +18,7 @@ describe('api', () => {
     }
   });
 
-  it('scrollTo(native)', (done) => {
+  it('scrollTo(native)', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -88,7 +88,7 @@ describe('api', () => {
       });
   });
 
-  it('scrollTo(slide)', (done) => {
+  it('scrollTo(slide)', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -154,7 +154,7 @@ describe('api', () => {
       });
   });
 
-  it('scrollBy', (done) => {
+  it('scrollBy', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -196,7 +196,7 @@ describe('api', () => {
       });
   });
 
-  it('zoomBy, zoomTo', (done) => {
+  it('zoomBy, zoomTo', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -263,7 +263,7 @@ describe('api', () => {
       });
   });
 
-  it('triggerRefreshOrLoad, goToPage ,getCurrentviewDom', (done) => {
+  it('triggerRefreshOrLoad, goToPage ,getCurrentviewDom', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -362,7 +362,7 @@ describe('api', () => {
       });
   });
 
-  it('refresh, refreshAll', (done) => {
+  it('refresh, refreshAll', done => {
     vm = [];
     vm[0] = createVue(
       {
@@ -465,7 +465,7 @@ describe('api', () => {
   });
 
   // ScrollTop should be 50 #51
-  it('scrollTo 50%, scrollTop and scrollLeft should be 150', (done) => {
+  it('scrollTo 50%, scrollTop and scrollLeft should be 150', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -507,7 +507,7 @@ describe('api', () => {
       });
   });
 
-  it('scrollTo(public)', (done) => {
+  it('scrollTo(public)', done => {
     const height = document.scrollingElement.scrollHeight + 100;
     const width = document.scrollingElement.scrollWidth + 100;
     vm = createVue(
@@ -541,6 +541,65 @@ describe('api', () => {
       .wait(350)
       .then(() => {
         expect(window.pageXOffset).toBe(100);
+        done();
+      });
+  });
+
+  it('getScrollProcess', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 200,
+            h: 200
+          },
+          {
+            w: 100,
+            h: 100
+          }
+        ),
+        data: {
+          ops: {}
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+
+    startSchedule()
+      .then(() => {
+        const { v, h } = vs.getScrollProcess();
+        expect(v).toBe(0);
+        expect(h).toBe(0);
+
+        vs.scrollTo(
+          {
+            x: '50%',
+            y: '50%'
+          },
+          350
+        );
+      })
+      .wait(400)
+      .then(() => {
+        const { v, h } = vs.getScrollProcess();
+        expect(v).toBe(0.5);
+        expect(h).toBe(0.5);
+
+        vs.scrollTo(
+          {
+            x: '100%',
+            y: '100%'
+          },
+          350
+        );
+      })
+      .wait(400)
+      .then(() => {
+        const { v, h } = vs.getScrollProcess();
+        expect(v).toBe(1);
+        expect(h).toBe(1);
+
         done();
       });
   });
