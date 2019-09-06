@@ -36,6 +36,7 @@ export default {
       // we have handled the wheel scroll by ourselves.
       // or the outer container will scroll to.
       event.stopPropagation();
+      event.preventDefault();
 
       let delta = 0;
       let dir;
@@ -64,10 +65,6 @@ export default {
         dir = 'dx';
       } else {
         dir = 'dy';
-      }
-
-      if (duration || isReverse) {
-        event.preventDefault();
       }
 
       if (isReverse) {
