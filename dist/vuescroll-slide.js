@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.14.2
+    * Vuescroll v4.14.3
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -4329,8 +4329,7 @@ var core$1 = {
         this.showAndDefferedHideBar();
       }
     },
-    emitEvent: function emitEvent(eventType) {
-      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    getScrollProcess: function getScrollProcess() {
       var _scrollPanelElm = this.scrollPanelElm,
           scrollHeight = _scrollPanelElm.scrollHeight,
           scrollWidth = _scrollPanelElm.scrollWidth,
@@ -4340,12 +4339,6 @@ var core$1 = {
           scrollLeft = _scrollPanelElm.scrollLeft;
 
 
-      var vertical = {
-        type: 'vertical'
-      };
-      var horizontal = {
-        type: 'horizontal'
-      };
       scrollHeight = this.scroller.__contentHeight;
       scrollWidth = this.scroller.__contentWidth;
       scrollTop = this.scroller.__scrollTop;
@@ -4353,8 +4346,34 @@ var core$1 = {
       clientHeight = this.$el.clientHeight;
       clientWidth = this.$el.clientWidth;
 
-      vertical['process'] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
-      horizontal['process'] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
+      var v = Math.min(scrollTop / (scrollHeight - clientHeight || 1), 1);
+      var h = Math.min(scrollLeft / (scrollWidth - clientWidth || 1), 1);
+
+      return {
+        v: v,
+        h: h
+      };
+    },
+    emitEvent: function emitEvent(eventType) {
+      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var _scrollPanelElm2 = this.scrollPanelElm,
+          scrollTop = _scrollPanelElm2.scrollTop,
+          scrollLeft = _scrollPanelElm2.scrollLeft;
+
+
+      var vertical = {
+        type: 'vertical'
+      };
+      var horizontal = {
+        type: 'horizontal'
+      };
+
+      var _getScrollProcess = this.getScrollProcess(),
+          v = _getScrollProcess.v,
+          h = _getScrollProcess.h;
+
+      vertical.process = v;
+      horizontal.process = h;
 
       vertical['barSize'] = this.bar.vBar.state.size;
       horizontal['barSize'] = this.bar.hBar.state.size;
@@ -4543,7 +4562,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.14.2',
+  version: '4.14.3',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

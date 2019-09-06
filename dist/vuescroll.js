@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.14.2
+    * Vuescroll v4.14.3
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -4543,11 +4543,6 @@ var nativeMix = {
     onMouseWheel: function onMouseWheel(event) /* istanbul ignore next */{
       var duration = this.mergedOptions.vuescroll.wheelScrollDuration;
       var isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
-      // we should always call stopPropagation() because
-      // we have handled the wheel scroll by ourselves.
-      // or the outer container will scroll to.
-      event.stopPropagation();
-      event.preventDefault();
 
       var delta = 0;
       var dir = void 0;
@@ -4582,7 +4577,16 @@ var nativeMix = {
         dir = dir == 'dx' ? 'dy' : 'dx';
       }
 
-      this.scrollBy(defineProperty({}, dir, delta), duration);
+      var _getScrollProcess = this.getScrollProcess(),
+          v = _getScrollProcess.v,
+          h = _getScrollProcess.h;
+
+      if (dir == 'dx' && (delta < 0 && h > 0 || delta > 0 && h < 1) || dir == 'dy' && (delta < 0 && v > 0 || delta > 0 && v < 1)) {
+        event.stopPropagation();
+        event.preventDefault();
+
+        this.scrollBy(defineProperty({}, dir, delta), duration);
+      }
     }
   },
   computed: {
@@ -4660,8 +4664,7 @@ var core$1 = {
         this.showAndDefferedHideBar();
       }
     },
-    emitEvent: function emitEvent(eventType) {
-      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+    getScrollProcess: function getScrollProcess() {
       var _scrollPanelElm = this.scrollPanelElm,
           scrollHeight = _scrollPanelElm.scrollHeight,
           scrollWidth = _scrollPanelElm.scrollWidth,
@@ -4670,13 +4673,6 @@ var core$1 = {
           scrollTop = _scrollPanelElm.scrollTop,
           scrollLeft = _scrollPanelElm.scrollLeft;
 
-
-      var vertical = {
-        type: 'vertical'
-      };
-      var horizontal = {
-        type: 'horizontal'
-      };
 
       if (this.mode == 'slide') {
         scrollHeight = this.scroller.__contentHeight;
@@ -4687,8 +4683,34 @@ var core$1 = {
         clientWidth = this.$el.clientWidth;
       }
 
-      vertical['process'] = Math.min(scrollTop / (scrollHeight - clientHeight), 1);
-      horizontal['process'] = Math.min(scrollLeft / (scrollWidth - clientWidth), 1);
+      var v = Math.min(scrollTop / (scrollHeight - clientHeight || 1), 1);
+      var h = Math.min(scrollLeft / (scrollWidth - clientWidth || 1), 1);
+
+      return {
+        v: v,
+        h: h
+      };
+    },
+    emitEvent: function emitEvent(eventType) {
+      var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+      var _scrollPanelElm2 = this.scrollPanelElm,
+          scrollTop = _scrollPanelElm2.scrollTop,
+          scrollLeft = _scrollPanelElm2.scrollLeft;
+
+
+      var vertical = {
+        type: 'vertical'
+      };
+      var horizontal = {
+        type: 'horizontal'
+      };
+
+      var _getScrollProcess = this.getScrollProcess(),
+          v = _getScrollProcess.v,
+          h = _getScrollProcess.h;
+
+      vertical['process'] = v;
+      horizontal['process'] = h;
 
       vertical['barSize'] = this.bar.vBar.state.size;
       horizontal['barSize'] = this.bar.hBar.state.size;
@@ -4947,7 +4969,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.14.2',
+  version: '4.14.3',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
