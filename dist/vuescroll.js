@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.14.1
+    * Vuescroll v4.14.2
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -4547,6 +4547,7 @@ var nativeMix = {
       // we have handled the wheel scroll by ourselves.
       // or the outer container will scroll to.
       event.stopPropagation();
+      event.preventDefault();
 
       var delta = 0;
       var dir = void 0;
@@ -4575,10 +4576,6 @@ var nativeMix = {
         dir = 'dx';
       } else {
         dir = 'dy';
-      }
-
-      if (duration || isReverse) {
-        event.preventDefault();
       }
 
       if (isReverse) {
@@ -4950,7 +4947,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.14.1',
+  version: '4.14.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
