@@ -29,6 +29,40 @@ export default {
         scrollLeft: this.scrollPanelElm.scrollLeft
       };
     },
+    css(dom, style) /* istanbul ignore next */ {
+      return window.getComputedStyle(dom)[style];
+    },
+    checkScrollable(e, dir, delta) /* istanbul ignore next */ {
+      let scrollable = false;
+
+      // check mouse point scrollable.
+      let dom = e.target ? e.target : e;
+      while (
+        dom &&
+        dom.nodeType == 1 &&
+        dom !== this.scrollPanelElm.parentNode &&
+        !/^BODY|HTML/.test(dom.nodeName)
+      ) {
+        var ov =
+          this.css(dom, 'overflowY') ||
+          this.css(dom, 'overflowX') ||
+          this.css(dom, 'overflow') ||
+          '';
+        if (/scroll|auto/.test(ov)) {
+          const { v, h } = this.getScrollProcess(dom);
+          if (
+            (dir == 'dx' && ((delta < 0 && h > 0) || (delta > 0 && h < 1))) ||
+            (dir == 'dy' && ((delta < 0 && v > 0) || (delta > 0 && v < 1)))
+          ) {
+            scrollable = dom == this.scrollPanelElm;
+            break;
+          }
+        }
+        dom = dom.parentNode ? dom.parentNode : false;
+      }
+
+      return scrollable;
+    },
     onMouseWheel(event) /* istanbul ignore next */ {
       const duration = this.mergedOptions.vuescroll.wheelScrollDuration;
       const isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
@@ -65,12 +99,8 @@ export default {
       if (isReverse) {
         dir = dir == 'dx' ? 'dy' : 'dx';
       }
-      const { v, h } = this.getScrollProcess();
 
-      if (
-        (dir == 'dx' && ((delta < 0 && h > 0) || (delta > 0 && h < 1))) ||
-        (dir == 'dy' && ((delta < 0 && v > 0) || (delta > 0 && v < 1)))
-      ) {
+      if (this.checkScrollable(event, dir, delta)) {
         event.stopPropagation();
         event.preventDefault();
 

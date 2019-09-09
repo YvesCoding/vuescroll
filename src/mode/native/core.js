@@ -38,7 +38,7 @@ export default {
         this.showAndDefferedHideBar();
       }
     },
-    getScrollProcess() {
+    getScrollProcess(elm) {
       let {
         scrollHeight,
         scrollWidth,
@@ -46,7 +46,7 @@ export default {
         clientWidth,
         scrollTop,
         scrollLeft
-      } = this.scrollPanelElm;
+      } = elm || this.scrollPanelElm;
 
       const v = Math.min(scrollTop / (scrollHeight - clientHeight || 1), 1);
       const h = Math.min(scrollLeft / (scrollWidth - clientWidth || 1), 1);
