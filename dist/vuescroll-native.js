@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.14.3
+    * Vuescroll v4.14.4
     * (c) 2018-2019 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -2204,6 +2204,31 @@ var update = {
         scrollLeft: this.scrollPanelElm.scrollLeft
       };
     },
+    css: function css(dom, style) /* istanbul ignore next */{
+      return window.getComputedStyle(dom)[style];
+    },
+    checkScrollable: function checkScrollable(e, dir, delta) /* istanbul ignore next */{
+      var scrollable = false;
+
+      // check mouse point scrollable.
+      var dom = e.target ? e.target : e;
+      while (dom && dom.nodeType == 1 && dom !== this.scrollPanelElm.parentNode && !/^BODY|HTML/.test(dom.nodeName)) {
+        var ov = this.css(dom, 'overflowY') || this.css(dom, 'overflowX') || this.css(dom, 'overflow') || '';
+        if (/scroll|auto/.test(ov)) {
+          var _getScrollProcess = this.getScrollProcess(dom),
+              v = _getScrollProcess.v,
+              h = _getScrollProcess.h;
+
+          if (dir == 'dx' && (delta < 0 && h > 0 || delta > 0 && h < 1) || dir == 'dy' && (delta < 0 && v > 0 || delta > 0 && v < 1)) {
+            scrollable = dom == this.scrollPanelElm;
+            break;
+          }
+        }
+        dom = dom.parentNode ? dom.parentNode : false;
+      }
+
+      return scrollable;
+    },
     onMouseWheel: function onMouseWheel(event) /* istanbul ignore next */{
       var duration = this.mergedOptions.vuescroll.wheelScrollDuration;
       var isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
@@ -2241,11 +2266,7 @@ var update = {
         dir = dir == 'dx' ? 'dy' : 'dx';
       }
 
-      var _getScrollProcess = this.getScrollProcess(),
-          v = _getScrollProcess.v,
-          h = _getScrollProcess.h;
-
-      if (dir == 'dx' && (delta < 0 && h > 0 || delta > 0 && h < 1) || dir == 'dy' && (delta < 0 && v > 0 || delta > 0 && v < 1)) {
+      if (this.checkScrollable(event, dir, delta)) {
         event.stopPropagation();
         event.preventDefault();
 
@@ -2295,15 +2316,14 @@ var core = {
         this.showAndDefferedHideBar();
       }
     },
-    getScrollProcess: function getScrollProcess() {
-      var _scrollPanelElm = this.scrollPanelElm,
-          scrollHeight = _scrollPanelElm.scrollHeight,
-          scrollWidth = _scrollPanelElm.scrollWidth,
-          clientHeight = _scrollPanelElm.clientHeight,
-          clientWidth = _scrollPanelElm.clientWidth,
-          scrollTop = _scrollPanelElm.scrollTop,
-          scrollLeft = _scrollPanelElm.scrollLeft;
-
+    getScrollProcess: function getScrollProcess(elm) {
+      var _ref = elm || this.scrollPanelElm,
+          scrollHeight = _ref.scrollHeight,
+          scrollWidth = _ref.scrollWidth,
+          clientHeight = _ref.clientHeight,
+          clientWidth = _ref.clientWidth,
+          scrollTop = _ref.scrollTop,
+          scrollLeft = _ref.scrollLeft;
 
       var v = Math.min(scrollTop / (scrollHeight - clientHeight || 1), 1);
       var h = Math.min(scrollLeft / (scrollWidth - clientWidth || 1), 1);
@@ -2315,9 +2335,9 @@ var core = {
     },
     emitEvent: function emitEvent(eventType) {
       var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      var _scrollPanelElm2 = this.scrollPanelElm,
-          scrollTop = _scrollPanelElm2.scrollTop,
-          scrollLeft = _scrollPanelElm2.scrollLeft;
+      var _scrollPanelElm = this.scrollPanelElm,
+          scrollTop = _scrollPanelElm.scrollTop,
+          scrollLeft = _scrollPanelElm.scrollLeft;
 
 
       var vertical = {
@@ -2426,7 +2446,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.14.3',
+  version: '4.14.4',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
