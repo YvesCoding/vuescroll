@@ -43,9 +43,10 @@ export default {
         dom !== this.scrollPanelElm.parentNode &&
         !/^BODY|HTML/.test(dom.nodeName)
       ) {
-        var ov =
-          this.css(dom, 'overflowY') ||
-          this.css(dom, 'overflowX') ||
+        const ov =
+          (dir == 'dy'
+            ? this.css(dom, 'overflowY')
+            : this.css(dom, 'overflowX')) ||
           this.css(dom, 'overflow') ||
           '';
         if (/scroll|auto/.test(ov)) {

@@ -63,7 +63,7 @@
     "husky": "^2.3.0",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.1",
-    "karma": "^2.0.0",
+    "karma": "^4.4.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
     "karma-jasmine": "^1.1.1",
