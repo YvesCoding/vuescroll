@@ -209,7 +209,7 @@ export default {
 
         // Since content sie changes, we should tell parent to set
         // correct size to fit content's size
-        //  this.setVsSize();
+        this.setVsSize();
       };
       window.addEventListener('resize', handleWindowResize, false);
 

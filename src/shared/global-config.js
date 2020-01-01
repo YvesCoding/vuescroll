@@ -21,7 +21,9 @@ const baseConfig = {
     easing: undefined,
     // Sometimes, the nativebar maybe on the left,
     // See https://github.com/YvesCoding/vuescroll/issues/64
-    verticalNativeBarPos: 'right'
+    verticalNativeBarPos: 'right',
+    maxHeight: undefined,
+    maxWidth: undefined
   },
 
   //
@@ -105,7 +107,7 @@ export function validateOps(ops) {
 
   if (_extraValidate) {
     _extraValidate = [].concat(_extraValidate);
-    _extraValidate.forEach((hasError) => {
+    _extraValidate.forEach(hasError => {
       if (hasError(ops)) {
         renderError = true;
       }
@@ -117,7 +119,7 @@ export function validateOps(ops) {
 let _extraValidate = null;
 export const extendOpts = (extraOpts, extraValidate) => {
   extraOpts = [].concat(extraOpts);
-  extraOpts.forEach((opts) => {
+  extraOpts.forEach(opts => {
     mergeObject(opts, baseConfig);
   });
 

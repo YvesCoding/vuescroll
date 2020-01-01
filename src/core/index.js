@@ -8,7 +8,6 @@ import {
   insertChildrenIntoSlot
 } from 'shared/util';
 import { smallChangeArray } from 'shared/constants';
-import { installResizeDetection } from 'core/third-party/resize-detector/index';
 import { createBar } from 'mode/shared/bar';
 
 /**
@@ -36,7 +35,7 @@ const createComponent = ({ render, components, mixins }) => ({
     const ops = mergeObject(GCF, _gfc);
 
     this.$options.propsData.ops = this.$options.propsData.ops || {};
-    Object.keys(this.$options.propsData.ops).forEach((key) => {
+    Object.keys(this.$options.propsData.ops).forEach(key => {
       {
         defineReactive(this.mergedOptions, key, this.$options.propsData.ops);
       }
@@ -114,19 +113,13 @@ const createComponent = ({ render, components, mixins }) => ({
     }
   },
   updated() {
-    this.updatedCbs.forEach((cb) => {
+    this.updatedCbs.forEach(cb => {
       cb.call(this);
     });
     // Clear
     this.updatedCbs = [];
   },
   beforeDestroy() {
-    // remove registryed resize event
-    if (this.destroyParentDomResize) {
-      this.destroyParentDomResize();
-      this.destroyParentDomResize = null;
-    }
-
     if (this.destroy) {
       this.destroy();
     }
@@ -262,16 +255,26 @@ const createComponent = ({ render, components, mixins }) => ({
       }
     },
     useNumbericSize() {
-      this.usePercentSize();
-      setTimeout(() => {
-        this.vuescroll.state.currentSizeStrategy = 'number';
+      this.vuescroll.state.currentSizeStrategy = 'number';
+      const { maxHeight, maxWidth } = this.mergedOptions.scrollPanel;
+      const {
+        clientHeight: parentClientHeight,
+        clientWidth: parentClientWidth
+      } = this.$el.parentNode;
+      const { scrollHeight, scrollWidth } = this.scrollPanelElm;
+      let width;
+      let height;
 
-        const el = this.$el.parentNode || this.$el;
-        this.vuescroll.state.height = el.offsetHeight + 'px';
-        this.vuescroll.state.width = el.offsetWidth + 'px';
+      if (maxHeight || maxWidth) {
+        height = scrollHeight <= maxHeight ? undefined : maxHeight;
+        width = scrollWidth <= maxWidth ? undefined : maxWidth;
+      } else {
+        height = parentClientHeight;
+        width = parentClientWidth;
+      }
 
-        this.updateBarStateAndEmitEvent('handle-resize');
-      }, 0);
+      this.vuescroll.state.height = height ? height + 'px' : undefined;
+      this.vuescroll.state.width = width ? width + 'px' : undefined;
     },
     usePercentSize() {
       this.vuescroll.state.currentSizeStrategy = 'percent';
@@ -281,15 +284,16 @@ const createComponent = ({ render, components, mixins }) => ({
     },
     // Set its size to be equal to its parentNode
     setVsSize() {
-      if (this.destroyParentDomResize) {
-        this.destroyParentDomResize();
-        this.destroyParentDomResize = null;
-      }
-
-      if (this.mergedOptions.vuescroll.sizeStrategy == 'number') {
+      const { sizeStrategy } = this.mergedOptions.vuescroll;
+      const { maxHeight, maxWidth } = this.mergedOptions.scrollPanel;
+      const { clientHeight, clientWidth } = this.scrollPanelElm;
+      if (
+        sizeStrategy == 'number' ||
+        (maxHeight && clientHeight >= maxHeight) ||
+        (maxWidth && clientWidth >= maxWidth)
+      ) {
         this.useNumbericSize();
-        this.registryParentResize();
-      } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
+      } else if (sizeStrategy == 'percent') {
         this.usePercentSize();
       }
     },
@@ -321,7 +325,7 @@ const createComponent = ({ render, components, mixins }) => ({
        * 1. we don't need to registry resize
        * 2. we don't need to registry scroller.
        */
-      smallChangeArray.forEach((opts) => {
+      smallChangeArray.forEach(opts => {
         this.$watch(
           opts,
           () => {
@@ -356,16 +360,9 @@ const createComponent = ({ render, components, mixins }) => ({
       }
 
       this.scrollIntoView(elm);
-    },
+    }
 
     /** ------------------------ Registry Resize --------------------------- */
-
-    registryParentResize() {
-      const resizeEnable = this.mergedOptions.vuescroll.detectResize;
-      this.destroyParentDomResize = resizeEnable
-        ? installResizeDetection(this.$el.parentNode, this.useNumbericSize)
-        : () => {};
-    }
   }
 });
 

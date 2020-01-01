@@ -12,7 +12,7 @@ describe('scroll-panel', () => {
     destroyVM(vm);
   });
 
-  it('initialScrollY and initialScrollX and speed', (done) => {
+  it('initialScrollY and initialScrollX and speed', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -47,7 +47,7 @@ describe('scroll-panel', () => {
     });
   });
 
-  it('scrollingX, scrollingY', (done) => {
+  it('scrollingX, scrollingY', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -87,7 +87,7 @@ describe('scroll-panel', () => {
   });
 
   // hover style
-  it('Padding', (done) => {
+  it('Padding', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -127,6 +127,58 @@ describe('scroll-panel', () => {
       .then(() => {
         const contentElm = vsElm.querySelector('.__panel');
         expect(contentElm.style.paddingRight).toBe('10px');
+        done();
+      });
+  });
+
+  it('maxWidth, maxHeight', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 50,
+            h: 50
+          },
+          {
+            w: 1000,
+            h: 1000
+          }
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'native'
+            },
+            scrollPanel: {
+              maxWidth: 100,
+              maxHeight: 100
+            }
+          }
+        }
+      },
+      true
+    );
+
+    const vs = vm.$refs['vs'];
+    let content;
+    startSchedule()
+      .then(() => {
+        content = vm.$el.querySelector('.__view > div');
+        const hBar = vs.$el.querySelector('.__bar-is-horizontal');
+        const vBar = vs.$el.querySelector('.__bar-is-vertical');
+        expect(hBar).toBe(null);
+        expect(vBar).toBe(null);
+
+        content.style.width = '101px';
+        content.style.height = '101px';
+      })
+      .wait(100)
+      .then(() => {
+        const hBar = vs.$el.querySelector('.__bar-is-horizontal');
+        const vBar = vs.$el.querySelector('.__bar-is-vertical');
+        expect(hBar).not.toBe(null);
+        expect(vBar).not.toBe(null);
+
         done();
       });
   });

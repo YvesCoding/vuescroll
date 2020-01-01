@@ -22,7 +22,7 @@ describe('vuescroll', () => {
     destroyVM(vm);
   });
 
-  it('class hook: hasVBar, hasHBar', (done) => {
+  it('class hook: hasVBar, hasHBar', done => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -55,6 +55,7 @@ describe('vuescroll', () => {
 
         vmel.style.width = '200px';
         vmel.style.height = '200px';
+        vm.$refs['vs'].refresh();
       })
       .wait(100)
       .then(() => {
@@ -65,7 +66,7 @@ describe('vuescroll', () => {
       });
   });
 
-  it('class hook: vBarVisible, hBarVisible', (done) => {
+  it('class hook: vBarVisible, hBarVisible', done => {
     vm = createVue(
       {
         template: makeTemplate(

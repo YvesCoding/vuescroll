@@ -91,6 +91,8 @@ interface scrollPanel {
   easing?: easing | undefined;
   padding?: boolean;
   verticalNativeBarPos?: 'right' | 'left';
+  maxHeight?: number;
+  maxWidth?: number;
 }
 
 interface rail {

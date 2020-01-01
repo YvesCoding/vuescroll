@@ -7,12 +7,11 @@ export default {
     updateNativeModeBarState() {
       const container = this.scrollPanelElm;
       const isPercent = this.vuescroll.state.currentSizeStrategy == 'percent';
-      const clientWidth = isPercent
-        ? container.clientWidth
-        : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
-      const clientHeight = isPercent
-        ? container.clientHeight
-        : this.vuescroll.state.height.slice(0, -2);
+      const { width, height } = this.vuescroll.state;
+      const clientWidth =
+        isPercent || !width ? container.clientWidth : width.slice(0, -2); // xxxpx ==> xxx
+      const clientHeight =
+        isPercent || !height ? container.clientHeight : height.slice(0, -2);
 
       let heightPercentage = clientHeight / container.scrollHeight;
       let widthPercentage = clientWidth / container.scrollWidth;
