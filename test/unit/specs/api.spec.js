@@ -603,4 +603,81 @@ describe('api', () => {
         done();
       });
   });
+
+  it('stop pause continue(native)', done => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 1000,
+            h: 1000
+          },
+          {
+            w: 100,
+            h: 100
+          }
+        ),
+        data: {
+          ops: {
+            vuescroll: {
+              mode: 'native'
+            }
+          }
+        }
+      },
+      true
+    );
+    const vs = vm.$refs['vs'];
+    // scroll Y axis
+
+    startSchedule()
+      .then(() => {
+        vs.scrollTo(
+          {
+            y: 300,
+            x: 400
+          },
+          300
+        );
+      })
+      .wait(100)
+      .then(() => {
+        vs.pause();
+      })
+      .wait(350)
+      .then(() => {
+        const scrollPanel = vm.$el.querySelector('.__panel');
+        const { scrollTop, scrollLeft } = scrollPanel;
+        expect(Math.ceil(scrollTop)).not.toBe(300);
+        expect(Math.ceil(scrollLeft)).not.toBe(400);
+        vs.continue();
+      })
+      .wait(305)
+      .then(() => {
+        const scrollPanel = vm.$el.querySelector('.__panel');
+        const { scrollTop, scrollLeft } = scrollPanel;
+        expect(Math.ceil(scrollTop)).toBe(300);
+        expect(Math.ceil(scrollLeft)).toBe(400);
+
+        vs.scrollTo(
+          {
+            y: 600,
+            x: 600
+          },
+          300
+        );
+      })
+      .wait(150)
+      .then(() => {
+        vs.stop();
+      })
+      .then(() => {
+        const scrollPanel = vm.$el.querySelector('.__panel');
+        const { scrollTop, scrollLeft } = scrollPanel;
+        expect(Math.ceil(scrollTop)).not.toBe(600);
+        expect(Math.ceil(scrollLeft)).not.toBe(600);
+
+        done();
+      });
+  });
 });

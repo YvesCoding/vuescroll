@@ -15,6 +15,15 @@ export default {
         this.slideScrollTo(destX, destY, speed, easing);
       }
     },
+    stop() {
+      this.nativeStop();
+    },
+    pause() {
+      this.nativePause();
+    },
+    continue() {
+      this.nativeContinue();
+    },
     getCurrentviewDom() {
       return this.mode == 'slide'
         ? this.getCurrentviewDomSlide()

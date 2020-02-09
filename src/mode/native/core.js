@@ -16,6 +16,15 @@ export default {
     internalScrollTo(destX, destY, animate, easing) {
       this.nativeScrollTo(destX, destY, animate, easing);
     },
+    internalStop() {
+      this.nativeStop();
+    },
+    internalPause() {
+      this.nativePause();
+    },
+    internalContinue() {
+      this.nativeContinue();
+    },
     handleScroll(nativeEvent) {
       this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
     },

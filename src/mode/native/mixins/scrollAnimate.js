@@ -18,6 +18,26 @@ export default class ScrollControl {
     this.isRunning = false;
   }
 
+  pause() {
+    /* istanbul ignore if */
+    if (!this.isRunning) return;
+
+    this.isPaused = true;
+  }
+
+  stop() {
+    this.isStopped = true;
+  }
+
+  continue() {
+    /* istanbul ignore if */
+    if (!this.isPaused) return;
+
+    this.isPaused = false;
+    this.ts = now() - this.percent * this.spd;
+    this.execScroll();
+  }
+
   startScroll(
     st,
     ed,
@@ -53,23 +73,31 @@ export default class ScrollControl {
     this.stepCb = stepCb;
     this.easingMethod = easingMethod;
 
-    this.ref = requestAnimationFrame(window);
-
     if (!this.isRunning) this.execScroll();
   }
 
   execScroll() {
-    let percent = 0;
+    if (!this.df) return;
+
+    let percent = this.percent || 0;
+    this.percent = 0;
     this.isRunning = true;
 
     const loop = () => {
       /* istanbul ignore if */
-      if (!this.isRunning || !this.vertifyCb(percent)) {
+      if (!this.isRunning || !this.vertifyCb(percent) || this.isStopped) {
         this.isRunning = false;
         return;
       }
 
       percent = (now() - this.ts) / this.spd;
+
+      if (this.isPaused) {
+        this.percent = percent;
+        this.isRunning = false;
+        return;
+      }
+
       if (percent < 1) {
         const value = this.st + this.df * this.easingMethod(percent);
         this.stepCb(value);
@@ -93,5 +121,9 @@ export default class ScrollControl {
     this.spd = 0;
     this.ts = 0;
     this.dir = 0;
+    this.ref = requestAnimationFrame(window);
+
+    this.isPaused = false;
+    this.isStopped = false;
   }
 }

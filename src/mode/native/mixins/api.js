@@ -58,7 +58,7 @@ export function scrollTo(elm, x, y, speed = 300, easing, scrollingComplete) {
     scrollLeft,
     x,
     speed,
-    (dx) => {
+    dx => {
       elm.scrollLeft = dx;
     },
     scrollingComplete,
@@ -69,7 +69,7 @@ export function scrollTo(elm, x, y, speed = 300, easing, scrollingComplete) {
     scrollTop,
     y,
     speed,
-    (dy) => {
+    dy => {
       elm.scrollTop = dy;
     },
     scrollingComplete,
@@ -85,6 +85,18 @@ export default {
     this.scrollY = new animate();
   },
   methods: {
+    nativeStop() {
+      this.scrollX.stop();
+      this.scrollY.stop();
+    },
+    nativePause() {
+      this.scrollX.pause();
+      this.scrollY.pause();
+    },
+    nativeContinue() {
+      this.scrollX.continue();
+      this.scrollY.continue();
+    },
     nativeScrollTo(x, y, speed, easing) {
       if (speed === false) {
         speed == 0;
@@ -120,7 +132,7 @@ export default {
             scrollLeft,
             x,
             speed,
-            (x) => {
+            x => {
               elm.scrollLeft = x;
             },
             this.scrollingComplete.bind(this),
@@ -134,7 +146,7 @@ export default {
             scrollTop,
             y,
             speed,
-            (y) => {
+            y => {
               elm.scrollTop = y;
             },
             this.scrollingComplete.bind(this),

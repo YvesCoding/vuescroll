@@ -143,7 +143,9 @@ const createComponent = ({ render, components, mixins }) => ({
           height: '100%',
           width: '100%',
           // current size strategy
-          currentSizeStrategy: 'percent'
+          currentSizeStrategy: 'percent',
+          currentScrollState: null,
+          currentScrollInfo: null
         }
       },
       bar: {
