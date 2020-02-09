@@ -38,6 +38,8 @@ interface scrollPanel {
   easing?: easing | undefined;
   padding?: boolean;
   verticalNativeBarPos?: 'right' | 'left';
+  maxHeight?: number;
+  maxWidth?: number;
 }
 
 interface rail {
@@ -178,4 +180,23 @@ export default interface vuescroll extends Vue {
    * @memberof vuescroll
    */
   clearScrollingTimes(): void;
+  /**
+   * @description Stop current scrolling, can be only used in native
+   * @author wangyi7099
+   * @memberof vuescroll
+   */
+  stop(): void;
+  /**
+   * @description Pause current scrolling, can be only used in native
+   * @author wangyi7099
+   * @memberof vuescroll
+   */
+  pause(): void;
+
+  /**
+   * @description Continue the paused scrolling, can be only used in native
+   * @author wangyi7099
+   * @memberof vuescroll
+   */
+  continue(): void;
 }

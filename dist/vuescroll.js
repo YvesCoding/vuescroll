@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.14.4
+    * Vuescroll v4.15.0-beta.1
     * (c) 2018-2020 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1430,7 +1430,9 @@ var createComponent = function createComponent(_ref) {
             height: '100%',
             width: '100%',
             // current size strategy
-            currentSizeStrategy: 'percent'
+            currentSizeStrategy: 'percent',
+            currentScrollState: null,
+            currentScrollInfo: null
           }
         },
         bar: {
@@ -1827,6 +1829,29 @@ var ScrollControl = function () {
   }
 
   createClass(ScrollControl, [{
+    key: 'pause',
+    value: function pause() {
+      /* istanbul ignore if */
+      if (!this.isRunning) return;
+
+      this.isPaused = true;
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      this.isStopped = true;
+    }
+  }, {
+    key: 'continue',
+    value: function _continue() {
+      /* istanbul ignore if */
+      if (!this.isPaused) return;
+
+      this.isPaused = false;
+      this.ts = now() - this.percent * this.spd;
+      this.execScroll();
+    }
+  }, {
     key: 'startScroll',
     value: function startScroll(st, ed, spd) {
       var stepCb = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : noop;
@@ -1860,8 +1885,6 @@ var ScrollControl = function () {
       this.stepCb = stepCb;
       this.easingMethod = easingMethod;
 
-      this.ref = requestAnimationFrame(window);
-
       if (!this.isRunning) this.execScroll();
     }
   }, {
@@ -1869,17 +1892,27 @@ var ScrollControl = function () {
     value: function execScroll() {
       var _this = this;
 
-      var percent = 0;
+      if (!this.df) return;
+
+      var percent = this.percent || 0;
+      this.percent = 0;
       this.isRunning = true;
 
       var loop = function loop() {
         /* istanbul ignore if */
-        if (!_this.isRunning || !_this.vertifyCb(percent)) {
+        if (!_this.isRunning || !_this.vertifyCb(percent) || _this.isStopped) {
           _this.isRunning = false;
           return;
         }
 
         percent = (now() - _this.ts) / _this.spd;
+
+        if (_this.isPaused) {
+          _this.percent = percent;
+          _this.isRunning = false;
+          return;
+        }
+
         if (percent < 1) {
           var value = _this.st + _this.df * _this.easingMethod(percent);
           _this.stepCb(value);
@@ -1904,6 +1937,10 @@ var ScrollControl = function () {
       this.spd = 0;
       this.ts = 0;
       this.dir = 0;
+      this.ref = requestAnimationFrame(window);
+
+      this.isPaused = false;
+      this.isStopped = false;
     }
   }]);
   return ScrollControl;
@@ -1975,6 +2012,18 @@ var nativeApi = {
   },
 
   methods: {
+    nativeStop: function nativeStop() {
+      this.scrollX.stop();
+      this.scrollY.stop();
+    },
+    nativePause: function nativePause() {
+      this.scrollX.pause();
+      this.scrollY.pause();
+    },
+    nativeContinue: function nativeContinue() {
+      this.scrollX.continue();
+      this.scrollY.continue();
+    },
     nativeScrollTo: function nativeScrollTo(x, y, speed, easing) {
       if (speed === false) {
         
@@ -2502,6 +2551,15 @@ var api$1 = {
       else if (this.mode == 'slide') {
           this.slideScrollTo(destX, destY, speed, easing);
         }
+    },
+    stop: function stop() {
+      this.nativeStop();
+    },
+    pause: function pause() {
+      this.nativePause();
+    },
+    continue: function _continue() {
+      this.nativeContinue();
     },
     getCurrentviewDom: function getCurrentviewDom() {
       return this.mode == 'slide' ? this.getCurrentviewDomSlide() : this.getCurrentviewDomNative();
@@ -4999,7 +5057,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.14.4',
+  version: '4.15.0-beta.1',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

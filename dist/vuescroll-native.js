@@ -1,6 +1,6 @@
 /*
-    * Vuescroll v4.14.4
-    * (c) 2018-2019 Yi(Yves) Wang
+    * Vuescroll v4.15.0-beta.1
+    * (c) 2018-2020 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
     * Website: http://vuescrolljs.yvescoding.org/
@@ -629,7 +629,9 @@ var baseConfig = {
     easing: undefined,
     // Sometimes, the nativebar maybe on the left,
     // See https://github.com/YvesCoding/vuescroll/issues/64
-    verticalNativeBarPos: 'right'
+    verticalNativeBarPos: 'right',
+    maxHeight: undefined,
+    maxWidth: undefined
   },
 
   //
@@ -735,47 +737,6 @@ var extendOpts = function extendOpts(extraOpts, extraValidate) {
 // some small changes.
 var smallChangeArray = ['mergedOptions.vuescroll.pullRefresh.tips', 'mergedOptions.vuescroll.pushLoad.tips', 'mergedOptions.vuescroll.scroller.disable', 'mergedOptions.rail', 'mergedOptions.bar'];
 // refresh/load dom ref/key...
-
-// detect content size change
-function installResizeDetection(element, callback) {
-  return injectObject(element, callback);
-}
-
-function injectObject(element, callback) {
-  if (element.hasResized) {
-    return;
-  }
-
-  var OBJECT_STYLE = 'display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;';
-  // define a wrap due to ie's zIndex bug
-  var objWrap = document.createElement('div');
-  objWrap.style.cssText = OBJECT_STYLE;
-  var object = document.createElement('object');
-  object.style.cssText = OBJECT_STYLE;
-  object.type = 'text/html';
-  object.tabIndex = -1;
-
-  object.onload = function () {
-    eventCenter(object.contentDocument.defaultView, 'resize', callback);
-  };
-  // https://github.com/wnr/element-resize-detector/blob/aafe9f7ea11d1eebdab722c7c5b86634e734b9b8/src/detection-strategy/object.js#L159
-  if (!isIE()) {
-    object.data = 'about:blank';
-  }
-  objWrap.isResizeElm = true;
-  objWrap.appendChild(object);
-  element.appendChild(objWrap);
-  if (isIE()) {
-    object.data = 'about:blank';
-  }
-  return function destroy() {
-    if (object.contentDocument) {
-      eventCenter(object.contentDocument.defaultView, 'resize', callback, 'off');
-    }
-    element.removeChild(objWrap);
-    element.hasResized = false;
-  };
-}
 
 var scrollMap = {
   vertical: {
@@ -1438,12 +1399,6 @@ var createComponent = function createComponent(_ref) {
       this.updatedCbs = [];
     },
     beforeDestroy: function beforeDestroy() {
-      // remove registryed resize event
-      if (this.destroyParentDomResize) {
-        this.destroyParentDomResize();
-        this.destroyParentDomResize = null;
-      }
-
       if (this.destroy) {
         this.destroy();
       }
@@ -1466,7 +1421,9 @@ var createComponent = function createComponent(_ref) {
             height: '100%',
             width: '100%',
             // current size strategy
-            currentSizeStrategy: 'percent'
+            currentSizeStrategy: 'percent',
+            currentScrollState: null,
+            currentScrollInfo: null
           }
         },
         bar: {
@@ -1578,18 +1535,30 @@ var createComponent = function createComponent(_ref) {
         }
       },
       useNumbericSize: function useNumbericSize() {
-        var _this5 = this;
+        this.vuescroll.state.currentSizeStrategy = 'number';
+        var _mergedOptions$scroll = this.mergedOptions.scrollPanel,
+            maxHeight = _mergedOptions$scroll.maxHeight,
+            maxWidth = _mergedOptions$scroll.maxWidth;
+        var _$el$parentNode = this.$el.parentNode,
+            parentClientHeight = _$el$parentNode.clientHeight,
+            parentClientWidth = _$el$parentNode.clientWidth;
+        var _scrollPanelElm = this.scrollPanelElm,
+            scrollHeight = _scrollPanelElm.scrollHeight,
+            scrollWidth = _scrollPanelElm.scrollWidth;
 
-        this.usePercentSize();
-        setTimeout(function () {
-          _this5.vuescroll.state.currentSizeStrategy = 'number';
+        var width = void 0;
+        var height = void 0;
 
-          var el = _this5.$el.parentNode || _this5.$el;
-          _this5.vuescroll.state.height = el.offsetHeight + 'px';
-          _this5.vuescroll.state.width = el.offsetWidth + 'px';
+        if (maxHeight || maxWidth) {
+          height = scrollHeight <= maxHeight ? undefined : maxHeight;
+          width = scrollWidth <= maxWidth ? undefined : maxWidth;
+        } else {
+          height = parentClientHeight;
+          width = parentClientWidth;
+        }
 
-          _this5.updateBarStateAndEmitEvent('handle-resize');
-        }, 0);
+        this.vuescroll.state.height = height ? height + 'px' : undefined;
+        this.vuescroll.state.width = width ? width + 'px' : undefined;
       },
       usePercentSize: function usePercentSize() {
         this.vuescroll.state.currentSizeStrategy = 'percent';
@@ -1600,15 +1569,17 @@ var createComponent = function createComponent(_ref) {
 
       // Set its size to be equal to its parentNode
       setVsSize: function setVsSize() {
-        if (this.destroyParentDomResize) {
-          this.destroyParentDomResize();
-          this.destroyParentDomResize = null;
-        }
+        var sizeStrategy = this.mergedOptions.vuescroll.sizeStrategy;
+        var _mergedOptions$scroll2 = this.mergedOptions.scrollPanel,
+            maxHeight = _mergedOptions$scroll2.maxHeight,
+            maxWidth = _mergedOptions$scroll2.maxWidth;
+        var _scrollPanelElm2 = this.scrollPanelElm,
+            clientHeight = _scrollPanelElm2.clientHeight,
+            clientWidth = _scrollPanelElm2.clientWidth;
 
-        if (this.mergedOptions.vuescroll.sizeStrategy == 'number') {
+        if (sizeStrategy == 'number' || maxHeight && clientHeight >= maxHeight || maxWidth && clientWidth >= maxWidth) {
           this.useNumbericSize();
-          this.registryParentResize();
-        } else if (this.mergedOptions.vuescroll.sizeStrategy == 'percent') {
+        } else if (sizeStrategy == 'percent') {
           this.usePercentSize();
         }
       },
@@ -1616,7 +1587,7 @@ var createComponent = function createComponent(_ref) {
 
       /** ------------------------ Init --------------------------- */
       initWatchOpsChange: function initWatchOpsChange() {
-        var _this6 = this;
+        var _this5 = this;
 
         var watchOpts = {
           deep: true,
@@ -1624,12 +1595,12 @@ var createComponent = function createComponent(_ref) {
         };
         this.$watch('mergedOptions', function () {
           setTimeout(function () {
-            if (_this6.isSmallChangeThisTick) {
-              _this6.isSmallChangeThisTick = false;
-              _this6.updateBarStateAndEmitEvent('options-change');
+            if (_this5.isSmallChangeThisTick) {
+              _this5.isSmallChangeThisTick = false;
+              _this5.updateBarStateAndEmitEvent('options-change');
               return;
             }
-            _this6.refreshInternalStatus();
+            _this5.refreshInternalStatus();
           }, 0);
         }, watchOpts);
 
@@ -1640,8 +1611,8 @@ var createComponent = function createComponent(_ref) {
          * 2. we don't need to registry scroller.
          */
         smallChangeArray.forEach(function (opts) {
-          _this6.$watch(opts, function () {
-            _this6.isSmallChangeThisTick = true;
+          _this5.$watch(opts, function () {
+            _this5.isSmallChangeThisTick = true;
           }, watchOpts);
         });
       },
@@ -1664,15 +1635,10 @@ var createComponent = function createComponent(_ref) {
         }
 
         this.scrollIntoView(elm);
-      },
-
+      }
 
       /** ------------------------ Registry Resize --------------------------- */
 
-      registryParentResize: function registryParentResize() {
-        var resizeEnable = this.mergedOptions.vuescroll.detectResize;
-        this.destroyParentDomResize = resizeEnable ? installResizeDetection(this.$el.parentNode, this.useNumbericSize) : function () {};
-      }
     }
   };
 };
@@ -1854,6 +1820,29 @@ var ScrollControl = function () {
   }
 
   createClass(ScrollControl, [{
+    key: 'pause',
+    value: function pause() {
+      /* istanbul ignore if */
+      if (!this.isRunning) return;
+
+      this.isPaused = true;
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      this.isStopped = true;
+    }
+  }, {
+    key: 'continue',
+    value: function _continue() {
+      /* istanbul ignore if */
+      if (!this.isPaused) return;
+
+      this.isPaused = false;
+      this.ts = now() - this.percent * this.spd;
+      this.execScroll();
+    }
+  }, {
     key: 'startScroll',
     value: function startScroll(st, ed, spd) {
       var stepCb = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : noop;
@@ -1887,8 +1876,6 @@ var ScrollControl = function () {
       this.stepCb = stepCb;
       this.easingMethod = easingMethod;
 
-      this.ref = requestAnimationFrame(window);
-
       if (!this.isRunning) this.execScroll();
     }
   }, {
@@ -1896,17 +1883,27 @@ var ScrollControl = function () {
     value: function execScroll() {
       var _this = this;
 
-      var percent = 0;
+      if (!this.df) return;
+
+      var percent = this.percent || 0;
+      this.percent = 0;
       this.isRunning = true;
 
       var loop = function loop() {
         /* istanbul ignore if */
-        if (!_this.isRunning || !_this.vertifyCb(percent)) {
+        if (!_this.isRunning || !_this.vertifyCb(percent) || _this.isStopped) {
           _this.isRunning = false;
           return;
         }
 
         percent = (now() - _this.ts) / _this.spd;
+
+        if (_this.isPaused) {
+          _this.percent = percent;
+          _this.isRunning = false;
+          return;
+        }
+
         if (percent < 1) {
           var value = _this.st + _this.df * _this.easingMethod(percent);
           _this.stepCb(value);
@@ -1931,6 +1928,10 @@ var ScrollControl = function () {
       this.spd = 0;
       this.ts = 0;
       this.dir = 0;
+      this.ref = requestAnimationFrame(window);
+
+      this.isPaused = false;
+      this.isStopped = false;
     }
   }]);
   return ScrollControl;
@@ -2002,6 +2003,18 @@ var api$1 = {
   },
 
   methods: {
+    nativeStop: function nativeStop() {
+      this.scrollX.stop();
+      this.scrollY.stop();
+    },
+    nativePause: function nativePause() {
+      this.scrollX.pause();
+      this.scrollY.pause();
+    },
+    nativeContinue: function nativeContinue() {
+      this.scrollX.continue();
+      this.scrollY.continue();
+    },
     nativeScrollTo: function nativeScrollTo(x, y, speed, easing) {
       if (speed === false) {
         
@@ -2177,6 +2190,47 @@ function getPanelChildren(h, context) {
   );
 }
 
+// detect content size change
+function installResizeDetection(element, callback) {
+  return injectObject(element, callback);
+}
+
+function injectObject(element, callback) {
+  if (element.hasResized) {
+    return;
+  }
+
+  var OBJECT_STYLE = 'display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; padding: 0; margin: 0; opacity: 0; z-index: -1000; pointer-events: none;';
+  // define a wrap due to ie's zIndex bug
+  var objWrap = document.createElement('div');
+  objWrap.style.cssText = OBJECT_STYLE;
+  var object = document.createElement('object');
+  object.style.cssText = OBJECT_STYLE;
+  object.type = 'text/html';
+  object.tabIndex = -1;
+
+  object.onload = function () {
+    eventCenter(object.contentDocument.defaultView, 'resize', callback);
+  };
+  // https://github.com/wnr/element-resize-detector/blob/aafe9f7ea11d1eebdab722c7c5b86634e734b9b8/src/detection-strategy/object.js#L159
+  if (!isIE()) {
+    object.data = 'about:blank';
+  }
+  objWrap.isResizeElm = true;
+  objWrap.appendChild(object);
+  element.appendChild(objWrap);
+  if (isIE()) {
+    object.data = 'about:blank';
+  }
+  return function destroy() {
+    if (object.contentDocument) {
+      eventCenter(object.contentDocument.defaultView, 'resize', callback, 'off');
+    }
+    element.removeChild(objWrap);
+    element.hasResized = false;
+  };
+}
+
 /**
  * These mixes is exclusive for native mode
  */
@@ -2186,8 +2240,12 @@ var update = {
     updateNativeModeBarState: function updateNativeModeBarState() {
       var container = this.scrollPanelElm;
       var isPercent = this.vuescroll.state.currentSizeStrategy == 'percent';
-      var clientWidth = isPercent ? container.clientWidth : this.vuescroll.state.width.slice(0, -2); // xxxpx ==> xxx
-      var clientHeight = isPercent ? container.clientHeight : this.vuescroll.state.height.slice(0, -2);
+      var _vuescroll$state = this.vuescroll.state,
+          width = _vuescroll$state.width,
+          height = _vuescroll$state.height;
+
+      var clientWidth = isPercent || !width ? container.clientWidth : width.slice(0, -2); // xxxpx ==> xxx
+      var clientHeight = isPercent || !height ? container.clientHeight : height.slice(0, -2);
 
       var heightPercentage = clientHeight / container.scrollHeight;
       var widthPercentage = clientWidth / container.scrollWidth;
@@ -2213,7 +2271,7 @@ var update = {
       // check mouse point scrollable.
       var dom = e.target ? e.target : e;
       while (dom && dom.nodeType == 1 && dom !== this.scrollPanelElm.parentNode && !/^BODY|HTML/.test(dom.nodeName)) {
-        var ov = this.css(dom, 'overflowY') || this.css(dom, 'overflowX') || this.css(dom, 'overflow') || '';
+        var ov = (dir == 'dy' ? this.css(dom, 'overflowY') : this.css(dom, 'overflowX')) || this.css(dom, 'overflow') || '';
         if (/scroll|auto/.test(ov)) {
           var _getScrollProcess = this.getScrollProcess(dom),
               v = _getScrollProcess.v,
@@ -2297,6 +2355,15 @@ var core = {
     },
     internalScrollTo: function internalScrollTo(destX, destY, animate, easing) {
       this.nativeScrollTo(destX, destY, animate, easing);
+    },
+    internalStop: function internalStop() {
+      this.nativeStop();
+    },
+    internalPause: function internalPause() {
+      this.nativePause();
+    },
+    internalContinue: function internalContinue() {
+      this.nativeContinue();
     },
     handleScroll: function handleScroll(nativeEvent) {
       this.updateBarStateAndEmitEvent('handle-scroll', nativeEvent);
@@ -2405,7 +2472,7 @@ var core = {
 
         // Since content sie changes, we should tell parent to set
         // correct size to fit content's size
-        // this.setVsSize();
+        _this.setVsSize();
       };
       window.addEventListener('resize', handleWindowResize, false);
 
@@ -2446,7 +2513,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.14.4',
+  version: '4.15.0-beta.1',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
