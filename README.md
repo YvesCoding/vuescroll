@@ -24,7 +24,8 @@ _Vuescroll's compatibility is the same as `Vue.js 2.X`._
 
 ## Demo
 
-You can see the full features on [Live Demo](https://vuescrolljs.yvescoding.org/demo) of the website.
+- You can find demo under examples folder of repo.
+- You can see the full features of vuescroll at [Live Demo](https://vuescrolljs.yvescoding.org/demo) section of the website.
 
 ## Install
 

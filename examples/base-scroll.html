@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./vue.js"></script>
+    <script src="./vuescroll.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      .parent {
+        width: 300px;
+        height: 300px;
+        background-color: red;
+        margin: auto;
+      }
+
+      .child {
+        width: 800px;
+        height: 800px;
+      }
+
+      .title {
+        text-align: center;
+        margin-bottom: 50px;
+        line-height: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="title">
+        <p>🔥 vuescroll demo - base scroll</p>
+        <p>
+          <a href="https://vuescrolljs.yvescoding.org/demo/">
+            👉 Go to online demo</a
+          >
+        </p>
+        <p><a href="https://vuescrolljs.yvescoding.org/">📝 Go to docs</a></p>
+        <p>
+          <a href="https://github.com/YvesCoding/vuescroll/stargazers"
+            >⭐ Star it on GitHub！</a
+          >
+        </p>
+      </div>
+      <div class="parent">
+        <vue-scroll :ops="ops">
+          <div class="child"></div>
+        </vue-scroll>
+      </div>
+    </div>
+
+    <script>
+      new Vue({
+        el: '#app',
+        data: {
+          ops: {
+            bar: {
+              keepShow: true
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
