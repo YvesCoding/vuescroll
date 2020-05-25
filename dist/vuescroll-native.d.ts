@@ -136,21 +136,24 @@ export default interface vuescroll extends Vue {
    * @memberof vuescroll
    */
   refresh(): void;
+
   /**
    * @description
    * @param {Pos} position The position you want to scroll to
-   * @param {boolean} anmiate Whether to use scrolling Animations, defaults to true
+   * @param {number} speed the speed of the scrolling, the smaller, the faster.
+   * @param {easing} easing the animation of scrolling.
    * @memberof vuescroll
    */
-  scrollTo(position: Pos, anmiate?: boolean): void;
+  scrollTo(position: Pos, speed?: number, easing?: easing): void;
 
   /**
    * @description
    * @param {Pos} delta The delta you want to scroll based on current position
-   * @param {boolean} anmiate Whether to use scrolling Animations, defaults to true
+   * @param {number} speed the speed of the scrolling, the smaller, the faster.
+   * @param {easing} easing the animation of scrolling.
    * @memberof vuescroll
    */
-  scrollBy(delta: Pos, anmiate?: boolean): void;
+  scrollBy(delta: Pos, speed?: number, easing?: easing): void;
 
   /**
    * @description Get the current doms you can see in the container!
