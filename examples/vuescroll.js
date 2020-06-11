@@ -1,28 +1,28 @@
 /*
- * Vuescroll v4.15.0
+ * Vuescroll v4.15.1
  * (c) 2018-2020 Yi(Yves) Wang
  * Released under the MIT License
  * Github: https://github.com/YvesCoding/vuescroll
  * Website: http://vuescrolljs.yvescoding.org/
  */
 
-(function(global, factory) {
+(function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined'
     ? (module.exports = factory(require('vue')))
     : typeof define === 'function' && define.amd
     ? define(['vue'], factory)
     : (global.vuescroll = factory(global.Vue));
-})(this, function(Vue) {
+})(this, function (Vue) {
   'use strict';
 
   Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
 
   var _typeof =
     typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol'
-      ? function(obj) {
+      ? function (obj) {
           return typeof obj;
         }
-      : function(obj) {
+      : function (obj) {
           return obj &&
             typeof Symbol === 'function' &&
             obj.constructor === Symbol &&
@@ -31,13 +31,13 @@
             : typeof obj;
         };
 
-  var classCallCheck = function(instance, Constructor) {
+  var classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
       throw new TypeError('Cannot call a class as a function');
     }
   };
 
-  var createClass = (function() {
+  var createClass = (function () {
     function defineProperties(target, props) {
       for (var i = 0; i < props.length; i++) {
         var descriptor = props[i];
@@ -48,14 +48,14 @@
       }
     }
 
-    return function(Constructor, protoProps, staticProps) {
+    return function (Constructor, protoProps, staticProps) {
       if (protoProps) defineProperties(Constructor.prototype, protoProps);
       if (staticProps) defineProperties(Constructor, staticProps);
       return Constructor;
     };
   })();
 
-  var defineProperty = function(obj, key, value) {
+  var defineProperty = function (obj, key, value) {
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -72,7 +72,7 @@
 
   var _extends =
     Object.assign ||
-    function(target) {
+    function (target) {
       for (var i = 1; i < arguments.length; i++) {
         var source = arguments[i];
 
@@ -86,7 +86,7 @@
       return target;
     };
 
-  var toConsumableArray = function(arr) {
+  var toConsumableArray = function (arr) {
     if (Array.isArray(arr)) {
       for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++)
         arr2[i] = arr[i];
@@ -122,7 +122,7 @@
     return Vue.prototype.$isServer;
   };
 
-  var touchManager = (function() {
+  var touchManager = (function () {
     function touchManager() {
       classCallCheck(this, touchManager);
     }
@@ -229,7 +229,7 @@
 
     if (isArray(from)) {
       to = [];
-      from.forEach(function(item, index) {
+      from.forEach(function (item, index) {
         to[index] = deepCopy(item, to[index]);
       });
     } else if (from) {
@@ -259,7 +259,7 @@
         to = [];
       }
       if (isArray(to)) {
-        from.forEach(function(item, index) {
+        from.forEach(function (item, index) {
           to[index] = mergeObject(item, to[index], force, shallow);
         });
       }
@@ -701,8 +701,8 @@
       gutterOfEnds: null,
       /** Rail the distance from the side of container. **/
       gutterOfSide: '2px',
-      /** Whether to keep rail show or not, default -> false, event content height is not enough */
-      keepShow: false
+      /** Whether to keep rail show or not, default -> true, event content height is not enough */
+      keepShow: true
     },
     bar: {
       /** How long to hide bar after mouseleave, default -> 500 */
@@ -772,7 +772,7 @@
 
     if (_extraValidate) {
       _extraValidate = [].concat(_extraValidate);
-      _extraValidate.forEach(function(hasError) {
+      _extraValidate.forEach(function (hasError) {
         if (hasError(ops)) {
           renderError = true;
         }
@@ -784,7 +784,7 @@
   var _extraValidate = null;
   var extendOpts = function extendOpts(extraOpts, extraValidate) {
     extraOpts = [].concat(extraOpts);
-    extraOpts.forEach(function(opts) {
+    extraOpts.forEach(function (opts) {
       mergeObject(opts, baseConfig);
     });
 
@@ -863,7 +863,7 @@
     }
 
     if (isNative) {
-      return function(callback, root) {
+      return function (callback, root) {
         requestFrame(callback, root);
       };
     }
@@ -874,7 +874,7 @@
     var intervalHandle = null;
     var lastActive = +new Date();
 
-    return function(callback) {
+    return function (callback) {
       var callbackHandle = rafHandle++;
 
       // Store callback
@@ -882,7 +882,7 @@
 
       // Create timeout at first request
       if (intervalHandle === null) {
-        intervalHandle = setInterval(function() {
+        intervalHandle = setInterval(function () {
           var time = +new Date();
           var currentRequests = requests;
 
@@ -972,6 +972,7 @@
       /** Rail Data */
       var railSize = vm.ops.rail.size;
       var endPos = vm.otherBarHide ? 0 : railSize;
+      var touchObj = vm.touchManager.getTouchObject();
       var rail = {
         class: '__rail-is-' + vm.type,
         style:
@@ -1001,6 +1002,20 @@
           ),
           _style)
       };
+
+      if (touchObj) {
+        var _rail$on;
+
+        rail.on =
+          ((_rail$on = {}),
+          defineProperty(_rail$on, touchObj.touchenter, function () {
+            vm.setRailHover();
+          }),
+          defineProperty(_rail$on, touchObj.touchleave, function () {
+            vm.setRailLeave();
+          }),
+          _rail$on);
+      }
 
       // left space for scroll button
       var buttonSize = vm.ops.scrollButton.enable ? railSize : 0;
@@ -1068,9 +1083,9 @@
 
       /* istanbul ignore next */
       {
-        var touchObj = this.touchManager.getTouchObject();
-        bar.on[touchObj.touchstart] = this.createBarEvent();
-        barWrapper.on[touchObj.touchstart] = this.createTrackEvent();
+        var _touchObj = this.touchManager.getTouchObject();
+        bar.on[_touchObj.touchstart] = this.createBarEvent();
+        barWrapper.on[_touchObj.touchstart] = this.createTrackEvent();
       }
 
       return h('div', rail, [
@@ -1086,6 +1101,22 @@
     },
 
     methods: {
+      setRailHover: function setRailHover() {
+        var parent = getRealParent(this);
+        var state = parent.vuescroll.state;
+
+        if (!state.isRailHover) {
+          state.isRailHover = true;
+          parent.showBar();
+        }
+      },
+      setRailLeave: function setRailLeave() {
+        var parent = getRealParent(this);
+        var state = parent.vuescroll.state;
+
+        state.isRailHover = false;
+        parent.hideBar();
+      },
       setBarDrag: function setBarDrag(val) /* istanbul ignore next */ {
         this.$emit('setBarDrag', (this.isBarDragging = val));
 
@@ -1110,7 +1141,7 @@
           e.preventDefault();
           event = event[0];
 
-          document.onselectstart = function() {
+          document.onselectstart = function () {
             return false;
           };
           ctx.axisStartPos =
@@ -1337,7 +1368,7 @@
           }
 
           clearTimeout(timeoutId);
-          timeoutId = setTimeout(function() /* istanbul ignore next */ {
+          timeoutId = setTimeout(function () /* istanbul ignore next */ {
             isMouseDown = true;
             ref(pressing, window);
           }, 500);
@@ -1499,7 +1530,7 @@
         var ops = mergeObject(baseConfig, _gfc);
 
         this.$options.propsData.ops = this.$options.propsData.ops || {};
-        Object.keys(this.$options.propsData.ops).forEach(function(key) {
+        Object.keys(this.$options.propsData.ops).forEach(function (key) {
           {
             defineReactive(
               _this.mergedOptions,
@@ -1540,13 +1571,13 @@
 
           data.on =
             ((_data$on = {}),
-            defineProperty(_data$on, touchObj.touchenter, function() {
+            defineProperty(_data$on, touchObj.touchenter, function () {
               vm.vuescroll.state.pointerLeave = false;
               vm.updateBarStateAndEmitEvent();
 
               vm.setClassHook('mouseEnter', true);
             }),
-            defineProperty(_data$on, touchObj.touchleave, function() {
+            defineProperty(_data$on, touchObj.touchleave, function () {
               vm.vuescroll.state.pointerLeave = true;
               vm.hideBar();
 
@@ -1555,7 +1586,7 @@
             defineProperty(
               _data$on,
               touchObj.touchmove,
-              function() /* istanbul ignore next */ {
+              function () /* istanbul ignore next */ {
                 vm.vuescroll.state.pointerLeave = false;
                 vm.updateBarStateAndEmitEvent();
               }
@@ -1581,7 +1612,7 @@
           // Call external merged Api
           this.refreshInternalStatus();
 
-          this.updatedCbs.push(function() {
+          this.updatedCbs.push(function () {
             _this2.scrollToAnchor();
             // need to reflow to deal with the
             // latest thing.
@@ -1592,7 +1623,7 @@
       updated: function updated() {
         var _this3 = this;
 
-        this.updatedCbs.forEach(function(cb) {
+        this.updatedCbs.forEach(function (cb) {
           cb.call(_this3);
         });
         // Clear
@@ -1618,6 +1649,7 @@
             state: {
               isDragging: false,
               pointerLeave: true,
+              isRailHover: false,
               /** Default sizeStrategies */
               height: '100%',
               width: '100%',
@@ -1704,7 +1736,7 @@
             this.timeoutId = 0;
           }
 
-          this.timeoutId = setTimeout(function() {
+          this.timeoutId = setTimeout(function () {
             _this4.timeoutId = 0;
             _this4.hideBar(forceHideBar);
           }, this.mergedOptions.bar.showDelay);
@@ -1715,10 +1747,12 @@
           this.bar.hBar.state.opacity = opacity;
         },
         hideBar: function hideBar(forceHideBar) {
-          // when in non-native mode dragging content
-          // in slide mode, just return
+          var _vuescroll$state = this.vuescroll.state,
+            isDragging = _vuescroll$state.isDragging,
+            isRailHover = _vuescroll$state.isRailHover;
           /* istanbul ignore next */
-          if (this.vuescroll.state.isDragging) {
+
+          if (isDragging || isRailHover) {
             return;
           }
 
@@ -1731,8 +1765,7 @@
           // to prevent from hiding bar while dragging the bar
           if (
             !this.mergedOptions.bar.keepShow &&
-            !this.vuescroll.state.isDragging &&
-            this.vuescroll.state.pointerLeave
+            !this.vuescroll.state.isDragging
           ) {
             this.bar.vBar.state.opacity = 0;
             this.bar.hBar.state.opacity = 0;
@@ -1802,8 +1835,8 @@
           };
           this.$watch(
             'mergedOptions',
-            function() {
-              setTimeout(function() {
+            function () {
+              setTimeout(function () {
                 if (_this5.isSmallChangeThisTick) {
                   _this5.isSmallChangeThisTick = false;
                   _this5.updateBarStateAndEmitEvent('options-change');
@@ -1821,10 +1854,10 @@
            * 1. we don't need to registry resize
            * 2. we don't need to registry scroller.
            */
-          smallChangeArray.forEach(function(opts) {
+          smallChangeArray.forEach(function (opts) {
             _this5.$watch(
               opts,
-              function() {
+              function () {
                 _this5.isSmallChangeThisTick = true;
               },
               watchOpts
@@ -1891,7 +1924,7 @@
     mounted: function mounted() {
       var _this = this;
 
-      setTimeout(function() {
+      setTimeout(function () {
         if (!_this._isDestroyed) {
           _this.updateInitialScroll();
         }
@@ -2000,7 +2033,7 @@
    *  Compatible to scroller's animation function
    */
   function createEasingFunction(easing, easingPattern) {
-    return function(time) {
+    return function (time) {
       return easingPattern(easing, time);
     };
   }
@@ -2055,11 +2088,11 @@
   /* istanbul ignore next */
   var now =
     Date.now ||
-    function() {
+    function () {
       return new Date().getTime();
     };
 
-  var ScrollControl = (function() {
+  var ScrollControl = (function () {
     function ScrollControl() {
       classCallCheck(this, ScrollControl);
 
@@ -2267,7 +2300,7 @@
       scrollLeft,
       x,
       speed,
-      function(dx) {
+      function (dx) {
         elm.scrollLeft = dx;
       },
       scrollingComplete,
@@ -2278,7 +2311,7 @@
       scrollTop,
       y,
       speed,
-      function(dy) {
+      function (dy) {
         elm.scrollTop = dy;
       },
       scrollingComplete,
@@ -2340,7 +2373,7 @@
               scrollLeft,
               x,
               speed,
-              function(x) {
+              function (x) {
                 elm.scrollLeft = x;
               },
               this.scrollingComplete.bind(this),
@@ -2354,7 +2387,7 @@
               scrollTop,
               y,
               speed,
-              function(y) {
+              function (y) {
                 elm.scrollTop = y;
               },
               this.scrollingComplete.bind(this),
@@ -2755,7 +2788,7 @@
     object.type = 'text/html';
     object.tabIndex = -1;
 
-    object.onload = function() {
+    object.onload = function () {
       eventCenter(object.contentDocument.defaultView, 'resize', callback);
     };
     // https://github.com/wnr/element-resize-detector/blob/aafe9f7ea11d1eebdab722c7c5b86634e734b9b8/src/detection-strategy/object.js#L159
@@ -2948,7 +2981,7 @@
    */
   var time =
     Date.now ||
-    function() {
+    function () {
       return +new Date();
     };
   var desiredFrames = 60;
@@ -4714,7 +4747,7 @@
   /* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
   function render(content, global, suffix, type) {
     if (type == 'position') {
-      return function(left, top) {
+      return function (left, top) {
         content.style.left = -left + 'px';
         content.style.top = -top + 'px';
       };
@@ -4729,7 +4762,7 @@
     var transformProperty = 'transform'; //vendorPrefix + 'Transform';
 
     if (helperElem.style[perspectiveProperty] !== undef) {
-      return function(left, top, zoom) {
+      return function (left, top, zoom) {
         content.style[transformProperty] =
           'translate3d(' +
           -left +
@@ -4742,7 +4775,7 @@
           ')';
       };
     } else if (helperElem.style[transformProperty] !== undef) {
-      return function(left, top, zoom) {
+      return function (left, top, zoom) {
         content.style[transformProperty] =
           'translate(' +
           -left +
@@ -4859,7 +4892,7 @@
     };
 
     // handle __publish event
-    scroller.onScroll = function() {
+    scroller.onScroll = function () {
       eventCallback('onscroll');
     };
     return destroy;
@@ -4893,7 +4926,7 @@
 
     var startCallback = function startCallback() {
       vm.vuescroll.state[stageType] = 'start';
-      setTimeout(function() {
+      setTimeout(function () {
         vm.scroller.finishRefreshOrLoad();
       }, 2000); // Default start stage duration
     };
@@ -5108,7 +5141,7 @@
         var cb = listenContainer(
           this.$el,
           this.scroller,
-          function(eventType) {
+          function (eventType) {
             // Thie is to dispatch the event from the scroller.
             // to let vuescroll refresh the dom
             switch (eventType) {
@@ -5629,7 +5662,7 @@
           window.removeEventListener('resize', handleWindowResize, false);
         };
 
-        this.destroyResize = function() {
+        this.destroyResize = function () {
           destroyWindowResize();
           destroyDomResize();
 
@@ -5788,7 +5821,7 @@
   var Vuescroll = _extends(
     {
       install: install,
-      version: '4.15.0',
+      version: '4.15.1',
       refreshAll: refreshAll,
       scrollTo: scrollTo
     },

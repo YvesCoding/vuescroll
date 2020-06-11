@@ -35,7 +35,7 @@ const createComponent = ({ render, components, mixins }) => ({
     const ops = mergeObject(GCF, _gfc);
 
     this.$options.propsData.ops = this.$options.propsData.ops || {};
-    Object.keys(this.$options.propsData.ops).forEach(key => {
+    Object.keys(this.$options.propsData.ops).forEach((key) => {
       {
         defineReactive(this.mergedOptions, key, this.$options.propsData.ops);
       }
@@ -113,7 +113,7 @@ const createComponent = ({ render, components, mixins }) => ({
     }
   },
   updated() {
-    this.updatedCbs.forEach(cb => {
+    this.updatedCbs.forEach((cb) => {
       cb.call(this);
     });
     // Clear
@@ -139,6 +139,7 @@ const createComponent = ({ render, components, mixins }) => ({
         state: {
           isDragging: false,
           pointerLeave: true,
+          isRailHover: false,
           /** Default sizeStrategies */
           height: '100%',
           width: '100%',
@@ -233,10 +234,9 @@ const createComponent = ({ render, components, mixins }) => ({
       this.bar.hBar.state.opacity = opacity;
     },
     hideBar(forceHideBar) {
-      // when in non-native mode dragging content
-      // in slide mode, just return
+      const { isDragging, isRailHover } = this.vuescroll.state;
       /* istanbul ignore next */
-      if (this.vuescroll.state.isDragging) {
+      if (isDragging || isRailHover) {
         return;
       }
 
@@ -249,8 +249,7 @@ const createComponent = ({ render, components, mixins }) => ({
       // to prevent from hiding bar while dragging the bar
       if (
         !this.mergedOptions.bar.keepShow &&
-        !this.vuescroll.state.isDragging &&
-        this.vuescroll.state.pointerLeave
+        !this.vuescroll.state.isDragging
       ) {
         this.bar.vBar.state.opacity = 0;
         this.bar.hBar.state.opacity = 0;
@@ -327,7 +326,7 @@ const createComponent = ({ render, components, mixins }) => ({
        * 1. we don't need to registry resize
        * 2. we don't need to registry scroller.
        */
-      smallChangeArray.forEach(opts => {
+      smallChangeArray.forEach((opts) => {
         this.$watch(
           opts,
           () => {
@@ -339,7 +338,7 @@ const createComponent = ({ render, components, mixins }) => ({
     },
     // scrollTo hash-anchor while mounted component have mounted.
     scrollToAnchor() /* istanbul ignore next */ {
-      const validateHashSelector = function(hash) {
+      const validateHashSelector = function (hash) {
         return /^#[a-zA-Z_]\d*$/.test(hash);
       };
 

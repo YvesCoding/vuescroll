@@ -39,8 +39,8 @@ const baseConfig = {
     gutterOfEnds: null,
     /** Rail the distance from the side of container. **/
     gutterOfSide: '2px',
-    /** Whether to keep rail show or not, default -> false, event content height is not enough */
-    keepShow: false
+    /** Whether to keep rail show or not, default -> true, event content height is not enough */
+    keepShow: true
   },
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
@@ -107,7 +107,7 @@ export function validateOps(ops) {
 
   if (_extraValidate) {
     _extraValidate = [].concat(_extraValidate);
-    _extraValidate.forEach(hasError => {
+    _extraValidate.forEach((hasError) => {
       if (hasError(ops)) {
         renderError = true;
       }
@@ -119,7 +119,7 @@ export function validateOps(ops) {
 let _extraValidate = null;
 export const extendOpts = (extraOpts, extraValidate) => {
   extraOpts = [].concat(extraOpts);
-  extraOpts.forEach(opts => {
+  extraOpts.forEach((opts) => {
     mergeObject(opts, baseConfig);
   });
 

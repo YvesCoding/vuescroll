@@ -65,6 +65,7 @@ export default {
     /** Rail Data */
     const railSize = vm.ops.rail.size;
     const endPos = vm.otherBarHide ? 0 : railSize;
+    const touchObj = vm.touchManager.getTouchObject();
     const rail = {
       class: `__rail-is-${vm.type}`,
       style: {
@@ -80,6 +81,17 @@ export default {
         [vm.bar.sidePosName]: vm.ops.rail['gutterOfSide']
       }
     };
+
+    if (touchObj) {
+      rail.on = {
+        [touchObj.touchenter]() {
+          vm.setRailHover();
+        },
+        [touchObj.touchleave]() {
+          vm.setRailLeave();
+        }
+      };
+    }
 
     // left space for scroll button
     const buttonSize = vm.ops.scrollButton.enable ? railSize : 0;
@@ -163,6 +175,20 @@ export default {
     };
   },
   methods: {
+    setRailHover() {
+      const parent = getRealParent(this);
+      let { state } = parent.vuescroll;
+      if (!state.isRailHover) {
+        state.isRailHover = true;
+        parent.showBar();
+      }
+    },
+    setRailLeave() {
+      const parent = getRealParent(this);
+      let { state } = parent.vuescroll;
+      state.isRailHover = false;
+      parent.hideBar();
+    },
     setBarDrag(val) /* istanbul ignore next */ {
       this.$emit('setBarDrag', (this.isBarDragging = val));
 
