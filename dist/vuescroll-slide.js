@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.15.1
+    * Vuescroll v4.16.0
     * (c) 2018-2020 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -868,6 +868,7 @@ var bar = {
     /** Rail Data */
     var railSize = vm.ops.rail.size;
     var endPos = vm.otherBarHide ? 0 : railSize;
+    var touchObj = vm.touchManager.getTouchObject();
     var rail = {
       class: '__rail-is-' + vm.type,
       style: (_style = {
@@ -879,6 +880,16 @@ var bar = {
         border: vm.ops.rail.border
       }, defineProperty(_style, vm.bar.opsSize, railSize), defineProperty(_style, vm.bar.posName, vm.ops.rail['gutterOfEnds'] || 0), defineProperty(_style, vm.bar.opposName, vm.ops.rail['gutterOfEnds'] || endPos), defineProperty(_style, vm.bar.sidePosName, vm.ops.rail['gutterOfSide']), _style)
     };
+
+    if (touchObj) {
+      var _rail$on;
+
+      rail.on = (_rail$on = {}, defineProperty(_rail$on, touchObj.touchenter, function () {
+        vm.setRailHover();
+      }), defineProperty(_rail$on, touchObj.touchleave, function () {
+        vm.setRailLeave();
+      }), _rail$on);
+    }
 
     // left space for scroll button
     var buttonSize = vm.ops.scrollButton.enable ? railSize : 0;
@@ -929,9 +940,9 @@ var bar = {
 
     /* istanbul ignore next */
     {
-      var touchObj = this.touchManager.getTouchObject();
-      bar.on[touchObj.touchstart] = this.createBarEvent();
-      barWrapper.on[touchObj.touchstart] = this.createTrackEvent();
+      var _touchObj = this.touchManager.getTouchObject();
+      bar.on[_touchObj.touchstart] = this.createBarEvent();
+      barWrapper.on[_touchObj.touchstart] = this.createTrackEvent();
     }
 
     return h(
@@ -951,6 +962,22 @@ var bar = {
   },
 
   methods: {
+    setRailHover: function setRailHover() {
+      var parent = getRealParent(this);
+      var state = parent.vuescroll.state;
+
+      if (!state.isRailHover) {
+        state.isRailHover = true;
+        parent.showBar();
+      }
+    },
+    setRailLeave: function setRailLeave() {
+      var parent = getRealParent(this);
+      var state = parent.vuescroll.state;
+
+      state.isRailHover = false;
+      parent.hideBar();
+    },
     setBarDrag: function setBarDrag(val) /* istanbul ignore next */{
       this.$emit('setBarDrag', this.isBarDragging = val);
 
@@ -1395,6 +1422,7 @@ var createComponent = function createComponent(_ref) {
           state: {
             isDragging: false,
             pointerLeave: true,
+            isRailHover: false,
             /** Default sizeStrategies */
             height: '100%',
             width: '100%',
@@ -1493,10 +1521,12 @@ var createComponent = function createComponent(_ref) {
         this.bar.hBar.state.opacity = opacity;
       },
       hideBar: function hideBar(forceHideBar) {
-        // when in non-native mode dragging content
-        // in slide mode, just return
+        var _vuescroll$state = this.vuescroll.state,
+            isDragging = _vuescroll$state.isDragging,
+            isRailHover = _vuescroll$state.isRailHover;
         /* istanbul ignore next */
-        if (this.vuescroll.state.isDragging) {
+
+        if (isDragging || isRailHover) {
           return;
         }
 
@@ -1507,7 +1537,7 @@ var createComponent = function createComponent(_ref) {
 
         // add isDragging condition
         // to prevent from hiding bar while dragging the bar
-        if (!this.mergedOptions.bar.keepShow && !this.vuescroll.state.isDragging && this.vuescroll.state.pointerLeave) {
+        if (!this.mergedOptions.bar.keepShow && !this.vuescroll.state.isDragging) {
           this.bar.vBar.state.opacity = 0;
           this.bar.hBar.state.opacity = 0;
         }
@@ -4604,7 +4634,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.15.1',
+  version: '4.16.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
