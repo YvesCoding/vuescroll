@@ -251,4 +251,45 @@ describe('rail and scrollButton', () => {
       done();
     });
   });
+
+  it('bar should show when hover rail', (done) => {
+    vm = createVue(
+      {
+        template: makeTemplate(
+          {
+            w: 800,
+            h: 800
+          },
+          {
+            w: 400,
+            h: 400
+          }
+        ),
+        data: {
+          ops: {}
+        }
+      },
+      true
+    );
+
+    let rail = null;
+    let bar = null;
+    startSchedule()
+      .then(() => {
+        rail = vm.$el.querySelector('.__rail-is-vertical');
+        trigger(rail, 'mouseenter');
+      })
+      // Test for keepShow
+      .then(() => {
+        bar = vm.$el.querySelector('.__bar-is-vertical');
+        expect(bar.style.opacity).toBe('1');
+      })
+      .then(() => {
+        trigger(rail, 'mouseleave');
+      })
+      .then(() => {
+        expect(bar.style.opacity).toBe('0');
+        done();
+      });
+  });
 });

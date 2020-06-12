@@ -39,8 +39,8 @@ const baseConfig = {
     gutterOfEnds: null,
     /** Rail the distance from the side of container. **/
     gutterOfSide: '2px',
-    /** Whether to keep rail show or not, default -> true, event content height is not enough */
-    keepShow: true
+    /** Whether to keep rail show or not, default -> false, event content height is not enough */
+    keepShow: false
   },
   bar: {
     /** How long to hide bar after mouseleave, default -> 500 */
