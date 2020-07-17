@@ -290,11 +290,15 @@ const createComponent = ({ render, components, mixins }) => ({
       const { clientHeight, clientWidth } = this.scrollPanelElm;
       if (
         sizeStrategy == 'number' ||
-        (maxHeight && clientHeight >= maxHeight) ||
-        (maxWidth && clientWidth >= maxWidth)
+        (maxHeight && clientHeight > maxHeight) ||
+        (maxWidth && clientWidth > maxWidth)
       ) {
         this.useNumbericSize();
-      } else if (sizeStrategy == 'percent') {
+      } else if (
+        sizeStrategy == 'percent' &&
+        clientHeight != maxHeight &&
+        clientWidth != maxWidth
+      ) {
         this.usePercentSize();
       }
     },
