@@ -1,5 +1,5 @@
 /*
- * Vuescroll v4.15.1
+ * Vuescroll v4.16.1
  * (c) 2018-2020 Yi(Yves) Wang
  * Released under the MIT License
  * Github: https://github.com/YvesCoding/vuescroll
@@ -701,8 +701,8 @@
       gutterOfEnds: null,
       /** Rail the distance from the side of container. **/
       gutterOfSide: '2px',
-      /** Whether to keep rail show or not, default -> true, event content height is not enough */
-      keepShow: true
+      /** Whether to keep rail show or not, default -> false, event content height is not enough */
+      keepShow: false
     },
     bar: {
       /** How long to hide bar after mouseleave, default -> 500 */
@@ -1816,11 +1816,15 @@
 
           if (
             sizeStrategy == 'number' ||
-            (maxHeight && clientHeight >= maxHeight) ||
-            (maxWidth && clientWidth >= maxWidth)
+            (maxHeight && clientHeight > maxHeight) ||
+            (maxWidth && clientWidth > maxWidth)
           ) {
             this.useNumbericSize();
-          } else if (sizeStrategy == 'percent') {
+          } else if (
+            sizeStrategy == 'percent' &&
+            clientHeight != maxHeight &&
+            clientWidth != maxWidth
+          ) {
             this.usePercentSize();
           }
         },
@@ -5821,7 +5825,7 @@
   var Vuescroll = _extends(
     {
       install: install,
-      version: '4.15.1',
+      version: '4.16.1',
       refreshAll: refreshAll,
       scrollTo: scrollTo
     },

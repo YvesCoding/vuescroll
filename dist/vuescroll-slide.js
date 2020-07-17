@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.16.0
+    * Vuescroll v4.16.1
     * (c) 2018-2020 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1585,9 +1585,9 @@ var createComponent = function createComponent(_ref) {
             clientHeight = _scrollPanelElm2.clientHeight,
             clientWidth = _scrollPanelElm2.clientWidth;
 
-        if (sizeStrategy == 'number' || maxHeight && clientHeight >= maxHeight || maxWidth && clientWidth >= maxWidth) {
+        if (sizeStrategy == 'number' || maxHeight && clientHeight > maxHeight || maxWidth && clientWidth > maxWidth) {
           this.useNumbericSize();
-        } else if (sizeStrategy == 'percent') {
+        } else if (sizeStrategy == 'percent' && clientHeight != maxHeight && clientWidth != maxWidth) {
           this.usePercentSize();
         }
       },
@@ -4634,7 +4634,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.16.0',
+  version: '4.16.1',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
