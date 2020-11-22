@@ -7,7 +7,7 @@ export default {
     updateNativeModeBarState() {
       const container = this.scrollPanelElm;
       const isPercent = this.vuescroll.state.currentSizeStrategy == 'percent';
-      const { width, height } = this.vuescroll.state;
+      const {width, height} = this.vuescroll.state;
       const clientWidth =
         isPercent || !width ? container.clientWidth : width.slice(0, -2); // xxxpx ==> xxx
       const clientHeight =
@@ -41,7 +41,7 @@ export default {
         dom.nodeType == 1 &&
         dom !== this.scrollPanelElm.parentNode &&
         !/^BODY|HTML/.test(dom.nodeName)
-      ) {
+        ) {
         const ov =
           (dir == 'dy'
             ? this.css(dom, 'overflowY')
@@ -49,7 +49,7 @@ export default {
           this.css(dom, 'overflow') ||
           '';
         if (/scroll|auto/.test(ov)) {
-          const { v, h } = this.getScrollProcess(dom);
+          const {v, h} = this.getScrollProcess(dom);
           if (
             (dir == 'dx' && ((delta < 0 && h > 0) || (delta > 0 && h < 1))) ||
             (dir == 'dy' && ((delta < 0 && v > 0) || (delta > 0 && v < 1)))
@@ -66,19 +66,24 @@ export default {
     onMouseWheel(event) /* istanbul ignore next */ {
       const duration = this.mergedOptions.vuescroll.wheelScrollDuration;
       const isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
+      const checkShiftKey = this.mergedOptions.vuescroll.checkShiftKey;
 
       let delta = 0;
       let dir;
       if (event.wheelDelta) {
-        if (event.deltaY) {
-          dir = 'dy';
-          delta = event.deltaY;
-        } else if (event.deltaX) {
-          delta = event.deltaX;
-          dir = 'dx';
+
+        if (event.deltaY || event.deltaX) {
+          if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+            delta = event.deltaX;
+            dir = 'dx';
+          } else {
+            dir = 'dy';
+            delta = event.deltaY;
+          }
         } else {
           delta = (-1 * event.wheelDelta) / 2;
         }
+
       } else if (event.detail) {
         // horizontal scroll
         if (event.axis == 1) {
@@ -90,11 +95,14 @@ export default {
         delta = event.detail * 16;
       }
 
-      if (event.shiftKey) {
-        dir = 'dx';
-      } else {
-        dir = 'dy';
+      if(checkShiftKey){
+        if (event.shiftKey) {
+          dir = 'dx';
+        } else {
+          dir = 'dy';
+        }
       }
+
 
       if (isReverse) {
         dir = dir == 'dx' ? 'dy' : 'dx';
@@ -103,8 +111,7 @@ export default {
       if (this.checkScrollable(event, dir, delta)) {
         event.stopPropagation();
         event.preventDefault();
-
-        this.scrollBy({ [dir]: delta }, duration);
+        this.scrollBy({[dir]: delta}, duration);
       }
     }
   },
