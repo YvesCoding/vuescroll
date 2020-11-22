@@ -41,7 +41,7 @@ export default {
         dom.nodeType == 1 &&
         dom !== this.scrollPanelElm.parentNode &&
         !/^BODY|HTML/.test(dom.nodeName)
-        ) {
+      ) {
         const ov =
           (dir == 'dy'
             ? this.css(dom, 'overflowY')
