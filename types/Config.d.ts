@@ -67,6 +67,7 @@ interface Container {
   scroller?: Scroller;
   wheelScrollDuration?: number;
   wheelDirectionReverse?: boolean;
+  checkShiftKey?: boolean;
 }
 
 export declare type easing =

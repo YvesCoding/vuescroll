@@ -14,7 +14,13 @@ interface Container {
   detectResize?: boolean;
   wheelScrollDuration?: number;
   wheelDirectionReverse?: boolean;
+  checkShiftKey?: boolean;
 }
+
+type Position = {
+  scrollTop?: number;
+  scrollLeft?: number;
+};
 
 declare type easing =
   | 'easeInQuad'
@@ -202,4 +208,11 @@ export default interface vuescroll extends Vue {
    * @memberof vuescroll
    */
   continue(): void;
+
+  /**
+   * @description Get current position
+   * @author wangyi7099
+   * @memberof vuescroll
+   */
+  getPosition(): Position;
 }

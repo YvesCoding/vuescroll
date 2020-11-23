@@ -11,6 +11,11 @@ type Page = {
   y?: number;
 };
 
+type Position = {
+  scrollTop?: number;
+  scrollLeft?: number;
+};
+
 export declare class vuescroll extends Vue {
   // ----------------------- Static methods --------------------
   static install(vue: typeof Vue): void;
@@ -152,4 +157,11 @@ export declare class vuescroll extends Vue {
    * @memberof vuescroll
    */
   continue(): void;
+
+  /**
+   * @description Get current position
+   * @author wangyi7099
+   * @memberof vuescroll
+   */
+  getPosition(): Position;
 }
