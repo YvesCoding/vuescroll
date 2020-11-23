@@ -4665,20 +4665,16 @@ var nativeMix = {
     onMouseWheel: function onMouseWheel(event) /* istanbul ignore next */{
       var duration = this.mergedOptions.vuescroll.wheelScrollDuration;
       var isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
-      var checkShiftKey = this.mergedOptions.vuescroll.checkShiftKey;
 
       var delta = 0;
       var dir = void 0;
       if (event.wheelDelta) {
-
-        if (event.deltaY || event.deltaX) {
-          if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-            delta = event.deltaX;
-            dir = 'dx';
-          } else {
-            dir = 'dy';
-            delta = event.deltaY;
-          }
+        if (event.deltaY) {
+          dir = 'dy';
+          delta = event.deltaY;
+        } else if (event.deltaX) {
+          delta = event.deltaX;
+          dir = 'dx';
         } else {
           delta = -1 * event.wheelDelta / 2;
         }
@@ -4693,12 +4689,10 @@ var nativeMix = {
         delta = event.detail * 16;
       }
 
-      if (checkShiftKey) {
-        if (event.shiftKey) {
-          dir = 'dx';
-        } else {
-          dir = 'dy';
-        }
+      if (event.shiftKey) {
+        dir = 'dx';
+      } else {
+        dir = 'dy';
       }
 
       if (isReverse) {
@@ -4708,6 +4702,7 @@ var nativeMix = {
       if (this.checkScrollable(event, dir, delta)) {
         event.stopPropagation();
         event.preventDefault();
+
         this.scrollBy(defineProperty({}, dir, delta), duration);
       }
     }
@@ -5049,8 +5044,7 @@ function configValidator(ops) {
 var config$1 = {
   vuescroll: {
     wheelScrollDuration: 0,
-    wheelDirectionReverse: false,
-    checkShiftKey: true
+    wheelDirectionReverse: false
   }
 };
 
