@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.16.1
+    * Vuescroll v4.16.2
     * (c) 2018-2020 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -2320,16 +2320,20 @@ var update = {
     onMouseWheel: function onMouseWheel(event) /* istanbul ignore next */{
       var duration = this.mergedOptions.vuescroll.wheelScrollDuration;
       var isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
+      var checkShiftKey = this.mergedOptions.vuescroll.checkShiftKey;
 
       var delta = 0;
       var dir = void 0;
       if (event.wheelDelta) {
-        if (event.deltaY) {
-          dir = 'dy';
-          delta = event.deltaY;
-        } else if (event.deltaX) {
-          delta = event.deltaX;
-          dir = 'dx';
+
+        if (event.deltaY || event.deltaX) {
+          if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+            delta = event.deltaX;
+            dir = 'dx';
+          } else {
+            dir = 'dy';
+            delta = event.deltaY;
+          }
         } else {
           delta = -1 * event.wheelDelta / 2;
         }
@@ -2344,10 +2348,12 @@ var update = {
         delta = event.detail * 16;
       }
 
-      if (event.shiftKey) {
-        dir = 'dx';
-      } else {
-        dir = 'dy';
+      if (checkShiftKey) {
+        if (event.shiftKey) {
+          dir = 'dx';
+        } else {
+          dir = 'dy';
+        }
       }
 
       if (isReverse) {
@@ -2357,7 +2363,6 @@ var update = {
       if (this.checkScrollable(event, dir, delta)) {
         event.stopPropagation();
         event.preventDefault();
-
         this.scrollBy(defineProperty({}, dir, delta), duration);
       }
     }
@@ -2528,7 +2533,8 @@ var core = {
 var config = {
   vuescroll: {
     wheelScrollDuration: 0,
-    wheelDirectionReverse: false
+    wheelDirectionReverse: false,
+    checkShiftKey: true
   }
 };
 
@@ -2543,7 +2549,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.16.1',
+  version: '4.16.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

@@ -44,6 +44,11 @@ type BounceArray = {
   right?: number;
 };
 
+type Position = {
+  scrollTop?: number;
+  scrollLeft?: number;
+};
+
 interface Scroller {
   /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
   bouncing?: BounceArray;
@@ -76,6 +81,7 @@ interface Container {
   snapping?: Snapping;
   scroller?: Scroller;
   wheelSmooth?: boolean;
+  checkShiftKey?: boolean;
 }
 
 declare type easing =
@@ -296,4 +302,11 @@ export default interface vuescroll extends Vue {
    * @memberof vuescroll
    */
   clearScrollingTimes(): void;
+
+  /**
+   * @description Get current position
+   * @author wangyi7099
+   * @memberof vuescroll
+   */
+  getPosition(): Position;
 }
