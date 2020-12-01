@@ -7,7 +7,7 @@ export default {
     updateNativeModeBarState() {
       const container = this.scrollPanelElm;
       const isPercent = this.vuescroll.state.currentSizeStrategy == 'percent';
-      const {width, height} = this.vuescroll.state;
+      const { width, height } = this.vuescroll.state;
       const clientWidth =
         isPercent || !width ? container.clientWidth : width.slice(0, -2); // xxxpx ==> xxx
       const clientHeight =
@@ -31,7 +31,7 @@ export default {
     css(dom, style) /* istanbul ignore next */ {
       return window.getComputedStyle(dom)[style];
     },
-    checkScrollable(e, dir, delta) /* istanbul ignore next */ {
+    checkScrollable(e, deltaX, deltaY) /* istanbul ignore next */ {
       let scrollable = false;
 
       // check mouse point scrollable.
@@ -42,17 +42,14 @@ export default {
         dom !== this.scrollPanelElm.parentNode &&
         !/^BODY|HTML/.test(dom.nodeName)
       ) {
-        const ov =
-          (dir == 'dy'
-            ? this.css(dom, 'overflowY')
-            : this.css(dom, 'overflowX')) ||
-          this.css(dom, 'overflow') ||
-          '';
+        const ov = this.css(dom, 'overflow') || '';
         if (/scroll|auto/.test(ov)) {
-          const {v, h} = this.getScrollProcess(dom);
+          const { v, h } = this.getScrollProcess(dom);
           if (
-            (dir == 'dx' && ((delta < 0 && h > 0) || (delta > 0 && h < 1))) ||
-            (dir == 'dy' && ((delta < 0 && v > 0) || (delta > 0 && v < 1)))
+            (deltaX < 0 && h > 0) ||
+            (deltaX > 0 && h < 1) ||
+            (deltaY < 0 && v > 0) ||
+            (deltaY > 0 && v < 1)
           ) {
             scrollable = dom == this.scrollPanelElm;
             break;
@@ -64,54 +61,58 @@ export default {
       return scrollable;
     },
     onMouseWheel(event) /* istanbul ignore next */ {
-      const duration = this.mergedOptions.vuescroll.wheelScrollDuration;
-      const isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
-      const checkShiftKey = this.mergedOptions.vuescroll.checkShiftKey;
+      const {
+        wheelDirectionReverse: isReverse,
+        wheelScrollDuration: duration,
+        checkShiftKey,
+        locking
+      } = this.mergedOptions.vuescroll;
 
-      let delta = 0;
-      let dir;
+      let deltaX;
+      let deltaY;
       if (event.wheelDelta) {
-
         if (event.deltaY || event.deltaX) {
-          if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-            delta = event.deltaX;
-            dir = 'dx';
-          } else {
-            dir = 'dy';
-            delta = event.deltaY;
+          deltaX = event.deltaX;
+          deltaY = event.deltaY;
+          if (locking) {
+            if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+              deltaY = 0;
+            } else {
+              deltaX = 0;
+            }
           }
         } else {
-          delta = (-1 * event.wheelDelta) / 2;
+          deltaX = 0;
+          deltaY = (-1 * event.wheelDelta) / 2;
         }
-
       } else if (event.detail) {
+        deltaY = deltaX = event.detail * 16;
         // horizontal scroll
         if (event.axis == 1) {
-          dir = 'dx';
+          deltaY = 0;
         } else if (event.axis == 2) {
           // vertical scroll
-          dir = 'dy';
-        }
-        delta = event.detail * 16;
-      }
-
-      if(checkShiftKey){
-        if (event.shiftKey) {
-          dir = 'dx';
-        } else {
-          dir = 'dy';
+          deltaX = 0;
         }
       }
 
+      if (!checkShiftKey && event.shiftKey) {
+        // swap value
+        deltaX ^= deltaY;
+        deltaY ^= deltaX;
+        deltaX ^= deltaY;
+      }
 
       if (isReverse) {
-        dir = dir == 'dx' ? 'dy' : 'dx';
+        deltaX ^= deltaY;
+        deltaY ^= deltaX;
+        deltaX ^= deltaY;
       }
 
-      if (this.checkScrollable(event, dir, delta)) {
+      if (this.checkScrollable(event, deltaX, deltaY)) {
         event.stopPropagation();
         event.preventDefault();
-        this.scrollBy({[dir]: delta}, duration);
+        this.scrollBy({ dx: deltaX, dy: deltaY }, duration);
       }
     }
   },

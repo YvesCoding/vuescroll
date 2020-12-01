@@ -68,6 +68,8 @@ interface Container {
   wheelScrollDuration?: number;
   wheelDirectionReverse?: boolean;
   checkShiftKey?: boolean;
+  /** Enable locking to the main axis if user moves only slightly on one of them at start */
+  locking?:boolean;
 }
 
 export declare type easing =

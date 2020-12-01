@@ -2,6 +2,7 @@ export const config = {
   vuescroll: {
     wheelScrollDuration: 0,
     wheelDirectionReverse: false,
-    checkShiftKey: true
+    checkShiftKey: true,
+    locking: true
   }
 };

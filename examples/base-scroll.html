@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="./vue.js"></script>
-    <script src="./vuescroll.js"></script>
+    <script src="../dist/vuescroll.js"></script>
     <style>
       * {
         margin: 0;
@@ -57,7 +57,12 @@
       new Vue({
         el: '#app',
         data: {
-          ops: {},
+          ops: {
+            vuescroll: {
+              checkShiftKey: true,
+              locking: false
+            }
+          },
         },
       });
     </script>

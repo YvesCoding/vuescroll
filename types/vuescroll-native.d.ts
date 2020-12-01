@@ -15,6 +15,7 @@ interface Container {
   wheelScrollDuration?: number;
   wheelDirectionReverse?: boolean;
   checkShiftKey?: boolean;
+  locking?:boolean;
 }
 
 type Position = {
