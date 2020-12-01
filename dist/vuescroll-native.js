@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.16.2
+    * Vuescroll v4.16.3
     * (c) 2018-2020 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -2295,19 +2295,19 @@ var update = {
     css: function css(dom, style) /* istanbul ignore next */{
       return window.getComputedStyle(dom)[style];
     },
-    checkScrollable: function checkScrollable(e, dir, delta) /* istanbul ignore next */{
+    checkScrollable: function checkScrollable(e, deltaX, deltaY) /* istanbul ignore next */{
       var scrollable = false;
 
       // check mouse point scrollable.
       var dom = e.target ? e.target : e;
       while (dom && dom.nodeType == 1 && dom !== this.scrollPanelElm.parentNode && !/^BODY|HTML/.test(dom.nodeName)) {
-        var ov = (dir == 'dy' ? this.css(dom, 'overflowY') : this.css(dom, 'overflowX')) || this.css(dom, 'overflow') || '';
+        var ov = this.css(dom, 'overflow') || '';
         if (/scroll|auto/.test(ov)) {
           var _getScrollProcess = this.getScrollProcess(dom),
               v = _getScrollProcess.v,
               h = _getScrollProcess.h;
 
-          if (dir == 'dx' && (delta < 0 && h > 0 || delta > 0 && h < 1) || dir == 'dy' && (delta < 0 && v > 0 || delta > 0 && v < 1)) {
+          if (deltaX < 0 && h > 0 || deltaX > 0 && h < 1 || deltaY < 0 && v > 0 || deltaY > 0 && v < 1) {
             scrollable = dom == this.scrollPanelElm;
             break;
           }
@@ -2318,52 +2318,58 @@ var update = {
       return scrollable;
     },
     onMouseWheel: function onMouseWheel(event) /* istanbul ignore next */{
-      var duration = this.mergedOptions.vuescroll.wheelScrollDuration;
-      var isReverse = this.mergedOptions.vuescroll.wheelDirectionReverse;
-      var checkShiftKey = this.mergedOptions.vuescroll.checkShiftKey;
+      var _mergedOptions$vuescr = this.mergedOptions.vuescroll,
+          isReverse = _mergedOptions$vuescr.wheelDirectionReverse,
+          duration = _mergedOptions$vuescr.wheelScrollDuration,
+          checkShiftKey = _mergedOptions$vuescr.checkShiftKey,
+          locking = _mergedOptions$vuescr.locking;
 
-      var delta = 0;
-      var dir = void 0;
+
+      var deltaX = void 0;
+      var deltaY = void 0;
       if (event.wheelDelta) {
-
         if (event.deltaY || event.deltaX) {
-          if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-            delta = event.deltaX;
-            dir = 'dx';
-          } else {
-            dir = 'dy';
-            delta = event.deltaY;
+          deltaX = event.deltaX;
+          deltaY = event.deltaY;
+          if (locking) {
+            if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+              deltaY = 0;
+            } else {
+              deltaX = 0;
+            }
           }
         } else {
-          delta = -1 * event.wheelDelta / 2;
+          deltaX = 0;
+          deltaY = -1 * event.wheelDelta / 2;
         }
       } else if (event.detail) {
+        deltaY = deltaX = event.detail * 16;
         // horizontal scroll
         if (event.axis == 1) {
-          dir = 'dx';
+          deltaY = 0;
         } else if (event.axis == 2) {
           // vertical scroll
-          dir = 'dy';
+          deltaX = 0;
         }
-        delta = event.detail * 16;
       }
 
-      if (checkShiftKey) {
-        if (event.shiftKey) {
-          dir = 'dx';
-        } else {
-          dir = 'dy';
-        }
+      if (!checkShiftKey && event.shiftKey) {
+        // swap value
+        deltaX ^= deltaY;
+        deltaY ^= deltaX;
+        deltaX ^= deltaY;
       }
 
       if (isReverse) {
-        dir = dir == 'dx' ? 'dy' : 'dx';
+        deltaX ^= deltaY;
+        deltaY ^= deltaX;
+        deltaX ^= deltaY;
       }
 
-      if (this.checkScrollable(event, dir, delta)) {
+      if (this.checkScrollable(event, deltaX, deltaY)) {
         event.stopPropagation();
         event.preventDefault();
-        this.scrollBy(defineProperty({}, dir, delta), duration);
+        this.scrollBy({ dx: deltaX, dy: deltaY }, duration);
       }
     }
   },
@@ -2534,7 +2540,8 @@ var config = {
   vuescroll: {
     wheelScrollDuration: 0,
     wheelDirectionReverse: false,
-    checkShiftKey: true
+    checkShiftKey: true,
+    locking: true
   }
 };
 
@@ -2549,7 +2556,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.16.2',
+  version: '4.16.3',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

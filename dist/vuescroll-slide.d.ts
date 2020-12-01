@@ -81,7 +81,6 @@ interface Container {
   snapping?: Snapping;
   scroller?: Scroller;
   wheelSmooth?: boolean;
-  checkShiftKey?: boolean;
 }
 
 declare type easing =
