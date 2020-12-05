@@ -36,8 +36,6 @@ type BounceArray = {
 interface Scroller {
   /** Enable bouncing (content can be slowly moved outside and jumps back after releasing) */
   bouncing?: BounceArray;
-  /** Enable locking to the main axis if user moves only slightly on one of them at start */
-  locking?: boolean;
   /** Minimum zoom level */
   minZoom?: number;
   /** Maximum zoom level */

@@ -45,8 +45,6 @@ export const config = {
         left: 100,
         right: 100
       },
-      /** Enable locking to the main axis if user moves only slightly on one of them at start */
-      locking: true,
       /** Minimum zoom level */
       minZoom: 0.5,
       /** Maximum zoom level */

@@ -8,7 +8,9 @@ const baseConfig = {
     // height ?
     sizeStrategy: 'percent',
     /** Whether to detect dom resize or not */
-    detectResize: true
+    detectResize: true,
+    /** Enable locking to the main axis if user moves only slightly on one of them at start */
+    locking: true
   },
   scrollPanel: {
     // when component mounted.. it will automatically scrolls.
