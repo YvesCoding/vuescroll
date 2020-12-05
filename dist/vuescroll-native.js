@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.16.3
+    * Vuescroll v4.17.0
     * (c) 2018-2020 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -616,7 +616,9 @@ var baseConfig = {
     // height ?
     sizeStrategy: 'percent',
     /** Whether to detect dom resize or not */
-    detectResize: true
+    detectResize: true,
+    /** Enable locking to the main axis if user moves only slightly on one of them at start */
+    locking: true
   },
   scrollPanel: {
     // when component mounted.. it will automatically scrolls.
@@ -2540,8 +2542,7 @@ var config = {
   vuescroll: {
     wheelScrollDuration: 0,
     wheelDirectionReverse: false,
-    checkShiftKey: true,
-    locking: true
+    checkShiftKey: true
   }
 };
 
@@ -2556,7 +2557,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.16.3',
+  version: '4.17.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);

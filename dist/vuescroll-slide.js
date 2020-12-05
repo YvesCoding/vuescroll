@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.16.3
+    * Vuescroll v4.17.0
     * (c) 2018-2020 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -592,7 +592,9 @@ var baseConfig = {
     // height ?
     sizeStrategy: 'percent',
     /** Whether to detect dom resize or not */
-    detectResize: true
+    detectResize: true,
+    /** Enable locking to the main axis if user moves only slightly on one of them at start */
+    locking: true
   },
   scrollPanel: {
     // when component mounted.. it will automatically scrolls.
@@ -4175,7 +4177,8 @@ var update = {
           paging = _mergedOptions$vuescr2.paging,
           snapping = _mergedOptions$vuescr2.snapping.enable,
           renderMethod = _mergedOptions$vuescr2.renderMethod,
-          zooming = _mergedOptions$vuescr2.zooming;
+          zooming = _mergedOptions$vuescr2.zooming,
+          locking = _mergedOptions$vuescr2.locking;
       // disale zooming when refresh or load enabled
 
       zooming = !this.refreshLoad && !paging && !snapping && zooming;
@@ -4194,7 +4197,8 @@ var update = {
         animationDuration: this.mergedOptions.scrollPanel.speed,
         paging: paging,
         snapping: snapping,
-        scrollingComplete: scrollingComplete
+        scrollingComplete: scrollingComplete,
+        locking: locking
       }));
 
       this.scroller.__disable = this.mergedOptions.vuescroll.scroller.disable;
@@ -4585,8 +4589,6 @@ var config = {
         left: 100,
         right: 100
       },
-      /** Enable locking to the main axis if user moves only slightly on one of them at start */
-      locking: true,
       /** Minimum zoom level */
       minZoom: 0.5,
       /** Maximum zoom level */
@@ -4634,7 +4636,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.16.3',
+  version: '4.17.0',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
