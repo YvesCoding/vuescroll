@@ -96,7 +96,7 @@ export default {
         }
       }
 
-      if (!checkShiftKey && event.shiftKey) {
+      if (checkShiftKey && event.shiftKey) {
         // swap value
         deltaX ^= deltaY;
         deltaY ^= deltaX;
