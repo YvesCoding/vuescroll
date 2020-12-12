@@ -92,15 +92,13 @@ export default {
       };
     },
     emitEvent(eventType, nativeEvent = null) {
-      let { scrollTop, scrollLeft } = this.scrollPanelElm;
-
       const vertical = {
         type: 'vertical'
       };
       const horizontal = {
         type: 'horizontal'
       };
-
+      const { scrollTop, scrollLeft } = this.getPosition();
       const { v, h } = this.getScrollProcess();
 
       vertical.process = v;
