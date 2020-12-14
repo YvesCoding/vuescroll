@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.17.1
+    * Vuescroll v4.17.2
     * (c) 2018-2020 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -4432,10 +4432,6 @@ var core$1 = {
     },
     emitEvent: function emitEvent(eventType) {
       var nativeEvent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-      var _scrollPanelElm2 = this.scrollPanelElm,
-          scrollTop = _scrollPanelElm2.scrollTop,
-          scrollLeft = _scrollPanelElm2.scrollLeft;
-
 
       var vertical = {
         type: 'vertical'
@@ -4443,6 +4439,10 @@ var core$1 = {
       var horizontal = {
         type: 'horizontal'
       };
+
+      var _getPosition = this.getPosition(),
+          scrollTop = _getPosition.scrollTop,
+          scrollLeft = _getPosition.scrollLeft;
 
       var _getScrollProcess = this.getScrollProcess(),
           v = _getScrollProcess.v,
@@ -4636,7 +4636,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.17.1',
+  version: '4.17.2',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
