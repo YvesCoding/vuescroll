@@ -4,3 +4,4 @@ coverage
 package-lock.json
 debug.log
 yarn-error.log
+.idea
