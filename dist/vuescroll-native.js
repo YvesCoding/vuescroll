@@ -1,6 +1,6 @@
 /*
     * Vuescroll v4.17.2
-    * (c) 2018-2020 Yi(Yves) Wang
+    * (c) 2018-2021 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
     * Website: http://vuescrolljs.yvescoding.org/
@@ -2307,9 +2307,10 @@ var update = {
         if (/scroll|auto/.test(ov)) {
           var _getScrollProcess = this.getScrollProcess(dom),
               v = _getScrollProcess.v,
-              h = _getScrollProcess.h;
+              h = _getScrollProcess.h,
+              isVerticalScrollable = _getScrollProcess.isVerticalScrollable;
 
-          if (deltaX < 0 && h > 0 || deltaX > 0 && h < 1 || deltaY < 0 && v > 0 || deltaY > 0 && v < 1) {
+          if (deltaX < 0 && h > 0 || deltaX > 0 && h < 1 || isVerticalScrollable && (deltaY < 0 && v > 0 || deltaY > 0 && v < 1)) {
             scrollable = dom == this.scrollPanelElm;
             break;
           }
@@ -2437,10 +2438,12 @@ var core = {
 
       var v = Math.min(scrollTop / (scrollHeight - clientHeight || 1), 1);
       var h = Math.min(scrollLeft / (scrollWidth - clientWidth || 1), 1);
+      var isVerticalScrollable = scrollHeight !== clientHeight;
 
       return {
         v: v,
-        h: h
+        h: h,
+        isVerticalScrollable: isVerticalScrollable
       };
     },
     emitEvent: function emitEvent(eventType) {

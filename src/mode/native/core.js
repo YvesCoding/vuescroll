@@ -59,10 +59,12 @@ export default {
 
       const v = Math.min(scrollTop / (scrollHeight - clientHeight || 1), 1);
       const h = Math.min(scrollLeft / (scrollWidth - clientWidth || 1), 1);
+      const isVerticalScrollable = scrollHeight !== clientHeight;
 
       return {
         v,
-        h
+        h,
+        isVerticalScrollable
       };
     },
     emitEvent(eventType, nativeEvent = null) {

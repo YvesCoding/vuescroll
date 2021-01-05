@@ -44,12 +44,14 @@ export default {
       ) {
         const ov = this.css(dom, 'overflow') || '';
         if (/scroll|auto/.test(ov)) {
-          const { v, h } = this.getScrollProcess(dom);
+          const { v, h, isVerticalScrollable } = this.getScrollProcess(dom);
           if (
             (deltaX < 0 && h > 0) ||
             (deltaX > 0 && h < 1) ||
-            (deltaY < 0 && v > 0) ||
-            (deltaY > 0 && v < 1)
+            isVerticalScrollable && (
+              (deltaY < 0 && v > 0) ||
+              (deltaY > 0 && v < 1)
+            )
           ) {
             scrollable = dom == this.scrollPanelElm;
             break;
