@@ -45,11 +45,11 @@ export default {
         const ov = this.css(dom, 'overflow') || '';
         if (/scroll|auto/.test(ov)) {
           const { v, h } = this.getScrollProcess(dom);
+          const isScrollX = this.css(dom, 'overflowX') !== 'hidden';
+          const isScrollY = this.css(dom, 'overflowY') !== 'hidden';
           if (
-            (deltaX < 0 && h > 0) ||
-            (deltaX > 0 && h < 1) ||
-            (deltaY < 0 && v > 0) ||
-            (deltaY > 0 && v < 1)
+            isScrollX && ((deltaX < 0 && h > 0) || (deltaX > 0 && h < 1)) ||
+            isScrollY && ((deltaY < 0 && v > 0) || (deltaY > 0 && v < 1))
           ) {
             scrollable = dom == this.scrollPanelElm;
             break;
