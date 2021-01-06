@@ -1,6 +1,6 @@
 /*
-    * Vuescroll v4.17.2
-    * (c) 2018-2020 Yi(Yves) Wang
+    * Vuescroll v4.17.3
+    * (c) 2018-2021 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
     * Website: http://vuescrolljs.yvescoding.org/
@@ -2309,7 +2309,9 @@ var update = {
               v = _getScrollProcess.v,
               h = _getScrollProcess.h;
 
-          if (deltaX < 0 && h > 0 || deltaX > 0 && h < 1 || deltaY < 0 && v > 0 || deltaY > 0 && v < 1) {
+          var isScrollX = this.css(dom, 'overflowX') !== 'hidden';
+          var isScrollY = this.css(dom, 'overflowY') !== 'hidden';
+          if (isScrollX && (deltaX < 0 && h > 0 || deltaX > 0 && h < 1) || isScrollY && (deltaY < 0 && v > 0 || deltaY > 0 && v < 1)) {
             scrollable = dom == this.scrollPanelElm;
             break;
           }
@@ -2557,7 +2559,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.17.2',
+  version: '4.17.3',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
