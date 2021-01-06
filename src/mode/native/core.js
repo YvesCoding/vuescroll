@@ -60,11 +60,13 @@ export default {
       const v = Math.min(scrollTop / (scrollHeight - clientHeight || 1), 1);
       const h = Math.min(scrollLeft / (scrollWidth - clientWidth || 1), 1);
       const isVerticalScrollable = scrollHeight !== clientHeight;
+      const isHorizontalScrollable = scrollWidth !== clientWidth;
 
       return {
         v,
         h,
-        isVerticalScrollable
+        isVerticalScrollable,
+        isHorizontalScrollable
       };
     },
     emitEvent(eventType, nativeEvent = null) {
