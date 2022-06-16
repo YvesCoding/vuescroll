@@ -1,4 +1,4 @@
- <p align="center"><a href="http://vuescrolljs.yvescoding.org/"><img width="100" src="http://vuescrolljs.yvescoding.org/logo.png" /></a></p>
+ <p align="center"><a href="http://vuescrolljs.yvescoding.me/"><img width="100" src="http://vuescrolljs.yvescoding.me/logo.png" /></a></p>
 <h1 align="center">Vuescroll</h1>
 <p align="center">
   <a href="https://www.npmjs.com/package/vuescroll"><img src="https://img.shields.io/npm/v/vuescroll.svg" alt="Version"></a><a href="https://circleci.com/gh/YvesCoding/vuescroll/tree/dev"><img src="https://circleci.com/gh/YvesCoding/vuescroll/tree/dev.png?style=shield" alt="Build Status"></a>
@@ -25,7 +25,7 @@ _Vuescroll's compatibility is the same as `Vue.js 2.X`._
 ## Demo
 
 - You can find demo under examples folder of repo.
-- You can see the full features of vuescroll at [Live Demo](https://vuescrolljs.yvescoding.org/demo) section of the website.
+- You can see the full features of vuescroll at [Live Demo](https://vuescrolljs.yvescoding.me/demo) section of the website.
 
 ## Install
 
@@ -65,7 +65,7 @@ Vue.component('vue-scroll', vuescroll);
 
 ## Documentation
 
-For detailed docs, please see [Guide](https://vuescrolljs.yvescoding.org/guide) section on the website.
+For detailed docs, please see [Guide](https://vuescrolljs.yvescoding.me/guide) section on the website.
 
 ## Communication
 
