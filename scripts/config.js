@@ -11,13 +11,13 @@ const banner = `/*
     * (c) 2018-${new Date().getFullYear()} Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
-    * Website: http://vuescrolljs.yvescoding.org/
+    * Website: http://vuescrolljs.yvescoding.me/
     */
    `;
 
 const aliases = require('./alias');
 
-const resolve = p => {
+const resolve = (p) => {
   const base = p.split('/')[0];
   if (aliases[base]) {
     return path.resolve(aliases[base], p.slice(base.length + 1));

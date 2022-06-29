@@ -98,7 +98,7 @@ ops: {
 
 ### BREAKING CHANGES
 
-- **bar:** The vBar, hBar,vRail, hRail are not avilable now. Use rail, bar that works for both vertical and horizontal. [Relative address](http://vuescrolljs.yvescoding.org/guide/configuration.html#bar)
+- **bar:** The vBar, hBar,vRail, hRail are not avilable now. Use rail, bar that works for both vertical and horizontal. [Relative address](http://vuescrolljs.yvescoding.me/guide/configuration.html#bar)
 
 <a name="4.6.24"></a>
 
@@ -273,7 +273,7 @@ ops: {
 
 ### Features
 
-- Support customize [slot dom](http://vuescrolljs.yvescoding.org/guide/slot.html) in pull-refresh or push-load ([dc94053](https://github.com/YvesCoding/commit/dc94053))
+- Support customize [slot dom](http://vuescrolljs.yvescoding.me/guide/slot.html) in pull-refresh or push-load ([dc94053](https://github.com/YvesCoding/commit/dc94053))
 
 <a name="4.5.27"></a>
 
