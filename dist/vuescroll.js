@@ -1,9 +1,9 @@
 /*
-    * Vuescroll v4.17.3
-    * (c) 2018-2021 Yi(Yves) Wang
+    * Vuescroll v4.17.4
+    * (c) 2018-2022 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
-    * Website: http://vuescrolljs.yvescoding.org/
+    * Website: http://vuescrolljs.yvescoding.me/
     */
    
 (function (global, factory) {
@@ -224,6 +224,56 @@ var touchManager = function () {
   return touchManager;
 }();
 
+/**
+ * ZoomManager
+ * Get the browser zoom ratio
+ */
+
+var ZoomManager = function () {
+  function ZoomManager() {
+    var _this = this;
+
+    classCallCheck(this, ZoomManager);
+
+    this.originPixelRatio = this.getRatio();
+    this.lastPixelRatio = this.originPixelRatio;
+    window.addEventListener('resize', function () {
+      _this.lastPixelRatio = _this.getRatio();
+    });
+  }
+
+  createClass(ZoomManager, [{
+    key: 'getRatio',
+    value: function getRatio() {
+      var ratio = 0;
+      var screen = window.screen;
+      var ua = navigator.userAgent.toLowerCase();
+
+      if (window.devicePixelRatio !== undefined) {
+        ratio = window.devicePixelRatio;
+      } else if (~ua.indexOf('msie')) {
+        if (screen.deviceXDPI && screen.logicalXDPI) {
+          ratio = screen.deviceXDPI / screen.logicalXDPI;
+        }
+      } else if (window.outerWidth !== undefined && window.innerWidth !== undefined) {
+        ratio = window.outerWidth / window.innerWidth;
+      }
+
+      if (ratio) {
+        ratio = Math.round(ratio * 100);
+      }
+
+      return ratio;
+    }
+  }, {
+    key: 'getRatioBetweenPreAndCurrent',
+    value: function getRatioBetweenPreAndCurrent() {
+      return this.originPixelRatio / this.lastPixelRatio;
+    }
+  }]);
+  return ZoomManager;
+}();
+
 function deepCopy(from, to, shallow) {
   if (shallow && isUndef(to)) {
     return from;
@@ -301,10 +351,14 @@ function defineReactive(target, key, source, souceKey) {
 }
 
 var scrollBarWidth = void 0;
+var zoomManager = void 0;
 function getGutter() {
   /* istanbul ignore next */
   if (isServer()) return 0;
-  if (scrollBarWidth !== undefined) return scrollBarWidth;
+  if (!zoomManager) {
+    zoomManager = new ZoomManager();
+  }
+  if (scrollBarWidth !== undefined) return scrollBarWidth * zoomManager.getRatioBetweenPreAndCurrent();
   var outer = document.createElement('div');
   outer.style.visibility = 'hidden';
   outer.style.width = '100px';
@@ -322,8 +376,11 @@ function getGutter() {
   var widthWithScroll = inner.offsetWidth;
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
-
-  return scrollBarWidth;
+  // multi the browser zoom
+  if (!zoomManager) {
+    zoomManager = new ZoomManager();
+  }
+  return scrollBarWidth * zoomManager.getRatioBetweenPreAndCurrent();
 }
 
 function eventCenter(dom, eventName, hander) {
@@ -5103,7 +5160,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.17.3',
+  version: '4.17.4',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
