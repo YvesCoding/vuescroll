@@ -1,5 +1,6 @@
 import { isIE, isIos, touchManager, isServer } from './env';
 export { isIE, isIos, touchManager, isServer };
+import ZoomManager from './zoomManager';
 
 export function deepCopy(from, to, shallow) {
   if (shallow && isUndef(to)) {
@@ -80,10 +81,15 @@ export function defineReactive(target, key, source, souceKey) {
 }
 
 let scrollBarWidth;
+let zoomManager;
 export function getGutter() {
   /* istanbul ignore next */
   if (isServer()) return 0;
-  if (scrollBarWidth !== undefined) return scrollBarWidth;
+  if (!zoomManager) {
+    zoomManager = new ZoomManager();
+  }
+  if (scrollBarWidth !== undefined)
+    return scrollBarWidth * zoomManager.getRatioBetweenPreAndCurrent();
   const outer = document.createElement('div');
   outer.style.visibility = 'hidden';
   outer.style.width = '100px';
@@ -101,8 +107,11 @@ export function getGutter() {
   const widthWithScroll = inner.offsetWidth;
   outer.parentNode.removeChild(outer);
   scrollBarWidth = widthNoScroll - widthWithScroll;
-
-  return scrollBarWidth;
+  // multi the browser zoom
+  if (!zoomManager) {
+    zoomManager = new ZoomManager();
+  }
+  return scrollBarWidth * zoomManager.getRatioBetweenPreAndCurrent();
 }
 
 export function eventCenter(
