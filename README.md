@@ -24,7 +24,7 @@ Vuescroll is a scrollbar plugin based on Vue.js 2.X, it is very easy to use, no 
 
 | vue version | vuescroll version |
 | ----------- | ----------------- |
-| 2.x         | <=4.17.4          |
+| 2.x         | <=4.X             |
 | 3.x         | >=5.0.0           |
 
 ## Demo
@@ -47,15 +47,39 @@ yarn add vuescroll
 
 ### Import and registry
 
+#### For vue2.x
+
 ```js
 import vuescroll from 'vuescroll';
 import Vue from 'vue';
 
-Vue.use(vuescroll);
+Vue.use(vuescroll, {
+  ops: {
+    // The global config
+  },
+  name: 'myScroll' // customize component name, default -> vueScroll
+});
 
 // OR
 
 Vue.component('vue-scroll', vuescroll);
+```
+
+#### For vue3.x
+
+```js
+import { createApp } from 'vue';
+import vuescroll from 'vuescroll';
+
+const app = createApp(App);
+
+// You can set global config here.
+app.use(vuescroll, {
+  ops: {
+    // The global config
+  },
+  name: 'myScroll' // customize component name, default -> vueScroll
+});
 ```
 
 ### Wrap the content by vue-scroll
