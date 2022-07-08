@@ -8,7 +8,8 @@ module.exports = {
     'no-unused-vars': [
       'error',
       {
-        argsIgnorePattern: '^h$'
+        argsIgnorePattern: '^h$',
+        varsIgnorePattern: '^h$'
       }
     ],
     quotes: ['error', 'single'],
