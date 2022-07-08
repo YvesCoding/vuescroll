@@ -53,8 +53,8 @@ describe('rail and scrollButton', () => {
       })
       .wait(350)
       .then(() => {
-        const styleOfTransform = vs.$el.querySelector('.__bar-is-vertical')
-          .style.transform;
+        const styleOfTransform =
+          vs.$el.querySelector('.__bar-is-vertical').style.transform;
         expect(styleOfTransform).toBe('translateY(50%)');
         expect(panelElm.scrollTop).toBe(maxScrollTop / 2);
       })

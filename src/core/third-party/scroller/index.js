@@ -15,7 +15,7 @@
  */
 import { easingPattern, createEasingFunction } from '../easingPattern';
 import { core } from './animate';
-import { NOOP } from 'shared/constants';
+import { NOOP } from 'shared';
 
 var animatingMethod = null;
 

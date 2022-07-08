@@ -46,10 +46,10 @@ function buildEntry(config) {
     );
   }
   // eslint-disable-next-line
-  return rollup.rollup(config).then(async bundle => {
-    const { code } = await bundle.generate(output);
+  return rollup.rollup(config).then(async (bundle) => {
+    const ot = await bundle.generate(output);
     const fileName = path.basename(output.file);
-    await report(fileName, code);
+    await report(fileName, ot.output[0].code);
     return bundle.write(output);
   });
 }
@@ -71,13 +71,13 @@ function blue(str) {
   return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m';
 }
 
-const resolve = dir => path.resolve(__dirname, '../', dir);
+const resolve = (dir) => path.resolve(__dirname, '../', dir);
 const copyFilesArr = [
   resolve('types/vuescroll-native.d.ts'),
   resolve('types/vuescroll-slide.d.ts')
 ];
 function copyOtherFiles() {
-  copyFilesArr.forEach(f => {
+  copyFilesArr.forEach((f) => {
     const file = fs.readFileSync(f, 'utf8');
     report(f, file);
     fs.writeFileSync(resolve(`dist/${path.basename(f)}`), file, 'utf8');

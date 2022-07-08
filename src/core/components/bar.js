@@ -1,7 +1,6 @@
-import scrollMap from 'shared/scroll-map';
-import { eventCenter, getRealParent } from 'shared/util';
+import { TouchManager, scrollMap, eventCenter, getRealParent } from 'shared';
 import { requestAnimationFrame } from 'core/third-party/scroller/requestAnimationFrame';
-import { touchManager } from 'src/shared/env';
+import { h } from 'vue';
 
 const colorCache = {};
 const rgbReg = /rgb\(/;
@@ -30,8 +29,8 @@ function getRgbAColor(color, opacity) {
   }, ${opacity})`);
 }
 
-export default {
-  name: 'bar',
+const Scrollbar = {
+  name: 'Scrollbar',
   props: {
     ops: Object,
     state: Object,
@@ -50,17 +49,13 @@ export default {
       return (1 - this.barSize) / (1 - this.state.size);
     }
   },
-  render(h) {
+  render() {
     const vm = this;
     /** Get rgbA format background color */
     const railBackgroundColor = getRgbAColor(
       vm.ops.rail.background,
       vm.ops.rail.opacity
     );
-
-    if (!this.touchManager) {
-      this.touchManager = new touchManager();
-    }
 
     /** Rail Data */
     const railSize = vm.ops.rail.size;
@@ -83,13 +78,11 @@ export default {
     };
 
     if (touchObj) {
-      rail.on = {
-        [touchObj.touchenter]() {
-          vm.setRailHover();
-        },
-        [touchObj.touchleave]() {
-          vm.setRailLeave();
-        }
+      rail[touchObj.touchenter] = function () {
+        vm.setRailHover();
+      };
+      rail[touchObj.touchleave] = function () {
+        vm.setRailLeave();
       };
     }
 
@@ -102,8 +95,7 @@ export default {
         borderRadius: vm.ops.rail.specifyBorderRadius || railSize,
         [vm.bar.posName]: buttonSize,
         [vm.bar.opposName]: buttonSize
-      },
-      on: {}
+      }
     };
 
     const scrollDistance = vm.state.posValue * vm.state.size;
@@ -135,8 +127,7 @@ export default {
     const bar = {
       style: barStyle,
       class: `__bar-is-${vm.type}`,
-      ref: 'thumb',
-      on: {}
+      ref: 'thumb'
     };
 
     if (vm.type == 'vertical') {
@@ -153,24 +144,25 @@ export default {
     /* istanbul ignore next */
     {
       const touchObj = this.touchManager.getTouchObject();
-      bar.on[touchObj.touchstart] = this.createBarEvent();
-      barWrapper.on[touchObj.touchstart] = this.createTrackEvent();
+      bar[touchObj.touchstart] = this.createBarEvent();
+      barWrapper[touchObj.touchstart] = this.createTrackEvent();
     }
 
     return (
       <div {...rail}>
-        {this.createScrollbarButton(h, 'start')}
+        {this.createScrollbarButton('start')}
         {this.hideBar ? null : (
           <div {...barWrapper}>
             <div {...bar} />
           </div>
         )}
-        {this.createScrollbarButton(h, 'end')}
+        {this.createScrollbarButton('end')}
       </div>
     );
   },
   data() {
     return {
+      touchManager: new TouchManager(),
       isBarDragging: false
     };
   },
@@ -221,8 +213,8 @@ export default {
 
         // Tell parent that the mouse has been down.
         ctx.setBarDrag(true);
-        eventCenter(document, touchObj.touchmove, mousemove);
-        eventCenter(document, touchObj.touchend, mouseup);
+        eventCenter(document, touchObj._touchmove, mousemove);
+        eventCenter(document, touchObj._touchend, mouseup);
       }
 
       function mousemove(e) /* istanbul ignore next */ {
@@ -260,8 +252,8 @@ export default {
         document.onselectstart = null;
         ctx.axisStartPos = 0;
 
-        eventCenter(document, touchObj.touchmove, mousemove, false, 'off');
-        eventCenter(document, touchObj.touchend, mouseup, false, 'off');
+        eventCenter(document, touchObj._touchmove, mousemove, false, 'off');
+        eventCenter(document, touchObj._touchend, mouseup, false, 'off');
       }
 
       return mousedown;
@@ -297,7 +289,7 @@ export default {
     },
 
     // Scrollbuton relative things...
-    createScrollbarButton(h, type /* start or end  */) {
+    createScrollbarButton(type /* start or end  */) {
       const barContext = this;
 
       if (!barContext.ops.scrollButton.enable) {
@@ -336,8 +328,7 @@ export default {
           bottom: '0',
           right: '0',
           left: '0'
-        },
-        on: {}
+        }
       };
 
       if (barContext.type == 'vertical') {
@@ -361,7 +352,7 @@ export default {
       /* istanbul ignore next */
       {
         const touchObj = this.touchManager.getTouchObject();
-        innerProps.on[touchObj.touchstart] = this.createScrollButtonEvent(
+        innerProps[touchObj.touchstart] = this.createScrollButtonEvent(
           type,
           touchObj
         );
@@ -410,9 +401,9 @@ export default {
           ['d' + ctx.bar.axis.toLowerCase()]: stepWithDirection
         });
 
-        eventCenter(document, touchObj.touchend, endPress, false);
+        eventCenter(document, touchObj._touchend, endPress, false);
 
-        if (touchObj.touchstart == 'mousedown') {
+        if (touchObj._touchstart == 'mousedown') {
           const elm = ctx.$refs[type];
           eventCenter(elm, 'mouseenter', enter, false);
           eventCenter(elm, 'mouseleave', leave, false);
@@ -440,9 +431,9 @@ export default {
       function endPress() {
         clearTimeout(timeoutId);
         isMouseDown = false;
-        eventCenter(document, touchObj.touchend, endPress, false, 'off');
+        eventCenter(document, touchObj._touchend, endPress, false, 'off');
 
-        if (touchObj.touchstart == 'mousedown') {
+        if (touchObj._touchstart == 'mousedown') {
           const elm = ctx.$refs[type];
           eventCenter(elm, 'mouseenter', enter, false, 'off');
           eventCenter(elm, 'mouseleave', leave, false, 'off');
@@ -481,26 +472,23 @@ function getBarData(vm, type) {
   if (hideBar && !keepShowRail) {
     return null;
   }
-
   return {
     hideBar,
-    props: {
-      type: type,
-      ops: {
-        bar: vm.mergedOptions.bar,
-        rail: vm.mergedOptions.rail,
-        scrollButton: vm.mergedOptions.scrollButton
-      },
-      state: vm.bar[barType].state,
-      hideBar
+
+    type: type,
+    ops: {
+      bar: vm.mergedOptions.bar,
+      rail: vm.mergedOptions.rail,
+      scrollButton: vm.mergedOptions.scrollButton
     },
-    on: {
-      setBarDrag: vm.setBarDrag
-    },
+    state: vm.bar[barType].state,
+    onSetBarDrag: vm.setBarDrag,
     ref: `${type}Bar`,
     key: type
   };
 }
+
+export default Scrollbar;
 
 /**
  * create bars
@@ -508,7 +496,7 @@ function getBarData(vm, type) {
  * @param {any} size
  * @param {any} type
  */
-export function createBar(h, vm) {
+export function createBar(vm) {
   const verticalBarProps = getBarData(vm, 'vertical');
   const horizontalBarProps = getBarData(vm, 'horizontal');
 
@@ -521,7 +509,7 @@ export function createBar(h, vm) {
 
   return [
     verticalBarProps ? (
-      <bar
+      <Scrollbar
         {...{
           ...verticalBarProps,
           ...{
@@ -534,7 +522,7 @@ export function createBar(h, vm) {
       />
     ) : null,
     horizontalBarProps ? (
-      <bar
+      <Scrollbar
         {...{
           ...horizontalBarProps,
           ...{

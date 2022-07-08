@@ -1,7 +1,18 @@
-import { getCurrentViewportDom } from 'mode/shared/util';
-import { warn, getNumericValue } from 'shared/util';
+import { log, getNumericValue, getCurrentViewportDom } from 'shared';
+const { warn } = log;
 
 export default {
+  emits: [
+    'refresh-activate',
+    'refresh-before-deactivate',
+    'refresh-before-deactivate-end',
+    'refresh-deactivate',
+
+    'load-activate',
+    'load-before-deactivate',
+    'load-before-deactivate-end',
+    'load-deactivate'
+  ],
   methods: {
     slideScrollTo(x, y, speed, easing) {
       const { scrollLeft, scrollTop } = this.getPosition();
@@ -56,7 +67,8 @@ export default {
         warn('refresh must be enabled!');
         return;
       } else if (type == 'load' && !isLoad) {
-        warn('load must be enabled and content\'s height > container\'s height!');
+        // eslint-disable-next-line
+        warn("load must be enabled and content's height > container's height!");
         return;
       } else if (type !== 'refresh' && type !== 'load') {
         warn('param must be one of load and refresh!');

@@ -9,10 +9,14 @@ import {
 describe('vuescroll slot test', () => {
   let vm;
 
-  Vue.component('test-slot', {
-    template: '<div :data-name="name"><slot></slot></div>',
-    props: ['name']
-  });
+  const comps = {
+    components: {
+      'test-slot': {
+        template: '<div :data-name="name"><slot></slot></div>',
+        props: ['name']
+      }
+    }
+  };
 
   afterEach(() => {
     destroyVM(vm);
@@ -20,7 +24,7 @@ describe('vuescroll slot test', () => {
 
   /** Slotted content is a component */
 
-  it('data-name should be `container`', done => {
+  it('data-name should be `container`', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -35,13 +39,16 @@ describe('vuescroll slot test', () => {
           '',
           1,
           `
-            <test-slot slot="scroll-container" name="container">
+          <template v-slot:scroll-container>
+            <test-slot  name="container">
             </test-slot>
+            </template>
           `
         ),
         data: {
           ops: {}
-        }
+        },
+        ...comps
       },
       true
     );
@@ -52,7 +59,7 @@ describe('vuescroll slot test', () => {
     });
   });
 
-  it('data-name should be `panel`', done => {
+  it('data-name should be `panel`', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -67,13 +74,17 @@ describe('vuescroll slot test', () => {
           '',
           1,
           `
-            <test-slot slot="scroll-panel" name="panel">
-            </test-slot>
+          <template v-slot:scroll-panel>
+          <test-slot  name="panel">
+          </test-slot>
+          </template>
+
           `
         ),
         data: {
           ops: {}
-        }
+        },
+        ...comps
       },
       true
     );
@@ -84,7 +95,7 @@ describe('vuescroll slot test', () => {
     });
   });
 
-  it('data-name should be `content`', done => {
+  it('data-name should be `content`', (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -99,13 +110,16 @@ describe('vuescroll slot test', () => {
           '',
           1,
           `
-            <test-slot slot="scroll-content" name="content">
-            </test-slot>
+          <template v-slot:scroll-content>
+          <test-slot  name="content">
+          </test-slot>
+          </template>
           `
         ),
         data: {
           ops: {}
-        }
+        },
+        ...comps
       },
       true
     );
@@ -116,7 +130,7 @@ describe('vuescroll slot test', () => {
     });
   });
 
-  it('The dom\'s tag should be ul', done => {
+  it("The dom's tag should be ul", (done) => {
     vm = createVue(
       {
         template: makeTemplate(
@@ -131,9 +145,12 @@ describe('vuescroll slot test', () => {
           '',
           1,
           `
-            <ul slot="scroll-panel">
+          <template v-slot:scroll-panel>
+          <ul>
               <li>1</li>
             </ul>
+          </template>
+
           `
         ),
         data: {

@@ -10,14 +10,17 @@ export default {
           this.updateScroller();
         });
 
-        this.$watch('mergedOptions.vuescroll.scroller.disable', {
-          sync: true,
-          handler(newVal) {
+        this.$watch(
+          'mergedOptions.vuescroll.scroller.disable',
+          (newVal) => {
             if (this.scroller) {
               this.scroller.__disable = newVal;
             }
+          },
+          {
+            sync: true
           }
-        });
+        );
       }
     });
   },
@@ -158,7 +161,7 @@ export default {
 
       let contentElm = this.scrollPanelElm;
       const vm = this;
-      const handleWindowResize = function() /* istanbul ignore next */ {
+      const handleWindowResize = function () /* istanbul ignore next */ {
         vm.updateBarStateAndEmitEvent('window-resize');
         vm.updatedCbs.push(vm.updateScroller);
         vm.$forceUpdate();

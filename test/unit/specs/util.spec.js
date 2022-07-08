@@ -1,4 +1,4 @@
-import { deepCopy, mergeObject, isIos } from 'src/shared/util';
+import { deepCopy, mergeObject, isIos } from 'src/shared';
 
 describe('Util', () => {
   it('after deeping copy, b[1].a1 should be 2', () => {

@@ -1,5 +1,6 @@
-import { warn, mergeObject } from './util';
-
+import { mergeObject } from './utils';
+import { log } from './log';
+const { warn } = log;
 const baseConfig = {
   // vuescroll
   vuescroll: {
@@ -71,7 +72,7 @@ const baseConfig = {
     mousedownStep: 30
   }
 };
-export default baseConfig;
+export { baseConfig };
 
 /**
  * validate the options

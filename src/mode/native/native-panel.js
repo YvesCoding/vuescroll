@@ -4,7 +4,9 @@ import {
   insertChildrenIntoSlot,
   isIos,
   createHideBarStyle
-} from 'shared/util';
+} from 'shared';
+import ScrollPanel from 'src/core/components/panel';
+import { h } from 'vue';
 
 export default function getPanelData(context) {
   // scrollPanel data start
@@ -16,19 +18,14 @@ export default function getPanelData(context) {
       overflowX: 'scroll'
     },
     class: [],
-    nativeOn: {
-      '&scroll': context.handleScroll
-    },
-    props: {
-      ops: context.mergedOptions.scrollPanel
-    }
+    onScroll: context.handleScroll,
+    onDOMMouseScroll: context.onMouseWheel,
+    onMousewheel: context.onMouseWheel,
+    ops: context.mergedOptions.scrollPanel
   };
 
   context.scrollYEnable = true;
   context.scrollXEnable = true;
-
-  data.nativeOn.DOMMouseScroll = data.nativeOn.mousewheel =
-    context.onMouseWheel;
 
   const { scrollingY, scrollingX } = context.mergedOptions.scrollPanel;
 
@@ -72,8 +69,8 @@ export default function getPanelData(context) {
   }
 
   // clear legency styles of slide mode...
-  data.style.transformOrigin = '';
-  data.style.transform = '';
+  data.style.transformOrigin = null;
+  data.style.transform = null;
 
   return data;
 }
@@ -85,15 +82,19 @@ export default function getPanelData(context) {
  * @param {any} context
  * @returns
  */
-export function createPanel(h, context) {
+export function createPanel(context) {
   let data = {};
 
   data = getPanelData(context);
 
-  return <scrollPanel {...data}>{getPanelChildren(h, context)}</scrollPanel>;
+  return h(ScrollPanel, data, {
+    default() {
+      return getPanelChildren(context);
+    }
+  });
 }
 
-export function getPanelChildren(h, context) {
+export function getPanelChildren(context) {
   let viewStyle = {
     position: 'relative',
     'box-sizing': 'border-box',
@@ -118,13 +119,8 @@ export function getPanelChildren(h, context) {
   }
 
   if (_customContent) {
-    return insertChildrenIntoSlot(
-      h,
-      _customContent,
-      context.$slots.default,
-      data
-    );
+    return insertChildrenIntoSlot(_customContent, context.$slots.default, data);
   }
 
-  return <div {...data}>{context.$slots.default}</div>;
+  return <div {...data}>{context.$slots.default()}</div>;
 }

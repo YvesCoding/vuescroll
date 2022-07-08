@@ -20,7 +20,12 @@ Vuescroll is a scrollbar plugin based on Vue.js 2.X, it is very easy to use, no 
 - Pull-to-refresh, push-to-load
 - Carousel
 
-_Vuescroll's compatibility is the same as `Vue.js 2.X`._
+## Compatibility
+
+| vue version | vuescroll version |
+| ----------- | ----------------- |
+| 2.x         | <=4.17.4          |
+| 3.x         | >=5.0.0           |
 
 ## Demo
 

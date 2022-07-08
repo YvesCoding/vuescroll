@@ -3,7 +3,7 @@
  * Get the browser zoom ratio
  */
 
-export default class ZoomManager {
+export class ZoomManager {
   constructor() {
     this.originPixelRatio = this.getRatio();
     this.lastPixelRatio = this.originPixelRatio;

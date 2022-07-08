@@ -48,8 +48,8 @@ export default {
           const isScrollX = this.css(dom, 'overflowX') !== 'hidden';
           const isScrollY = this.css(dom, 'overflowY') !== 'hidden';
           if (
-            isScrollX && ((deltaX < 0 && h > 0) || (deltaX > 0 && h < 1)) ||
-            isScrollY && ((deltaY < 0 && v > 0) || (deltaY > 0 && v < 1))
+            (isScrollX && ((deltaX < 0 && h > 0) || (deltaX > 0 && h < 1))) ||
+            (isScrollY && ((deltaY < 0 && v > 0) || (deltaY > 0 && v < 1)))
           ) {
             scrollable = dom == this.scrollPanelElm;
             break;
@@ -118,9 +118,7 @@ export default {
   },
   computed: {
     scrollContentElm() {
-      return this.$refs['scrollContent']._isVue
-        ? this.$refs['scrollContent'].$el
-        : this.$refs['scrollContent'];
+      return this.$refs['scrollContent'].$el || this.$refs['scrollContent'];
     }
   }
 };

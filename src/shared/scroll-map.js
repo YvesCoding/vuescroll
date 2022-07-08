@@ -1,4 +1,4 @@
-export default {
+export const scrollMap = {
   vertical: {
     size: 'height',
     opsSize: 'width',

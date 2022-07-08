@@ -3,7 +3,6 @@ module.exports = {
   extends: 'eslint:recommended',
   parser: 'babel-eslint',
   rules: {
-    indent: ['error', 2, { MemberExpression: 'off' }],
     semi: ['error', 'always'],
     'no-undef': 0,
     'no-unused-vars': [
@@ -14,7 +13,8 @@ module.exports = {
     ],
     quotes: ['error', 'single'],
     excludedFiles: 'dist/*.js'.anchor,
-    'no-console': [0]
+    'no-console': [0],
+    indent: 0
   },
   parserOptions: {
     ecmaVersion: 6,

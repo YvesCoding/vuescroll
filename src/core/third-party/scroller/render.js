@@ -1,9 +1,9 @@
-import { getPrefix } from 'shared/util';
+import { getPrefix } from 'shared';
 
 /* DOM-based rendering (Uses 3D when available, falls back on margin when transform not available) */
 export function render(content, global, suffix, type) {
   if (type == 'position') {
-    return function(left, top) {
+    return function (left, top) {
       content.style.left = -left + 'px';
       content.style.top = -top + 'px';
     };
@@ -18,7 +18,7 @@ export function render(content, global, suffix, type) {
   var transformProperty = 'transform'; //vendorPrefix + 'Transform';
 
   if (helperElem.style[perspectiveProperty] !== undef) {
-    return function(left, top, zoom) {
+    return function (left, top, zoom) {
       content.style[transformProperty] =
         'translate3d(' +
         -left +
@@ -31,7 +31,7 @@ export function render(content, global, suffix, type) {
         ')';
     };
   } else if (helperElem.style[transformProperty] !== undef) {
-    return function(left, top, zoom) {
+    return function (left, top, zoom) {
       content.style[transformProperty] =
         'translate(' +
         -left +

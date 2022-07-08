@@ -1,9 +1,11 @@
 {
-  "presets": [["env", { "modules": false }]],
-  "plugins": ["transform-vue-jsx", "transform-object-rest-spread"],
-  "env": {
-    "build": {
-      "plugins": ["external-helpers"]
-    }
-  }
+  "presets": [
+    ["@babel/preset-env", { "modules": false }], 
+    ["@vue/babel-preset-jsx", {"injectH": false}]
+  ]
+   // "env": {
+  //   "build": {
+  //     "plugins": ["external-helpers"]
+  //   }
+  // }
 }

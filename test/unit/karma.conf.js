@@ -3,6 +3,7 @@
 
 var alias = require('../../scripts/alias');
 var webpack = {
+  mode: 'development',
   resolve: {
     alias: alias
   },
@@ -27,7 +28,7 @@ var webpack = {
   },
   devtool: '#inline-source-map'
 };
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     webpack: webpack,
     plugins: [

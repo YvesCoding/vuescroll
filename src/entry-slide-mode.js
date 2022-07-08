@@ -1,19 +1,8 @@
-import { refreshAll } from 'core/mixins/api';
-import { scrollTo } from 'src/mode/native/mixins/api';
-
-import install, { component } from 'mode/slide/index';
+import _install from 'src/core';
+import { core, render, extraConfigs, extraValidators } from './mode/slide';
 
 const Vuescroll = {
-  install,
-  version: '__version__',
-  refreshAll,
-  scrollTo,
-  ...component
+  ..._install(core, render, extraConfigs, extraValidators)
 };
-
-/* istanbul ignore if */
-if (typeof window !== 'undefined' && window.Vue) {
-  window.Vue.use(Vuescroll);
-}
 
 export default Vuescroll;

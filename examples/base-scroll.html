@@ -54,17 +54,31 @@
     </div>
 
     <script>
-      new Vue({
-        el: '#app',
-        data: {
-          ops: {
-            vuescroll: {
-              checkShiftKey: true,
-              locking: false
+      Vue.createApp({
+        data() {
+          return {
+            ops: {
+              vuescroll: {
+                checkShiftKey: true,
+                locking: false
+              },
+              scrollButton: {
+                enable: true,
+                background: 'rgb(3, 185, 118)',
+                opacity: 1,
+                step: 180,
+                mousedownStep: 30
+              },
+              bar: {
+                opacity: '0.5',
+                background: 'blue'
+              }
             }
-          },
-        },
-      });
+          };
+        }
+      })
+        .use(vuescroll)
+        .mount('#app');
     </script>
   </body>
 </html>

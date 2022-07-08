@@ -1,8 +1,9 @@
 // begin importing
-import { insertChildrenIntoSlot, getRealParent } from 'shared/util';
+import { insertChildrenIntoSlot, getRealParent } from 'shared';
+import { h } from 'vue';
 
 export default {
-  name: 'scrollPanel',
+  name: 'ScrollPanel',
   props: { ops: { type: Object, required: true } },
   methods: {
     // trigger scrollPanel options initialScrollX,
@@ -10,7 +11,6 @@ export default {
     updateInitialScroll() {
       let x = 0;
       let y = 0;
-
       const parent = getRealParent(this);
 
       if (this.ops.initialScrollX) {
@@ -31,7 +31,7 @@ export default {
       }
     }, 0);
   },
-  render(h) {
+  render() {
     // eslint-disable-line
     let data = {
       class: ['__panel'],
@@ -45,9 +45,8 @@ export default {
 
     const _customPanel = parent.$slots['scroll-panel'];
     if (_customPanel) {
-      return insertChildrenIntoSlot(h, _customPanel, this.$slots.default, data);
+      return insertChildrenIntoSlot(_customPanel, this.$slots.default, data);
     }
-
-    return <div {...data}>{[this.$slots.default]}</div>;
+    return <div {...data}>{this.$slots.default()}</div>;
   }
 };

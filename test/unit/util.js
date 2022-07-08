@@ -1,14 +1,11 @@
-import Vue from 'vue';
+import * as Vue from 'vue';
 import vuescroll from 'src/entry-mix-mode';
 export { vuescroll };
 
-Vue.use(vuescroll);
-
 // https://github.com/ElemeFE/element/blob/dev/test/unit/util.js#L60
-
 let id = 0;
 
-const createElm = function() {
+const createElm = function () {
   const elm = document.createElement('div');
 
   elm.id = 'app' + ++id;
@@ -29,7 +26,19 @@ export function createVue(Compo, mounted = false) {
   if (Object.prototype.toString.call(Compo) === '[object String]') {
     Compo = { template: Compo };
   }
-  return new Vue(Compo).$mount(mounted === false ? null : createElm());
+
+  if (
+    Compo.data &&
+    Object.prototype.toString.call(Compo.data) === '[object Object]'
+  ) {
+    const temp = Compo.data;
+    Compo.data = function () {
+      return temp;
+    };
+  }
+  return Vue.createApp(Compo)
+    .use(vuescroll)
+    .mount(mounted === false ? null : createElm());
 }
 /**
  * mount a component instance
@@ -51,7 +60,7 @@ export function createTest(Compo, propsData = {}, mounted = false) {
 }
 
 export function destroyVM(vm) {
-  vm.$destroy && vm.$destroy();
+  vm.$refs.vs && vm.$refs.vs.destroy && vm.$refs.vs.destroy();
   vm.$el && vm.$el.parentNode && vm.$el.parentNode.removeChild(vm.$el);
 }
 
@@ -81,12 +90,14 @@ export function makeTemplate(
   return `
     <div style="width:${parent.w}px;height:${parent.h}px;position:relative">
       <vue-scroll ref="vs" ${templateAttribute || ''} :ops="ops">
-        <div 
+      <template v-slot:default>
+        <div
         v-for="i in ${num}"
         :key="i"
         :id="'d' + i"
         style="width:${child.w}px;height:${child.h}px">
         </div>
+      </template>
         ${extraTmpl}
       </vue-scroll>
     </div>

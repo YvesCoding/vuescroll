@@ -1,8 +1,9 @@
 // rollup.config.js
-const resolveNode = require('rollup-plugin-node-resolve');
-const babel = require('rollup-plugin-babel');
-const replace = require('rollup-plugin-replace');
-const alias = require('rollup-plugin-alias');
+const { nodeResolve: resolveNode } = require('@rollup/plugin-node-resolve');
+const commonjs = require('@rollup/plugin-commonjs');
+const { babel } = require('@rollup/plugin-babel');
+const replace = require('@rollup/plugin-replace');
+const alias = require('@rollup/plugin-alias');
 const path = require('path');
 const version = process.env.VERSION || require('../package.json').version;
 
@@ -37,6 +38,13 @@ let builds = {
 };
 
 const notDebugBuilds = {
+  'mix-esm': {
+    entry: resolve('entry-mix-mode.js'),
+    dest: resolve('dist/vuescroll.esm.js'),
+    format: 'esm',
+    external: ['vue'],
+    banner
+  },
   'mix-prod': {
     entry: resolve('entry-mix-mode.js'),
     dest: resolve('dist/vuescroll.min.js'),
@@ -78,6 +86,13 @@ if (process.env.VS_ENV != 'DEBUG') {
   builds = { ...builds, ...notDebugBuilds };
 }
 
+const transformedAlias = Object.keys(aliases).map((key) => {
+  return {
+    find: key,
+    replacement: aliases[key]
+  };
+});
+
 function genConfig(name) {
   const opts = builds[name];
   const config = {
@@ -95,14 +110,21 @@ function genConfig(name) {
     },
     plugins: [
       resolveNode(),
+      commonjs({
+        transformMixedEsModules: true,
+        include: /babel-helper-vue-jsx-merge-props/
+      }),
       babel({
+        babelHelpers: 'bundled',
         exclude: 'node_modules/**' // only transpile our source code
       }),
       replace({
         'process.env.NODE_FORMAT': JSON.stringify(opts.format),
         __version__: version
       }),
-      alias(Object.assign({}, aliases, opts.alias))
+      alias({
+        entries: transformedAlias
+      })
     ]
   };
   return config;

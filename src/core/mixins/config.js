@@ -1,11 +1,11 @@
-import { log, modes } from 'shared';
+import { modes } from 'shared/constants';
+import { error } from 'shared/util';
 import {
-  configs as slideConfig,
+  config as slideConfig,
   configValidator as slideValidator
 } from 'mode/slide/config';
-import { configs as nativeConfig } from 'mode/native/config';
 
-const { error } = log;
+import { config as nativeConfig } from 'mode/native/config';
 
 const config = {
   // vuescroll
@@ -25,7 +25,9 @@ function configValidator(ops) {
   // validate modes
   if (!~modes.indexOf(vuescroll.mode)) {
     error(
-      `Unknown mode: ${vuescroll.mode},the vuescroll's option "mode" should be one of the ${modes}`
+      `Unknown mode: ${
+        vuescroll.mode
+      },the vuescroll's option "mode" should be one of the ${modes}`
     );
     renderError = true;
   }
@@ -33,5 +35,5 @@ function configValidator(ops) {
   return renderError;
 }
 
-export const configs = [config, ...slideConfig, ...nativeConfig];
+export const configs = [config, slideConfig, nativeConfig];
 export const configValidators = [configValidator, slideValidator];

@@ -1,5 +1,5 @@
-import { touchManager } from 'src/shared/env';
-const touch = new touchManager();
+import { TouchManager } from 'shared';
+const touch = new TouchManager();
 export function listenContainer(
   container,
   scroller,
@@ -35,7 +35,7 @@ export function listenContainer(
     // here , we want to manully prevent default, so we
     // set passive to false
     // see https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener
-    document.addEventListener(touchObj.touchmove, touchmove, {
+    document.addEventListener(touchObj._touchmove, touchmove, {
       passive: false
     });
   }
@@ -55,7 +55,7 @@ export function listenContainer(
     eventCallback('mouseup');
     mousedown = false;
     scroller.doTouchEnd(e.timeStamp);
-    document.removeEventListener(touchObj.touchmove, touchmove);
+    document.removeEventListener(touchObj._touchmove, touchmove);
   }
   function touchcancel(e) {
     scroller.doTouchEnd(e.timeStamp);
@@ -70,10 +70,10 @@ export function listenContainer(
     );
   }
 
-  container.addEventListener(touchObj.touchstart, touchstart, false);
+  container.addEventListener(touchObj._touchstart, touchstart, false);
 
-  document.addEventListener(touchObj.touchend, touchend, false);
-  document.addEventListener(touchObj.touchcancel, touchcancel, false);
+  document.addEventListener(touchObj._touchend, touchend, false);
+  document.addEventListener(touchObj._touchcancel, touchcancel, false);
 
   if (zooming && !touch.isTouch) {
     container.addEventListener(
@@ -85,11 +85,11 @@ export function listenContainer(
     );
   }
 
-  destroy = function() {
-    container.removeEventListener(touchObj.touchstart, touchstart, false);
+  destroy = function () {
+    container.removeEventListener(touchObj._touchstart, touchstart, false);
 
-    document.removeEventListener(touchObj.touchend, touchend, false);
-    document.removeEventListener(touchObj.touchcancel, touchcancel, false);
+    document.removeEventListener(touchObj._touchend, touchend, false);
+    document.removeEventListener(touchObj._touchcancel, touchcancel, false);
 
     container.removeEventListener(
       navigator.userAgent.indexOf('Firefox') > -1

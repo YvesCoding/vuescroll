@@ -1,84 +1,6 @@
-import { isIE, isIos, touchManager, isServer } from './env';
-export { isIE, isIos, touchManager, isServer };
-import ZoomManager from './zoomManager';
-
-export function deepCopy(from, to, shallow) {
-  if (shallow && isUndef(to)) {
-    return from;
-  }
-
-  if (isArray(from)) {
-    to = [];
-    from.forEach((item, index) => {
-      to[index] = deepCopy(item, to[index]);
-    });
-  } else if (from) {
-    if (!isPlainObj(from)) {
-      return from;
-    }
-    to = {};
-    for (let key in from) {
-      to[key] =
-        typeof from[key] === 'object'
-          ? deepCopy(from[key], to[key])
-          : from[key];
-    }
-  }
-  return to;
-}
-
-export function mergeObject(from, to, force, shallow) {
-  if (shallow && isUndef(to)) {
-    return from;
-  }
-
-  to = to || {};
-
-  if (isArray(from)) {
-    if (!isArray(to) && force) {
-      to = [];
-    }
-    if (isArray(to)) {
-      from.forEach((item, index) => {
-        to[index] = mergeObject(item, to[index], force, shallow);
-      });
-    }
-  } else if (from) {
-    if (!isPlainObj(from)) {
-      if (force) {
-        to = from;
-      }
-    } else {
-      for (var key in from) {
-        if (typeof from[key] === 'object') {
-          if (isUndef(to[key])) {
-            to[key] = deepCopy(from[key], to[key], shallow);
-          } else {
-            mergeObject(from[key], to[key], force, shallow);
-          }
-        } else {
-          if (isUndef(to[key]) || force) to[key] = from[key];
-        }
-      }
-    }
-  }
-
-  return to;
-}
-
-export function defineReactive(target, key, source, souceKey) {
-  /* istanbul ignore if */
-  if (!source[key] && typeof source !== 'function') {
-    return;
-  }
-  souceKey = souceKey || key;
-  Object.defineProperty(target, key, {
-    get() {
-      return source[souceKey];
-    },
-    configurable: true
-  });
-}
+import { isServer, mergeObject } from './utils';
+import { ZoomManager } from './zoomManager';
+import { h } from 'vue';
 
 let scrollBarWidth;
 let zoomManager;
@@ -125,13 +47,6 @@ export function eventCenter(
     ? dom.addEventListener(eventName, hander, capture)
     : dom.removeEventListener(eventName, hander, capture);
 }
-
-export const error = (msg) => {
-  console.error(`[vuescroll] ${msg}`);
-};
-export const warn = (msg) => {
-  console.warn(`[vuescroll] ${msg}`);
-};
 
 export function isChildInParent(child, parent) {
   let flag = false;
@@ -196,33 +111,33 @@ export function getComplitableStyle(property, value) {
  * Insert children into user-passed slot at vnode level
  */
 export function insertChildrenIntoSlot(
-  h,
-  parentVnode = [],
-  childVNode = [],
-  data = {},
-  swapChildren
+  parentVnodeFunc,
+  childVNodeFunc,
+  data = {}
 ) {
+  const parentVnode = parentVnodeFunc();
+  const childVNode = childVNodeFunc();
   /* istanbul ignore if */
   if (parentVnode && parentVnode.length > 1) {
-    return swapChildren
-      ? [...childVNode, ...parentVnode]
-      : [...parentVnode, ...childVNode];
+    return () => [...parentVnode, ...childVNode];
   }
 
-  parentVnode = parentVnode[0];
-  let { ch, tag, isComponent } = getVnodeInfo(parentVnode);
-  if (isComponent) {
-    parentVnode.data = mergeObject(
-      { attrs: parentVnode.componentOptions.propsData },
-      parentVnode.data,
-      false, // force: false
-      true // shallow: true
-    );
-  }
-  ch = swapChildren ? [...childVNode, ...ch] : [...ch, ...childVNode];
-  delete parentVnode.data.slot;
+  let { ch, tag } = getVnodeInfo(parentVnode);
 
-  return h(tag, mergeObject(data, parentVnode.data, false, true), ch);
+  const newCh = () => [...ch, ...childVNode];
+
+  return h(
+    tag,
+    mergeObject(
+      data,
+      parentVnode[0].props || {}, // merge our props and the props that user passed to custom component.
+      false,
+      true
+    ),
+    {
+      default: newCh
+    }
+  );
 }
 
 /**
@@ -230,23 +145,17 @@ export function insertChildrenIntoSlot(
  * vnode must be parentVnode
  */
 export function getVnodeInfo(vnode) {
+  /* istanbul ignore if */
   if (!vnode || vnode.length > 1) return {};
 
-  vnode = vnode[0] ? vnode[0] : vnode;
-  const isComponent = !!vnode.componentOptions;
+  const firstVnode = vnode[0] ? vnode[0] : vnode;
   let ch;
   let tag;
 
-  if (isComponent) {
-    ch = vnode.componentOptions.children || [];
-    tag = vnode.componentOptions.tag;
-  } else {
-    ch = vnode.children || [];
-    tag = vnode.tag;
-  }
+  ch = firstVnode.children || [];
+  tag = firstVnode.type;
 
   return {
-    isComponent,
     ch,
     tag
   };
@@ -258,26 +167,10 @@ export function getVnodeInfo(vnode) {
  */
 export function getRealParent(ctx) {
   let parent = ctx.$parent;
-  if (!parent._isVuescrollRoot && parent) {
+  if (!parent.$data._isVuescrollRoot && parent) {
     parent = parent.$parent;
   }
   return parent;
-}
-
-export const isArray = (_) => Array.isArray(_);
-export const isPlainObj = (_) =>
-  Object.prototype.toString.call(_) == '[object Object]';
-export const isUndef = (_) => typeof _ === 'undefined';
-
-export function getNumericValue(distance, size) {
-  let number;
-  if (!(number = /(-?\d+(?:\.\d+?)?)%$/.exec(distance))) {
-    number = distance - 0;
-  } else {
-    number = number[1] - 0;
-    number = (size * number) / 100;
-  }
-  return number;
 }
 
 export function createStyle(styleId, cssText) {
@@ -418,4 +311,39 @@ export function createSlideModeStyle() {
   `;
 
   createStyle('vuescroll-silde-mode-style', cssText);
+}
+
+/**
+ * Get the children of parent those are in viewport
+ */
+export function getCurrentViewportDom(parent, container) {
+  const children = parent.children;
+  const domFragment = [];
+
+  const isCurrentview = (dom) => {
+    const { left, top, width, height } = dom.getBoundingClientRect();
+    const {
+      left: parentLeft,
+      top: parentTop,
+      height: parentHeight,
+      width: parentWidth
+    } = container.getBoundingClientRect();
+    if (
+      left - parentLeft + width > 0 &&
+      left - parentLeft < parentWidth &&
+      top - parentTop + height > 0 &&
+      top - parentTop < parentHeight
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  for (let i = 0; i < children.length; i++) {
+    const dom = children.item(i);
+    if (isCurrentview(dom) && !dom.isResizeElm) {
+      domFragment.push(dom);
+    }
+  }
+  return domFragment;
 }

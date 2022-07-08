@@ -1,11 +1,12 @@
-import { warn, isChildInParent, getNumericValue } from 'shared/util';
-
+import { log, isChildInParent, getNumericValue } from 'shared';
+const { warn } = log;
 export default {
   mounted() {
-    vsInstances[this._uid] = this;
+    vsInstances[this.$.uid] = this;
   },
-  beforeDestroy() {
-    delete vsInstances[this._uid];
+  beforeUnmount() {
+    /* istanbul ignore next */
+    delete vsInstances[this.$.uid];
   },
   methods: {
     // public api

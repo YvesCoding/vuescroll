@@ -466,7 +466,7 @@ describe('vuescroll', () => {
       });
   });
 
-  // disable/enable scroller
+  // // disable/enable scroller
   it('disable/enable scroller', (done) => {
     vm = createVue(
       {
