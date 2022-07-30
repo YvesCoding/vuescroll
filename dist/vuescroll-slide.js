@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v4.17.4
+    * Vuescroll v4.17.5
     * (c) 2018-2022 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -2188,7 +2188,7 @@ function createTipDom(h, context, type, tip) {
               xmlSpace: 'preserve'
             }
           },
-          [h('metadata', [' Svg Vector Icons : http://www.sfont.cn ']), h('g', [h(
+          [h('g', [h(
             'g',
             {
               attrs: { transform: 'matrix(1 0 0 -1 0 1008)' }
@@ -4686,7 +4686,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.17.4',
+  version: '4.17.5',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
