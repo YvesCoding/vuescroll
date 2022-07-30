@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v5.0.0
+    * Vuescroll v5.0.1
     * (c) 2018-2022 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -802,8 +802,6 @@
     }
   }
 
-  function _extends(){return _extends=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper=mergeJsxProps;
-
   var ScrollPanel = {
     name: 'ScrollPanel',
     props: {
@@ -861,7 +859,7 @@
         return insertChildrenIntoSlot(_customPanel, this.$slots["default"], data);
       }
 
-      return vue.h("div", helper([{}, data]), [this.$slots["default"]()]);
+      return vue.createVNode("div", data, [this.$slots["default"]()]);
     }
   };
 
@@ -1045,7 +1043,7 @@
         bar[_touchObj.touchstart] = this.createBarEvent();
         barWrapper[_touchObj.touchstart] = this.createTrackEvent();
       }
-      return vue.h("div", helper([{}, rail]), [this.createScrollbarButton('start'), this.hideBar ? null : vue.h("div", helper([{}, barWrapper]), [vue.h("div", helper([{}, bar]))]), this.createScrollbarButton('end')]);
+      return vue.createVNode("div", rail, [this.createScrollbarButton('start'), this.hideBar ? null : vue.createVNode("div", barWrapper, [vue.createVNode("div", bar, null)]), this.createScrollbarButton('end')]);
     },
     data: function data() {
       return {
@@ -1214,7 +1212,7 @@
           var touchObj = this.touchManager.getTouchObject();
           innerProps[touchObj.touchstart] = this.createScrollButtonEvent(type, touchObj);
         }
-        return vue.h("div", helper([{}, wrapperProps]), [vue.h("div", helper([{}, innerProps]))]);
+        return vue.createVNode("div", wrapperProps, [vue.createVNode("div", innerProps, null)]);
       },
       createScrollButtonEvent: function createScrollButtonEvent(type, touchObj) {
         var ctx = this;
@@ -1340,15 +1338,15 @@
 
     vm.setClassHook('hasVBar', !!(verticalBarProps && !verticalBarProps.hideBar));
     vm.setClassHook('hasHBar', !!(horizontalBarProps && !horizontalBarProps.hideBar));
-    return [verticalBarProps ? vue.h(Scrollbar, helper([{}, _objectSpread2(_objectSpread2({}, verticalBarProps), {
+    return [verticalBarProps ? vue.createVNode(Scrollbar, _objectSpread2(_objectSpread2({}, verticalBarProps), {
       props: _objectSpread2(_objectSpread2({}, {
         otherBarHide: !horizontalBarProps
       }), verticalBarProps.props)
-    })])) : null, horizontalBarProps ? vue.h(Scrollbar, helper([{}, _objectSpread2(_objectSpread2({}, horizontalBarProps), {
+    }), null) : null, horizontalBarProps ? vue.createVNode(Scrollbar, _objectSpread2(_objectSpread2({}, horizontalBarProps), {
       props: _objectSpread2(_objectSpread2({}, {
         otherBarHide: !verticalBarProps
       }), horizontalBarProps.props)
-    })])) : null];
+    }), null) : null];
   }
 
   /**
@@ -1400,7 +1398,7 @@
         var vm = this;
 
         if (vm.renderError) {
-          return vue.h("div", [[vm.$slots['default']]]);
+          return vue.createVNode("div", null, [[vm.$slots['default']]]);
         } // vuescroll data
 
 
@@ -1737,7 +1735,7 @@
         Vue.component(opts.name || component.name, component);
         Vue.config.globalProperties.$vuescrollConfig = opts.ops || {};
       },
-      version: '5.0.0',
+      version: '5.0.1',
       refreshAll: refreshAll
     }, component);
   }
@@ -1812,7 +1810,7 @@
 
 
     if (context.mergedOptions.vuescroll.pullRefresh.enable) {
-      finalChildren.push(vue.h("div", {
+      finalChildren.push(vue.createVNode("div", {
         "class": "__refresh",
         "style": {
           visibility: context.refrehDomVisiable ? '' : 'hidden'
@@ -1825,7 +1823,7 @@
     finalChildren.push(renderChildren()); // handle load
 
     if (context.mergedOptions.vuescroll.pushLoad.enable) {
-      finalChildren.push(vue.h("div", {
+      finalChildren.push(vue.createVNode("div", {
         "ref": __LOAD_DOM_NAME,
         "key": __LOAD_DOM_NAME,
         "class": "__load",
@@ -1859,69 +1857,53 @@
             className += ' deactive';
           }
 
-          dom = vue.h("svg", {
+          dom = vue.createVNode("svg", {
             "class": className,
-            "attrs": {
-              "version": "1.1",
-              "xmlns": "http://www.w3.org/2000/svg",
-              "xmlnsXlink": "http://www.w3.org/1999/xlink",
-              "x": "0px",
-              "y": "0px",
-              "viewBox": "0 0 1000 1000",
-              "enable-background": "new 0 0 1000 1000",
-              "xmlSpace": "preserve"
-            }
-          }, [vue.h("metadata", [" Svg Vector Icons : http://www.sfont.cn "]), vue.h("g", [vue.h("g", {
-            "attrs": {
-              "transform": "matrix(1 0 0 -1 0 1008)"
-            }
-          }, [vue.h("path", {
-            "attrs": {
-              "d": "M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z"
-            }
-          })])])]);
+            "version": "1.1",
+            "xmlns": "http://www.w3.org/2000/svg",
+            "xmlnsXlink": "http://www.w3.org/1999/xlink",
+            "x": "0px",
+            "y": "0px",
+            "viewBox": "0 0 1000 1000",
+            "enable-background": "new 0 0 1000 1000",
+            "xmlSpace": "preserve"
+          }, [vue.createVNode("g", null, [vue.createVNode("g", {
+            "transform": "matrix(1 0 0 -1 0 1008)"
+          }, [vue.createVNode("path", {
+            "d": "M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z"
+          }, null)])])]);
         }
         break;
 
       case 'start':
-        dom = vue.h("svg", {
-          "attrs": {
-            "viewBox": "0 0 50 50"
-          },
+        dom = vue.createVNode("svg", {
+          "viewBox": "0 0 50 50",
           "class": "start"
-        }, [vue.h("circle", {
-          "attrs": {
-            "stroke": "true",
-            "cx": "25",
-            "cy": "25",
-            "r": "20"
-          },
+        }, [vue.createVNode("circle", {
+          "stroke": "true",
+          "cx": "25",
+          "cy": "25",
+          "r": "20",
           "class": "bg-path"
-        }), vue.h("circle", {
-          "attrs": {
-            "cx": "25",
-            "cy": "25",
-            "r": "20"
-          },
+        }, null), vue.createVNode("circle", {
+          "cx": "25",
+          "cy": "25",
+          "r": "20",
           "class": "active-path"
-        })]);
+        }, null)]);
         break;
 
       case 'beforeDeactive':
-        dom = vue.h("svg", {
-          "attrs": {
-            "viewBox": "0 0 1024 1024",
-            "version": "1.1",
-            "xmlns": "http://www.w3.org/2000/svg",
-            "p-id": "3562"
-          }
-        }, [vue.h("path", {
-          "attrs": {
-            "d": "M512 0C229.706831 0 0 229.667446 0 512s229.667446 512 512 512c282.293169 0 512-229.667446 512-512S794.332554 0 512 0z m282.994215 353.406031L433.2544 715.145846a31.484062 31.484062 0 0 1-22.275938 9.231754h-0.4096a31.586462 31.586462 0 0 1-22.449231-9.814646L228.430769 546.327631a31.507692 31.507692 0 0 1 45.701908-43.386093l137.4208 144.785724L750.442338 308.854154a31.507692 31.507692 0 1 1 44.551877 44.551877z",
-            "fill": "",
-            "p-id": "3563"
-          }
-        })]);
+        dom = vue.createVNode("svg", {
+          "viewBox": "0 0 1024 1024",
+          "version": "1.1",
+          "xmlns": "http://www.w3.org/2000/svg",
+          "p-id": "3562"
+        }, [vue.createVNode("path", {
+          "d": "M512 0C229.706831 0 0 229.667446 0 512s229.667446 512 512 512c282.293169 0 512-229.667446 512-512S794.332554 0 512 0z m282.994215 353.406031L433.2544 715.145846a31.484062 31.484062 0 0 1-22.275938 9.231754h-0.4096a31.586462 31.586462 0 0 1-22.449231-9.814646L228.430769 546.327631a31.507692 31.507692 0 0 1 45.701908-43.386093l137.4208 144.785724L750.442338 308.854154a31.507692 31.507692 0 1 1 44.551877 44.551877z",
+          "fill": "",
+          "p-id": "3563"
+        }, null)]);
         break;
     }
 

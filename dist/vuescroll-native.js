@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v5.0.0
+    * Vuescroll v5.0.1
     * (c) 2018-2022 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1237,8 +1237,6 @@
     }
   }
 
-  function _extends(){return _extends=Object.assign||function(a){for(var b,c=1;c<arguments.length;c++)for(var d in b=arguments[c],b)Object.prototype.hasOwnProperty.call(b,d)&&(a[d]=b[d]);return a},_extends.apply(this,arguments)}var normalMerge=["attrs","props","domProps"],toArrayMerge=["class","style","directives"],functionalMerge=["on","nativeOn"],mergeJsxProps=function(a){return a.reduce(function(c,a){for(var b in a)if(!c[b])c[b]=a[b];else if(-1!==normalMerge.indexOf(b))c[b]=_extends({},c[b],a[b]);else if(-1!==toArrayMerge.indexOf(b)){var d=c[b]instanceof Array?c[b]:[c[b]],e=a[b]instanceof Array?a[b]:[a[b]];c[b]=d.concat(e);}else if(-1!==functionalMerge.indexOf(b)){for(var f in a[b])if(c[b][f]){var g=c[b][f]instanceof Array?c[b][f]:[c[b][f]],h=a[b][f]instanceof Array?a[b][f]:[a[b][f]];c[b][f]=g.concat(h);}else c[b][f]=a[b][f];}else if("hook"==b)for(var i in a[b])c[b][i]=c[b][i]?mergeFn(c[b][i],a[b][i]):a[b][i];else c[b]=a[b];return c},{})},mergeFn=function(a,b){return function(){a&&a.apply(this,arguments),b&&b.apply(this,arguments);}};var helper=mergeJsxProps;
-
   var ScrollPanel = {
     name: 'ScrollPanel',
     props: {
@@ -1296,7 +1294,7 @@
         return insertChildrenIntoSlot(_customPanel, this.$slots["default"], data);
       }
 
-      return vue.h("div", helper([{}, data]), [this.$slots["default"]()]);
+      return vue.createVNode("div", data, [this.$slots["default"]()]);
     }
   };
 
@@ -1428,7 +1426,7 @@
         bar[_touchObj.touchstart] = this.createBarEvent();
         barWrapper[_touchObj.touchstart] = this.createTrackEvent();
       }
-      return vue.h("div", helper([{}, rail]), [this.createScrollbarButton('start'), this.hideBar ? null : vue.h("div", helper([{}, barWrapper]), [vue.h("div", helper([{}, bar]))]), this.createScrollbarButton('end')]);
+      return vue.createVNode("div", rail, [this.createScrollbarButton('start'), this.hideBar ? null : vue.createVNode("div", barWrapper, [vue.createVNode("div", bar, null)]), this.createScrollbarButton('end')]);
     },
     data: function data() {
       return {
@@ -1597,7 +1595,7 @@
           var touchObj = this.touchManager.getTouchObject();
           innerProps[touchObj.touchstart] = this.createScrollButtonEvent(type, touchObj);
         }
-        return vue.h("div", helper([{}, wrapperProps]), [vue.h("div", helper([{}, innerProps]))]);
+        return vue.createVNode("div", wrapperProps, [vue.createVNode("div", innerProps, null)]);
       },
       createScrollButtonEvent: function createScrollButtonEvent(type, touchObj) {
         var ctx = this;
@@ -1723,15 +1721,15 @@
 
     vm.setClassHook('hasVBar', !!(verticalBarProps && !verticalBarProps.hideBar));
     vm.setClassHook('hasHBar', !!(horizontalBarProps && !horizontalBarProps.hideBar));
-    return [verticalBarProps ? vue.h(Scrollbar, helper([{}, _objectSpread2(_objectSpread2({}, verticalBarProps), {
+    return [verticalBarProps ? vue.createVNode(Scrollbar, _objectSpread2(_objectSpread2({}, verticalBarProps), {
       props: _objectSpread2(_objectSpread2({}, {
         otherBarHide: !horizontalBarProps
       }), verticalBarProps.props)
-    })])) : null, horizontalBarProps ? vue.h(Scrollbar, helper([{}, _objectSpread2(_objectSpread2({}, horizontalBarProps), {
+    }), null) : null, horizontalBarProps ? vue.createVNode(Scrollbar, _objectSpread2(_objectSpread2({}, horizontalBarProps), {
       props: _objectSpread2(_objectSpread2({}, {
         otherBarHide: !verticalBarProps
       }), horizontalBarProps.props)
-    })])) : null];
+    }), null) : null];
   }
 
   /**
@@ -1783,7 +1781,7 @@
         var vm = this;
 
         if (vm.renderError) {
-          return vue.h("div", [[vm.$slots['default']]]);
+          return vue.createVNode("div", null, [[vm.$slots['default']]]);
         } // vuescroll data
 
 
@@ -2120,7 +2118,7 @@
         Vue.component(opts.name || component.name, component);
         Vue.config.globalProperties.$vuescrollConfig = opts.ops || {};
       },
-      version: '5.0.0',
+      version: '5.0.1',
       refreshAll: refreshAll
     }, component);
   }
@@ -2234,7 +2232,7 @@
       return insertChildrenIntoSlot(_customContent, context.$slots["default"], data);
     }
 
-    return vue.h("div", helper([{}, data]), [context.$slots["default"]()]);
+    return vue.createVNode("div", data, [context.$slots["default"]()]);
   }
 
   // detect content size change
