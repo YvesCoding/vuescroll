@@ -37,12 +37,12 @@ function createStateCallbacks(type, stageType, vm, tipDom) {
     }, 2000); // Default start stage duration
   };
 
-  // let beforeDeactivateCallback = done => {
-  //   vm.vuescroll.state[stageType] = 'beforeDeactive';
-  //   setTimeout(function() {
-  //     done();
-  //   }, 500); // Default before-deactivated stage duration
-  // };
+    // let beforeDeactivateCallback = done => {
+    //   vm.vuescroll.state[stageType] = 'beforeDeactive';
+    //   setTimeout(function() {
+    //     done();
+    //   }, 500); // Default before-deactivated stage duration
+    // };
   let beforeDeactivateCallback;
 
   /* istanbul ignore if */

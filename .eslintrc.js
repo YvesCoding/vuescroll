@@ -3,7 +3,7 @@ module.exports = {
   extends: 'eslint:recommended',
   parser: 'babel-eslint',
   rules: {
-    indent: ['error', 4, { MemberExpression: 'off' }],
+    indent: ['error', 2, { MemberExpression: 'off' }],
     semi: ['error', 'always'],
     'no-undef': 0,
     'no-unused-vars': [
