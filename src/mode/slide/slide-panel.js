@@ -131,7 +131,6 @@ function createTipDom(context, type, tip) {
             enable-background="new 0 0 1000 1000"
             xmlSpace="preserve"
           >
-            <metadata> Svg Vector Icons : http://www.sfont.cn </metadata>
             <g>
               <g transform="matrix(1 0 0 -1 0 1008)">
                 <path d="M10,543l490,455l490-455L885,438L570,735.5V18H430v717.5L115,438L10,543z" />

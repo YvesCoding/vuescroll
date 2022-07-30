@@ -1,8 +1,8 @@
 {
   "presets": [
     ["@babel/preset-env", { "modules": false }], 
-    ["@vue/babel-preset-jsx", {"injectH": false}]
-  ]
+   ],
+   "plugins": ["@vue/babel-plugin-jsx"]
    // "env": {
   //   "build": {
   //     "plugins": ["external-helpers"]
