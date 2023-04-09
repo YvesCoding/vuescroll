@@ -1,6 +1,6 @@
 /*
-    * Vuescroll v4.17.5
-    * (c) 2018-2022 Yi(Yves) Wang
+    * Vuescroll v4.17.6
+    * (c) 2018-2023 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
     * Website: http://vuescrolljs.yvescoding.me/
@@ -2357,6 +2357,8 @@ var update = {
     checkScrollable: function checkScrollable(e, deltaX, deltaY) /* istanbul ignore next */{
       var scrollable = false;
 
+      if (e.ctrlKey) return false;
+
       // check mouse point scrollable.
       var dom = e.target ? e.target : e;
       while (dom && dom.nodeType == 1 && dom !== this.scrollPanelElm.parentNode && !/^BODY|HTML/.test(dom.nodeName)) {
@@ -2616,7 +2618,7 @@ function install(Vue$$1) {
 
 var Vuescroll = _extends({
   install: install,
-  version: '4.17.5',
+  version: '4.17.6',
   refreshAll: refreshAll,
   scrollTo: scrollTo
 }, component);
