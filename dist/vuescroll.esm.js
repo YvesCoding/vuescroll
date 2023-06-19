@@ -1,6 +1,6 @@
 /*
-    * Vuescroll v5.0.1
-    * (c) 2018-2022 Yi(Yves) Wang
+    * Vuescroll v5.1.0
+    * (c) 2018-2023 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
     * Website: http://vuescrolljs.yvescoding.me/
@@ -2127,7 +2127,7 @@ function _install(core, render) {
       Vue.component(opts.name || component.name, component);
       Vue.config.globalProperties.$vuescrollConfig = opts.ops || {};
     },
-    version: '5.0.1',
+    version: '5.1.0',
     refreshAll: refreshAll
   }, component);
 }
@@ -4635,14 +4635,15 @@ var nativeMix = {
           isReverse = _this$mergedOptions$v.wheelDirectionReverse,
           duration = _this$mergedOptions$v.wheelScrollDuration,
           checkShiftKey = _this$mergedOptions$v.checkShiftKey,
-          locking = _this$mergedOptions$v.locking;
+          locking = _this$mergedOptions$v.locking,
+          deltaPercent = _this$mergedOptions$v.deltaPercent;
       var deltaX;
       var deltaY;
 
       if (event.wheelDelta) {
         if (event.deltaY || event.deltaX) {
-          deltaX = event.deltaX;
-          deltaY = event.deltaY;
+          deltaX = event.deltaX * deltaPercent;
+          deltaY = event.deltaY * deltaPercent;
 
           if (locking) {
             if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
@@ -5045,7 +5046,8 @@ var configs$1 = [{
   vuescroll: {
     wheelScrollDuration: 0,
     wheelDirectionReverse: false,
-    checkShiftKey: true
+    checkShiftKey: true,
+    deltaPercent: 1
   }
 }];
 
