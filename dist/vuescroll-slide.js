@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v5.1.0
+    * Vuescroll v5.1.1
     * (c) 2018-2023 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -1735,7 +1735,7 @@
         Vue.component(opts.name || component.name, component);
         Vue.config.globalProperties.$vuescrollConfig = opts.ops || {};
       },
-      version: '5.1.0',
+      version: '5.1.1',
       refreshAll: refreshAll
     }, component);
   }

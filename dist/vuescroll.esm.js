@@ -1,5 +1,5 @@
 /*
-    * Vuescroll v5.1.0
+    * Vuescroll v5.1.1
     * (c) 2018-2023 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
@@ -2127,7 +2127,7 @@ function _install(core, render) {
       Vue.component(opts.name || component.name, component);
       Vue.config.globalProperties.$vuescrollConfig = opts.ops || {};
     },
-    version: '5.1.0',
+    version: '5.1.1',
     refreshAll: refreshAll
   }, component);
 }
@@ -4602,7 +4602,8 @@ var nativeMix = {
     checkScrollable: function checkScrollable(e, deltaX, deltaY)
     /* istanbul ignore next */
     {
-      var scrollable = false; // check mouse point scrollable.
+      var scrollable = false;
+      if (e.ctrlKey) return false; // check mouse point scrollable.
 
       var dom = e.target ? e.target : e;
 
