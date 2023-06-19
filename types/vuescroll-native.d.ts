@@ -16,6 +16,8 @@ interface Container {
   wheelDirectionReverse?: boolean;
   checkShiftKey?: boolean;
   locking?:boolean;
+  // the percent of delta of native scroll while mouse wheeling. defalut 1
+  deltaPercent?:number
 }
 
 type Position = {

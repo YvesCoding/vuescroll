@@ -1,6 +1,6 @@
 /*
     * Vuescroll v4.17.4
-    * (c) 2018-2022 Yi(Yves) Wang
+    * (c) 2018-2023 Yi(Yves) Wang
     * Released under the MIT License
     * Github: https://github.com/YvesCoding/vuescroll
     * Website: http://vuescrolljs.yvescoding.me/
@@ -4730,15 +4730,16 @@ var nativeMix = {
           isReverse = _mergedOptions$vuescr.wheelDirectionReverse,
           duration = _mergedOptions$vuescr.wheelScrollDuration,
           checkShiftKey = _mergedOptions$vuescr.checkShiftKey,
-          locking = _mergedOptions$vuescr.locking;
+          locking = _mergedOptions$vuescr.locking,
+          deltaPercent = _mergedOptions$vuescr.deltaPercent;
 
 
       var deltaX = void 0;
       var deltaY = void 0;
       if (event.wheelDelta) {
         if (event.deltaY || event.deltaX) {
-          deltaX = event.deltaX;
-          deltaY = event.deltaY;
+          deltaX = event.deltaX * deltaPercent;
+          deltaY = event.deltaY * deltaPercent;
           if (locking) {
             if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
               deltaY = 0;
@@ -5117,7 +5118,8 @@ var config$1 = {
   vuescroll: {
     wheelScrollDuration: 0,
     wheelDirectionReverse: false,
-    checkShiftKey: true
+    checkShiftKey: true,
+    deltaPercent: 1
   }
 };
 
