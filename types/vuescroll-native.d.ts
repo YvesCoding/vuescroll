@@ -93,6 +93,8 @@ interface bar {
   size?: string;
   // disable bar or not
   disable?: boolean;
+  // the percent of delta of native scroll while mouse wheeling. defalut 1
+  deltaPercent?:number
 }
 
 interface scrollButton {

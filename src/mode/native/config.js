@@ -3,7 +3,8 @@ export const configs = [
     vuescroll: {
       wheelScrollDuration: 0,
       wheelDirectionReverse: false,
-      checkShiftKey: true
+      checkShiftKey: true,
+      deltaPercent: 1
     }
   }
 ];

@@ -65,15 +65,16 @@ export default {
         wheelDirectionReverse: isReverse,
         wheelScrollDuration: duration,
         checkShiftKey,
-        locking
+        locking,
+        deltaPercent
       } = this.mergedOptions.vuescroll;
 
       let deltaX;
       let deltaY;
       if (event.wheelDelta) {
         if (event.deltaY || event.deltaX) {
-          deltaX = event.deltaX;
-          deltaY = event.deltaY;
+          deltaX = event.deltaX * deltaPercent;
+          deltaY = event.deltaY * deltaPercent;
           if (locking) {
             if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
               deltaY = 0;

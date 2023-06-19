@@ -19,8 +19,10 @@
       }
 
       .child {
-        width: 800px;
-        height: 800px;
+        width: 300px;
+        height: 300px;
+        line-height: 300px;
+        text-align: center;
       }
 
       .title {
@@ -48,7 +50,7 @@
       </div>
       <div class="parent">
         <vue-scroll :ops="ops">
-          <div class="child"></div>
+          <div class="child" v-for="i in 10" :key="i">{{i}}</div>
         </vue-scroll>
       </div>
     </div>
@@ -61,6 +63,7 @@
               vuescroll: {
                 checkShiftKey: true,
                 locking: false
+                // deltaPercent: 0.75
               },
               scrollButton: {
                 enable: true,
