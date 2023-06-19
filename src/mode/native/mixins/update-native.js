@@ -34,6 +34,8 @@ export default {
     checkScrollable(e, deltaX, deltaY) /* istanbul ignore next */ {
       let scrollable = false;
 
+      if(e.ctrlKey) return false;
+
       // check mouse point scrollable.
       let dom = e.target ? e.target : e;
       while (
