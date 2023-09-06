@@ -12,7 +12,7 @@
 	(global.vuescroll = factory(global.Vue));
 }(this, (function (Vue) { 'use strict';
 
-Vue = Vue && Vue.hasOwnProperty('default') ? Vue['default'] : Vue;
+Vue = Vue && Object.prototype.hasOwnProperty.call(Vue, 'default') ? Vue['default'] : Vue;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
